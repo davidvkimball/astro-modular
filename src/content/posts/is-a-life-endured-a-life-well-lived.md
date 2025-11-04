@@ -17,7 +17,7 @@ draft: false
 ---
 ***At first glance, the answer should be 'no'.***  
 Because endurance sounds like: breathing without joy, shadows of living, mechanical continuation, bare survival, and a refusal to collapse.
-If you try to look deeper, beneath the fatigue and desperation, endurance is not the absence of life. Endurance is the at root of life.
+If you try to look deeper, beneath the fatigue and desperation, endurance is not the absence of life. Endurance is at the root of life.
 
 Enduring means to refuse to surrender your consciousness to nothingness. It’s what keeps a seed alive underneath the snow. 
 **Though the seed isn't blooming, but its alive, waiting for the spring.**
