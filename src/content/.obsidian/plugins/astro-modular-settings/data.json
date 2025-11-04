@@ -1,5 +1,5 @@
 {
-  "runWizardOnStartup": true,
+  "runWizardOnStartup": false,
   "currentTemplate": "standard",
   "currentTheme": "atom",
   "customThemeFile": "custom",
@@ -76,7 +76,7 @@
   "homeOptions": {
     "featuredPost": {
       "enabled": true,
-      "type": "latest",
+      "type": "featured",
       "slug": "is-a-life-endured-a-life-well-lived"
     },
     "recentPosts": {
@@ -88,7 +88,7 @@
       "count": 2
     },
     "docs": {
-      "enabled": false,
+      "enabled": true,
       "count": 3
     },
     "blurb": {
@@ -115,7 +115,7 @@
     "postCardAspectRatio": "og",
     "customPostCardAspectRatio": "2.5/1",
     "comments": {
-      "enabled": true,
+      "enabled": false,
       "provider": "giscus",
       "rawScript": "",
       "repo": "davidvkimball/astro-modular",
@@ -144,7 +144,7 @@
     "scrollToTop": true,
     "showSocialIconsInFooter": true,
     "profilePicture": false,
-    "comments": true,
+    "comments": false,
     "featureButton": "mode",
     "showPostCardCoverImages": "featured-and-posts",
     "postCardAspectRatio": "og",
@@ -180,7 +180,7 @@
       "style": "circle"
     },
     "comments": {
-      "enabled": true,
+      "enabled": false,
       "provider": "giscus",
       "rawScript": "",
       "repo": "davidvkimball/astro-modular",
