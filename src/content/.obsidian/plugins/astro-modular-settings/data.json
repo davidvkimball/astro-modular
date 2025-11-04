@@ -17,8 +17,8 @@
     "description": "Ruminations of a weird mind",
     "author": "Prakhar Saxena",
     "language": "en",
-    "faviconThemeAdaptive": true,
-    "defaultOgImageAlt": "Astro Modular logo."
+    "faviconThemeAdaptive": false,
+    "defaultOgImageAlt": "logo"
   },
   "layout": {
     "contentWidth": "45rem"
@@ -33,7 +33,7 @@
     "showSocialIconsInFooter": false
   },
   "seo": {
-    "defaultOgImageAlt": "Astro Modular logo."
+    "defaultOgImageAlt": "logo"
   },
   "navigation": {
     "showNavigation": true,
