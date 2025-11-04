@@ -1,7 +1,7 @@
 {
   "runWizardOnStartup": false,
   "currentTemplate": "standard",
-  "currentTheme": "gruvbox",
+  "currentTheme": "nord",
   "customThemeFile": "custom",
   "contentOrganization": "file-based",
   "themeColors": {

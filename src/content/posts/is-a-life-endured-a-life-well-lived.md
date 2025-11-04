@@ -35,4 +35,3 @@ But endurance alone is not enough. At some point, endurance must transform, must
 
 Your years of endurance were not dead time. You were not merely surviving. You were preparing, though unknowingly, for the possibility of a life, that could finally hold joy without breaking under it.
 **The tree doesn’t apologize for being a seed.**
-![](attachments/life1.pdf)
