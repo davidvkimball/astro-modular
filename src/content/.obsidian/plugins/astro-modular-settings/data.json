@@ -29,7 +29,7 @@
   },
   "footer": {
     "enabled": true,
-    "content": "© 2025 {author}.",
+    "content": "© 2025 {author}",
     "showSocialIconsInFooter": false
   },
   "seo": {
@@ -216,7 +216,7 @@
   },
   "optionalContentTypes": {
     "projects": true,
-    "docs": true
+    "docs": false
   },
   "availableThemes": "default",
   "customThemes": "",
