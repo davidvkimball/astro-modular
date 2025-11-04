@@ -216,7 +216,7 @@
   },
   "optionalContentTypes": {
     "projects": false,
-    "docs": true
+    "docs": false
   },
   "availableThemes": "default",
   "customThemes": "",
