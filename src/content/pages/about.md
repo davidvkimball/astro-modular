@@ -4,7 +4,7 @@ description: Maybe only the weird still wonder
 image: "[[../posts/attachments/galaxy.png]]"
 imageAlt: universe
 imageOG: true
-hideCoverImage:
+hideCoverImage: false
 noIndex: false
 hideTOC: false
 aliases:
