@@ -14,7 +14,7 @@ hideTOC: false
 targetKeyword: travel discovery
 draft: false
 ---
-## **Why do we travel?**
+# **Why do we travel?**
 
 There comes a point when the walls of your room begin to hum.  
 Not loudly, not dramatically; just a quiet hum, the sound of repetitions. 
@@ -34,7 +34,7 @@ Because maybe what you really want isn’t another place.
 
 ![](attachments/travel1.png)![](Inserted%20image%2020251106134500.png)
 
-## **The Ancestry of Motion**
+# **The Ancestry of Motion**
 
 In the marrow of every human bone lies a whisper: *"**move**"*.
 Before we knew how to build, we knew how to walk. 
@@ -53,6 +53,6 @@ They all remind you that you are not fixed, not cemented in place.
 **You are still made of atoms that vibrate.** 
 **You are still allowed to change.**
 
-## **The Psychology of Elsewhere**
+# **The Psychology of Elsewhere**
 
 
