@@ -18,7 +18,7 @@ hideTOC: false
 targetKeyword: travel discovery
 draft: false
 ---
-# **Why Do We Travel? **
+# **Why Do We Travel?**
 There comes a time in every life when the air inside the room grows too familiar to breathe.
 The walls begin to echo the sound of your own thoughts, and even the sunlight looks rehearsed, falling in the same rhythm, tracing the same dust motes.
 
