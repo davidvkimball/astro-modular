@@ -7,6 +7,8 @@ aliases:
   - about-me
   - about-us
 ---
+**==My journey expands Truth beyond boundaries of Belief.==**
+
 There are minds that crave answers, others that crave understanding. This one has always needed both and much beyond.
 
 This is a home for questions that refuse to be silenced, for thoughts that stretches through the nights and cannot possibly be boxed into narrow categorisations.
