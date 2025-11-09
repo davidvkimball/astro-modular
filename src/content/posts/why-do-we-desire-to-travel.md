@@ -110,3 +110,47 @@ You breathe in the scent of wood and sandal. You feel both small and infinite.
 Each journey teaches you something about how to inhabit time, how to accept the transience of everything that once seemed permanent. 
 
 ## **The Return**
+Every journey ends with a return.
+But the home you return to is never the same. Or maybe its you who has shaped yourself.
+
+You enter the same room, and yet, the silence feels different.
+The light seems softer. You see the ordinary with new reverence.
+*You realize that travel never truly ends, it continues within you, as a rearranged way of seeing.*
+
+People often say, "I wish I could stay there forever". But if you did, the magic would fade.
+**The awe depends on distance.** You are meant to arrive and depart, to love and release.
+That's how meaning breathes.
+
+==And perhaps, that's why the best travellers are never escapists.==
+==They are returners, those who carry the world's vastness back into the smallest corners of their lives.==
+
+## **The Still Journey**
+Not all travel needs motion. 
+Some journeys unfold in the mind, while reading, while dreaming, while remembering.
+The act of imagining another place is itself a form of travel. It rearranges your sense of the possible.
+
+**The ones who cannot move, by circumstance, by pain, by duty, are often the greatest travellers in spirit.** 
+Their inner landscapes are rich with unvisited worlds.
+They learn to find depth in stillness, and motion in thought.
+
+**Perhaps the truest journey is not across lands, but across layers of consciousness.**
+To descend into your own silence and discover that it too, is vast.
+
+## **The Eternal Thirst**
+We desire to travel because something in us refuses finality.
+Because no matter how much we love home, we know we are finished yet. 
+The heart aches for renewal the way earth aches for rain.
+
+**Travel in its deepest sense, is not about escape or discovery, its about remembering the motion of being alive.**
+To be human is to wonder, to question, to desire newness even when surrounded by comfort.
+The bird doesn't apologise for its restlessness, nor should you.
+
+Maybe that's what it means to be alive, to be alive, to be a pilgrim of your own becoming.
+To keep walking, even through doubt, until movement itself becomes a prayer.
+
+You may cross countries or never leave your town.
+You may move through silence, through grief, through memory.
+But so long as you keep searching for new ways, you are still travelling.
+
+Because travel is not a departure from life.
+**IT IS LIFE, disguised as movement, as longing, as you.**
