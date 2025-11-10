@@ -2,13 +2,19 @@
 title: The Silent Festival of Existence
 date: 2025-11-09
 description: Every breath a prayer, every pause a festival.
-tags: []
-image: ""
-imageAlt: ""
-imageOG: false
+tags:
+  - gratitude
+  - existence
+  - life
+  - celebration
+  - mindfulness
+  - presence
+image: celebration.png
+imageAlt: celebration of life
+imageOG: true
 hideCoverImage: false
 hideTOC: false
-targetKeyword: ""
+targetKeyword: celebration of life
 draft: false
 ---
 ## **What does it mean to celebrate life?**
