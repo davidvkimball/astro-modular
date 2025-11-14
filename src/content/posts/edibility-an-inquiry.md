@@ -55,8 +55,8 @@ Every civilization, in its own way, has answered the question "what is food?" di
 These answers are not mutually exclusive, they overlap like an onion, each layer revealing something deeper about human psyche.
 
 ### **1. Food as Sustenance** 
- _matter, metabolism, & quiet violence of survival.
-
+ _matter, metabolism, & quiet violence of survival_
+ 
 At its most basic, food is matter sustains life: a combination of proteins, carbohydrates, and fats that fuels our cells and rebuilds our tissues. 
 From this view, food is the body’s way of participating in Chemistry. 
 
@@ -72,7 +72,7 @@ The way the stomach fills but the heart stays empty.
 
 Nutrition alone cannot account for the experience of eating. To feel nourished, we need not just sustenance, we need meaning.
 ### 2. Food as Nature 
-_ecological dance between soil, sun and seed.
+_ecological dance between soil, sun and seed_
 
 The second face of food reveals itself through the rhythms of Earth.  
 Food is not manufactured, it is born. It is rain and soil and sunlight, performing their slow choreography.
@@ -90,7 +90,7 @@ Yet nature alone does not define what we eat. The forest is full of berries we w
 
 The natural world gives, but the human decides. We filter nature through selection, intention, and taboo, we interpret it. That act of interpretation of choosing what becomes food is culture.
 ### 3. Food as Culture 
-_how recipes, rituals and taboos shape identity
+_how recipes, rituals and taboos shape identity_
 
 In every society, food is a mirror of its myth. It reveals how we see ourselves, what we value, and what we fear.
 
@@ -105,7 +105,7 @@ The sacred cow, the forbidden pig, the untouchable insect, each boundary marks a
 
 Every meal then is a political act. It reaffirms history, hierarchy, and worldviews. We do not merely consume calories, we consume meaning.
 ### 4. Food as Spirituality 
-_offering, prayer and meaning of life
+_offering, prayer and meaning of life_
 
 When ancient humans began to understand death, they also began to understand food differently. To eat became an act of communion, a way of acknowledging our dependence on the invisible.
 
