@@ -25,7 +25,7 @@ It is one of those questions that hides inside ordinary life, like air, too infi
 
 We think we understand it. We reach for a fruit, a grain, a cup of milk. But beneath that simple gesture lies a philosophical abyss.
 
-What is it that turns matter into nourishment? What arbitrary decision makes a thing edible and another forbidden?
+What is it that turns matter into nourishment? What arbitrary decision makes a thing edible and another forbidden? 
 
 The answer is not practical. It is not about calories or cuisine. To ask "what is food?" is to ask "what kind of world do we inhabit?" and "how do we remain in it?"
 
