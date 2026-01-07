@@ -1,6 +1,6 @@
 {
   "name": "astro-modular",
-  "version": "0.7.0",
+  "version": "0.7.5",
   "type": "module",
   "description": "A flexible blog theme designed for Obsidian users.",
   "main": "index.js",
