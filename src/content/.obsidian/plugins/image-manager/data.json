@@ -21,7 +21,7 @@
   "dupNumberDelimiter": "-",
   "dupNumberAtStart": false,
   "disableRenameNotice": false,
-  "enableDescriptiveImages": false,
+  "enableDescriptiveImages": true,
   "insertSize": "",
   "insertReferral": true,
   "insertBackLink": false,

@@ -1,7 +1,7 @@
 {
   "cssTheme": "Oxygen",
   "showViewHeader": true,
-  "showRibbon": true,
+  "showRibbon": false,
   "enabledCssSnippets": [
     "astro-modular-styling"
   ],

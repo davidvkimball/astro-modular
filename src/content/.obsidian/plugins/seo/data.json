@@ -1,6 +1,7 @@
 {
   "scanDirectories": "posts",
   "ignoreUnderscoreFiles": false,
+  "enableMDXSupport": false,
   "keywordProperty": "targetKeyword",
   "descriptionProperty": "description",
   "titleProperty": "title",
@@ -155,8 +156,102 @@
         "externalBrokenLinks": [
           {
             "passed": true,
-            "message": "Found 9 external link(s), all appear to resolve and are working",
-            "severity": "info"
+            "message": "External link: https://github.com/davidvkimball/obsidian-oxygen",
+            "suggestion": "To find if any of these are broken, use the 'Check external links for 404s' button to trigger it.",
+            "severity": "notice",
+            "position": {
+              "line": 47,
+              "searchText": "https://github.com/davidvkimball/obsidian-oxygen",
+              "context": "## Theme\n\nFor out-of-the-box customization, [Oxygen](https://github.com/davidvkimball/obsidian-oxygen) theme is used, based on the [Minimal theme system](https://minimal.guide/home). It uses a slick color scheme that's highly customizable. \n\nThe [Oxygen Theme Settings](https://github.com/davidvkimball/obsidian-oxygen-settings) plugin is also installed by default, giving you complete control over your experience. You can even define your own color scheme presets. More on that [below](vault-cms-guide.md#Oxygen%20Theme%20Settings%20and%20Zen%20Mode)."
+            }
+          },
+          {
+            "passed": true,
+            "message": "External link: https://minimal.guide/home",
+            "suggestion": "To find if any of these are broken, use the 'Check external links for 404s' button to trigger it.",
+            "severity": "notice",
+            "position": {
+              "line": 47,
+              "searchText": "https://minimal.guide/home",
+              "context": "## Theme\n\nFor out-of-the-box customization, [Oxygen](https://github.com/davidvkimball/obsidian-oxygen) theme is used, based on the [Minimal theme system](https://minimal.guide/home). It uses a slick color scheme that's highly customizable. \n\nThe [Oxygen Theme Settings](https://github.com/davidvkimball/obsidian-oxygen-settings) plugin is also installed by default, giving you complete control over your experience. You can even define your own color scheme presets. More on that [below](vault-cms-guide.md#Oxygen%20Theme%20Settings%20and%20Zen%20Mode)."
+            }
+          },
+          {
+            "passed": true,
+            "message": "External link: https://github.com/davidvkimball/obsidian-oxygen-settings",
+            "suggestion": "To find if any of these are broken, use the 'Check external links for 404s' button to trigger it.",
+            "severity": "notice",
+            "position": {
+              "line": 49,
+              "searchText": "https://github.com/davidvkimball/obsidian-oxygen-settings",
+              "context": "For out-of-the-box customization, [Oxygen](https://github.com/davidvkimball/obsidian-oxygen) theme is used, based on the [Minimal theme system](https://minimal.guide/home). It uses a slick color scheme that's highly customizable. \n\nThe [Oxygen Theme Settings](https://github.com/davidvkimball/obsidian-oxygen-settings) plugin is also installed by default, giving you complete control over your experience. You can even define your own color scheme presets. More on that [below](vault-cms-guide.md#Oxygen%20Theme%20Settings%20and%20Zen%20Mode).\n\n## CSS Snippets"
+            }
+          },
+          {
+            "passed": true,
+            "message": "External link: https://github.com/kepano/obsidian-minimal",
+            "suggestion": "To find if any of these are broken, use the 'Check external links for 404s' button to trigger it.",
+            "severity": "notice",
+            "position": {
+              "line": 162,
+              "searchText": "https://github.com/kepano/obsidian-minimal",
+              "context": "The Oxygen Theme Settings plugin helps you customize your experience if you use the provided Oxygen Obsidian theme and can help you focus on writing.\n\nYou'll notice a wide variety of color scheme options, most of which were included in the [Minimal](https://github.com/kepano/obsidian-minimal) theme upon which Oxygen was based.\n\nShould you desire to hide any of the panels, you can use `CTRL + ALT Z` for the left side panel, `CTRL + ALT + X` for the right side panel, or `CTRL + ALT + S` for the tab bar. Pressing it again will reveal it again. "
+            }
+          },
+          {
+            "passed": true,
+            "message": "External link: https://github.com/mgmeyers/obsidian-style-settings",
+            "suggestion": "To find if any of these are broken, use the 'Check external links for 404s' button to trigger it.",
+            "severity": "notice",
+            "position": {
+              "line": 170,
+              "searchText": "https://github.com/mgmeyers/obsidian-style-settings",
+              "context": "Zen Mode offers another quick option to focus on your writing. Pressing `CTRL + SHIFT + Z` will enter Zen mode. When activated, all elements removed except for your content. Use the keystroke again to exit. \n\nIf you like, you can install the [Style Settings](https://github.com/mgmeyers/obsidian-style-settings) plugin for even more control over your experience.\n\n#### Using a Theme Other Than Oxygen"
+            }
+          },
+          {
+            "passed": true,
+            "message": "External link: https://github.com/kepano/obsidian-hider",
+            "suggestion": "To find if any of these are broken, use the 'Check external links for 404s' button to trigger it.",
+            "severity": "notice",
+            "position": {
+              "line": 174,
+              "searchText": "https://github.com/kepano/obsidian-hider",
+              "context": "#### Using a Theme Other Than Oxygen\n\nIf you're just interested in hiding UI elements and wish to use a theme other than Oxygen, you can install the [Hider](https://github.com/kepano/obsidian-hider) plugin and use the aforementioned Style Settings plugin to hide the Properties heading and the \"Add Property\" button. For that use case specifically, you can also enable the `hide-properties-heading-and-add-properties-button.css` CSS snippet which you'll find under Settings > Appearance without using any plugins at all. \n\n### Paste Image Rename and Paste Image Into Property"
+            }
+          },
+          {
+            "passed": true,
+            "message": "External link: https://obsidian.md/plugins?id=obsidian-git",
+            "suggestion": "To find if any of these are broken, use the 'Check external links for 404s' button to trigger it.",
+            "severity": "notice",
+            "position": {
+              "line": 214,
+              "searchText": "https://obsidian.md/plugins?id=obsidian-git",
+              "context": "### Git, Commander, and Status Bar Organizer\n\nWith the [Git](https://obsidian.md/plugins?id=obsidian-git) plugin, you can easily publish to your Astro blog without leaving Obsidian. Simply configure with git to enable it. By default, you'll see your current git status and count of files changed (if any) in the status bar on the bottom right.\n\nTo publish, you can use `CTRL + SHIFT + S` or click the \"commit-and-sync\" button on the status bar (added with the Commander plugin). Your changes will be committed and pushed to your remote repository automatically."
+            }
+          },
+          {
+            "passed": true,
+            "message": "External link: https://github.com/ViscousPot/GitSync",
+            "suggestion": "To find if any of these are broken, use the 'Check external links for 404s' button to trigger it.",
+            "severity": "notice",
+            "position": {
+              "line": 234,
+              "searchText": "https://github.com/ViscousPot/GitSync",
+              "context": "### Disabling the Git Plugin\n\nIt's recommended to disable the Git plugin on mobile and use something like [Git Sync](https://github.com/ViscousPot/GitSync) for iOS and Android (or [MGit](https://github.com/maks/MGit) just for Android) instead. The Git plugin is notoriously buggy on mobile so it's better to use something else. \n\nHere's how to disable it: "
+            }
+          },
+          {
+            "passed": true,
+            "message": "External link: https://github.com/maks/MGit",
+            "suggestion": "To find if any of these are broken, use the 'Check external links for 404s' button to trigger it.",
+            "severity": "notice",
+            "position": {
+              "line": 234,
+              "searchText": "https://github.com/maks/MGit",
+              "context": "### Disabling the Git Plugin\n\nIt's recommended to disable the Git plugin on mobile and use something like [Git Sync](https://github.com/ViscousPot/GitSync) for iOS and Android (or [MGit](https://github.com/maks/MGit) just for Android) instead. The Git plugin is notoriously buggy on mobile so it's better to use something else. \n\nHere's how to disable it: "
+            }
           }
         ],
         "readingLevel": [
@@ -167,10 +262,10 @@
           }
         ]
       },
-      "overallScore": 68.08823529411765,
+      "overallScore": 66.25,
       "issuesCount": 0,
       "warningsCount": 5,
-      "noticesCount": 0
+      "noticesCount": 9
     },
     {
       "file": "posts/sample-folder-based-post/index.md",
@@ -691,7 +786,7 @@
         "contentLength": [
           {
             "passed": true,
-            "message": "Good content length: 1187 words",
+            "message": "Good content length: 1198 words",
             "severity": "info"
           }
         ],
@@ -712,7 +807,7 @@
             "suggestion": "Use descriptive file names",
             "severity": "warning",
             "position": {
-              "line": 125,
+              "line": 129,
               "searchText": "![Mountain landscape](https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop)",
               "context": "**Two Images Side by Side**\n\n![Mountain landscape](https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop)\n![Ocean view](https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=800&h=600&fit=crop)\n"
             }
@@ -723,7 +818,7 @@
             "suggestion": "Use descriptive file names",
             "severity": "warning",
             "position": {
-              "line": 126,
+              "line": 130,
               "searchText": "![Ocean view](https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=800&h=600&fit=crop)",
               "context": "\n![Mountain landscape](https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop)\n![Ocean view](https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=800&h=600&fit=crop)\n\n**Three Images in a Row**"
             }
@@ -734,7 +829,7 @@
             "suggestion": "Use descriptive file names",
             "severity": "warning",
             "position": {
-              "line": 130,
+              "line": 134,
               "searchText": "![Forest path](https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&h=600&fit=crop)",
               "context": "**Three Images in a Row**\n\n![Forest path](https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&h=600&fit=crop)\n![Desert sunset](https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop)\n![City skyline](https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800&h=600&fit=crop)"
             }
@@ -745,7 +840,7 @@
             "suggestion": "Use descriptive file names",
             "severity": "warning",
             "position": {
-              "line": 131,
+              "line": 135,
               "searchText": "![Desert sunset](https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop)",
               "context": "\n![Forest path](https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&h=600&fit=crop)\n![Desert sunset](https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop)\n![City skyline](https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800&h=600&fit=crop)\n"
             }
@@ -756,7 +851,7 @@
             "suggestion": "Use descriptive file names",
             "severity": "warning",
             "position": {
-              "line": 132,
+              "line": 136,
               "searchText": "![City skyline](https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800&h=600&fit=crop)",
               "context": "![Forest path](https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&h=600&fit=crop)\n![Desert sunset](https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop)\n![City skyline](https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800&h=600&fit=crop)\n\n**Four Images in a Row**"
             }
@@ -767,7 +862,7 @@
             "suggestion": "Use descriptive file names",
             "severity": "warning",
             "position": {
-              "line": 136,
+              "line": 140,
               "searchText": "![Winter landscape](https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=800&h=600&fit=crop)",
               "context": "**Four Images in a Row**\n\n![Winter landscape](https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=800&h=600&fit=crop)\n![Spring flowers](https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=800&h=600&fit=crop)\n![Summer beach](https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=600&fit=crop)"
             }
@@ -778,7 +873,7 @@
             "suggestion": "Use descriptive file names",
             "severity": "warning",
             "position": {
-              "line": 137,
+              "line": 141,
               "searchText": "![Spring flowers](https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=800&h=600&fit=crop)",
               "context": "\n![Winter landscape](https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=800&h=600&fit=crop)\n![Spring flowers](https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=800&h=600&fit=crop)\n![Summer beach](https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=600&fit=crop)\n![Autumn leaves](https://images.unsplash.com/photo-1441260038675-7329ab4cc264?w=800&h=600&fit=crop)"
             }
@@ -789,7 +884,7 @@
             "suggestion": "Use descriptive file names",
             "severity": "warning",
             "position": {
-              "line": 138,
+              "line": 142,
               "searchText": "![Summer beach](https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=600&fit=crop)",
               "context": "![Winter landscape](https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=800&h=600&fit=crop)\n![Spring flowers](https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=800&h=600&fit=crop)\n![Summer beach](https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=600&fit=crop)\n![Autumn leaves](https://images.unsplash.com/photo-1441260038675-7329ab4cc264?w=800&h=600&fit=crop)\n"
             }
@@ -800,7 +895,7 @@
             "suggestion": "Use descriptive file names",
             "severity": "warning",
             "position": {
-              "line": 139,
+              "line": 143,
               "searchText": "![Autumn leaves](https://images.unsplash.com/photo-1441260038675-7329ab4cc264?w=800&h=600&fit=crop)",
               "context": "![Spring flowers](https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=800&h=600&fit=crop)\n![Summer beach](https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=600&fit=crop)\n![Autumn leaves](https://images.unsplash.com/photo-1441260038675-7329ab4cc264?w=800&h=600&fit=crop)\n\n**How to Use Multiple Images / Gallery**"
             }
@@ -813,7 +908,7 @@
             "suggestion": "Convert to markdown link format: [link text](url)",
             "severity": "warning",
             "position": {
-              "line": 221,
+              "line": 225,
               "searchText": "https://example.com",
               "context": "This is a [reference link][1] and this is another [reference link][markdown].\n\n[1]: https://example.com\n[markdown]: https://daringfireball.net/projects/markdown/\n"
             }
@@ -824,7 +919,7 @@
             "suggestion": "Convert to markdown link format: [link text](url)",
             "severity": "warning",
             "position": {
-              "line": 222,
+              "line": 226,
               "searchText": "https://daringfireball.net/projects/markdown/",
               "context": "\n[1]: https://example.com\n[markdown]: https://daringfireball.net/projects/markdown/\n\n## Code Blocks"
             }
@@ -847,147 +942,31 @@
         "potentiallyBrokenEmbeds": [],
         "externalBrokenLinks": [
           {
-            "passed": true,
-            "message": "External link: https://unsplash.com/@antoinerault?utm_source=Obsidian%20Image%20Inserter%20Plugin&utm_medium=referral",
-            "suggestion": "To find if any of these are broken, use the 'Check external links for 404s' button to trigger it.",
-            "severity": "notice",
+            "passed": false,
+            "message": "External link error: https://unsplash.com/@antoinerault?utm_source=Obsidian%20Image%20Inserter%20Plugin&utm_medium=referral",
+            "suggestion": "This link could not be verified. This may be due to bot protection, network issues, or a broken link. Please check the URL manually.",
+            "severity": "warning",
             "position": {
-              "line": 117,
+              "line": 121,
               "searchText": "https://unsplash.com/@antoinerault?utm_source=Obsidian%20Image%20Inserter%20Plugin&utm_medium=referral",
               "context": "\n![Mountains](/posts/attachments/mountains.png)\n*Photo by [Antoine Rault](https://unsplash.com/@antoinerault?utm_source=Obsidian%20Image%20Inserter%20Plugin&utm_medium=referral) on [Unsplash](https://unsplash.com/?utm_source=Obsidian%20Image%20Inserter%20Plugin&utm_medium=referral)*\n\n#### Multiple Image Layouts"
             }
           },
           {
-            "passed": true,
-            "message": "External link: https://unsplash.com/?utm_source=Obsidian%20Image%20Inserter%20Plugin&utm_medium=referral",
-            "suggestion": "To find if any of these are broken, use the 'Check external links for 404s' button to trigger it.",
-            "severity": "notice",
+            "passed": false,
+            "message": "External link error: https://unsplash.com/?utm_source=Obsidian%20Image%20Inserter%20Plugin&utm_medium=referral",
+            "suggestion": "This link could not be verified. This may be due to bot protection, network issues, or a broken link. Please check the URL manually.",
+            "severity": "warning",
             "position": {
-              "line": 117,
+              "line": 121,
               "searchText": "https://unsplash.com/?utm_source=Obsidian%20Image%20Inserter%20Plugin&utm_medium=referral",
               "context": "\n![Mountains](/posts/attachments/mountains.png)\n*Photo by [Antoine Rault](https://unsplash.com/@antoinerault?utm_source=Obsidian%20Image%20Inserter%20Plugin&utm_medium=referral) on [Unsplash](https://unsplash.com/?utm_source=Obsidian%20Image%20Inserter%20Plugin&utm_medium=referral)*\n\n#### Multiple Image Layouts"
             }
           },
           {
             "passed": true,
-            "message": "External link: https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop",
-            "suggestion": "To find if any of these are broken, use the 'Check external links for 404s' button to trigger it.",
-            "severity": "notice",
-            "position": {
-              "line": 125,
-              "searchText": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop",
-              "context": "**Two Images Side by Side**\n\n![Mountain landscape](https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop)\n![Ocean view](https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=800&h=600&fit=crop)\n"
-            }
-          },
-          {
-            "passed": true,
-            "message": "External link: https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=800&h=600&fit=crop",
-            "suggestion": "To find if any of these are broken, use the 'Check external links for 404s' button to trigger it.",
-            "severity": "notice",
-            "position": {
-              "line": 126,
-              "searchText": "https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=800&h=600&fit=crop",
-              "context": "\n![Mountain landscape](https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop)\n![Ocean view](https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=800&h=600&fit=crop)\n\n**Three Images in a Row**"
-            }
-          },
-          {
-            "passed": true,
-            "message": "External link: https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&h=600&fit=crop",
-            "suggestion": "To find if any of these are broken, use the 'Check external links for 404s' button to trigger it.",
-            "severity": "notice",
-            "position": {
-              "line": 130,
-              "searchText": "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&h=600&fit=crop",
-              "context": "**Three Images in a Row**\n\n![Forest path](https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&h=600&fit=crop)\n![Desert sunset](https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop)\n![City skyline](https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800&h=600&fit=crop)"
-            }
-          },
-          {
-            "passed": true,
-            "message": "External link: https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800&h=600&fit=crop",
-            "suggestion": "To find if any of these are broken, use the 'Check external links for 404s' button to trigger it.",
-            "severity": "notice",
-            "position": {
-              "line": 132,
-              "searchText": "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800&h=600&fit=crop",
-              "context": "![Forest path](https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&h=600&fit=crop)\n![Desert sunset](https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop)\n![City skyline](https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800&h=600&fit=crop)\n\n**Four Images in a Row**"
-            }
-          },
-          {
-            "passed": true,
-            "message": "External link: https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=800&h=600&fit=crop",
-            "suggestion": "To find if any of these are broken, use the 'Check external links for 404s' button to trigger it.",
-            "severity": "notice",
-            "position": {
-              "line": 136,
-              "searchText": "https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=800&h=600&fit=crop",
-              "context": "**Four Images in a Row**\n\n![Winter landscape](https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=800&h=600&fit=crop)\n![Spring flowers](https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=800&h=600&fit=crop)\n![Summer beach](https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=600&fit=crop)"
-            }
-          },
-          {
-            "passed": true,
-            "message": "External link: https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=800&h=600&fit=crop",
-            "suggestion": "To find if any of these are broken, use the 'Check external links for 404s' button to trigger it.",
-            "severity": "notice",
-            "position": {
-              "line": 137,
-              "searchText": "https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=800&h=600&fit=crop",
-              "context": "\n![Winter landscape](https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=800&h=600&fit=crop)\n![Spring flowers](https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=800&h=600&fit=crop)\n![Summer beach](https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=600&fit=crop)\n![Autumn leaves](https://images.unsplash.com/photo-1441260038675-7329ab4cc264?w=800&h=600&fit=crop)"
-            }
-          },
-          {
-            "passed": true,
-            "message": "External link: https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=600&fit=crop",
-            "suggestion": "To find if any of these are broken, use the 'Check external links for 404s' button to trigger it.",
-            "severity": "notice",
-            "position": {
-              "line": 138,
-              "searchText": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=600&fit=crop",
-              "context": "![Winter landscape](https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=800&h=600&fit=crop)\n![Spring flowers](https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=800&h=600&fit=crop)\n![Summer beach](https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=600&fit=crop)\n![Autumn leaves](https://images.unsplash.com/photo-1441260038675-7329ab4cc264?w=800&h=600&fit=crop)\n"
-            }
-          },
-          {
-            "passed": true,
-            "message": "External link: https://images.unsplash.com/photo-1441260038675-7329ab4cc264?w=800&h=600&fit=crop",
-            "suggestion": "To find if any of these are broken, use the 'Check external links for 404s' button to trigger it.",
-            "severity": "notice",
-            "position": {
-              "line": 139,
-              "searchText": "https://images.unsplash.com/photo-1441260038675-7329ab4cc264?w=800&h=600&fit=crop",
-              "context": "![Spring flowers](https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=800&h=600&fit=crop)\n![Summer beach](https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=600&fit=crop)\n![Autumn leaves](https://images.unsplash.com/photo-1441260038675-7329ab4cc264?w=800&h=600&fit=crop)\n\n**How to Use Multiple Images / Gallery**"
-            }
-          },
-          {
-            "passed": true,
-            "message": "External link: https://obsidian.md",
-            "suggestion": "To find if any of these are broken, use the 'Check external links for 404s' button to trigger it.",
-            "severity": "notice",
-            "position": {
-              "line": 155,
-              "searchText": "https://obsidian.md",
-              "context": "### Linked Images\n\n[![Mountains](/posts/attachments/mountains.png)](https://obsidian.md)\n\n```"
-            }
-          },
-          {
-            "passed": true,
-            "message": "External link: https://example.com",
-            "suggestion": "To find if any of these are broken, use the 'Check external links for 404s' button to trigger it.",
-            "severity": "notice",
-            "position": {
-              "line": 221,
-              "searchText": "https://example.com",
-              "context": "This is a [reference link][1] and this is another [reference link][markdown].\n\n[1]: https://example.com\n[markdown]: https://daringfireball.net/projects/markdown/\n"
-            }
-          },
-          {
-            "passed": true,
-            "message": "External link: https://daringfireball.net/projects/markdown/",
-            "suggestion": "To find if any of these are broken, use the 'Check external links for 404s' button to trigger it.",
-            "severity": "notice",
-            "position": {
-              "line": 222,
-              "searchText": "https://daringfireball.net/projects/markdown/",
-              "context": "\n[1]: https://example.com\n[markdown]: https://daringfireball.net/projects/markdown/\n\n## Code Blocks"
-            }
+            "message": "11 of 13 external link(s) are working",
+            "severity": "info"
           }
         ],
         "readingLevel": [
@@ -1000,10 +979,10 @@
       },
       "overallScore": 40,
       "issuesCount": 0,
-      "warningsCount": 15,
-      "noticesCount": 17
+      "warningsCount": 17,
+      "noticesCount": 4
     }
   ],
-  "lastScanTimestamp": 1766257224114,
+  "lastScanTimestamp": 1767830952753,
   "showNotices": true
 }
