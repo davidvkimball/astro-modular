@@ -2,11 +2,8 @@
   "zenmode",
   "ui-tweaker",
   "tag-wrangler",
-  "statusbar-organizer",
   "settings-search",
-  "astro-modular-settings",
   "bases-cms",
-  "cmdr",
   "editing-toolbar",
   "explorer-focus",
   "seo",
@@ -17,5 +14,6 @@
   "astro-composer",
   "oxygen-settings",
   "home-base",
-  "obsidian-git"
+  "obsidian-git",
+  "astro-modular-settings"
 ]

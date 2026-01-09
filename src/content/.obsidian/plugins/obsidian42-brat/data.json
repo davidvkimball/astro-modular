@@ -78,12 +78,7 @@
       "version": "latest"
     }
   ],
-  "themesList": [
-    {
-      "repo": "davidvkimball/obsidian-oxygen",
-      "lastUpdate": "23941596"
-    }
-  ],
+  "themesList": [],
   "updateAtStartup": true,
   "updateThemesAtStartup": true,
   "enableAfterInstall": true,

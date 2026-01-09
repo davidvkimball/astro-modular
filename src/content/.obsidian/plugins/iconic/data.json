@@ -50,6 +50,9 @@
     "hideTOC": {
       "icon": "lucide-equal-not"
     },
+    "icon": {
+      "icon": "lucide-shapes"
+    },
     "image": {
       "icon": "lucide-image"
     },

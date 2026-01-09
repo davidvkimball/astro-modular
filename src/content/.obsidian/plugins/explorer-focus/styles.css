@@ -1,0 +1,4 @@
+/* Match native file explorer icon styling for plugin icon */
+body .nav-action-button:has(.svg-icon.lucide-focus) {
+	color: var(--native-button-color-toggle-focus, currentColor);
+}

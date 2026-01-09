@@ -57,5 +57,86 @@
     "enabled": false,
     "commandId": "open-settings",
     "iconId": "wrench"
-  }
+  },
+  "tabBarCommands": [
+    {
+      "id": "editing-toolbar:hide-show-menu",
+      "icon": "lucide-chevron-down",
+      "name": "Toggle editing toolbar",
+      "displayName": "Editing Toolbar: Hide/Show ",
+      "mode": "any",
+      "toggleIcon": "lucide-chevron-up",
+      "showOnFileTypes": "md"
+    }
+  ],
+  "statusBarItems": [
+    {
+      "id": "plugin-editor-status;1",
+      "name": "Live Preview",
+      "type": "existing",
+      "hidden": false,
+      "mdOnly": false,
+      "sticky": "left"
+    },
+    {
+      "id": "plugin-word-count;1",
+      "name": "0 words0 characters",
+      "type": "existing",
+      "hidden": false,
+      "mdOnly": false
+    },
+    {
+      "id": "plugin-backlink;1",
+      "name": "0 backlinks",
+      "type": "existing",
+      "hidden": false,
+      "mdOnly": false
+    },
+    {
+      "id": "plugin-editing-toolbar-editingToolbar-statusbar-button;1",
+      "name": "plugin-editing-toolbar-editingToolbar-statusbar-button",
+      "type": "existing",
+      "hidden": true,
+      "mdOnly": false
+    },
+    {
+      "id": "plugin-obsidian-git;1",
+      "name": "plugin-obsidian-git",
+      "type": "existing",
+      "hidden": false,
+      "mdOnly": false,
+      "sticky": "right"
+    },
+    {
+      "id": "plugin-obsidian-git-obsidian-git-statusbar-idle-obsidian-git-statusbar-status;1",
+      "name": "Git is ready",
+      "type": "existing",
+      "hidden": false,
+      "mdOnly": false,
+      "sticky": "right"
+    },
+    {
+      "id": "custom-obsidian-git:push",
+      "name": "Git: Commit-and-sync",
+      "displayName": "Git: Commit-and-sync",
+      "icon": "lucide-arrow-up-circle",
+      "type": "custom",
+      "hidden": false,
+      "mdOnly": false,
+      "commandId": "obsidian-git:push",
+      "mode": "desktop",
+      "sticky": "right"
+    }
+  ],
+  "explorerCommands": [
+    {
+      "id": "theme:toggle-light-dark",
+      "icon": "lucide-moon",
+      "name": "Toggle light/dark mode",
+      "displayName": "Toggle light/dark mode",
+      "mode": "any"
+    }
+  ],
+  "nativeExplorerButtonColors": {},
+  "nativeExplorerButtonIcons": {}
 }

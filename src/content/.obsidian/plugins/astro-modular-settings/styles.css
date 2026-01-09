@@ -653,12 +653,22 @@ body[data-astro-modular-ribbon-removed="true"] .menu-item .menu-item-icon:has(.l
 }
 
 /* Settings Tab Styles - Minimal and Clean */
+/* Override parent padding to get full width, then apply padding to children */
+.vertical-tab-content:has(.astro-modular-settings),
+.vertical-tab-container:has(.astro-modular-settings) {
+	padding: 0 !important;
+	margin: 0 !important;
+}
+
 .astro-modular-settings {
 	font-family: var(--font-family);
 	height: 100%;
+	width: 100%;
 	display: flex;
 	flex-direction: column;
 	overflow: hidden;
+	margin: 0;
+	padding: 0;
 }
 
 /* Vertical Tab Content (Shell Commands style) - SCOPED to this plugin only */
@@ -677,17 +687,24 @@ body[data-astro-modular-ribbon-removed="true"] .menu-item .menu-item-icon:has(.l
 }
 
 .astro-modular-settings .tab-nav {
+	position: sticky;
+	top: 0;
+	z-index: 0;
 	display: flex;
 	border-bottom: 1px solid var(--background-modifier-border);
 	margin: 0;
-	padding: 0;
+	padding: var(--size-4-8) var(--size-4-12) 0 var(--size-4-12);
 	gap: 0;
-	background: var(--background-primary);
 	overflow-x: auto;
 	overflow-y: hidden;
 	scrollbar-width: thin;
 	scrollbar-color: var(--background-modifier-border) transparent;
 	-webkit-overflow-scrolling: touch;
+	pointer-events: none;
+}
+
+.astro-modular-settings .tab-nav .tab-button {
+	pointer-events: auto;
 }
 
 .astro-modular-settings .tab-nav::-webkit-scrollbar {
@@ -737,10 +754,11 @@ body[data-astro-modular-ribbon-removed="true"] .menu-item .menu-item-icon:has(.l
 
 .astro-modular-settings .tab-content {
 	flex: 1;
-	padding: 20px;
+	padding: var(--size-4-12) var(--size-4-12) var(--size-4-16) var(--size-4-12);
 	margin: 0;
 	overflow-y: auto;
 	min-height: 0;
+	height: 100%;
 }
 
 .astro-modular-settings .tab-content-container {
