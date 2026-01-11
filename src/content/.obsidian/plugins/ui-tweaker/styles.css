@@ -1210,6 +1210,11 @@ body.ui-tweaker-hide-sync-button .is-mobile .status-bar > .plugin-sync:not(.ui-t
 	display: none !important;
 }
 
+/* Explorer button hidden items */
+.ui-tweaker-explorer-button-hidden {
+	display: none !important;
+}
+
 /* Disabled buttons (grayed out) */
 .ui-tweaker-disabled-button {
 	opacity: 0.3 !important;

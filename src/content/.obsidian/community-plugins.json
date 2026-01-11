@@ -1,6 +1,5 @@
 [
   "alias-file-name-history",
-  "astro-composer",
   "astro-modular-settings",
   "bases-cms",
   "editing-toolbar",
@@ -16,5 +15,6 @@
   "ui-tweaker",
   "zenmode",
   "explorer-focus",
+  "astro-composer",
   "obsidian42-brat"
 ]

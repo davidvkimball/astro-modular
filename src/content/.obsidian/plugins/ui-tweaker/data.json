@@ -129,6 +129,50 @@
     }
   ],
   "explorerCommands": [],
+  "explorerButtonItems": [
+    {
+      "id": "native-newNote",
+      "name": "New note",
+      "ariaLabel": "New note",
+      "type": "native",
+      "hidden": false
+    },
+    {
+      "id": "native-newFolder",
+      "name": "New folder",
+      "ariaLabel": "New folder",
+      "type": "native",
+      "hidden": false
+    },
+    {
+      "id": "native-sortOrder",
+      "name": "Change sort order",
+      "ariaLabel": "Change sort order",
+      "type": "native",
+      "hidden": false
+    },
+    {
+      "id": "native-autoReveal",
+      "name": "Auto-reveal current file",
+      "ariaLabel": "Auto-reveal current file",
+      "type": "native",
+      "hidden": false
+    },
+    {
+      "id": "native-collapseAll",
+      "name": "Expand all",
+      "ariaLabel": "Expand all",
+      "type": "native",
+      "hidden": false
+    },
+    {
+      "id": "external-toggle-focus",
+      "name": "Toggle focus",
+      "ariaLabel": "Toggle focus",
+      "type": "external",
+      "hidden": false
+    }
+  ],
   "nativeExplorerButtonColors": {},
   "nativeExplorerButtonIcons": {}
 }
