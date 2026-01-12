@@ -50,7 +50,7 @@
   "vaultSwitcherBackgroundTransparency": 1,
   "helpButtonReplacement": {
     "enabled": false,
-    "commandId": "",
+    "commandId": "ui-tweaker:open-settings",
     "iconId": "wrench"
   },
   "syncButtonReplacement": {

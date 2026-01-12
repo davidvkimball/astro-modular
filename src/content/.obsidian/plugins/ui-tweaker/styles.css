@@ -46,19 +46,22 @@ body:not(.is-mobile).auto-hide-file-explorer-nav-header-reveal .workspace-leaf-c
 	opacity: 0;
 	overflow: hidden;
 	background-color: transparent;
-	transition: opacity 0.3s ease, max-height 0.3s ease;
+	transition: opacity 0.2s ease-in-out, max-height 0.2s ease-in-out;
+	pointer-events: none;
 }
 
 body:not(.is-mobile).auto-hide-file-explorer-nav-header-reveal .workspace-leaf-content[data-type=file-explorer] .nav-header .nav-buttons-container,
 body:not(.is-mobile).auto-hide-file-explorer-nav-header-reveal .workspace-leaf-content[data-type=file-explorer] .nav-header .nav-action-button,
 body:not(.is-mobile).auto-hide-file-explorer-nav-header-reveal .workspace-leaf-content[data-type=file-explorer] .nav-header svg {
 	opacity: 0;
-	transition: opacity 0.3s ease;
+	transition: opacity 0.2s ease-in-out;
 }
 
 body:not(.is-mobile).auto-hide-file-explorer-nav-header-reveal .workspace-leaf-content[data-type=file-explorer]:hover .nav-header {
-	max-height: 2.5em;
+	max-height: 40px;
 	opacity: 1;
+	overflow: visible;
+	pointer-events: auto;
 }
 
 body:not(.is-mobile).auto-hide-file-explorer-nav-header-reveal .workspace-leaf-content[data-type=file-explorer]:hover .nav-header .nav-buttons-container,
@@ -77,71 +80,73 @@ body.auto-hide-file-explorer-nav-header-hide .workspace-leaf-content[data-type=f
    ======================================== */
 
 /* Auto-hide other nav headers (tag, backlinks, outgoing links, outline, bookmarks) - Meridian style */
-body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-split .workspace-leaf-content[data-type=tag] .nav-header,
-body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-split .workspace-leaf-content[data-type=outgoing-link] .nav-header,
-body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-split .workspace-leaf-content[data-type=backlink] .nav-header,
-body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-split .workspace-leaf-content[data-type=outline] .nav-header,
-body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-split .workspace-leaf-content[data-type=bookmarks] .nav-header {
-	padding: 0;
+body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-leaf-content[data-type=tag] .nav-header,
+body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-leaf-content[data-type=outgoing-link] .nav-header,
+body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-leaf-content[data-type=backlink] .nav-header,
+body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-leaf-content[data-type=outline] .nav-header,
+body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-leaf-content[data-type=bookmarks] .nav-header {
 	opacity: 0;
-	height: 0;
+	max-height: 0;
 	overflow: hidden;
 	background-color: transparent;
-	transition: opacity 0.3s ease, height 0.3s ease, padding 0.3s ease;
+	transition: opacity 0.2s ease-in-out, max-height 0.2s ease-in-out;
+	pointer-events: none;
 }
 
-body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-split .workspace-leaf-content[data-type=tag] .nav-header .nav-buttons-container,
-body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-split .workspace-leaf-content[data-type=tag] .nav-header .nav-action-button,
-body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-split .workspace-leaf-content[data-type=tag] .nav-header svg,
-body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-split .workspace-leaf-content[data-type=outgoing-link] .nav-header .nav-buttons-container,
-body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-split .workspace-leaf-content[data-type=outgoing-link] .nav-header .nav-action-button,
-body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-split .workspace-leaf-content[data-type=outgoing-link] .nav-header svg,
-body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-split .workspace-leaf-content[data-type=backlink] .nav-header .nav-buttons-container,
-body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-split .workspace-leaf-content[data-type=backlink] .nav-header .nav-action-button,
-body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-split .workspace-leaf-content[data-type=backlink] .nav-header svg,
-body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-split .workspace-leaf-content[data-type=outline] .nav-header .nav-buttons-container,
-body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-split .workspace-leaf-content[data-type=outline] .nav-header .nav-action-button,
-body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-split .workspace-leaf-content[data-type=outline] .nav-header svg,
-body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-split .workspace-leaf-content[data-type=bookmarks] .nav-header .nav-buttons-container,
-body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-split .workspace-leaf-content[data-type=bookmarks] .nav-header .nav-action-button,
-body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-split .workspace-leaf-content[data-type=bookmarks] .nav-header svg {
+body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-leaf-content[data-type=tag] .nav-header .nav-buttons-container,
+body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-leaf-content[data-type=tag] .nav-header .nav-action-button,
+body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-leaf-content[data-type=tag] .nav-header svg,
+body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-leaf-content[data-type=outgoing-link] .nav-header .nav-buttons-container,
+body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-leaf-content[data-type=outgoing-link] .nav-header .nav-action-button,
+body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-leaf-content[data-type=outgoing-link] .nav-header svg,
+body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-leaf-content[data-type=backlink] .nav-header .nav-buttons-container,
+body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-leaf-content[data-type=backlink] .nav-header .nav-action-button,
+body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-leaf-content[data-type=backlink] .nav-header svg,
+body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-leaf-content[data-type=outline] .nav-header .nav-buttons-container,
+body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-leaf-content[data-type=outline] .nav-header .nav-action-button,
+body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-leaf-content[data-type=outline] .nav-header svg,
+body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-leaf-content[data-type=bookmarks] .nav-header .nav-buttons-container,
+body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-leaf-content[data-type=bookmarks] .nav-header .nav-action-button,
+body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-leaf-content[data-type=bookmarks] .nav-header svg {
 	opacity: 0;
-	transition: opacity 0.3s ease;
+	transition: opacity 0.2s ease-in-out;
 }
 
-body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-split:hover .workspace-leaf-content[data-type=tag] .nav-header,
-body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-split:hover .workspace-leaf-content[data-type=outgoing-link] .nav-header,
-body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-split:hover .workspace-leaf-content[data-type=backlink] .nav-header,
-body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-split:hover .workspace-leaf-content[data-type=outline] .nav-header,
-body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-split:hover .workspace-leaf-content[data-type=bookmarks] .nav-header {
+body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-leaf-content[data-type=tag]:hover .nav-header,
+body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-leaf-content[data-type=outgoing-link]:hover .nav-header,
+body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-leaf-content[data-type=backlink]:hover .nav-header,
+body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-leaf-content[data-type=outline]:hover .nav-header,
+body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-leaf-content[data-type=bookmarks]:hover .nav-header {
 	opacity: 1;
-	height: 1.75em;
+	max-height: 40px;
+	overflow: visible;
+	pointer-events: auto;
 }
 
-body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-split:hover .workspace-leaf-content[data-type=tag] .nav-header .nav-buttons-container,
-body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-split:hover .workspace-leaf-content[data-type=tag] .nav-header .nav-action-button,
-body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-split:hover .workspace-leaf-content[data-type=tag] .nav-header svg,
-body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-split:hover .workspace-leaf-content[data-type=outgoing-link] .nav-header .nav-buttons-container,
-body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-split:hover .workspace-leaf-content[data-type=outgoing-link] .nav-header .nav-action-button,
-body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-split:hover .workspace-leaf-content[data-type=outgoing-link] .nav-header svg,
-body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-split:hover .workspace-leaf-content[data-type=backlink] .nav-header .nav-buttons-container,
-body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-split:hover .workspace-leaf-content[data-type=backlink] .nav-header .nav-action-button,
-body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-split:hover .workspace-leaf-content[data-type=backlink] .nav-header svg,
-body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-split:hover .workspace-leaf-content[data-type=outline] .nav-header .nav-buttons-container,
-body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-split:hover .workspace-leaf-content[data-type=outline] .nav-header .nav-action-button,
-body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-split:hover .workspace-leaf-content[data-type=outline] .nav-header svg,
-body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-split:hover .workspace-leaf-content[data-type=bookmarks] .nav-header .nav-buttons-container,
-body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-split:hover .workspace-leaf-content[data-type=bookmarks] .nav-header .nav-action-button,
-body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-split:hover .workspace-leaf-content[data-type=bookmarks] .nav-header svg {
+body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-leaf-content[data-type=tag]:hover .nav-header .nav-buttons-container,
+body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-leaf-content[data-type=tag]:hover .nav-header .nav-action-button,
+body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-leaf-content[data-type=tag]:hover .nav-header svg,
+body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-leaf-content[data-type=outgoing-link]:hover .nav-header .nav-buttons-container,
+body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-leaf-content[data-type=outgoing-link]:hover .nav-header .nav-action-button,
+body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-leaf-content[data-type=outgoing-link]:hover .nav-header svg,
+body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-leaf-content[data-type=backlink]:hover .nav-header .nav-buttons-container,
+body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-leaf-content[data-type=backlink]:hover .nav-header .nav-action-button,
+body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-leaf-content[data-type=backlink]:hover .nav-header svg,
+body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-leaf-content[data-type=outline]:hover .nav-header .nav-buttons-container,
+body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-leaf-content[data-type=outline]:hover .nav-header .nav-action-button,
+body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-leaf-content[data-type=outline]:hover .nav-header svg,
+body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-leaf-content[data-type=bookmarks]:hover .nav-header .nav-buttons-container,
+body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-leaf-content[data-type=bookmarks]:hover .nav-header .nav-action-button,
+body:not(.is-mobile).auto-hide-other-nav-headers-reveal .workspace-leaf-content[data-type=bookmarks]:hover .nav-header svg {
 	opacity: 1;
 }
 
 /* Hide other nav headers */
-body.auto-hide-other-nav-headers-hide .workspace-split .workspace-leaf-content[data-type=tag] .nav-header,
-body.auto-hide-other-nav-headers-hide .workspace-split .workspace-leaf-content[data-type=outgoing-link] .nav-header,
-body.auto-hide-other-nav-headers-hide .workspace-split .workspace-leaf-content[data-type=backlink] .nav-header,
-body.auto-hide-other-nav-headers-hide .workspace-split .workspace-leaf-content[data-type=outline] .nav-header,
-body.auto-hide-other-nav-headers-hide .workspace-split .workspace-leaf-content[data-type=bookmarks] .nav-header {
+body.auto-hide-other-nav-headers-hide .workspace-leaf-content[data-type=tag] .nav-header,
+body.auto-hide-other-nav-headers-hide .workspace-leaf-content[data-type=outgoing-link] .nav-header,
+body.auto-hide-other-nav-headers-hide .workspace-leaf-content[data-type=backlink] .nav-header,
+body.auto-hide-other-nav-headers-hide .workspace-leaf-content[data-type=outline] .nav-header,
+body.auto-hide-other-nav-headers-hide .workspace-leaf-content[data-type=bookmarks] .nav-header {
 	display: none;
 }
 
@@ -450,7 +455,7 @@ body:not(.is-mobile).hider-right-sidebar-button-reveal .sidebar-toggle-button.mo
    ======================================== */
 
 .hider-status .status-bar {
-	display: none;
+	display: none !important;
 }
 
 /* ========================================
@@ -939,19 +944,15 @@ body.ui-tweaker-hide-sync-button .is-mobile .status-bar > .plugin-sync:not(.ui-t
    Custom Button Display
    ======================================== */
 
-/* Ensure custom replacement buttons are visible */
+/* Ensure custom replacement buttons are visible and properly aligned */
 .ui-tweaker-help-replacement,
-.ui-tweaker-sync-replacement {
-	display: block !important;
-}
-
-/* Center icon within custom sync replacement button */
 .ui-tweaker-sync-replacement {
 	display: flex !important;
 	align-items: center !important;
 	justify-content: center !important;
 }
 
+.ui-tweaker-help-replacement svg,
 .ui-tweaker-sync-replacement svg {
 	margin: 0 !important;
 }
