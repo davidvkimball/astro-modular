@@ -39,5 +39,6 @@
   "mobileQuickRibbonItem": "",
   "vimMode": false,
   "readableLineLength": true,
-  "defaultViewMode": "source"
+  "defaultViewMode": "source",
+  "openBehavior": ""
 }

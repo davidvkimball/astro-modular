@@ -9,6 +9,7 @@
   "helpButton": "show",
   "settingsButton": "show",
   "tabBar": false,
+  "tabBarHideWhenSingle": false,
   "enableWindowDragging": false,
   "newNoteButton": false,
   "newFolderButton": false,
@@ -30,6 +31,7 @@
   "propertiesInReadingView": true,
   "propertiesInHeading": true,
   "addPropertyButton": true,
+  "deemphasizeProperties": false,
   "instructions": false,
   "mobileChevronsIcon": false,
   "navigateBackButton": false,
@@ -40,7 +42,7 @@
   "ribbonMenuButton": false,
   "swapMobileNewTabIcon": false,
   "hideMobileTitle": false,
-  "hideMobileSyncIcon": false,
+  "hideMobileSyncIcon": true,
   "navigateButtonPosition": "1",
   "navigationButtonPosition": "2",
   "quickSwitcherPosition": "3",
@@ -54,18 +56,18 @@
     "iconId": "wrench"
   },
   "syncButtonReplacement": {
-    "enabled": false,
-    "commandId": "",
+    "enabled": true,
+    "commandId": "ui-tweaker:open-settings",
     "iconId": "wrench"
   },
   "tabBarCommands": [
     {
       "id": "editing-toolbar:hide-show-menu",
-      "icon": "lucide-chevron-down",
+      "icon": "lucide-panel-top-open",
       "name": "Toggle editing toolbar",
       "displayName": "Editing Toolbar: Hide/Show ",
-      "mode": "any",
-      "toggleIcon": "lucide-chevron-up",
+      "mode": "desktop",
+      "toggleIcon": "lucide-panel-top-close",
       "showOnFileTypes": "md"
     }
   ],

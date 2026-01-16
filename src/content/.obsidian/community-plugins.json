@@ -4,7 +4,6 @@
   "bases-cms",
   "editing-toolbar",
   "obsidian-git",
-  "home-base",
   "iconic",
   "image-manager",
   "oxygen-settings",
@@ -15,7 +14,6 @@
   "zenmode",
   "explorer-focus",
   "astro-composer",
-  "vault-cms",
   "ui-tweaker",
-  "obsidian42-brat"
+  "home-base"
 ]

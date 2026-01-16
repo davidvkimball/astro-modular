@@ -100,7 +100,6 @@ Community plugins enabled:
 - Settings Search
 - Tag Wrangler
 - UI Tweaker
-- Vault CMS
 - Zen Mode
 
 ### Astro Modular Settings
