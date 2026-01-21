@@ -318,8 +318,8 @@ if (siteConfig.postOptions.graphView.enabled && siteConfig.postOptions.graphView
       </article>
 
       <!-- Desktop Sidebar - floats to the right of the content container -->
-      <div class="hidden xl:block absolute top-0 left-full ml-1 w-[280px]">
-        <div class={`top-24 ${hasLocalGraphConnections || shouldShowTOC ? 'space-y-4' : ''}`} id="sidebar">
+      <div class="hidden xl:block absolute top-0 left-full ml-1 w-[280px] h-full">
+        <div class={`sticky top-24 pb-6 ${hasLocalGraphConnections || shouldShowTOC ? 'space-y-4' : ''}`} id="sidebar">
           {hasLocalGraphConnections && (
             <div id="local-graph-sidebar">
               <LocalGraph currentSlug={post.id} />

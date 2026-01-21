@@ -346,8 +346,8 @@ const { prev: prevProject, next: nextProject } = getAdjacentPosts(visibleProject
 
       <!-- Desktop TOC - floats to the right of the content container -->
       {shouldShowTOC && (
-        <div class="hidden xl:block absolute top-8 left-full ml-1 w-[280px]">
-          <div class="sticky top-24" id="toc">
+        <div class="hidden xl:block absolute top-0 left-full ml-1 w-[280px] h-full">
+          <div class="sticky top-24 pb-6" id="toc">
             <TableOfContents headings={toc} />
           </div>
         </div>
