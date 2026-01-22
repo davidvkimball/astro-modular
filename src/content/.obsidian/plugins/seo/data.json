@@ -35,382 +35,6 @@
   "duplicateThreshold": 80,
   "cachedGlobalResults": [
     {
-      "file": "posts/vault-cms-guide.md",
-      "displayName": "Vault CMS Guide",
-      "checks": {
-        "titleLength": [
-          {
-            "passed": false,
-            "message": "Title too short: 15 characters",
-            "suggestion": "Aim for 30-60 characters",
-            "severity": "warning"
-          }
-        ],
-        "metaDescription": [
-          {
-            "passed": false,
-            "message": "Description too short: 62 characters",
-            "suggestion": "Aim for 120-160 characters",
-            "severity": "warning"
-          }
-        ],
-        "titleH1Uniqueness": [
-          {
-            "passed": false,
-            "message": "Meta title and H1 are identical",
-            "suggestion": "Modify one to be unique, or specify a suffix/prefix in plugin settings",
-            "severity": "warning"
-          }
-        ],
-        "keywordInTitle": [
-          {
-            "passed": true,
-            "message": "Keyword found in title",
-            "severity": "info"
-          }
-        ],
-        "keywordInDescription": [
-          {
-            "passed": false,
-            "message": "Keyword not found in description",
-            "suggestion": "Include your target keyword in the description",
-            "severity": "warning"
-          }
-        ],
-        "keywordInHeadings": [
-          {
-            "passed": true,
-            "message": "Keyword found in H1",
-            "severity": "info"
-          }
-        ],
-        "keywordInSlug": [
-          {
-            "passed": true,
-            "message": "Target keyword \"vault cms\" found in slug",
-            "severity": "info"
-          }
-        ],
-        "slugFormat": [],
-        "keywordDensity": [
-          {
-            "passed": false,
-            "message": "Keyword density too low: 0.3%",
-            "suggestion": "Aim for at least 1% density",
-            "severity": "warning"
-          }
-        ],
-        "headingOrder": [
-          {
-            "passed": true,
-            "message": "Heading structure is correct",
-            "severity": "info"
-          }
-        ],
-        "contentLength": [
-          {
-            "passed": true,
-            "message": "Good content length: 2443 words",
-            "severity": "info"
-          }
-        ],
-        "duplicateTitles": [],
-        "duplicateDescriptions": [],
-        "duplicateContent": [],
-        "altText": [
-          {
-            "passed": true,
-            "message": "All media elements have alt text",
-            "severity": "info"
-          }
-        ],
-        "imageFileNames": [
-          {
-            "passed": true,
-            "message": "All images have good file names",
-            "severity": "info"
-          }
-        ],
-        "nakedLinks": [
-          {
-            "passed": true,
-            "message": "No naked links found",
-            "severity": "info"
-          }
-        ],
-        "brokenLinks": [
-          {
-            "passed": true,
-            "message": "No broken internal links found",
-            "severity": "info"
-          }
-        ],
-        "potentiallyBrokenLinks": [
-          {
-            "passed": true,
-            "message": "No potentially broken links found",
-            "severity": "info"
-          }
-        ],
-        "potentiallyBrokenEmbeds": [],
-        "externalBrokenLinks": [
-          {
-            "passed": true,
-            "message": "External link: https://github.com/davidvkimball/obsidian-oxygen",
-            "suggestion": "To find if any of these are broken, use the 'Check external links for 404s' button to trigger it.",
-            "severity": "notice",
-            "position": {
-              "line": 47,
-              "searchText": "https://github.com/davidvkimball/obsidian-oxygen",
-              "context": "## Theme\n\nFor out-of-the-box customization, [Oxygen](https://github.com/davidvkimball/obsidian-oxygen) theme is used, based on the [Minimal theme system](https://minimal.guide/home). It uses a slick color scheme that's highly customizable. \n\nThe [Oxygen Theme Settings](https://github.com/davidvkimball/obsidian-oxygen-settings) plugin is also installed by default, giving you complete control over your experience. You can even define your own color scheme presets. More on that [below](vault-cms-guide.md#Oxygen%20Theme%20Settings%20and%20Zen%20Mode)."
-            }
-          },
-          {
-            "passed": true,
-            "message": "External link: https://minimal.guide/home",
-            "suggestion": "To find if any of these are broken, use the 'Check external links for 404s' button to trigger it.",
-            "severity": "notice",
-            "position": {
-              "line": 47,
-              "searchText": "https://minimal.guide/home",
-              "context": "## Theme\n\nFor out-of-the-box customization, [Oxygen](https://github.com/davidvkimball/obsidian-oxygen) theme is used, based on the [Minimal theme system](https://minimal.guide/home). It uses a slick color scheme that's highly customizable. \n\nThe [Oxygen Theme Settings](https://github.com/davidvkimball/obsidian-oxygen-settings) plugin is also installed by default, giving you complete control over your experience. You can even define your own color scheme presets. More on that [below](vault-cms-guide.md#Oxygen%20Theme%20Settings%20and%20Zen%20Mode)."
-            }
-          },
-          {
-            "passed": true,
-            "message": "External link: https://github.com/davidvkimball/obsidian-oxygen-settings",
-            "suggestion": "To find if any of these are broken, use the 'Check external links for 404s' button to trigger it.",
-            "severity": "notice",
-            "position": {
-              "line": 49,
-              "searchText": "https://github.com/davidvkimball/obsidian-oxygen-settings",
-              "context": "For out-of-the-box customization, [Oxygen](https://github.com/davidvkimball/obsidian-oxygen) theme is used, based on the [Minimal theme system](https://minimal.guide/home). It uses a slick color scheme that's highly customizable. \n\nThe [Oxygen Theme Settings](https://github.com/davidvkimball/obsidian-oxygen-settings) plugin is also installed by default, giving you complete control over your experience. You can even define your own color scheme presets. More on that [below](vault-cms-guide.md#Oxygen%20Theme%20Settings%20and%20Zen%20Mode).\n\n## CSS Snippets"
-            }
-          },
-          {
-            "passed": true,
-            "message": "External link: https://github.com/kepano/obsidian-minimal",
-            "suggestion": "To find if any of these are broken, use the 'Check external links for 404s' button to trigger it.",
-            "severity": "notice",
-            "position": {
-              "line": 162,
-              "searchText": "https://github.com/kepano/obsidian-minimal",
-              "context": "The Oxygen Theme Settings plugin helps you customize your experience if you use the provided Oxygen Obsidian theme and can help you focus on writing.\n\nYou'll notice a wide variety of color scheme options, most of which were included in the [Minimal](https://github.com/kepano/obsidian-minimal) theme upon which Oxygen was based.\n\nShould you desire to hide any of the panels, you can use `CTRL + ALT Z` for the left side panel, `CTRL + ALT + X` for the right side panel, or `CTRL + ALT + S` for the tab bar. Pressing it again will reveal it again. "
-            }
-          },
-          {
-            "passed": true,
-            "message": "External link: https://github.com/mgmeyers/obsidian-style-settings",
-            "suggestion": "To find if any of these are broken, use the 'Check external links for 404s' button to trigger it.",
-            "severity": "notice",
-            "position": {
-              "line": 170,
-              "searchText": "https://github.com/mgmeyers/obsidian-style-settings",
-              "context": "Zen Mode offers another quick option to focus on your writing. Pressing `CTRL + SHIFT + Z` will enter Zen mode. When activated, all elements removed except for your content. Use the keystroke again to exit. \n\nIf you like, you can install the [Style Settings](https://github.com/mgmeyers/obsidian-style-settings) plugin for even more control over your experience.\n\n#### Using a Theme Other Than Oxygen"
-            }
-          },
-          {
-            "passed": true,
-            "message": "External link: https://github.com/kepano/obsidian-hider",
-            "suggestion": "To find if any of these are broken, use the 'Check external links for 404s' button to trigger it.",
-            "severity": "notice",
-            "position": {
-              "line": 174,
-              "searchText": "https://github.com/kepano/obsidian-hider",
-              "context": "#### Using a Theme Other Than Oxygen\n\nIf you're just interested in hiding UI elements and wish to use a theme other than Oxygen, you can install the [Hider](https://github.com/kepano/obsidian-hider) plugin and use the aforementioned Style Settings plugin to hide the Properties heading and the \"Add Property\" button. For that use case specifically, you can also enable the `hide-properties-heading-and-add-properties-button.css` CSS snippet which you'll find under Settings > Appearance without using any plugins at all. \n\n### Paste Image Rename and Paste Image Into Property"
-            }
-          },
-          {
-            "passed": true,
-            "message": "External link: https://obsidian.md/plugins?id=obsidian-git",
-            "suggestion": "To find if any of these are broken, use the 'Check external links for 404s' button to trigger it.",
-            "severity": "notice",
-            "position": {
-              "line": 214,
-              "searchText": "https://obsidian.md/plugins?id=obsidian-git",
-              "context": "### Git, Commander, and Status Bar Organizer\n\nWith the [Git](https://obsidian.md/plugins?id=obsidian-git) plugin, you can easily publish to your Astro blog without leaving Obsidian. Simply configure with git to enable it. By default, you'll see your current git status and count of files changed (if any) in the status bar on the bottom right.\n\nTo publish, you can use `CTRL + SHIFT + S` or click the \"commit-and-sync\" button on the status bar (added with the Commander plugin). Your changes will be committed and pushed to your remote repository automatically."
-            }
-          },
-          {
-            "passed": true,
-            "message": "External link: https://github.com/ViscousPot/GitSync",
-            "suggestion": "To find if any of these are broken, use the 'Check external links for 404s' button to trigger it.",
-            "severity": "notice",
-            "position": {
-              "line": 234,
-              "searchText": "https://github.com/ViscousPot/GitSync",
-              "context": "### Disabling the Git Plugin\n\nIt's recommended to disable the Git plugin on mobile and use something like [Git Sync](https://github.com/ViscousPot/GitSync) for iOS and Android (or [MGit](https://github.com/maks/MGit) just for Android) instead. The Git plugin is notoriously buggy on mobile so it's better to use something else. \n\nHere's how to disable it: "
-            }
-          },
-          {
-            "passed": true,
-            "message": "External link: https://github.com/maks/MGit",
-            "suggestion": "To find if any of these are broken, use the 'Check external links for 404s' button to trigger it.",
-            "severity": "notice",
-            "position": {
-              "line": 234,
-              "searchText": "https://github.com/maks/MGit",
-              "context": "### Disabling the Git Plugin\n\nIt's recommended to disable the Git plugin on mobile and use something like [Git Sync](https://github.com/ViscousPot/GitSync) for iOS and Android (or [MGit](https://github.com/maks/MGit) just for Android) instead. The Git plugin is notoriously buggy on mobile so it's better to use something else. \n\nHere's how to disable it: "
-            }
-          }
-        ],
-        "readingLevel": [
-          {
-            "passed": true,
-            "message": "Good reading level: 8.9 (Easy to read)",
-            "severity": "info"
-          }
-        ]
-      },
-      "overallScore": 66.25,
-      "issuesCount": 0,
-      "warningsCount": 5,
-      "noticesCount": 9
-    },
-    {
-      "file": "posts/sample-folder-based-post/index.md",
-      "displayName": "Sample Folder-Based Post",
-      "checks": {
-        "titleLength": [
-          {
-            "passed": false,
-            "message": "Title too short: 24 characters",
-            "suggestion": "Aim for 30-60 characters",
-            "severity": "warning"
-          }
-        ],
-        "metaDescription": [
-          {
-            "passed": false,
-            "message": "Description too short: 60 characters",
-            "suggestion": "Aim for 120-160 characters",
-            "severity": "warning"
-          }
-        ],
-        "titleH1Uniqueness": [
-          {
-            "passed": false,
-            "message": "Meta title and H1 are identical",
-            "suggestion": "Modify one to be unique, or specify a suffix/prefix in plugin settings",
-            "severity": "warning"
-          }
-        ],
-        "keywordInTitle": [
-          {
-            "passed": false,
-            "message": "Keyword not found in title",
-            "suggestion": "Include your target keyword in the title",
-            "severity": "warning"
-          }
-        ],
-        "keywordInDescription": [
-          {
-            "passed": false,
-            "message": "Keyword not found in description",
-            "suggestion": "Include your target keyword in the description",
-            "severity": "warning"
-          }
-        ],
-        "keywordInHeadings": [
-          {
-            "passed": false,
-            "message": "Keyword not found in H1",
-            "suggestion": "Include your target keyword in the H1 heading for better SEO",
-            "severity": "warning"
-          }
-        ],
-        "keywordInSlug": [
-          {
-            "passed": false,
-            "message": "Target keyword \"\"\"\" not found in slug",
-            "suggestion": "Include your target keyword in the filename",
-            "severity": "warning"
-          }
-        ],
-        "slugFormat": [],
-        "keywordDensity": [
-          {
-            "passed": false,
-            "message": "Keyword density too low: 0.0%",
-            "suggestion": "Aim for at least 1% density",
-            "severity": "warning"
-          }
-        ],
-        "headingOrder": [
-          {
-            "passed": true,
-            "message": "Heading structure is correct",
-            "severity": "info"
-          }
-        ],
-        "contentLength": [
-          {
-            "passed": false,
-            "message": "Content too short: 82 words",
-            "suggestion": "Aim for at least 300 words",
-            "severity": "warning"
-          }
-        ],
-        "duplicateTitles": [],
-        "duplicateDescriptions": [],
-        "duplicateContent": [],
-        "altText": [
-          {
-            "passed": true,
-            "message": "All media elements have alt text",
-            "severity": "info"
-          }
-        ],
-        "imageFileNames": [
-          {
-            "passed": true,
-            "message": "All images have good file names",
-            "severity": "info"
-          }
-        ],
-        "nakedLinks": [
-          {
-            "passed": true,
-            "message": "No naked links found",
-            "severity": "info"
-          }
-        ],
-        "brokenLinks": [
-          {
-            "passed": true,
-            "message": "No broken internal links found",
-            "severity": "info"
-          }
-        ],
-        "potentiallyBrokenLinks": [
-          {
-            "passed": true,
-            "message": "No potentially broken links found",
-            "severity": "info"
-          }
-        ],
-        "potentiallyBrokenEmbeds": [],
-        "externalBrokenLinks": [
-          {
-            "passed": true,
-            "message": "No external links found",
-            "severity": "info"
-          }
-        ],
-        "readingLevel": [
-          {
-            "passed": true,
-            "message": "Good reading level: 9.9 (Moderately easy to read)",
-            "severity": "info"
-          }
-        ]
-      },
-      "overallScore": 40,
-      "issuesCount": 0,
-      "warningsCount": 9,
-      "noticesCount": 0
-    },
-    {
       "file": "posts/obsidian-embeds-demo.md",
       "displayName": "Obsidian Embeds Demo",
       "checks": {
@@ -537,25 +161,8 @@
         "externalBrokenLinks": [
           {
             "passed": true,
-            "message": "External link: https://www.youtube.com/watch?v=ZhizarvwLnU",
-            "suggestion": "To find if any of these are broken, use the 'Check external links for 404s' button to trigger it.",
-            "severity": "notice",
-            "position": {
-              "line": 47,
-              "searchText": "https://www.youtube.com/watch?v=ZhizarvwLnU",
-              "context": "### YouTube Videos\n\n![Astro Suite for Obsidian](https://www.youtube.com/watch?v=ZhizarvwLnU)\n\nYouTube videos are automatically embedded with responsive design and optimized settings."
-            }
-          },
-          {
-            "passed": true,
-            "message": "External link: https://x.com/davidvkimball/status/1933196479801536736",
-            "suggestion": "To find if any of these are broken, use the 'Check external links for 404s' button to trigger it.",
-            "severity": "notice",
-            "position": {
-              "line": 53,
-              "searchText": "https://x.com/davidvkimball/status/1933196479801536736",
-              "context": "### Twitter/X Posts\n\n![Why doesn't everyone use Astro? Writing blog posts in markdown is beautiful.](https://x.com/davidvkimball/status/1933196479801536736)\n\nTwitter posts are embedded with theme-aware styling that matches your site's light/dark mode."
-            }
+            "message": "Found 2 external link(s), all appear to resolve and are working",
+            "severity": "info"
           }
         ],
         "readingLevel": [
@@ -566,10 +173,149 @@
           }
         ]
       },
-      "overallScore": 66.25,
+      "overallScore": 68.08823529411765,
       "issuesCount": 0,
       "warningsCount": 5,
-      "noticesCount": 2
+      "noticesCount": 0
+    },
+    {
+      "file": "posts/vault-cms-guide.md",
+      "displayName": "Vault CMS Guide",
+      "checks": {
+        "titleLength": [
+          {
+            "passed": false,
+            "message": "Title too short: 15 characters",
+            "suggestion": "Aim for 30-60 characters",
+            "severity": "warning"
+          }
+        ],
+        "metaDescription": [
+          {
+            "passed": false,
+            "message": "Description too short: 62 characters",
+            "suggestion": "Aim for 120-160 characters",
+            "severity": "warning"
+          }
+        ],
+        "titleH1Uniqueness": [
+          {
+            "passed": false,
+            "message": "Meta title and H1 are identical",
+            "suggestion": "Modify one to be unique, or specify a suffix/prefix in plugin settings",
+            "severity": "warning"
+          }
+        ],
+        "keywordInTitle": [
+          {
+            "passed": true,
+            "message": "Keyword found in title",
+            "severity": "info"
+          }
+        ],
+        "keywordInDescription": [
+          {
+            "passed": false,
+            "message": "Keyword not found in description",
+            "suggestion": "Include your target keyword in the description",
+            "severity": "warning"
+          }
+        ],
+        "keywordInHeadings": [
+          {
+            "passed": true,
+            "message": "Keyword found in H1",
+            "severity": "info"
+          }
+        ],
+        "keywordInSlug": [
+          {
+            "passed": true,
+            "message": "Target keyword \"vault cms\" found in slug",
+            "severity": "info"
+          }
+        ],
+        "slugFormat": [],
+        "keywordDensity": [
+          {
+            "passed": false,
+            "message": "Keyword density too low: 0.3%",
+            "suggestion": "Aim for at least 1% density",
+            "severity": "warning"
+          }
+        ],
+        "headingOrder": [
+          {
+            "passed": true,
+            "message": "Heading structure is correct",
+            "severity": "info"
+          }
+        ],
+        "contentLength": [
+          {
+            "passed": true,
+            "message": "Good content length: 2308 words",
+            "severity": "info"
+          }
+        ],
+        "duplicateTitles": [],
+        "duplicateDescriptions": [],
+        "duplicateContent": [],
+        "altText": [
+          {
+            "passed": true,
+            "message": "All media elements have alt text",
+            "severity": "info"
+          }
+        ],
+        "imageFileNames": [
+          {
+            "passed": true,
+            "message": "All images have good file names",
+            "severity": "info"
+          }
+        ],
+        "nakedLinks": [
+          {
+            "passed": true,
+            "message": "No naked links found",
+            "severity": "info"
+          }
+        ],
+        "brokenLinks": [
+          {
+            "passed": true,
+            "message": "No broken internal links found",
+            "severity": "info"
+          }
+        ],
+        "potentiallyBrokenLinks": [
+          {
+            "passed": true,
+            "message": "No potentially broken links found",
+            "severity": "info"
+          }
+        ],
+        "potentiallyBrokenEmbeds": [],
+        "externalBrokenLinks": [
+          {
+            "passed": true,
+            "message": "Found 8 external link(s), all appear to resolve and are working",
+            "severity": "info"
+          }
+        ],
+        "readingLevel": [
+          {
+            "passed": true,
+            "message": "Good reading level: 8.7 (Easy to read)",
+            "severity": "info"
+          }
+        ]
+      },
+      "overallScore": 68.08823529411765,
+      "issuesCount": 0,
+      "warningsCount": 5,
+      "noticesCount": 0
     },
     {
       "file": "posts/getting-started.md",
@@ -848,10 +594,10 @@
         "potentiallyBrokenEmbeds": [],
         "externalBrokenLinks": [
           {
-            "passed": true,
-            "message": "External link: https://unsplash.com/@antoinerault?utm_source=Obsidian%20Image%20Inserter%20Plugin&utm_medium=referral",
-            "suggestion": "To find if any of these are broken, use the 'Check external links for 404s' button to trigger it.",
-            "severity": "notice",
+            "passed": false,
+            "message": "External link error: https://unsplash.com/@antoinerault?utm_source=Obsidian%20Image%20Inserter%20Plugin&utm_medium=referral",
+            "suggestion": "This link could not be verified. This may be due to bot protection, network issues, or a broken link. Please check the URL manually.",
+            "severity": "warning",
             "position": {
               "line": 121,
               "searchText": "https://unsplash.com/@antoinerault?utm_source=Obsidian%20Image%20Inserter%20Plugin&utm_medium=referral",
@@ -859,10 +605,10 @@
             }
           },
           {
-            "passed": true,
-            "message": "External link: https://unsplash.com/?utm_source=Obsidian%20Image%20Inserter%20Plugin&utm_medium=referral",
-            "suggestion": "To find if any of these are broken, use the 'Check external links for 404s' button to trigger it.",
-            "severity": "notice",
+            "passed": false,
+            "message": "External link error: https://unsplash.com/?utm_source=Obsidian%20Image%20Inserter%20Plugin&utm_medium=referral",
+            "suggestion": "This link could not be verified. This may be due to bot protection, network issues, or a broken link. Please check the URL manually.",
+            "severity": "warning",
             "position": {
               "line": 121,
               "searchText": "https://unsplash.com/?utm_source=Obsidian%20Image%20Inserter%20Plugin&utm_medium=referral",
@@ -871,36 +617,8 @@
           },
           {
             "passed": true,
-            "message": "External link: https://obsidian.md",
-            "suggestion": "To find if any of these are broken, use the 'Check external links for 404s' button to trigger it.",
-            "severity": "notice",
-            "position": {
-              "line": 159,
-              "searchText": "https://obsidian.md",
-              "context": "### Linked Images\n\n[![Mountains](/posts/attachments/mountains.png)](https://obsidian.md)\n\n```"
-            }
-          },
-          {
-            "passed": true,
-            "message": "External link: https://example.com",
-            "suggestion": "To find if any of these are broken, use the 'Check external links for 404s' button to trigger it.",
-            "severity": "notice",
-            "position": {
-              "line": 225,
-              "searchText": "https://example.com",
-              "context": "This is a [reference link][1] and this is another [reference link][markdown].\n\n[1]: https://example.com\n[markdown]: https://daringfireball.net/projects/markdown/\n"
-            }
-          },
-          {
-            "passed": true,
-            "message": "External link: https://daringfireball.net/projects/markdown/",
-            "suggestion": "To find if any of these are broken, use the 'Check external links for 404s' button to trigger it.",
-            "severity": "notice",
-            "position": {
-              "line": 226,
-              "searchText": "https://daringfireball.net/projects/markdown/",
-              "context": "\n[1]: https://example.com\n[markdown]: https://daringfireball.net/projects/markdown/\n\n## Code Blocks"
-            }
+            "message": "3 of 5 external link(s) are working",
+            "severity": "info"
           }
         ],
         "readingLevel": [
@@ -911,12 +629,155 @@
           }
         ]
       },
-      "overallScore": 47,
+      "overallScore": 42.666666666666664,
       "issuesCount": 0,
-      "warningsCount": 6,
-      "noticesCount": 9
+      "warningsCount": 8,
+      "noticesCount": 4
+    },
+    {
+      "file": "posts/sample-folder-based-post/index.md",
+      "displayName": "Sample Folder-Based Post",
+      "checks": {
+        "titleLength": [
+          {
+            "passed": false,
+            "message": "Title too short: 24 characters",
+            "suggestion": "Aim for 30-60 characters",
+            "severity": "warning"
+          }
+        ],
+        "metaDescription": [
+          {
+            "passed": false,
+            "message": "Description too short: 60 characters",
+            "suggestion": "Aim for 120-160 characters",
+            "severity": "warning"
+          }
+        ],
+        "titleH1Uniqueness": [
+          {
+            "passed": false,
+            "message": "Meta title and H1 are identical",
+            "suggestion": "Modify one to be unique, or specify a suffix/prefix in plugin settings",
+            "severity": "warning"
+          }
+        ],
+        "keywordInTitle": [
+          {
+            "passed": false,
+            "message": "Keyword not found in title",
+            "suggestion": "Include your target keyword in the title",
+            "severity": "warning"
+          }
+        ],
+        "keywordInDescription": [
+          {
+            "passed": false,
+            "message": "Keyword not found in description",
+            "suggestion": "Include your target keyword in the description",
+            "severity": "warning"
+          }
+        ],
+        "keywordInHeadings": [
+          {
+            "passed": false,
+            "message": "Keyword not found in H1",
+            "suggestion": "Include your target keyword in the H1 heading for better SEO",
+            "severity": "warning"
+          }
+        ],
+        "keywordInSlug": [
+          {
+            "passed": false,
+            "message": "Target keyword \"\"\"\" not found in slug",
+            "suggestion": "Include your target keyword in the filename",
+            "severity": "warning"
+          }
+        ],
+        "slugFormat": [],
+        "keywordDensity": [
+          {
+            "passed": false,
+            "message": "Keyword density too low: 0.0%",
+            "suggestion": "Aim for at least 1% density",
+            "severity": "warning"
+          }
+        ],
+        "headingOrder": [
+          {
+            "passed": true,
+            "message": "Heading structure is correct",
+            "severity": "info"
+          }
+        ],
+        "contentLength": [
+          {
+            "passed": false,
+            "message": "Content too short: 82 words",
+            "suggestion": "Aim for at least 300 words",
+            "severity": "warning"
+          }
+        ],
+        "duplicateTitles": [],
+        "duplicateDescriptions": [],
+        "duplicateContent": [],
+        "altText": [
+          {
+            "passed": true,
+            "message": "All media elements have alt text",
+            "severity": "info"
+          }
+        ],
+        "imageFileNames": [
+          {
+            "passed": true,
+            "message": "All images have good file names",
+            "severity": "info"
+          }
+        ],
+        "nakedLinks": [
+          {
+            "passed": true,
+            "message": "No naked links found",
+            "severity": "info"
+          }
+        ],
+        "brokenLinks": [
+          {
+            "passed": true,
+            "message": "No broken internal links found",
+            "severity": "info"
+          }
+        ],
+        "potentiallyBrokenLinks": [
+          {
+            "passed": true,
+            "message": "No potentially broken links found",
+            "severity": "info"
+          }
+        ],
+        "potentiallyBrokenEmbeds": [],
+        "externalBrokenLinks": [
+          {
+            "passed": true,
+            "message": "No external links found",
+            "severity": "info"
+          }
+        ],
+        "readingLevel": [
+          {
+            "passed": true,
+            "message": "Good reading level: 9.9 (Moderately easy to read)",
+            "severity": "info"
+          }
+        ]
+      },
+      "overallScore": 40,
+      "issuesCount": 0,
+      "warningsCount": 9,
+      "noticesCount": 0
     }
   ],
-  "lastScanTimestamp": 1768000233644,
+  "lastScanTimestamp": 1769102892211,
   "showNotices": true
 }

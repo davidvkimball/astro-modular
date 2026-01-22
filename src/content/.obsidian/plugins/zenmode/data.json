@@ -9,5 +9,6 @@
   "hideInlineTitle": false,
   "topPadding": 0,
   "bottomPadding": 0,
-  "focusedFileMode": true
+  "focusedFileMode": true,
+  "hideStatusBar": true
 }
