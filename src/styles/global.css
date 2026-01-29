@@ -3,6 +3,18 @@
 @import 'katex/dist/katex.css';
 
 @tailwind base;
+
+/* Immediately override Tailwind preflight border styles for KaTeX */
+@layer base {
+  .katex *,
+  .katex *::before,
+  .katex *::after {
+    border-style: none !important;
+    border-color: transparent !important;
+    border-width: 0 !important;
+  }
+}
+
 @tailwind components;
 @tailwind utilities;
 
@@ -12,13 +24,65 @@
   color: rgb(var(--color-foreground));
 }
 
-/* Fix KaTeX SVG sizing issues - constrain the problematic 400em width */
-.katex svg {
-  max-width: 100% !important;
-  width: auto !important;
-  overflow: hidden;
+/* Fix Tailwind border-style conflict with KaTeX table-cell layout */
+/* KaTeX uses table-cell display for vlist elements, and Tailwind sets border-style: solid on all elements */
+/* Combined with KaTeX's border-color: currentColor, this creates visible borders */
+.katex *,
+.katex *::before,
+.katex *::after {
+  border: 0 none transparent !important;
+  border-style: none !important;
+  border-width: 0 !important;
 }
 
+.katex .vlist,
+.katex .vlist-t,
+.katex .vlist-r,
+.katex .vlist-s,
+.katex .vlist > span,
+.katex .vlist > span > span {
+  border: 0 none transparent !important;
+  border-style: none !important;
+  border-width: 0 !important;
+  border-collapse: separate !important;
+}
+
+/* Aggressive fix for equation numbers - covers all possible sources of the strikethrough */
+.katex .eqn-num,
+.katex .tag,
+.katex .eqn-num *,
+.katex .tag * {
+  border: 0 none transparent !important;
+  border-style: none !important;
+  border-width: 0 !important;
+  text-decoration: none !important;
+  text-decoration-line: none !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.katex .eqn-num::before,
+.katex .eqn-num::after,
+.katex .tag::before,
+.katex .tag::after {
+  border: 0 none transparent !important;
+  border-style: none !important;
+  border-width: 0 !important;
+  border-color: transparent !important;
+  text-decoration: none !important;
+  text-decoration-line: none !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Override KaTeX's border-color: currentColor which combines with Tailwind's solid border */
+.katex * {
+  border-color: transparent !important;
+}
+
+/* Fix KaTeX SVG sizing issues - only for specific problematic elements */
 .katex .hide-tail {
   max-width: 100%;
   overflow: hidden;
@@ -30,22 +94,13 @@
   height: auto !important;
 }
 
-/* Force SVG colors to match theme */
-.katex svg {
-  fill: currentColor;
-}
-
-.dark .katex svg {
-  filter: brightness(0) invert(1);
-}
-
-/* Show MathML and hide HTML output for robust rendering across browsers */
+/* Hide MathML and show HTML output for visual rendering */
 .katex-mathml {
-  display: inline-block !important;
+  display: none !important;
 }
 
 .katex-html {
-  display: none !important;
+  display: inline-block !important;
 }
 
 
@@ -60,9 +115,18 @@
 /* Ensure display math is properly centered and separated */
 .katex-display > .katex {
   display: inline-block;
-  white-space: nowrap;
-  max-width: 100%;
   text-align: initial;
+}
+
+/* KaTeX equation tags (numbers) - ensure proper rendering */
+.katex .tag {
+  position: absolute;
+  right: 0;
+}
+
+/* Aligned equations need proper width for tags */
+.katex .katex-html > .tag {
+  position: relative;
 }
 
 /* Ensure display math blocks are properly separated */
