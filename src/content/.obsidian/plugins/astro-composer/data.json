@@ -27,18 +27,6 @@
       "enableUnderscorePrefix": false
     },
     {
-      "id": "content-1765432406133",
-      "name": "Documentation",
-      "folder": "docs",
-      "linkBasePath": "/docs/",
-      "template": "---\ntitle: \"{{title}}\"\ndescription: \"\"\ncategory: \"\"\norder: 2\nversion: \"\"\nlastModified: {{date}}\nimage:\nimageAlt:\nhideCoverImage: false\nhideTOC: false\ndraft: false\nfeatured: true\n---\n",
-      "enabled": true,
-      "creationMode": "file",
-      "indexFileName": "index",
-      "ignoreSubfolders": false,
-      "enableUnderscorePrefix": false
-    },
-    {
       "id": "pages-1765432337485",
       "name": "Pages",
       "folder": "pages",
@@ -63,11 +51,11 @@
       "enableUnderscorePrefix": false
     },
     {
-      "id": "content-type-1769839757487-w482ctdm8",
-      "name": "Special Pages",
-      "folder": "special",
-      "linkBasePath": "/",
-      "template": "---\ntitle: \"{{title}}\"\ndescription: \"\"\n---\n",
+      "id": "content-1765432406133",
+      "name": "Documentation",
+      "folder": "docs",
+      "linkBasePath": "/docs/",
+      "template": "---\ntitle: \"{{title}}\"\ndescription: \"\"\ncategory: \"\"\norder: 2\nversion: \"\"\nlastModified: {{date}}\nimage:\nimageAlt:\nhideCoverImage: false\nhideTOC: false\ndraft: false\nfeatured: true\n---\n",
       "enabled": true,
       "creationMode": "file",
       "indexFileName": "index",
