@@ -4,7 +4,6 @@
   "bases-cms",
   "editing-toolbar",
   "obsidian-git",
-  "iconic",
   "image-manager",
   "oxygen-settings",
   "property-over-file-name",
@@ -15,7 +14,7 @@
   "astro-composer",
   "home-base",
   "omnisearch",
-  "ui-tweaker",
   "zenmode",
+  "ui-tweaker",
   "obsidian42-brat"
 ]

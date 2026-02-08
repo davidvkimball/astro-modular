@@ -493,11 +493,11 @@ body[data-astro-modular-ribbon-removed="true"] .menu-item .menu-item-icon:has(.l
 	transition: transform 0.2s ease;
 }
 
-.feature-toggle input[type="checkbox"]:checked + .toggle-slider {
+.feature-toggle input[type="checkbox"]:checked+.toggle-slider {
 	background: var(--interactive-accent);
 }
 
-.feature-toggle input[type="checkbox"]:checked + .toggle-slider::before {
+.feature-toggle input[type="checkbox"]:checked+.toggle-slider::before {
 	transform: translateX(20px);
 }
 
@@ -533,7 +533,8 @@ body[data-astro-modular-ribbon-removed="true"] .menu-item .menu-item-icon:has(.l
 }
 
 .plugin-item.partially-configured {
-	border-color: #f59e0b; /* Orange/amber color */
+	border-color: #f59e0b;
+	/* Orange/amber color */
 }
 
 .plugin-icon {
@@ -552,7 +553,8 @@ body[data-astro-modular-ribbon-removed="true"] .menu-item .menu-item-icon:has(.l
 }
 
 .plugin-item.partially-configured .plugin-icon {
-	color: #f59e0b; /* Orange/amber color to match border */
+	color: #f59e0b;
+	/* Orange/amber color to match border */
 }
 
 .plugin-info h3 {
@@ -863,23 +865,23 @@ body[data-astro-modular-ribbon-removed="true"] .menu-item .menu-item-icon:has(.l
 }
 
 /* Ensure last setting in group without heading has proper spacing before next heading */
-.astro-modular-settings .setting-group:not(:has(.setting-item-heading)) .setting-items > .setting-item:last-child {
+.astro-modular-settings .setting-group:not(:has(.setting-item-heading)) .setting-items>.setting-item:last-child {
 	margin-bottom: var(--size-4-6) !important;
 }
 
 /* Direct spacing when heading follows a group without heading (sibling selector) */
-.astro-modular-settings .setting-group:not(:has(.setting-item-heading)) + .setting-item-heading,
-.astro-modular-settings .setting-group:not(:has(.setting-item-heading)) ~ .setting-item-heading {
+.astro-modular-settings .setting-group:not(:has(.setting-item-heading))+.setting-item-heading,
+.astro-modular-settings .setting-group:not(:has(.setting-item-heading))~.setting-item-heading {
 	margin-top: var(--size-4-6) !important;
 }
 
 /* Also handle assets-section case */
-.astro-modular-settings .setting-group:not(:has(.setting-item-heading)) + .assets-section .setting-item-heading {
+.astro-modular-settings .setting-group:not(:has(.setting-item-heading))+.assets-section .setting-item-heading {
 	margin-top: var(--size-4-6) !important;
 }
 
 /* Remove top border from first setting item when it comes after an empty settings-section */
-.astro-modular-settings .tab-content .settings-section:empty + .setting-item {
+.astro-modular-settings .tab-content .settings-section:empty+.setting-item {
 	border-top: none !important;
 }
 
@@ -1014,21 +1016,21 @@ body[data-astro-modular-ribbon-removed="true"] .menu-item .menu-item-icon:has(.l
 		max-width: 95vw;
 		margin: 10px;
 	}
-	
+
 	.template-options,
 	.theme-options,
 	.org-options {
 		grid-template-columns: 1fr;
 	}
-	
+
 	.welcome-features {
 		grid-template-columns: 1fr;
 	}
-	
+
 	.wizard-buttons {
 		flex-direction: column;
 	}
-	
+
 	.wizard-button {
 		width: 100%;
 		text-align: center;
@@ -1355,11 +1357,13 @@ body[data-astro-modular-ribbon-removed="true"] .menu-item .menu-item-icon:has(.l
 	flex: 1;
 	gap: 10px;
 	align-items: center;
-	min-width: 0; /* Allow flex items to shrink below their content size */
+	min-width: 0;
+	/* Allow flex items to shrink below their content size */
 }
 
 .nav-item-fields .nav-title {
-	flex: 0 0 120px; /* Fixed width for title */
+	flex: 0 0 120px;
+	/* Fixed width for title */
 	min-width: 0;
 	max-width: 120px;
 	padding: 6px 10px;
@@ -1372,7 +1376,8 @@ body[data-astro-modular-ribbon-removed="true"] .menu-item .menu-item-icon:has(.l
 }
 
 .nav-item-fields .nav-url {
-	flex: 1; /* Takes remaining space */
+	flex: 1;
+	/* Takes remaining space */
 	min-width: 0;
 	padding: 6px 10px;
 	border: 1px solid var(--background-modifier-border);
@@ -1554,13 +1559,15 @@ body[data-astro-modular-ribbon-removed="true"] .menu-item .menu-item-icon:has(.l
 	display: flex;
 	gap: 8px;
 	align-items: center;
-	flex-shrink: 0; /* Prevent buttons from shrinking */
+	flex-shrink: 0;
+	/* Prevent buttons from shrinking */
 }
 
 .nav-add-child {
 	padding: 6px 12px;
 	font-size: 12px;
-	white-space: nowrap; /* Prevent button text from wrapping */
+	white-space: nowrap;
+	/* Prevent button text from wrapping */
 }
 
 .nav-add {
@@ -1823,27 +1830,27 @@ body[data-astro-modular-ribbon-removed="true"] .menu-item .menu-item-icon:has(.l
 		grid-template-columns: 1fr;
 		gap: 10px;
 	}
-	
+
 	.profile-picture-options,
 	.comments-options {
 		padding: 10px;
 	}
-	
+
 	.color-preview-container {
 		gap: 6px;
 	}
-	
+
 	.color-box {
 		width: 18px;
 		height: 18px;
 	}
-	
+
 	.simple-color-input {
 		flex-direction: column;
 		align-items: flex-start;
 		gap: 8px;
 	}
-	
+
 	.simple-color-input label {
 		min-width: auto;
 	}
@@ -1880,4 +1887,58 @@ body[data-astro-modular-ribbon-removed="true"] .menu-item .menu-item-icon:has(.l
 	-webkit-mask-repeat: no-repeat;
 	mask-image: url("data:image/svg+xml,%3Csvg width='12px' height='10px' viewBox='0 0 12 8' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3Cg stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cg transform='translate(-4.000000, -6.000000)' fill='%23000000'%3E%3Cpath d='M8.1043257,14.0367999 L4.52468714,10.5420499 C4.32525014,10.3497722 4.32525014,10.0368095 4.52468714,9.8424863 L5.24777413,9.1439454 C5.44721114,8.95166768 5.77142411,8.95166768 5.97086112,9.1439454 L8.46638057,11.5903727 L14.0291389,6.1442083 C14.2285759,5.95193057 14.5527889,5.95193057 14.7522259,6.1442083 L15.4753129,6.84377194 C15.6747499,7.03604967 15.6747499,7.35003511 15.4753129,7.54129009 L8.82741268,14.0367999 C8.62797568,14.2290777 8.3037627,14.2290777 8.1043257,14.0367999'%3E%3C/path%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
 	-webkit-mask-image: url("data:image/svg+xml,%3Csvg width='12px' height='10px' viewBox='0 0 12 8' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3Cg stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cg transform='translate(-4.000000, -6.000000)' fill='%23000000'%3E%3Cpath d='M8.1043257,14.0367999 L4.52468714,10.5420499 C4.32525014,10.3497722 4.32525014,10.0368095 4.52468714,9.8424863 L5.24777413,9.1439454 C5.44721114,8.95166768 5.77142411,8.95166768 5.97086112,9.1439454 L8.46638057,11.5903727 L14.0291389,6.1442083 C14.2285759,5.95193057 14.5527889,5.95193057 14.7522259,6.1442083 L15.4753129,6.84377194 C15.6747499,7.03604967 15.6747499,7.35003511 15.4753129,7.54129009 L8.82741268,14.0367999 C8.62797568,14.2290777 8.3037627,14.2290777 8.1043257,14.0367999'%3E%3C/path%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* ========================================
+   Settings Refactor
+   ======================================== */
+
+.astro-modular-settings-tab-root {
+	display: block;
+	min-height: 0;
+}
+
+/* Settings tabs layout and navigation */
+.astro-modular-settings-tabs {
+	display: block;
+	min-height: 0;
+}
+
+.astro-modular-settings-tabs-nav {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--size-2-3);
+	flex-shrink: 0;
+	margin-bottom: var(--size-4-4);
+}
+
+.astro-modular-settings-tab-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 6px 12px;
+	font-size: var(--font-ui-small);
+}
+
+/* Specific active state matching Obsidian's clickable-icon behavior but with cta emphasis */
+.astro-modular-settings-tab-button.is-active {
+	background-color: var(--interactive-accent);
+	color: var(--text-on-accent);
+}
+
+.astro-modular-settings-tabs-content {
+	position: static;
+	min-height: 0;
+	overflow: visible;
+	box-sizing: border-box;
+	padding-inline-end: 0;
+}
+
+/* Hide tabs by default, show only active tab */
+.astro-modular-settings-tab {
+	display: none;
+}
+
+.astro-modular-settings-tab.is-active {
+	display: block;
 }
