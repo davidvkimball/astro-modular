@@ -59,7 +59,7 @@
   "syncButtonReplacement": {
     "enabled": true,
     "commandId": "ui-tweaker:open-settings",
-    "iconId": "wrench"
+    "iconId": "lucide-wrench"
   },
   "tabBarCommands": [
     {

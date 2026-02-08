@@ -67,7 +67,7 @@
   "helpButtonReplacement": {
     "enabled": true,
     "commandId": "astro-modular-settings:open-settings",
-    "iconId": "wrench"
+    "iconId": "rocket"
   },
   "showMdxFilesInExplorer": false,
   "processBackgroundFileChanges": true,
@@ -84,9 +84,5 @@
   "pinNewInstance": true,
   "hideStatusBar": "focused",
   "noticeTimeout": 5,
-  "errorNoticeTimeout": 0,
-  "linkBasePath": "/posts/",
-  "enableAutoRename": true,
-  "enableAutoInsertFrontmatter": true,
-  "draftStyle": "filename"
+  "errorNoticeTimeout": 0
 }
