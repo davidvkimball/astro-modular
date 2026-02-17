@@ -44,6 +44,7 @@
   "swapMobileNewTabIcon": false,
   "hideMobileTitle": false,
   "hideMobileSyncIcon": true,
+  "hideStatusBarMobile": false,
   "navigateButtonPosition": "1",
   "navigationButtonPosition": "2",
   "quickSwitcherPosition": "3",

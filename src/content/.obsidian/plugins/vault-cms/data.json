@@ -1,5 +1,5 @@
 {
-  "projectRoot": "../../",
+  "projectRoot": "C:\\Users\\david\\Development\\astro-modular",
   "configFilePath": "../config.ts",
   "contentTypes": [
     {
@@ -99,7 +99,8 @@
   "preset": "vanilla",
   "presetName": "",
   "presetsRepo": "davidvkimball/vault-cms-presets",
-  "enableWYSIWYG": false,
+  "enableEditingToolbar": false,
+  "enableExtendedFileTypes": false,
   "enabledPlugins": [
     "astro-composer",
     "bases-cms",
@@ -288,6 +289,12 @@
   "ignoreConfig": {
     "gitIgnoreConfigured": true,
     "viteIgnoreConfigured": true
+  },
+  "gitConfig": {
+    "enabled": false,
+    "isPrivate": true,
+    "branchName": "main",
+    "autoConfigureObsidianGit": true
   },
   "runWizardOnStartup": false,
   "wizardCompleted": true,

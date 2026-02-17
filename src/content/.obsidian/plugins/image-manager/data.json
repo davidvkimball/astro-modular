@@ -17,6 +17,7 @@
   "customPropertyLinkFormat": "[[attachments/{image-url}]]",
   "defaultPropertyName": "image",
   "defaultIconPropertyName": "icon",
+  "altTextProperty": "",
   "autoConvertRemoteImages": false,
   "convertOnNoteOpen": false,
   "convertOnNoteSave": false,

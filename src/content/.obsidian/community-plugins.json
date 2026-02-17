@@ -3,7 +3,6 @@
   "astro-modular-settings",
   "bases-cms",
   "editing-toolbar",
-  "obsidian-git",
   "image-manager",
   "oxygen-settings",
   "property-over-file-name",
@@ -16,5 +15,7 @@
   "omnisearch",
   "zenmode",
   "ui-tweaker",
-  "obsidian42-brat"
+  "obsidian42-brat",
+  "obsidian-git",
+  "vault-cms"
 ]
