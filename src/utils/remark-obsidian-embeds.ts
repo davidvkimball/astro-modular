@@ -321,22 +321,25 @@ export const remarkObsidianEmbeds: Plugin<[], Root> = () => {
         // Detect collection and slug from file path (same logic as remarkFolderImages)
         let resolvedUrl = url;
 
+        // Normalize path separators (Windows uses backslashes, Unix uses forward slashes)
+        const normalizedFilePath = file.path ? file.path.replace(/\\/g, '/') : '';
+
         // Handle URLs that have already been converted by remarkFolderImages (absolute paths)
         // or relative URLs that need conversion
-        if ((url.startsWith('attachments/') || url.includes('/attachments/')) && file.path) {
+        if ((url.startsWith('attachments/') || url.includes('/attachments/')) && normalizedFilePath) {
           // If URL is already absolute (converted by remarkFolderImages), use it as-is
           if (url.startsWith('/')) {
             resolvedUrl = url;
           } else {
             // URL is relative, need to convert it
-            const isFolderPost = file.path.includes('/posts/') && file.path.endsWith('/index.md');
-            const isFolderPage = file.path.includes('/pages/') && file.path.endsWith('/index.md');
-            const isFolderProject = file.path.includes('/projects/') && file.path.endsWith('/index.md');
-            const isFolderDoc = file.path.includes('/docs/') && file.path.endsWith('/index.md');
+            const isFolderPost = normalizedFilePath.includes('/posts/') && normalizedFilePath.endsWith('/index.md');
+            const isFolderPage = normalizedFilePath.includes('/pages/') && normalizedFilePath.endsWith('/index.md');
+            const isFolderProject = normalizedFilePath.includes('/projects/') && normalizedFilePath.endsWith('/index.md');
+            const isFolderDoc = normalizedFilePath.includes('/docs/') && normalizedFilePath.endsWith('/index.md');
 
             if (isFolderPost || isFolderPage || isFolderProject || isFolderDoc) {
               // Folder-based content: /collection/slug/attachments/file
-              const pathParts = file.path.split('/');
+              const pathParts = normalizedFilePath.split('/');
               let collection = 'posts';
               let contentIndex = pathParts.indexOf('posts');
 
@@ -356,23 +359,23 @@ export const remarkObsidianEmbeds: Plugin<[], Root> = () => {
             } else {
               // File-based content: /collection/attachments/file (shared attachments folder)
               let collection = 'posts';
-              if (file.path.includes('/pages/')) collection = 'pages';
-              else if (file.path.includes('/projects/')) collection = 'projects';
-              else if (file.path.includes('/docs/')) collection = 'docs';
+              if (normalizedFilePath.includes('/pages/')) collection = 'pages';
+              else if (normalizedFilePath.includes('/projects/')) collection = 'projects';
+              else if (normalizedFilePath.includes('/docs/')) collection = 'docs';
 
               resolvedUrl = `/${collection}/${url}`;
             }
           }
         }
         // Handle files directly in folder-based content (no attachments/ prefix)
-        else if (file.path && !url.startsWith('/') && !url.startsWith('http')) {
-          const isFolderPost = file.path.includes('/posts/') && file.path.endsWith('/index.md');
-          const isFolderPage = file.path.includes('/pages/') && file.path.endsWith('/index.md');
-          const isFolderProject = file.path.includes('/projects/') && file.path.endsWith('/index.md');
-          const isFolderDoc = file.path.includes('/docs/') && file.path.endsWith('/index.md');
+        else if (normalizedFilePath && !url.startsWith('/') && !url.startsWith('http')) {
+          const isFolderPost = normalizedFilePath.includes('/posts/') && normalizedFilePath.endsWith('/index.md');
+          const isFolderPage = normalizedFilePath.includes('/pages/') && normalizedFilePath.endsWith('/index.md');
+          const isFolderProject = normalizedFilePath.includes('/projects/') && normalizedFilePath.endsWith('/index.md');
+          const isFolderDoc = normalizedFilePath.includes('/docs/') && normalizedFilePath.endsWith('/index.md');
 
           if (isFolderPost || isFolderPage || isFolderProject || isFolderDoc) {
-            const pathParts = file.path.split('/');
+            const pathParts = normalizedFilePath.split('/');
             let collection = 'posts';
             let contentIndex = pathParts.indexOf('posts');
 
