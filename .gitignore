@@ -1,6 +1,7 @@
 # Dependencies
 node_modules/
 .pnpm-store/
+cli/node_modules/
 
 # Build
 dist/

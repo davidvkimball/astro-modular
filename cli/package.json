@@ -1,0 +1,37 @@
+{
+  "name": "create-astro-modular",
+  "version": "1.0.0",
+  "description": "Scaffold an Astro Modular blog in seconds",
+  "type": "module",
+  "bin": {
+    "create-astro-modular": "bin/create-astro-modular.mjs"
+  },
+  "files": [
+    "bin",
+    "src",
+    "LICENSE"
+  ],
+  "keywords": [
+    "astro",
+    "blog",
+    "theme",
+    "obsidian",
+    "create",
+    "scaffold",
+    "template"
+  ],
+  "author": "David V. Kimball",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/davidvkimball/astro-modular",
+    "directory": "cli"
+  },
+  "homepage": "https://github.com/davidvkimball/astro-modular",
+  "dependencies": {
+    "giget": "^2.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

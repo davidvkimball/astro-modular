@@ -72,7 +72,18 @@ Use Obsidian as a CMS with [Vault CMS](https://github.com/davidvkimball/vault-cm
 
 Choose one of the following methods to get started:
 
-#### Option 1: Use GitHub Template (Recommended)
+#### Option 1: CLI (Recommended)
+
+```bash
+pnpm create astro-modular my-blog
+cd my-blog
+```
+
+[![npm version](https://img.shields.io/npm/v/create-astro-modular)](https://www.npmjs.com/package/create-astro-modular)
+
+This downloads the latest template, removes dev-only files, and installs dependencies automatically. Also works with `npm create astro-modular my-blog`.
+
+#### Option 2: Use GitHub Template
 
 1. Click the **"Use this template"** button on the [repository page](https://github.com/davidvkimball/astro-modular)
 2. Select **"Create a new repository"**
@@ -84,7 +95,7 @@ Choose one of the following methods to get started:
    cd your-repo-name
    ```
 
-#### Option 2: Fork the Repository
+#### Option 3: Fork the Repository
 
 1. Click the **"Fork"** button on the [repository page](https://github.com/davidvkimball/astro-modular)
 2. Choose where to fork the repository (your personal account or organization)
