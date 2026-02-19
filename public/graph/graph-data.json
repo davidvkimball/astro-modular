@@ -15,13 +15,6 @@
       "connections": 6
     },
     {
-      "id": "image-sizing-test",
-      "type": "post",
-      "title": "Image Sizing Test",
-      "slug": "image-sizing-test",
-      "connections": 0
-    },
-    {
       "id": "obsidian-embeds-demo",
       "type": "post",
       "title": "Obsidian Embeds Demo",
@@ -126,9 +119,9 @@
     }
   ],
   "metadata": {
-    "totalPosts": 6,
+    "totalPosts": 5,
     "totalConnections": 16,
     "maxNodesApplied": false,
-    "originalNodeCount": 6
+    "originalNodeCount": 5
   }
 }
