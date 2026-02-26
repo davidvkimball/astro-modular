@@ -70,10 +70,10 @@ seoData.noIndex = (projectsPageContent?.data as any)?.noIndex || false;
   <PageLayout page={fallbackPage as any} />
 ) : (
 <BaseLayout seoData={seoData}>
-  <div class="py-8 relative">
-    <div class="mx-auto px-4 sm:px-6 lg:px-8 mb-12" style={`max-width: ${siteConfig.layout.contentWidth}`}>
+  <div class="pt-4 pb-8 md:py-8 relative">
+    <div class="mx-auto px-4 sm:px-6 lg:px-8 mb-8 md:mb-12" style={`max-width: ${siteConfig.layout.contentWidth}`}>
       <!-- Page header -->
-      <header class="mb-8">
+      <header class="mb-6 md:mb-8">
         <h1 class="text-lg font-bold text-primary-900 dark:text-primary-50 mb-3">
           {projectsPageContent?.data.title || 'Projects'}
         </h1>
@@ -94,7 +94,7 @@ seoData.noIndex = (projectsPageContent?.data as any)?.noIndex || false;
           {visibleProjects.length > 0 ? (
             <>
               <!-- Projects grid -->
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12 justify-items-center md:justify-items-stretch">
             {visibleProjects.map((project, index) => (
               <ProjectCard
                 project={project}
@@ -121,16 +121,16 @@ seoData.noIndex = (projectsPageContent?.data as any)?.noIndex || false;
         <!-- Mobile sidebar - appears below content on mobile/tablet -->
         <div class="xl:hidden mt-12 space-y-6">
           <!-- Categories -->
-          {siteConfig.postOptions.tags && projectsHaveCategories && allCategories.length > 0 && (
+          {projectsHaveCategories && allCategories.length > 0 && (
             <ProjectCategories categories={allCategories} />
           )}
         </div>
 
         <!-- Desktop sidebar - floats to the right of the content container -->
-        <div class="hidden xl:block absolute top-0 left-full ml-8 w-64">
-          <div class="sticky top-24 space-y-3 max-h-[calc(100vh-12rem)] overflow-y-auto pb-6">
+        <div class="hidden xl:block absolute top-0 left-full ml-8 w-64 h-full">
+          <div class="sticky top-24 pb-6 overflow-x-hidden overflow-y-auto" id="categories-sidebar" style="max-height: 60vh;">
             <!-- Categories -->
-            {siteConfig.postOptions.tags && projectsHaveCategories && allCategories.length > 0 && (
+            {projectsHaveCategories && allCategories.length > 0 && (
               <ProjectCategories categories={allCategories} />
             )}
           </div>
@@ -140,3 +140,9 @@ seoData.noIndex = (projectsPageContent?.data as any)?.noIndex || false;
   </div>
 </BaseLayout>
 )}
+
+<Fragment slot="scripts">
+  <script>
+    // No complex height calculation needed - using fixed max-height in CSS
+  </script>
+</Fragment>

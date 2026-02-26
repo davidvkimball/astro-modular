@@ -8,6 +8,24 @@ interface CalloutMapping {
   title: string;
 }
 
+/**
+ * Recursively extract all text content from a node and its children
+ * Handles text nodes, strong, emphasis, links, and other inline elements
+ */
+function extractTextFromNode(node: any): string {
+  if (!node) return '';
+  
+  if (node.type === 'text') {
+    return node.value || '';
+  }
+  
+  if (node.children && Array.isArray(node.children)) {
+    return node.children.map((child: any) => extractTextFromNode(child)).join('');
+  }
+  
+  return '';
+}
+
 // Official Lucide SVG icon paths for callouts
 const iconPaths: Record<string, string> = {
   'info': '<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="m12 8 .01 0"/>',
@@ -55,11 +73,13 @@ const remarkCallouts: Plugin<[], Root> = () => {
       const firstChild = node.children[0];
       if (!firstChild || firstChild.type !== 'paragraph') return;
       
-      const firstTextNode = (firstChild as Paragraph).children[0];
-      if (!firstTextNode || firstTextNode.type !== 'text') return;
+      // Extract all text from the first paragraph to find the callout pattern
+      const firstParagraph = firstChild as Paragraph;
+      const paragraphText = extractTextFromNode(firstParagraph);
       
-      const text = (firstTextNode as Text).value;
-      const calloutMatch = text.match(/^\[!([\w-]+)\]([+\-]?)(?:\s+(.+))?/);
+      // Match callout pattern at the start of the paragraph text
+      // The custom title capture should stop at newline (title is on same line as callout)
+      const calloutMatch = paragraphText.match(/^\[!([\w-]+)\]([+\-]?)(?:\s+([^\n]+))?/);
       
       if (!calloutMatch) return;
       
@@ -71,11 +91,31 @@ const remarkCallouts: Plugin<[], Root> = () => {
         title: calloutType.charAt(0).toUpperCase() + calloutType.slice(1)
       };
       
-      // Remove the callout syntax from the first text node
-      const remainingText = text.slice(fullMatch.length).trim();
+      // Get remaining text after the callout syntax
+      const remainingText = paragraphText.slice(fullMatch.length).trim();
+      const hasMultipleParagraphs = node.children.length > 1;
       
-      // Create HTML for the callout with icon
-      const calloutTitle = customTitle || mapping.title;
+      // CRITICAL: Check if the FIRST text node starts with callout syntax followed by newline
+      // This indicates the callout is on its own line, even if content follows in the same paragraph
+      const firstTextNode = firstParagraph.children.find((child: any) => child.type === 'text') as Text | undefined;
+      const firstTextValue = firstTextNode?.value || '';
+      
+      // Check if first text node starts with callout syntax followed by newline
+      // Pattern: "[!example]\n" or "[!example] \n" (with optional space before newline)
+      const calloutStartsOnOwnLine = firstTextValue.match(/^\[![\w-]+\][+\-]?\s*\n/);
+      
+      // The callout is on its own line if:
+      // 1. Multiple paragraphs exist, OR
+      // 2. First text node starts with callout syntax + newline (callout on own line, content follows), OR
+      // 3. No remaining text (callout only)
+      const isCalloutOnOwnLine = hasMultipleParagraphs || 
+                                calloutStartsOnOwnLine !== null || 
+                                remainingText.length === 0;
+      
+      // Determine the actual title to use - ALWAYS use mapped title when callout is on its own line
+      const calloutTitle = isCalloutOnOwnLine
+        ? mapping.title  // Use mapped title when callout is on its own line
+        : (customTitle || mapping.title);  // Use custom title if provided, otherwise mapped title
       
       // Determine if callout should be collapsible and its initial state
       const isCollapsible = collapseState === '+' || collapseState === '-';
@@ -84,12 +124,47 @@ const remarkCallouts: Plugin<[], Root> = () => {
       // Process the remaining content
       let contentChildren = [...node.children];
       
-      if (remainingText) {
-        // If there's remaining text on the first line, update the first text node
-        (firstTextNode as Text).value = remainingText;
-      } else {
-        // Remove the first paragraph if it only contained the callout syntax
+      // Handle content based on structure:
+      // - Multiple paragraphs: Remove first paragraph (callout line separate from content)
+      // - Single paragraph, callout on own line (newline detected): Keep paragraph, remove callout syntax
+      // - Single paragraph, callout only: Remove paragraph (no content)
+      // - Single paragraph, callout with title on same line: Keep paragraph, remove callout syntax
+      if (hasMultipleParagraphs) {
+        // Multiple paragraphs - callout line is separate, remove first paragraph
         contentChildren = contentChildren.slice(1);
+      } else if (calloutStartsOnOwnLine) {
+        // Single paragraph but callout starts on its own line (has newline after callout)
+        // Keep the paragraph but remove the callout syntax from the first text node
+        if (firstTextNode) {
+          // Remove callout syntax and newline from start of first text node
+          const newlinePattern = /^\[![\w-]+\][+\-]?\s*\n\s*/;
+          firstTextNode.value = firstTextNode.value.replace(newlinePattern, '');
+        }
+        // Keep the paragraph (contentChildren already has it)
+      } else if (remainingText.length === 0) {
+        // Single paragraph with only callout syntax - remove it
+        contentChildren = contentChildren.slice(1);
+      } else if (remainingText) {
+        // Single paragraph with text after callout - remove callout syntax, keep the text
+        const updateTextNode = (node: any): boolean => {
+          if (node.type === 'text' && node.value) {
+            const textValue = node.value as string;
+            if (textValue.includes(fullMatch)) {
+              const index = textValue.indexOf(fullMatch);
+              const before = textValue.slice(0, index);
+              const after = textValue.slice(index + fullMatch.length).trim();
+              node.value = (before + (after ? ' ' + after : '')).trim();
+              return true;
+            }
+          }
+          if (node.children && Array.isArray(node.children)) {
+            for (const child of node.children) {
+              if (updateTextNode(child)) return true;
+            }
+          }
+          return false;
+        };
+        updateTextNode(firstParagraph);
       }
       
       // Generate toggle button HTML if collapsible

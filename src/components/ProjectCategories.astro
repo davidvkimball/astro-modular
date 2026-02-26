@@ -15,7 +15,7 @@ const { categories, currentCategory, showCount = false, variant = 'default' } = 
 const sortedCategories = [...categories].sort();
 ---
 
-{siteConfig.postOptions.tags && sortedCategories.length > 0 && (
+{sortedCategories.length > 0 && (
   <div class="categories-container p-4 bg-white dark:bg-primary-900 rounded-xl border border-primary-200 dark:border-primary-700 shadow-lg backdrop-blur-sm bg-opacity-95 dark:bg-opacity-95">
     <h3 class="font-semibold text-primary-900 dark:text-primary-50 mb-3 flex items-center text-sm">
       <Icon name="folder-open" class="w-4 h-4 mr-2" />
@@ -74,22 +74,17 @@ const sortedCategories = [...categories].sort();
   }
 
   .category-item:hover {
-    @apply transform scale-105 shadow-md;
-  }
-
-  /* Active category hover state - keep active colors, just add grow effect */
-  .category-item.bg-highlight-100:hover {
-    @apply transform scale-105 shadow-md;
-    /* Keep the active background and text colors - don't override them */
-  }
-  
-  .category-item.dark\:bg-highlight-900\/40:hover {
-    @apply transform scale-105 shadow-md;
-    /* Keep the active background and text colors - don't override them */
+    /* No scale effect - removed for cleaner look */
   }
 
   .category-text {
     @apply truncate max-w-32;
+  }
+
+  /* Hide project cards - display: none works fine with CSS Grid */
+  /* This class is applied to project cards to hide them while filtering */
+  :global(.project-card-hidden) {
+    display: none;
   }
 
   /* Responsive adjustments */
@@ -98,9 +93,150 @@ const sortedCategories = [...categories].sort();
       @apply text-xs px-2 py-1;
     }
 
-    .category-text {
-      @apply max-w-24;
-    }
+  .category-text {
+    @apply max-w-24;
   }
+}
 </style>
+
+<script>
+  /**
+   * Category Filtering Script for Projects Page
+   * Handles clickable category pills to filter project cards
+   */
+  // Persistent selected categories array - survives re-initializations
+  if (!(window as any).projectSelectedCategories) {
+    (window as any).projectSelectedCategories = [];
+  }
+  
+  function initializeProjectCategoryFiltering() {
+    // Find ALL categories containers (mobile and desktop)
+    const categoriesContainers = document.querySelectorAll('.categories-container');
+    if (categoriesContainers.length === 0) {
+      return;
+    }
+    
+    const projectCards = document.querySelectorAll('[data-project-categories]');
+    // Use persistent array for multi-select support
+    const selectedCategories = (window as any).projectSelectedCategories as string[];
+
+    // Helper function to update all button states across all containers
+    function updateAllButtonStates() {
+      categoriesContainers.forEach(container => {
+        const categoryItems = container.querySelectorAll('.category-item');
+        categoryItems.forEach(btn => {
+          const btnCategory = btn.getAttribute('data-category');
+          const isSelected = btnCategory && selectedCategories.includes(btnCategory);
+          
+          if (isSelected) {
+            btn.classList.remove('bg-primary-100', 'dark:bg-primary-800', 'text-primary-700', 'dark:text-primary-300');
+            btn.classList.add('bg-highlight-100', 'dark:bg-highlight-900/40', 'text-highlight-800', 'dark:text-highlight-200', 'ring-1', 'ring-highlight-300', 'dark:ring-highlight-700');
+          } else {
+            btn.classList.remove('bg-highlight-100', 'dark:bg-highlight-900/40', 'text-highlight-800', 'dark:text-highlight-200', 'ring-1', 'ring-highlight-300', 'dark:ring-highlight-700');
+            btn.classList.add('bg-primary-100', 'dark:bg-primary-800', 'text-primary-700', 'dark:text-primary-300');
+          }
+        });
+      });
+    }
+
+    // Initialize button states on page load (sync all containers)
+    updateAllButtonStates();
+    
+    // Helper function to filter project cards
+    function filterProjectCards() {
+      if (selectedCategories.length === 0) {
+        // No categories selected, show all cards
+        projectCards.forEach(card => {
+          card.classList.remove('project-card-hidden');
+        });
+      } else {
+        // Filter cards based on selected categories
+        projectCards.forEach((card) => {
+          const cardCategories = card.getAttribute('data-project-categories') || '';
+          const categories = cardCategories.split(',').map(c => c.trim());
+          
+          const hasAllSelectedCategories = selectedCategories.every(selectedCat => 
+            categories.includes(selectedCat)
+          );
+          
+          if (hasAllSelectedCategories) {
+            card.classList.remove('project-card-hidden');
+          } else {
+            card.classList.add('project-card-hidden');
+          }
+        });
+      }
+    }
+
+    // Initialize project card visibility on page load
+    filterProjectCards();
+
+    // Initialize event listeners for ALL containers
+    categoriesContainers.forEach(container => {
+      const categoryItems = container.querySelectorAll('.category-item');
+      
+      if (categoryItems.length === 0) {
+        return;
+      }
+
+      // Remove existing event listeners and add new ones
+      categoryItems.forEach((item) => {
+        // Clone the element to remove all event listeners
+        const newItem = item.cloneNode(true) as HTMLElement;
+        item.parentNode?.replaceChild(newItem, item);
+        
+        newItem.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          
+          const category = newItem.getAttribute('data-category');
+          
+          // Visual feedback
+          newItem.style.transform = 'scale(0.95)';
+          setTimeout(() => {
+            newItem.style.transform = '';
+          }, 150);
+          
+          if (!category) return;
+          
+          // Toggle category in selection array
+          const categoryIndex = selectedCategories.indexOf(category);
+          if (categoryIndex > -1) {
+            // Remove from selection
+            selectedCategories.splice(categoryIndex, 1);
+          } else {
+            // Add to selection
+            selectedCategories.push(category);
+          }
+          
+          // Update ALL button states across ALL containers (mobile and desktop)
+          updateAllButtonStates();
+        
+        // Filter projects - show those matching ALL selected categories (AND logic)
+        filterProjectCards();
+
+        // Dispatch custom event for analytics
+        window.dispatchEvent(new CustomEvent('projectCategoryClicked', {
+          detail: { category, isActive: selectedCategories.includes(category), selectedCategories: [...selectedCategories] }
+        }));
+      });
+    });
+    }); // Close categoriesContainers.forEach
+  }
+
+  // Initialize with multiple strategies to ensure it works
+  function tryInitialize() {
+    initializeProjectCategoryFiltering();
+  }
+
+  // Make function globally available
+  (window as any).initializeProjectCategoryFiltering = initializeProjectCategoryFiltering;
+
+  // Initialize on DOMContentLoaded
+  document.addEventListener('DOMContentLoaded', tryInitialize);
+
+  // Also try after a short delay (for Swup compatibility)
+  setTimeout(tryInitialize, 100);
+  setTimeout(tryInitialize, 500);
+</script>
 

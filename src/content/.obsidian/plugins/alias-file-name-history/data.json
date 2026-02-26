@@ -17,5 +17,8 @@
   "fileExtensions": [
     "md"
   ],
-  "trackFolderRenames": "index"
+  "trackFolderRenames": "index",
+  "propertyName": "",
+  "propertyValue": true,
+  "propertyExcludes": false
 }

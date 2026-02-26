@@ -13,14 +13,14 @@ import { siteConfig } from '../config';
       lightboxInstance: any;
     }
   }
-  
+
   function initializeImageGalleries() {
     const contentElement = document.querySelector('.prose');
     if (!contentElement) {
       return;
     }
     const paragraphs = contentElement.querySelectorAll('p');
-    
+
     // Find all paragraphs with images (single or multiple)
     const imageParagraphs: { paragraph: Element; index: number; imageCount: number }[] = [];
     paragraphs.forEach((para, index) => {
@@ -31,17 +31,17 @@ import { siteConfig } from '../config';
         imageParagraphs.push({ paragraph: para, index: index, imageCount: nonLinkedImages.length });
       }
     });
-    
+
     // Process each image paragraph
     imageParagraphs.forEach((paraInfo) => {
       const { paragraph, imageCount } = paraInfo;
-      
+
       // Process paragraphs with 1 or more images
       if (imageCount >= 1) {
-        
+
         // Create gallery container
         const galleryContainer = document.createElement('div');
-        
+
         if (imageCount === 1) {
           galleryContainer.className = 'image-grid image-grid-1 my-2';
         } else if (imageCount === 2) {
@@ -51,11 +51,17 @@ import { siteConfig } from '../config';
         } else if (imageCount >= 4) {
           galleryContainer.className = 'image-grid image-grid-4 my-8';
         }
-        
+
         // Get all non-linked images from this paragraph
         const allImages = Array.from(paragraph.querySelectorAll('img'));
-        const images = allImages.filter(img => !img.closest('a'));
-        
+        // Filter out linked images AND manually-sized (Obsidian) images
+        const images = allImages.filter(img => !img.closest('a') && !img.classList.contains('obsidian-sized'));
+
+        // Skip processing if all images were manually sized
+        if (images.length === 0) {
+          return;
+        }
+
         // Check if there's any non-image content (like captions)
         // ONLY for single images - grids don't have captions
         let nonImageContent: Node[] = [];
@@ -70,7 +76,7 @@ import { siteConfig } from '../config';
             }
             return true;
           });
-          
+
           // If no caption content found in the same paragraph, check the next paragraph
           // BUT only if it looks like a caption (has italic text or links, and is not a heading)
           if (nonImageContent.length === 0) {
@@ -80,9 +86,9 @@ import { siteConfig } from '../config';
               const hasItalic = nextParagraph.querySelector('em, i');
               const hasLinks = nextParagraph.querySelector('a');
               const isHeading = nextParagraph.querySelector('h1, h2, h3, h4, h5, h6');
-              const hasOnlyText = nextParagraph.textContent && nextParagraph.textContent.trim() !== '' && 
+              const hasOnlyText = nextParagraph.textContent && nextParagraph.textContent.trim() !== '' &&
                                 nextParagraph.children.length <= 2; // Allow for simple formatting
-              
+
               // Only treat as caption if it has italic/links AND is not a heading
               if ((hasItalic || hasLinks || hasOnlyText) && !isHeading) {
                 // This looks like a caption, include it
@@ -93,17 +99,17 @@ import { siteConfig } from '../config';
             }
           }
         }
-        
+
         // Add each image to gallery
         images.forEach((img, imgIndex) => {
           const imageItem = document.createElement('div');
           imageItem.className = 'image-item';
-          
+
           const button = document.createElement('button');
           button.className = 'image-button w-full h-full group cursor-pointer';
           button.setAttribute('data-lightbox', 'gallery');
           button.setAttribute('aria-label', `View ${img.alt} in full size`);
-          
+
           // Add click event listener to open lightbox
           button.addEventListener('click', () => {
             // Dispatch custom event to open lightbox
@@ -111,15 +117,15 @@ import { siteConfig } from '../config';
               detail: { index: imgIndex, button: button }
             }));
           });
-          
+
           const imgClone = img.cloneNode(true) as HTMLImageElement;
           imgClone.className = 'w-full h-full object-cover rounded-lg transition-all duration-300 group-hover:shadow-lg group-hover:scale-[1.02]';
           imgClone.loading = 'lazy';
           imgClone.setAttribute('data-lightbox', 'gallery');
-          
+
           const overlay = document.createElement('div');
           overlay.className = 'absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 rounded-lg flex items-center justify-center';
-          
+
           const zoomIcon = document.createElement('div');
           zoomIcon.className = 'w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300';
           zoomIcon.innerHTML = `
@@ -127,19 +133,19 @@ import { siteConfig } from '../config';
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path>
             </svg>
           `;
-          
+
           overlay.appendChild(zoomIcon);
           button.appendChild(imgClone);
           button.appendChild(overlay);
           imageItem.appendChild(button);
           galleryContainer.appendChild(imageItem);
         });
-        
+
         // Create a container for the gallery and any non-image content
         const container = document.createElement('div');
         container.className = 'image-container';
         container.appendChild(galleryContainer);
-        
+
         // Add any non-image content (like captions) after the gallery
         if (nonImageContent.length > 0) {
           const captionContainer = document.createElement('div');
@@ -156,16 +162,16 @@ import { siteConfig } from '../config';
           });
           container.appendChild(captionContainer);
         }
-        
+
         // Replace the paragraph with the container
         paragraph.parentNode?.replaceChild(container, paragraph);
       }
     });
   }
-  
+
   // Initialize on page load
   document.addEventListener('DOMContentLoaded', initializeImageGalleries);
-  
+
   // Make function available globally for Swup
   window['initializeImageGalleries'] = initializeImageGalleries;
 </script>

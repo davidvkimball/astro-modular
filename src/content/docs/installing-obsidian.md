@@ -4,7 +4,7 @@ description: Simple guide to install Obsidian for your Astro Modular blog
 category: Optional Software
 order: 1
 version: 1.0.0
-lastModified: 2025-09-17
+lastModified: 2026-02-22
 image: "[[attachments/obsidian-cover.png]]"
 imageAlt: Obsidian logo with a black background.
 hideCoverImage: false
@@ -12,7 +12,7 @@ hideTOC: false
 draft: false
 featured: true
 ---
-This guide shows you how to install Obsidian for use with your Astro Modular blog.
+This guide shows you how to install Obsidian for use with your Astro Modular blog. 
 
 ## Download Obsidian
 
@@ -41,7 +41,7 @@ This guide shows you how to install Obsidian for use with your Astro Modular blo
 
 1. Open Obsidian
 2. Choose "Open folder as vault"
-3. Select your blog's `src/content` folder
+3. Select your blog's `src/content` folder (typically, or root)
 4. Click "Open"
 
 ## Next Steps

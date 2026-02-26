@@ -26,6 +26,7 @@ const postsCollection = defineCollection({
     imageAlt: z.string().nullable().optional(),
     hideCoverImage: z.boolean().optional(),
     hideTOC: z.boolean().optional(),
+    showTOC: z.boolean().optional(),
     targetKeyword: z.string().nullable().optional(),
     author: z.string().nullable().optional(),
     noIndex: z.boolean().optional(),
@@ -55,6 +56,7 @@ const pagesCollection = defineCollection({
     imageAlt: z.string().nullable().optional(),
     hideCoverImage: z.boolean().optional(),
     hideTOC: z.boolean().optional(),
+    showTOC: z.boolean().optional(),
     noIndex: z.boolean().optional(),
   }),
 });
@@ -67,8 +69,10 @@ const projectsCollection = defineCollection({
     description: z.string().nullable().optional().default('No description provided'),
     date: z.coerce.date().default(() => new Date()),
     categories: z.array(z.string()).nullable().optional().default([]),
-    repositoryUrl: z.string().url().nullable().optional(),
-    projectUrl: z.string().url().nullable().optional(),
+    repositoryUrl: z.union([z.string(), z.null(), z.undefined()]).optional().transform(val => val || ''),
+    projectUrl: z.union([z.string(), z.null(), z.undefined()]).optional().transform(val => val || ''),
+    demoUrl: z.union([z.string(), z.null(), z.undefined()]).optional().transform(val => val || ''),
+    demoURL: z.union([z.string(), z.null(), z.undefined()]).optional().transform(val => val || ''),
     status: z.string().nullable().optional(),
     image: z.any().nullable().optional().transform((val) => {
       // Handle various Obsidian syntax formats
@@ -85,6 +89,7 @@ const projectsCollection = defineCollection({
     imageAlt: z.string().nullable().optional(),
     hideCoverImage: z.boolean().optional(),
     hideTOC: z.boolean().optional(),
+    showTOC: z.boolean().optional(),
     draft: z.boolean().optional(),
     noIndex: z.boolean().optional(),
     featured: z.boolean().optional(),

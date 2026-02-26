@@ -187,7 +187,7 @@ const processedImage = (() => {
 
     <!-- Sidebar -->
     <div class="lg:col-span-4 xl:col-span-3">
-      <div class="sticky top-24 space-y-6">
+      <div class="sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto overflow-x-hidden pb-6 space-y-6">
         <!-- Table of Contents -->
         {siteConfig.tableOfContents.enabled && toc && toc.length > 0 && (
           <TableOfContents headings={toc} />

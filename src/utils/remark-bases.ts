@@ -55,7 +55,7 @@ function parseShallowConfig(raw: string): BaseBlockConfig {
 
 export const remarkBases: Plugin<[], Root> = () => {
   return (tree) => {
-    visit(tree, 'code', (node: any, index: number, parent: any) => {
+    visit(tree, 'code', (node: any, index: number | undefined, parent: any) => {
       if (!parent || typeof index !== 'number') return;
       if (!node || node.lang !== 'base') return;
 

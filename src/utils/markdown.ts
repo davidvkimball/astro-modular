@@ -306,6 +306,57 @@ export function getAdjacentPosts(posts: Post[], currentSlug: string) {
   };
 }
 
+// Get next and previous documentation items within the same category, sorted by order
+export function getAdjacentDocs<T extends { id: string; data: { category?: string | null; order: number; title: string } }>(
+  docs: T[],
+  currentSlug: string,
+  currentCategory: string | null
+) {
+  // Filter docs by the same category
+  const categoryDocs = docs.filter((doc) => {
+    const docCategory = doc.data.category && 
+      doc.data.category.trim() !== '' && 
+      doc.data.category !== 'General'
+      ? doc.data.category
+      : null;
+    
+    // If current doc has no category, match docs with no category
+    if (!currentCategory) {
+      return !docCategory;
+    }
+    
+    // Match exact category
+    return docCategory === currentCategory;
+  });
+
+  // Sort by order (ascending), then by title (alphabetical)
+  const sortedDocs = categoryDocs.sort((a, b) => {
+    if (a.data.order !== b.data.order) {
+      return a.data.order - b.data.order;
+    }
+    return a.data.title.localeCompare(b.data.title);
+  });
+
+  // Find current doc index
+  const currentIndex = sortedDocs.findIndex((doc) => doc.id === currentSlug);
+
+  // Only return navigation if there are other docs in the category
+  if (sortedDocs.length <= 1) {
+    return {
+      prev: null,
+      next: null,
+    };
+  }
+
+  return {
+    prev: currentIndex > 0 ? sortedDocs[currentIndex - 1] : null,
+    next:
+      currentIndex < sortedDocs.length - 1
+        ? sortedDocs[currentIndex + 1]
+        : null,
+  };
+}
+
 // Extract tags from posts
 export function extractTags(posts: Post[]): string[] {
   const tags = new Set<string>();

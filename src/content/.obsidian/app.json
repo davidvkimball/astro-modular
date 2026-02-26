@@ -7,7 +7,7 @@
     "bases/"
   ],
   "focusNewTab": false,
-  "mobilePullAction": "file-explorer:new-file",
+  "mobilePullAction": "command-palette:open",
   "trashOption": "system",
   "alwaysUpdateLinks": true,
   "useMarkdownLinks": true,
@@ -31,13 +31,14 @@
     "editor:toggle-checklist-status",
     "editor:indent-list",
     "editor:unindent-list",
-    "astro-composer:standardize-properties",
-    "astro-composer:convert-wikilinks-astro",
-    "seo:seo-run-current",
     "editor:configure-toolbar"
   ],
   "newFileLocation": "folder",
   "newFileFolderPath": "posts",
   "newLinkFormat": "relative",
-  "mobileQuickRibbonItem": ""
+  "mobileQuickRibbonItem": "",
+  "vimMode": false,
+  "readableLineLength": true,
+  "defaultViewMode": "source",
+  "openBehavior": ""
 }

@@ -64,7 +64,7 @@ const visiblePosts = allPosts.filter(p => shouldShowPost(p, isDev));
 
 // Process the post content and get processed data including word count
 const { Content, headings, wordCount, remarkPluginFrontmatter } = await processPost(post);
-const readingTime = calculateReadingTime(post.body);
+const readingTime = calculateReadingTime(post.body || '');
 
 // Generate table of contents if enabled
 const hideTOC = post.data.hideTOC === true;
@@ -267,7 +267,7 @@ if (siteConfig.postOptions.graphView.enabled && siteConfig.postOptions.graphView
 
         <!-- Post navigation -->
         {siteConfig.postOptions.postNavigation && (prevPost || nextPost) && (
-          <nav class="mt-8 pt-8 border-t border-primary-200 dark:border-primary-700">
+          <nav class={`mt-8 pt-8 ${siteConfig.postOptions.linkedMentions.enabled ? '' : 'border-t border-primary-200 dark:border-primary-700'}`}>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               {prevPost && (
                 <div class="text-left">
@@ -317,23 +317,23 @@ if (siteConfig.postOptions.graphView.enabled && siteConfig.postOptions.graphView
         </div>
       </article>
 
-      <!-- Desktop Sidebar - floats to the right of the content container -->
-      <div class="hidden xl:block absolute top-0 left-full ml-1 w-64">
-        <div class={`top-24 ${hasLocalGraphConnections || shouldShowTOC ? 'space-y-4' : ''}`} id="sidebar">
-          {hasLocalGraphConnections && (
-            <div id="local-graph-sidebar">
-              <LocalGraph currentSlug={post.id} />
-            </div>
-          )}
-
-
-          {shouldShowTOC && (
-            <div id="toc">
-              <TableOfContents headings={toc} />
-            </div>
-          )}
+      <!-- Desktop Left Sidebar - Graph (top left) -->
+      {hasLocalGraphConnections && (
+        <div class="hidden xl:block absolute top-0 right-full mr-1 w-[280px] h-full">
+          <div class="sticky top-24 pb-6" id="graph-sidebar">
+            <LocalGraph currentSlug={post.id} />
+          </div>
         </div>
-      </div>
+      )}
+
+      <!-- Desktop Right Sidebar - TOC -->
+      {shouldShowTOC && (
+        <div class="hidden xl:block absolute top-0 left-full ml-1 w-[280px] h-full">
+          <div class="sticky top-24 pb-6" id="toc-sidebar">
+            <TableOfContents headings={toc} />
+          </div>
+        </div>
+      )}
     </div>
   </div>
 

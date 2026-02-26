@@ -3,8 +3,8 @@ title: Sample Folder-Based Post
 description: This is a test post to demonstrate the folder-based approach
 date: 2025-09-08
 tags:
-  - folder-based
   - astro
+  - folder-based
 image: "[[cover.png]]"
 imageAlt: A beautiful multi-tiered waterfall cascading into a turquoise lake surrounded by lush green forest.
 imageOG: false
@@ -32,6 +32,10 @@ Wikilink image embed:
 ```
 ![[forest.png]]
 ```
+
+Don't worry, the `/post-title/attachment` folder works also. 
+
+![Lush forest](attachments/lush-forest.jpg)
 ## Benefits of Folder-Based Approach
 
 - **Organization**: Keep all post assets in one place

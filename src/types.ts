@@ -32,9 +32,10 @@ export interface ReadingTime {
 
 export interface NavigationItem {
   title: string;
-  url: string;
+  url?: string;  // Optional - if missing, item is dropdown-only
   external?: boolean;
   icon?: string;
+  children?: NavigationItem[];  // Single level only
 }
 
 export interface SocialLink {

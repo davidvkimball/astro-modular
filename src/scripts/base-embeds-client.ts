@@ -150,7 +150,21 @@ async function renderBaseEmbeds() {
             } else if (c.toLowerCase() === 'date' && item.date) {
               // Normalize date string
               const d = new Date(item.date);
-              row[c] = isNaN(d.getTime()) ? '' : d.toLocaleDateString();
+              if (isNaN(d.getTime())) {
+                row[c] = '';
+              } else {
+                // If the date is at midnight UTC, handle it like formatDate utility
+                if (d.getUTCHours() === 0 && d.getUTCMinutes() === 0 && d.getUTCSeconds() === 0) {
+                  const localDate = new Date(
+                    d.getUTCFullYear(),
+                    d.getUTCMonth(),
+                    d.getUTCDate()
+                  );
+                  row[c] = localDate.toLocaleDateString();
+                } else {
+                  row[c] = d.toLocaleDateString();
+                }
+              }
             } else {
               // Print raw value if present, no injected transforms
               row[c] = item[c];

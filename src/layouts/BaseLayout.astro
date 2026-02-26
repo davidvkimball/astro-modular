@@ -1400,8 +1400,6 @@ const scrollbarClass = siteConfig.hideScrollBar ? '' : 'show-scrollbars';
             }
             // Re-setup smooth scrolling for anchor links
             setupSmoothScrolling();
-            // Also setup same-page path anchor handler
-            setupSamePagePathAnchors();
           }, 100);
         });
 
@@ -1999,6 +1997,18 @@ const scrollbarClass = siteConfig.hideScrollBar ? '' : 'show-scrollbars';
           if (window.initializeLocalGraph) {
             window.initializeLocalGraph();
           }
+          // Initialize doc category filtering after page transition
+          if (window.initializeDocCategoryFiltering) {
+            window.initializeDocCategoryFiltering();
+          }
+          // Initialize project category filtering after page transition
+          if (window.initializeProjectCategoryFiltering) {
+            window.initializeProjectCategoryFiltering();
+          }
+          // Initialize collapsible categories after page transition (for docs index page)
+          if (window.initializeCollapsibleCategories) {
+            setTimeout(() => window.initializeCollapsibleCategories(), 100);
+          }
           if (window.setupLocalGraphButtons) {
             window.setupLocalGraphButtons();
           }
@@ -2036,9 +2046,39 @@ const scrollbarClass = siteConfig.hideScrollBar ? '' : 'show-scrollbars';
           if (window.initializeTableOfContents) {
             window.initializeTableOfContents();
           }
+          // Update TOC height after LocalGraph renders (for PostLayout)
+          if (window.updateTOCHeight) {
+            setTimeout(() => {
+              window.updateTOCHeight();
+            }, 200);
+          }
+          // Initialize doc category filtering after page transition is complete
+          if (window.initializeDocCategoryFiltering) {
+            window.initializeDocCategoryFiltering();
+          }
+          // Initialize project category filtering after page transition is complete
+          if (window.initializeProjectCategoryFiltering) {
+            window.initializeProjectCategoryFiltering();
+          }
           // Initialize Twitter widgets after page transition is complete
           if (window.initializeTwitterWidgets) {
             window.initializeTwitterWidgets();
+          }
+          // Initialize collapsible categories after page transition (for docs index page)
+          if (window.initializeCollapsibleCategories) {
+            setTimeout(() => window.initializeCollapsibleCategories(), 100);
+          }
+          if (window.initializeCategoryScroll) {
+            window.initializeCategoryScroll();
+          }
+          if (window.initializeDocsSidebar) {
+            window.initializeDocsSidebar();
+          }
+          if (window.initializeTagsSidebar) {
+            window.initializeTagsSidebar();
+          }
+          if (window.initializeCategoriesSidebar) {
+            window.initializeCategoriesSidebar();
           }
           // Graph initialization is handled in page:view hook to prevent duplicates
           // Don't call handleInitialHashScroll() here - it interferes with back/forward navigation

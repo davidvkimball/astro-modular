@@ -15,9 +15,28 @@ import { siteConfig } from '../config';
   
   // Global category filtering function - Swup compatible
   function initializeCategoryFiltering() {
+    // Skip entirely if we're on the projects page (ProjectCategories handles it with multi-select)
+    // Check multiple ways to ensure we catch it
+    const pathname = window.location.pathname;
+    const hasCategoriesContainer = document.querySelector('.categories-container') !== null;
+    const isProjectsPage = pathname.startsWith('/projects') || 
+                          pathname === '/projects' ||
+                          pathname.match(/^\/projects\/?$/) !== null ||
+                          hasCategoriesContainer;
+    
+    if (isProjectsPage) {
+      // Completely skip - ProjectCategories will handle it
+      return;
+    }
+
     const categoryItems = document.querySelectorAll('.category-item');
     const projectCards = document.querySelectorAll('[data-project-categories]');
     let currentActiveCategory: string | null = null;
+
+    // If no category items found, skip
+    if (categoryItems.length === 0) {
+      return;
+    }
 
     // Remove existing event listeners to prevent duplicates
     categoryItems.forEach(item => {

@@ -171,7 +171,7 @@ export const remarkObsidianEmbeds: Plugin<[], Root> = () => {
       if (hashIndex !== -1) {
         url = url.slice(0, hashIndex);
       }
-      
+
       const alt = node.alt || '';
       const extension = getFileExtension(url);
 
@@ -191,11 +191,11 @@ export const remarkObsidianEmbeds: Plugin<[], Root> = () => {
         if (youtubeVideoId) {
           const html = `
 <div class="youtube-embed aspect-video overflow-hidden rounded-xl my-8">
-  <iframe 
-    src="https://www.youtube.com/embed/${youtubeVideoId}?rel=0&modestbranding=1" 
-    title="${alt || 'YouTube video player'}" 
-    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-    allowfullscreen 
+  <iframe
+    src="https://www.youtube.com/embed/${youtubeVideoId}?rel=0&modestbranding=1"
+    title="${alt || 'YouTube video player'}"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    allowfullscreen
     loading="lazy"
     class="w-full h-full"
   ></iframe>
@@ -320,26 +320,29 @@ export const remarkObsidianEmbeds: Plugin<[], Root> = () => {
 
         // Detect collection and slug from file path (same logic as remarkFolderImages)
         let resolvedUrl = url;
-        
+
+        // Normalize path separators (Windows uses backslashes, Unix uses forward slashes)
+        const normalizedFilePath = file.path ? file.path.replace(/\\/g, '/') : '';
+
         // Handle URLs that have already been converted by remarkFolderImages (absolute paths)
         // or relative URLs that need conversion
-        if ((url.startsWith('attachments/') || url.includes('/attachments/')) && file.path) {
+        if ((url.startsWith('attachments/') || url.includes('/attachments/')) && normalizedFilePath) {
           // If URL is already absolute (converted by remarkFolderImages), use it as-is
           if (url.startsWith('/')) {
             resolvedUrl = url;
           } else {
             // URL is relative, need to convert it
-            const isFolderPost = file.path.includes('/posts/') && file.path.endsWith('/index.md');
-            const isFolderPage = file.path.includes('/pages/') && file.path.endsWith('/index.md');
-            const isFolderProject = file.path.includes('/projects/') && file.path.endsWith('/index.md');
-            const isFolderDoc = file.path.includes('/docs/') && file.path.endsWith('/index.md');
-            
+            const isFolderPost = normalizedFilePath.includes('/posts/') && normalizedFilePath.endsWith('/index.md');
+            const isFolderPage = normalizedFilePath.includes('/pages/') && normalizedFilePath.endsWith('/index.md');
+            const isFolderProject = normalizedFilePath.includes('/projects/') && normalizedFilePath.endsWith('/index.md');
+            const isFolderDoc = normalizedFilePath.includes('/docs/') && normalizedFilePath.endsWith('/index.md');
+
             if (isFolderPost || isFolderPage || isFolderProject || isFolderDoc) {
               // Folder-based content: /collection/slug/attachments/file
-              const pathParts = file.path.split('/');
+              const pathParts = normalizedFilePath.split('/');
               let collection = 'posts';
               let contentIndex = pathParts.indexOf('posts');
-              
+
               if (isFolderPage) {
                 collection = 'pages';
                 contentIndex = pathParts.indexOf('pages');
@@ -350,18 +353,45 @@ export const remarkObsidianEmbeds: Plugin<[], Root> = () => {
                 collection = 'docs';
                 contentIndex = pathParts.indexOf('docs');
               }
-              
+
               const contentSlug = pathParts[contentIndex + 1];
               resolvedUrl = `/${collection}/${contentSlug}/${url}`;
             } else {
               // File-based content: /collection/attachments/file (shared attachments folder)
               let collection = 'posts';
-              if (file.path.includes('/pages/')) collection = 'pages';
-              else if (file.path.includes('/projects/')) collection = 'projects';
-              else if (file.path.includes('/docs/')) collection = 'docs';
-              
+              if (normalizedFilePath.includes('/pages/')) collection = 'pages';
+              else if (normalizedFilePath.includes('/projects/')) collection = 'projects';
+              else if (normalizedFilePath.includes('/docs/')) collection = 'docs';
+
               resolvedUrl = `/${collection}/${url}`;
             }
+          }
+        }
+        // Handle files directly in folder-based content (no attachments/ prefix)
+        else if (normalizedFilePath && !url.startsWith('/') && !url.startsWith('http')) {
+          const isFolderPost = normalizedFilePath.includes('/posts/') && normalizedFilePath.endsWith('/index.md');
+          const isFolderPage = normalizedFilePath.includes('/pages/') && normalizedFilePath.endsWith('/index.md');
+          const isFolderProject = normalizedFilePath.includes('/projects/') && normalizedFilePath.endsWith('/index.md');
+          const isFolderDoc = normalizedFilePath.includes('/docs/') && normalizedFilePath.endsWith('/index.md');
+
+          if (isFolderPost || isFolderPage || isFolderProject || isFolderDoc) {
+            const pathParts = normalizedFilePath.split('/');
+            let collection = 'posts';
+            let contentIndex = pathParts.indexOf('posts');
+
+            if (isFolderPage) {
+              collection = 'pages';
+              contentIndex = pathParts.indexOf('pages');
+            } else if (isFolderProject) {
+              collection = 'projects';
+              contentIndex = pathParts.indexOf('projects');
+            } else if (isFolderDoc) {
+              collection = 'docs';
+              contentIndex = pathParts.indexOf('docs');
+            }
+
+            const contentSlug = pathParts[contentIndex + 1];
+            resolvedUrl = `/${collection}/${contentSlug}/${url}`;
           }
         }
 
@@ -391,7 +421,7 @@ export const remarkObsidianEmbeds: Plugin<[], Root> = () => {
         const originalUrl = node.url;
         const hashIndex = originalUrl.indexOf('#');
         const fragment = hashIndex !== -1 ? originalUrl.slice(hashIndex) : '';
-        
+
         const filename = url.split('/').pop() || 'document.pdf';
         const title = alt || filename; // Use alt text if available, fallback to filename
         const pdfUrl = resolvedUrl + fragment; // Add fragment back to resolved URL
@@ -417,7 +447,7 @@ export const remarkObsidianEmbeds: Plugin<[], Root> = () => {
     });
 
     // Visit code blocks for directive-based Bases (```base ... ```)
-    visit(tree, 'code', (node: any, index: number | null, parent: any) => {
+    visit(tree, 'code', (node: any, index: number | undefined, parent: any) => {
       if (!parent || typeof index !== 'number') return;
       const lang = (node.lang || '').toLowerCase();
       if (lang !== 'base') return;
@@ -501,11 +531,11 @@ export const remarkObsidianEmbeds: Plugin<[], Root> = () => {
       if (youtubeVideoId) {
         const html = `
 <div class="youtube-embed aspect-video overflow-hidden rounded-xl my-8">
-  <iframe 
-    src="https://www.youtube.com/embed/${youtubeVideoId}?rel=0&modestbranding=1" 
-    title="${title || 'YouTube video player'}" 
-    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-    allowfullscreen 
+  <iframe
+    src="https://www.youtube.com/embed/${youtubeVideoId}?rel=0&modestbranding=1"
+    title="${title || 'YouTube video player'}"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    allowfullscreen
     loading="lazy"
     class="w-full h-full"
   ></iframe>

@@ -9,6 +9,8 @@ import remarkMermaid from './src/utils/remark-mermaid.ts';
 import { remarkObsidianEmbeds } from './src/utils/remark-obsidian-embeds.ts';
 import remarkBases from './src/utils/remark-bases.ts';
 import remarkInlineTags from './src/utils/remark-inline-tags.ts';
+import { remarkObsidianComments } from './src/utils/remark-obsidian-comments.ts';
+import remarkObsidianImageSize from './src/utils/remark-obsidian-image-size.ts';
 import remarkMath from 'remark-math';
 import remarkReadingTime from 'remark-reading-time';
 import remarkToc from 'remark-toc';
@@ -21,6 +23,7 @@ import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import { siteConfig } from './src/config.ts';
 import swup from '@swup/astro';
+import { fileURLToPath } from 'url';
 
 // Deployment platform configuration
 const DEPLOYMENT_PLATFORM = process.env.DEPLOYMENT_PLATFORM || 'netlify';
@@ -29,6 +32,49 @@ export default defineConfig({
   site: siteConfig.site,
   deployment: {
     platform: DEPLOYMENT_PLATFORM
+  },
+  csp: {
+    scriptDirective: {
+      resources: [
+        "'self'",
+        "'unsafe-inline'",
+        "https://unpkg.com",
+        "https://cdnjs.cloudflare.com",
+        "https://cdn.jsdelivr.net",
+        "https://giscus.app",
+        "https://platform.twitter.com"
+      ]
+    },
+    styleDirective: {
+      resources: [
+        "'self'",
+        "'unsafe-inline'",
+        "https://fonts.googleapis.com",
+        "https://cdnjs.cloudflare.com"
+      ]
+    },
+    fontDirective: {
+      resources: [
+        "'self'",
+        "data:",
+        "https://fonts.gstatic.com",
+        "https://cdnjs.cloudflare.com"
+      ]
+    },
+    imgDirective: {
+      resources: ["'self'", "data:", "https:"]
+    },
+    connectDirective: {
+      resources: ["'self'", "https://giscus.app"]
+    },
+    frameDirective: {
+      resources: [
+        "'self'",
+        "https://www.youtube.com",
+        "https://giscus.app",
+        "https://platform.twitter.com"
+      ]
+    }
   },
   devToolbar: {
     enabled: true
@@ -42,9 +88,11 @@ export default defineConfig({
   '/posts/mermaid-test': '/posts/obsidian-embeds-demo',
   '/posts/mermaid-diagram-test': '/posts/obsidian-embeds-demo',
   '/posts/mermaid-diagrams': '/posts/obsidian-embeds-demo',
-  '/posts/astro-suite-vault-modular-guide': '/posts/obsidian-vault-guide',
-  '/posts/astro-suite-obsidian-vault-guide-astro-modular': '/posts/obsidian-vault-guide',
+  '/posts/astro-suite-vault-modular-guide': '/posts/vault-cms-guide',
+  '/posts/astro-suite-obsidian-vault-guide-astro-modular': '/posts/vault-cms-guide',
+  '/posts/obsidian-vault-guide': '/posts/vault-cms-guide',
   '/projects/obsidian-astro-composer': '/projects/astro-composer',
+  '/projects/obsidian-astro-suite': '/projects/vault-cms',
   '/docs/api-reference': '/docs/api',
   '/docs/astro-modular-configuration': '/docs/configuration',
   '/docs/sourcetree-and-git': '/docs/sourcetree-and-git-setup'
@@ -70,7 +118,7 @@ image: {
       containers: ['#swup-container'],
       smoothScrolling: false,
       cache: true,
-      preload: true, 
+      preload: true,
       accessibility: false,
       updateHead: true,
       updateBodyClass: false,
@@ -87,8 +135,10 @@ image: {
   ],
   markdown: {
       remarkPlugins: [
+      remarkObsidianImageSize, // Parse Obsidian image size syntax first
       remarkInternalLinks,
       remarkInlineTags,
+      remarkObsidianComments, // Remove Obsidian comments (%%...%%) early in processing
       remarkFolderImages,
       remarkObsidianEmbeds,
       // Bases directive (table-only v1)
@@ -100,7 +150,7 @@ image: {
       remarkImageGrids,
       remarkMermaid,
       [remarkReadingTime, {}],
-      [remarkToc, { 
+      [remarkToc, {
         tight: true,
         ordered: false,
         maxDepth: 3,
@@ -130,14 +180,15 @@ image: {
     }
   },
   vite: {
+    assetsInclude: ['**/*.base', '**/*.home', '**/*.base'],
     resolve: {
       alias: {
-        '@': new URL('./src', import.meta.url).pathname,
-        '@/components': new URL('./src/components', import.meta.url).pathname,
-        '@/layouts': new URL('./src/layouts', import.meta.url).pathname,
-        '@/utils': new URL('./src/utils', import.meta.url).pathname,
-        '@/types': new URL('./src/types.ts', import.meta.url).pathname,
-        '@/config': new URL('./src/config.ts', import.meta.url).pathname
+        '@': fileURLToPath(new URL('./src', import.meta.url)),
+        '@/components': fileURLToPath(new URL('./src/components', import.meta.url)),
+        '@/layouts': fileURLToPath(new URL('./src/layouts', import.meta.url)),
+        '@/utils': fileURLToPath(new URL('./src/utils', import.meta.url)),
+        '@/types': fileURLToPath(new URL('./src/types.ts', import.meta.url)),
+        '@/config': fileURLToPath(new URL('./src/config.ts', import.meta.url))
       }
     },
     server: {
@@ -148,6 +199,7 @@ image: {
       middlewareMode: false,
       hmr: true,
       watch: {
+      ignored: ['**/.obsidian/**', '**/_bases/**', '**/bases/**'],
         usePolling: process.platform === 'win32', // Use polling on Windows for better file watching
         interval: 1000
       },

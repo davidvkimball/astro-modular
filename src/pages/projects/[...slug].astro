@@ -1,0 +1,43 @@
+---
+import { getCollection } from 'astro:content';
+import { shouldShowContent } from '@/utils/markdown';
+import { siteConfig } from '@/config';
+import ProjectLayout from '@/layouts/ProjectLayout.astro';
+
+export async function getStaticPaths() {
+  // If projects are disabled, don't generate any paths
+  if (!siteConfig.optionalContentTypes.projects) {
+    return [];
+  }
+  
+  const projects = await getCollection('projects');
+  const isDev = import.meta.env.DEV;
+  
+  const paths = [];
+  
+  // Generate paths for all projects - each .md file is a separate project
+  for (const project of projects) {
+    if (!shouldShowContent(project, isDev)) continue;
+    
+    // Use the full project ID as the slug (e.g., "astro-composer" or "obsidian-astro-suite")
+    const slug = project.id;
+    
+    paths.push({
+      params: { slug: slug },
+      props: { 
+        project: project 
+      }
+    });
+  }
+  
+  return paths;
+}
+
+const { project } = Astro.props;
+
+if (!project) {
+  return Astro.redirect('/projects/', 404);
+}
+---
+
+<ProjectLayout project={project} />

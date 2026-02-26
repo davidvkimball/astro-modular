@@ -4,6 +4,7 @@ import { visit } from "unist-util-visit";
 /**
  * Remark plugin to detect consecutive images in paragraphs and apply grid classes
  * This replaces the client-side JavaScript detection with build-time processing
+ * Skips paragraphs containing Obsidian-sized images (manually sized)
  */
 export function remarkImageGrids() {
   return (tree: Root) => {
@@ -38,8 +39,14 @@ export function remarkImageGrids() {
           }
         });
 
+        // Skip grid processing if any image has manual sizing (Obsidian syntax)
+        const hasObsidianSizedImage = images.some((img) => {
+          return img.data?.hProperties?.class?.includes('obsidian-sized');
+        });
+
         // Only process paragraphs with 2+ images and no other meaningful content
-        if (images.length >= 2 && otherNodes.length === 0) {
+        // Skip if any image has manual Obsidian sizing
+        if (images.length >= 2 && otherNodes.length === 0 && !hasObsidianSizedImage) {
           // Add image-grid classes to the paragraph
           if (!node.data) {
             node.data = {};

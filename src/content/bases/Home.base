@@ -44,7 +44,7 @@ views:
       - property: date
         direction: DESC
     imageProperty: note.image
-    fallbackToEmbeds: true
+    fallbackToEmbeds: if-empty
     propertyDisplay1: formula.Slug
     showTextPreview: true
     imageFormat: cover
@@ -64,6 +64,9 @@ views:
     cardSize: 250
     imageAspectRatio: 0.55
     maxTagsToShow: 2
+    dateIncludeTime: false
+    fallbackToContent: true
+    draftStatusReverse: false
   - type: bases-cms
     name: Pages
     filters:
@@ -131,7 +134,7 @@ views:
       property: category
       direction: ASC
     sort:
-      - property: title
+      - property: order
         direction: ASC
     imageProperty: note.image
     fallbackToEmbeds: true
@@ -209,7 +212,7 @@ views:
     showTags: false
     tagsProperty: note.tags
     customizeNewButton: true
-    newNoteLocation: docs
+    newNoteLocation: ""
     cardSize: 250
     imageAspectRatio: 0.55
     maxTagsToShow: 2

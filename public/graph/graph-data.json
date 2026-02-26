@@ -5,7 +5,7 @@
       "type": "post",
       "title": "Formatting Reference",
       "slug": "formatting-reference",
-      "connections": 11
+      "connections": 13
     },
     {
       "id": "getting-started",
@@ -22,17 +22,17 @@
       "connections": 0
     },
     {
-      "id": "obsidian-vault-guide",
-      "type": "post",
-      "title": "Obsidian Vault Guide",
-      "slug": "obsidian-vault-guide",
-      "connections": 0
-    },
-    {
       "id": "sample-folder-based-post",
       "type": "post",
       "title": "Sample Folder-Based Post",
       "slug": "sample-folder-based-post",
+      "connections": 0
+    },
+    {
+      "id": "vault-cms-guide",
+      "type": "post",
+      "title": "Vault CMS Guide",
+      "slug": "vault-cms-guide",
       "connections": 0
     }
   ],
@@ -54,7 +54,12 @@
     },
     {
       "source": "formatting-reference",
-      "target": "obsidian-vault-guide",
+      "target": "vault-cms-guide",
+      "type": "link"
+    },
+    {
+      "source": "formatting-reference",
+      "target": "obsidian-embeds-demo",
       "type": "link"
     },
     {
@@ -78,8 +83,13 @@
       "type": "link"
     },
     {
+      "source": "formatting-reference",
+      "target": "obsidian-embeds-demo",
+      "type": "link"
+    },
+    {
       "source": "getting-started",
-      "target": "obsidian-vault-guide",
+      "target": "vault-cms-guide",
       "type": "link"
     },
     {
@@ -89,7 +99,7 @@
     },
     {
       "source": "getting-started",
-      "target": "obsidian-vault-guide",
+      "target": "vault-cms-guide",
       "type": "link"
     },
     {
@@ -99,7 +109,7 @@
     },
     {
       "source": "getting-started",
-      "target": "obsidian-vault-guide",
+      "target": "vault-cms-guide",
       "type": "link"
     },
     {
@@ -110,7 +120,7 @@
   ],
   "metadata": {
     "totalPosts": 5,
-    "totalConnections": 14,
+    "totalConnections": 16,
     "maxNodesApplied": false,
     "originalNodeCount": 5
   }

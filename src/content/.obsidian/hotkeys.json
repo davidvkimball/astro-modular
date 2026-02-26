@@ -134,15 +134,6 @@
       "key": ","
     }
   ],
-  "astro-modular-settings:open-terminal": [
-    {
-      "modifiers": [
-        "Mod",
-        "Shift"
-      ],
-      "key": "D"
-    }
-  ],
   "seo:open-global": [
     {
       "modifiers": [
@@ -214,6 +205,70 @@
         "Shift"
       ],
       "key": "M"
+    }
+  ],
+  "astro-composer:open-project-terminal": [
+    {
+      "modifiers": [
+        "Mod",
+        "Shift"
+      ],
+      "key": "D"
+    }
+  ],
+  "editing-toolbar:workplace-fullscreen-focus": [],
+  "editing-toolbar:fullscreen-focus": [],
+  "editing-toolbar:hide-show-menu": [
+    {
+      "modifiers": [
+        "Mod",
+        "Shift"
+      ],
+      "key": "E"
+    }
+  ],
+  "webviewer:open": [
+    {
+      "modifiers": [
+        "Mod",
+        "Shift"
+      ],
+      "key": "V"
+    }
+  ],
+  "image-manager:search-image": [
+    {
+      "modifiers": [
+        "Mod"
+      ],
+      "key": "'"
+    }
+  ],
+  "image-manager:insert-remote-image-to-property": [
+    {
+      "modifiers": [
+        "Mod",
+        "Shift"
+      ],
+      "key": "'"
+    }
+  ],
+  "ui-tweaker:toggle-tab-bar": [
+    {
+      "modifiers": [
+        "Alt",
+        "Mod"
+      ],
+      "key": "S"
+    }
+  ],
+  "omnisearch:show-modal": [
+    {
+      "modifiers": [
+        "Mod",
+        "Shift"
+      ],
+      "key": "O"
     }
   ]
 }

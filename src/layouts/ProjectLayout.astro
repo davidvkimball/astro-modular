@@ -76,7 +76,7 @@ const structuredData = {
     "@type": "WebPage",
     "@id": Astro.url.href
   },
-  "url": project.data.projectUrl || Astro.url.href,
+  "url": (project.data.projectUrl || project.data.demoUrl || project.data.demoURL) || Astro.url.href,
   "codeRepository": project.data.repositoryUrl
 };
 
@@ -224,9 +224,9 @@ const { prev: prevProject, next: nextProject } = getAdjacentPosts(visibleProject
                   <Icon name={getRepositoryIcon(project.data.repositoryUrl)} class="w-4 h-4" />
                 </a>
               )}
-              {project.data.projectUrl && (
+              {(project.data.projectUrl || project.data.demoUrl || project.data.demoURL) && (
                 <a
-                  href={project.data.projectUrl}
+                  href={project.data.projectUrl || project.data.demoUrl || project.data.demoURL}
                   target="_blank"
                   rel="noopener noreferrer"
                   class="inline-flex items-center gap-1.5 px-3 py-2 text-sm bg-highlight-600 dark:bg-highlight-400 text-white border-highlight-600 dark:border-highlight-400 rounded-lg hover:opacity-90 transition-all duration-200"
@@ -346,8 +346,8 @@ const { prev: prevProject, next: nextProject } = getAdjacentPosts(visibleProject
 
       <!-- Desktop TOC - floats to the right of the content container -->
       {shouldShowTOC && (
-        <div class="hidden xl:block absolute top-8 left-full ml-1 w-64">
-          <div class="sticky top-24" id="toc">
+        <div class="hidden xl:block absolute top-0 left-full ml-1 w-[280px] h-full">
+          <div class="sticky top-24 pb-6" id="toc">
             <TableOfContents headings={toc} />
           </div>
         </div>
@@ -446,7 +446,7 @@ const { prev: prevProject, next: nextProject } = getAdjacentPosts(visibleProject
               .replace(/^-+|-+$/g, '');
 
             // Helper function to create slug from title (same as resolveWikilink logic)
-            const createSlugFromTitle = (title: string) => {
+            const createSlugFromTitle = (title) => {
               return title.toLowerCase()
                 .replace(/[^a-z0-9\s-]/g, '')
                 .replace(/\s+/g, '-')

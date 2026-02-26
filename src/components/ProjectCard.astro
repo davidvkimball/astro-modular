@@ -18,7 +18,7 @@ interface Props {
 const { project, featured = false, eager = false, context = 'projects', showCategories = true } = Astro.props;
 
 // Get excerpt from markdown processing
-const { excerpt } = processMarkdown(project.body);
+const { excerpt } = processMarkdown(project.body || '');
 
 const { title, description: rawDescription, date, image: rawImage, imageAlt } = project.data;
 
@@ -52,14 +52,19 @@ const description = rawDescription || excerpt;
 const categories = project.data.categories || [];
 const status = normalizeStatus(project.data.status);
 const repositoryUrl = project.data.repositoryUrl;
-const projectUrl = project.data.projectUrl;
+const projectUrl = project.data.projectUrl || project.data.demoUrl || project.data.demoURL;
+
+// Determine content availability for layout
+const hasDescription = description && description.trim().length > 0;
+const hasCategories = showCategories && categories.length > 0;
+const hasHoverContent = hasDescription || hasCategories;
 
 // Determine if we should show the cover image
 // Projects should always show images when available (not controlled by postOptions)
 const shouldShowCoverImage = true;
 ---
 
-<div class="group relative bg-white dark:bg-primary-800 rounded-xl border border-primary-200 dark:border-primary-700 overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 aspect-[4/3]" data-project-categories={categories.join(',')}>
+<div class="group relative bg-white dark:bg-primary-800 rounded-xl border border-primary-200 dark:border-primary-700 overflow-hidden hover:shadow-xl transition-all duration-300 aspect-[4/3]" data-project-categories={categories.join(',')}>
   <a href={`/projects/${project.id}`} class="block h-full" aria-label={`View project: ${title}`}>
     <!-- Background Image or Fallback -->
     {image && shouldShowCoverImage && (
@@ -158,57 +163,142 @@ const shouldShowCoverImage = true;
     )}
 
     <!-- Content Overlay -->
-    <div class="absolute inset-0 flex flex-col p-6 z-10" style="padding-top: 4rem;">
-      <!-- Spacer to push content down from top elements -->
-      <div class="flex-1"></div>
-
-      <!-- Title -->
-      <h3 class={`text-xl font-bold mb-2 transition-colors line-clamp-2 text-center ${
+    <div class={`absolute inset-0 flex flex-col p-4 md:p-6 z-10 mobile-centered ${
+      // Perfect center title when no description or categories
+      !hasDescription && !hasCategories
+        ? 'justify-center items-center'
+        // Balance layout when only one type of content
+        : (hasDescription && !hasCategories) || (!hasDescription && hasCategories)
+        ? 'justify-center items-center'
+        // Default layout for full content
+        : 'justify-center items-center'
+    }`}>
+      <!-- Title - always centered -->
+      <h3 class={`text-xl font-bold transition-colors line-clamp-2 text-center ${
         image && shouldShowCoverImage
           ? 'text-white group-hover:text-highlight-300 drop-shadow-lg'
           : 'text-primary-900 dark:text-primary-50 group-hover:text-highlight-600 dark:group-hover:text-highlight-400'
+      } ${
+        // Adjust margin based on content
+        !hasDescription && !hasCategories ? 'mb-0' :
+        (hasDescription && !hasCategories) ? 'mb-4' :
+        (!hasDescription && hasCategories) ? 'mb-4' : 'mb-2'
       }`}>
         {title}
       </h3>
 
-      <!-- Hover content -->
-      <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-        <!-- Description -->
-        {description && (
-          <p class={`text-sm mb-3 line-clamp-2 text-left ${
-            image && shouldShowCoverImage
-              ? 'text-white/90 drop-shadow-lg'
-              : 'text-primary-700 dark:text-primary-300'
-          }`}>
-            {description}
-          </p>
-        )}
+      {hasHoverContent ? (
+        <!-- Hover content for full layout -->
+        <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <!-- Description -->
+          {hasDescription && (
+            <p class={`text-sm mb-3 line-clamp-2 text-left ${
+              image && shouldShowCoverImage
+                ? 'text-white/90 drop-shadow-lg'
+                : 'text-primary-700 dark:text-primary-300'
+            }`}>
+              {description}
+            </p>
+          )}
 
-        <!-- Categories -->
-        {showCategories && categories.length > 0 && (
-          <div class="flex flex-wrap gap-1 mb-3 justify-center">
-            {categories.slice(0, 3).map(category => (
-              <span class={`inline-flex items-center px-2 py-1 text-xs font-medium rounded backdrop-blur-sm ${
-                image && shouldShowCoverImage
-                  ? 'bg-white/20 text-white/90'
-                  : 'bg-primary-100 dark:bg-primary-700 text-primary-700 dark:text-primary-200'
-              }`}>
-                {category}
-              </span>
-            ))}
-            {categories.length > 3 && (
-              <span class={`inline-flex items-center px-2 py-1 text-xs font-medium rounded backdrop-blur-sm ${
-                image && shouldShowCoverImage
-                  ? 'bg-white/20 text-white/90'
-                  : 'bg-primary-100 dark:bg-primary-700 text-primary-700 dark:text-primary-200'
-              }`}>
-                +{categories.length - 3} more
-              </span>
-            )}
-          </div>
-        )}
+          <!-- Categories -->
+          {hasCategories && (
+            <div class="flex flex-wrap gap-1 mb-3 justify-center">
+              {categories.slice(0, 3).map(category => (
+                <span class={`inline-flex items-center px-2 py-1 text-xs font-medium rounded backdrop-blur-sm ${
+                  image && shouldShowCoverImage
+                    ? 'bg-white/20 text-white/90'
+                    : 'bg-primary-100 dark:bg-primary-700 text-primary-700 dark:text-primary-200'
+                }`}>
+                  {category}
+                </span>
+              ))}
+              {categories.length > 3 && (
+                <span class={`inline-flex items-center px-2 py-1 text-xs font-medium rounded backdrop-blur-sm ${
+                  image && shouldShowCoverImage
+                    ? 'bg-white/20 text-white/90'
+                    : 'bg-primary-100 dark:bg-primary-700 text-primary-700 dark:text-primary-200'
+                }`}>
+                  +{categories.length - 3} more
+                </span>
+              )}
+            </div>
+          )}
+        </div>
+      ) : (
+        <!-- Always visible content for minimal layouts -->
+        <div class="flex flex-col items-center">
+          {hasDescription && (
+            <p class={`text-sm line-clamp-2 text-center ${
+              image && shouldShowCoverImage
+                ? 'text-white/90 drop-shadow-lg'
+                : 'text-primary-700 dark:text-primary-300'
+            }`}>
+              {description}
+            </p>
+          )}
 
-      </div>
+          {hasCategories && (
+            <div class="flex flex-wrap gap-1 mt-3 justify-center">
+              {categories.slice(0, 3).map(category => (
+                <span class={`inline-flex items-center px-2 py-1 text-xs font-medium rounded backdrop-blur-sm ${
+                  image && shouldShowCoverImage
+                    ? 'bg-white/20 text-white/90'
+                    : 'bg-primary-100 dark:bg-primary-700 text-primary-700 dark:text-primary-200'
+                }`}>
+                  {category}
+                </span>
+              ))}
+              {categories.length > 3 && (
+                <span class={`inline-flex items-center px-2 py-1 text-xs font-medium rounded backdrop-blur-sm ${
+                  image && shouldShowCoverImage
+                    ? 'bg-white/20 text-white/90'
+                    : 'bg-primary-100 dark:bg-primary-700 text-primary-700 dark:text-primary-200'
+                }`}>
+                  +{categories.length - 3} more
+                </span>
+              )}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   </a>
 </div>
+
+<style>
+  /* Make cards more compact and centered on mobile */
+  @media (max-width: 768px) {
+    /* Reduce card height on mobile and center them */
+    .group[data-project-categories] {
+      aspect-ratio: 2/1 !important;
+      max-height: 200px !important;
+      width: 100%;
+      max-width: 100%;
+    }
+    
+    /* Center content vertically and horizontally on mobile */
+    .group[data-project-categories] .mobile-centered {
+      justify-content: center !important;
+      align-items: center !important;
+      padding-top: 0 !important;
+      padding: 1rem !important;
+    }
+    
+    /* Smaller title on mobile */
+    .group[data-project-categories] h3 {
+      font-size: 1rem !important;
+      margin-bottom: 0 !important;
+    }
+    
+    /* Hide description and hover content on mobile to save space */
+    .group[data-project-categories] .opacity-0 {
+      display: none !important;
+    }
+    
+    /* Ensure badges stay in corners */
+    .group[data-project-categories] .absolute.top-3 {
+      position: absolute !important;
+    }
+  }
+</style>

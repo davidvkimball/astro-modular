@@ -10,6 +10,9 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import TableOfContents from '@/components/TableOfContents.astro';
 import Lightbox from '@/components/Lightbox.astro';
 import ImageWrapper from '@/components/ImageWrapper.astro';
+import DocsSidebar from '@/components/DocsSidebar.astro';
+import Icon from '@/components/Icon.astro';
+import { shouldShowContent, getAdjacentDocs, formatDate } from '@/utils/markdown';
 
 export interface Props {
   documentation: Docs;
@@ -20,6 +23,17 @@ const { documentation } = Astro.props;
 // Check if there are any real categories in the system
 const allDocs = await getCollection('docs');
 const docsHaveCategories = hasDocCategories(allDocs);
+
+// Filter visible docs (exclude drafts in production)
+const isDev = import.meta.env.DEV;
+const visibleDocs = allDocs.filter(doc => shouldShowContent(doc, isDev));
+
+// Get current category (normalize "General" to null)
+const currentCategory = documentation.data.category && 
+  documentation.data.category.trim() !== '' && 
+  documentation.data.category !== 'General'
+  ? documentation.data.category
+  : null;
 
 // Render the documentation content
 const { render } = await import('astro:content');
@@ -36,6 +50,9 @@ const toc = headings.filter(h => h.depth >= 2 && h.depth <= maxDepth);
 const hideTOC = documentation.data.hideTOC === true;
 const showTOC = documentation.data.showTOC !== undefined ? documentation.data.showTOC : true;
 const shouldShowTOC = siteConfig.tableOfContents.enabled && !hideTOC && showTOC && toc.length > 0;
+
+// Get adjacent docs for navigation (only within same category, sorted by order)
+const { prev: prevDoc, next: nextDoc } = getAdjacentDocs(visibleDocs, documentation.id, currentCategory);
 
 // Generate structured data
 const structuredData = {
@@ -80,8 +97,14 @@ const structuredData = {
     )}
   </Fragment>
 
-  <div class="py-8 relative">
+  <div class="py-8">
     <div class="mx-auto px-4 sm:px-6 lg:px-8 relative" style={`max-width: ${siteConfig.layout.contentWidth}`}>
+      <!-- Desktop Sidebar (inside content container, positioned relative to it) -->
+      <DocsSidebar 
+        currentDocId={documentation.id}
+        currentCategory={currentCategory}
+        allDocs={visibleDocs}
+      />
       <!-- Documentation content -->
       <article class={`bg-primary-50 dark:bg-primary-900 rounded-lg border border-primary-200 dark:border-primary-700 shadow-sm ${documentation.data.image && documentation.data.hideCoverImage !== true ? 'overflow-hidden' : ''}`}>
         {documentation.data.image && documentation.data.hideCoverImage !== true && (() => {
@@ -194,18 +217,10 @@ const structuredData = {
                   )}
                   <time datetime={documentation.data.lastModified.toISOString()} class="text-xs">
                     <span class="hidden sm:inline">
-                      Updated {documentation.data.lastModified.toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                      })}
+                      Updated {formatDate(documentation.data.lastModified)}
                     </span>
                     <span class="sm:hidden">
-                      Updated {documentation.data.lastModified.toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'short',
-                        day: 'numeric'
-                      })}
+                      Updated {formatDate(documentation.data.lastModified)}
                     </span>
                   </time>
                 </>
@@ -220,10 +235,49 @@ const structuredData = {
         </div>
       </article>
 
+      <!-- Documentation navigation (only if there are other docs in the same category) -->
+      {siteConfig.postOptions.postNavigation && (prevDoc || nextDoc) && (
+        <nav class="mt-8 pt-8 border-t border-primary-200 dark:border-primary-700">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {prevDoc && (
+              <div class="text-left">
+                <a
+                  href={`/docs/${prevDoc.id}`}
+                  class="group block p-4 rounded-lg border border-primary-200 dark:border-primary-700 hover:border-highlight-300 dark:hover:border-highlight-600 transition-all duration-200 hover:shadow-md"
+                >
+                  <h3 class="font-semibold text-primary-900 dark:text-primary-50 group-hover:text-highlight-600 dark:group-hover:text-highlight-400 transition-colors">
+                    {prevDoc.data.title}
+                  </h3>
+                  <div class="flex justify-start mt-2">
+                    <Icon name="arrow-left" class="w-5 h-5 text-primary-500 dark:text-primary-400 group-hover:text-highlight-500 dark:group-hover:text-highlight-400 transition-colors" />
+                  </div>
+                </a>
+              </div>
+            )}
+
+            {nextDoc && (
+              <div class={`text-right ${!prevDoc ? 'md:col-start-2' : ''}`}>
+                <a
+                  href={`/docs/${nextDoc.id}`}
+                  class="group block p-4 rounded-lg border border-primary-200 dark:border-primary-700 hover:border-highlight-300 dark:hover:border-highlight-600 transition-all duration-200 hover:shadow-md"
+                >
+                  <h3 class="font-semibold text-primary-900 dark:text-primary-50 group-hover:text-highlight-600 dark:group-hover:text-highlight-400 transition-colors">
+                    {nextDoc.data.title}
+                  </h3>
+                  <div class="flex justify-end mt-2">
+                    <Icon name="arrow-right" class="w-5 h-5 text-primary-500 dark:text-primary-400 group-hover:text-highlight-500 dark:group-hover:text-highlight-400 transition-colors" />
+                  </div>
+                </a>
+              </div>
+            )}
+          </div>
+        </nav>
+      )}
+
       <!-- Desktop TOC - floats to the right of the content container -->
       {shouldShowTOC && (
-        <div class="hidden xl:block absolute top-0 left-full ml-1 w-64">
-          <div class="sticky top-24" id="toc">
+        <div class="hidden xl:block absolute top-0 left-full ml-1 w-64 h-full">
+          <div class="sticky top-24 pb-6" id="toc">
             <TableOfContents headings={toc} />
           </div>
         </div>
@@ -307,8 +361,13 @@ const structuredData = {
           });
         }
 
-        // Initialize image grids
-        initializeImageGrids();
+      // Initialize image grids
+      initializeImageGrids();
+
+      // Initialize docs sidebar
+      if (window.initializeDocsSidebar) {
+        window.initializeDocsSidebar();
+      }
 
         // Process all external links in content to open in new tabs (including reference links)
         const allLinks = document.querySelectorAll('.prose a[href]');

@@ -12,29 +12,31 @@ const { headings } = Astro.props;
 // Filter and structure headings using configurable depth
 const maxDepth = getTableOfContentsDepth();
 const filteredHeadings = headings.filter(h => h.depth >= 2 && h.depth <= maxDepth);
+// Hide TOC if there's only 1 heading (not useful)
+const shouldShowTOC = filteredHeadings.length > 1;
 ---
 
-{filteredHeadings.length > 0 && (
-  <nav class="toc-nav toc-container p-4 bg-white dark:bg-primary-900 rounded-xl border border-primary-200 dark:border-primary-700 shadow-lg backdrop-blur-sm bg-opacity-95 dark:bg-opacity-95">
-    <div class="toc-content pr-2">
-      <button 
-        class="toc-toggle w-full font-semibold text-primary-900 dark:text-primary-50 mb-3 flex items-center justify-between text-sm hover:text-highlight-600 dark:hover:text-highlight-400 transition-colors"
-        aria-expanded="true"
-        aria-controls="toc-list"
-      >
-        <div class="flex items-center">
-          <Icon name="list" class="w-4 h-4 mr-2" />
-          Contents
-        </div>
-        <Icon name="chevron-down" class="w-4 h-4 toc-chevron transition-transform duration-200" />
-      </button>
-      
+{shouldShowTOC && (
+  <nav class="toc-nav toc-container p-4 pr-5 bg-white dark:bg-primary-900 rounded-xl border border-primary-200 dark:border-primary-700 shadow-lg backdrop-blur-sm bg-opacity-95 dark:bg-opacity-95" data-max-depth={maxDepth}>
+    <button
+      class="toc-toggle w-full font-semibold text-primary-900 dark:text-primary-50 mb-3 flex items-center justify-between text-sm hover:text-highlight-600 dark:hover:text-highlight-400 transition-colors"
+      aria-expanded="true"
+      aria-controls="toc-list"
+    >
+      <div class="flex items-center">
+        <Icon name="list" class="w-4 h-4 mr-2" />
+        Contents
+      </div>
+      <Icon name="chevron-down" class="w-4 h-4 toc-chevron transition-transform duration-200" />
+    </button>
+
+    <div class="toc-content">
       <ul class="space-y-2 toc-list" id="toc-list">
         {filteredHeadings.map(heading => (
           <li class={`toc-item toc-level-${heading.depth}`}>
             <a 
               href={`#${heading.slug}`}
-              class="toc-link block text-sm text-primary-600 dark:text-primary-300 hover:text-highlight-600 dark:hover:text-highlight-400 transition-colors py-1"
+              class="toc-link block text-sm text-primary-600 dark:text-primary-300 hover:text-highlight-600 dark:hover:text-highlight-400 transition-colors py-1 pl-3 pr-2"
               data-heading={heading.slug}
             >
               {heading.text}
@@ -47,15 +49,91 @@ const filteredHeadings = headings.filter(h => h.depth >= 2 && h.depth <= maxDept
 )}
 
 <script>
+  // Constants for TOC height calculation
+  const BOTTOM_SPACING = 96; // 6rem = 96px - fixed spacing from bottom of viewport
+  const MIN_TOC_HEIGHT = 200; // Minimum height for TOC list to be useful
+
+  // Global variable to store tocContent reference
+  let tocContent: HTMLElement | null = null;
+
+  // Simplified height management - just ensure scrolling works
+  function updateTOCHeight() {
+    if (!tocContent) return;
+
+    // Set a reasonable max height using viewport units - no dynamic calculation
+    tocContent.style.maxHeight = '60vh'; // 60% of viewport height
+    tocContent.style.overflowY = 'auto';
+
+    // Remove max-height from the list since the content container now handles scrolling
+    const tocList = document.querySelector('.toc-list') as HTMLElement;
+    if (tocList) {
+      tocList.style.maxHeight = 'none';
+    }
+  }
+  
+  // Debounce function for performance
+  function debounce(func: Function, wait: number) {
+    let timeout: ReturnType<typeof setTimeout>;
+    return function executedFunction(...args: any[]) {
+      const later = () => {
+        clearTimeout(timeout);
+        func(...args);
+      };
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
+  }
+  
+  // Store scroll listener reference for cleanup
+  let scrollListener: (() => void) | null = null;
+  // Track last scroll time to avoid excessive highlighting updates
+  let lastScrollTime = Date.now();
+  
   // Global function to initialize table of contents
   function initializeTableOfContents() {
     const tocLinks = document.querySelectorAll('.toc-link');
-    const headings = document.querySelectorAll('h2, h3, h4, h5, h6');
+    const tocContainer = document.querySelector('.toc-container') as HTMLElement;
+    tocContent = document.querySelector('.toc-content') as HTMLElement;
+    
+    // Get maxDepth from data attribute
+    const maxDepth = tocContainer ? parseInt(tocContainer.dataset.maxDepth || '6', 10) : 6;
+    
+    // Build heading selectors based on configured depth
+    // Generate selectors from h2 to h{maxDepth}
+    const headingLevels: string[] = [];
+    for (let level = 2; level <= Math.min(maxDepth, 6); level++) {
+      headingLevels.push(`h${level}`);
+    }
+    const headingSelector = headingLevels.join(', ');
+    
+    // Query headings only from content areas (not from TOC itself or other sidebars)
+    // Only query heading levels that are actually displayed in the TOC
+    const contentContainers = [
+      '#post-content',
+      '#page-content',
+      '#project-content',
+      '#documentation-content',
+      '.prose'
+    ];
+    
+    let headings: NodeListOf<HTMLElement> | null = null;
+    for (const container of contentContainers) {
+      const selector = `${container} ${headingSelector}`;
+      const found = document.querySelectorAll<HTMLElement>(selector);
+      if (found.length > 0) {
+        headings = found;
+        break;
+      }
+    }
+    
     const tocToggle = document.querySelector('.toc-toggle') as HTMLButtonElement;
     const tocList = document.querySelector('.toc-list') as HTMLElement;
     const tocChevron = document.querySelector('.toc-chevron') as HTMLElement;
-    
-    if (!tocLinks.length || !headings.length) return;
+
+    if (!tocLinks.length || !headings || headings.length === 0) return;
+
+    // Calculate initial TOC height immediately
+    updateTOCHeight();
     
     // Remove existing event listeners to prevent duplicates
     if (tocToggle) {
@@ -83,34 +161,89 @@ const filteredHeadings = headings.filter(h => h.depth >= 2 && h.depth <= maxDept
           freshTocList.style.display = 'block';
           freshTocToggle.setAttribute('aria-expanded', 'true');
           freshTocChevron.style.transform = 'rotate(0deg)';
+          // Recalculate height on expand
+          updateTOCHeight();
         }
       });
     }
     
     // Highlight active section in TOC
     function highlightTOC() {
+      if (!headings || headings.length === 0) return;
+
       let current = '';
-      
-      headings.forEach(heading => {
+      const viewportTop = 120; // Threshold for active headings (accounts for header)
+      const headingsArray = Array.from(headings);
+
+      // Find the heading that should be highlighted
+      // Priority: 1) Heading closest to viewport top, 2) Last heading above viewport, 3) First heading
+      let closestHeading = null;
+      let closestDistance = Infinity;
+      let lastHeadingAboveViewport = null;
+
+      for (const heading of headingsArray) {
         const rect = heading.getBoundingClientRect();
-        if (rect.top <= 100) {
-          current = heading.id;
+
+        // Track the closest heading to viewport top
+        const distance = Math.abs(rect.top - viewportTop);
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          closestHeading = heading;
         }
-      });
+
+        // Track the last heading that is above the viewport threshold
+        if (rect.top <= viewportTop) {
+          lastHeadingAboveViewport = heading;
+        }
+      }
+
+      // Use the heading above viewport if available, otherwise closest heading
+      if (lastHeadingAboveViewport) {
+        current = lastHeadingAboveViewport.id;
+      } else if (closestHeading && closestDistance <= 200) {
+        // Only use closest if it's reasonably close
+        current = closestHeading.id;
+      } else {
+        // Fallback to first heading
+        current = headingsArray[0]?.id || '';
+      }
       
+      // Update TOC links
       tocLinks.forEach(link => {
         const href = link.getAttribute('href')?.slice(1);
         if (href === current) {
           link.classList.add('active');
+
+          // Auto-scroll TOC to keep active item visible (less aggressive)
+          // Only do this if we haven't scrolled the page recently to avoid conflicts
+          const timeSinceLastScroll = Date.now() - lastScrollTime;
+          if (tocContent && tocContent.scrollHeight > tocContent.clientHeight && timeSinceLastScroll > 500) {
+            const linkRect = link.getBoundingClientRect();
+            const contentRect = tocContent.getBoundingClientRect();
+
+            // Only scroll if link is significantly outside visible area
+            const scrollThreshold = 30; // pixels
+            if (linkRect.top < contentRect.top + scrollThreshold || linkRect.bottom > contentRect.bottom - scrollThreshold) {
+              // Smooth scroll but don't center - just make it visible
+              link.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+          }
         } else {
           link.classList.remove('active');
         }
       });
     }
     
-    // Update active link on scroll
+    // Clean up old scroll listener if exists
+    if (scrollListener) {
+      window.removeEventListener('scroll', scrollListener);
+      scrollListener = null;
+    }
+    
+    // Update active link on scroll with minimal debouncing
     let ticking = false;
-    window.addEventListener('scroll', () => {
+    scrollListener = () => {
+      lastScrollTime = Date.now();
       if (!ticking) {
         requestAnimationFrame(() => {
           highlightTOC();
@@ -118,9 +251,11 @@ const filteredHeadings = headings.filter(h => h.depth >= 2 && h.depth <= maxDept
         });
         ticking = true;
       }
-    });
+    };
     
-    // Initial highlight
+    window.addEventListener('scroll', scrollListener, { passive: true });
+    
+    // Initial highlight (immediate)
     highlightTOC();
     
     // Force scrollbar style refresh
@@ -131,10 +266,21 @@ const filteredHeadings = headings.filter(h => h.depth >= 2 && h.depth <= maxDept
       tocNav.offsetHeight; // Trigger reflow
       tocNav.style.display = '';
     }
+    
+    // Simple resize handler for highlighting updates only
+    const debouncedUpdate = debounce(() => {
+      const timeSinceLastScroll = Date.now() - lastScrollTime;
+      if (timeSinceLastScroll > 500) {
+        highlightTOC();
+      }
+    }, 150);
+
+    window.addEventListener('resize', debouncedUpdate);
   }
 
-  // Make function globally available
+  // Make functions globally available
   (window as any).initializeTableOfContents = initializeTableOfContents;
+  (window as any).updateTOCHeight = updateTOCHeight;
 
   // Initialize on DOMContentLoaded
   document.addEventListener('DOMContentLoaded', initializeTableOfContents);
@@ -184,14 +330,63 @@ const filteredHeadings = headings.filter(h => h.depth >= 2 && h.depth <= maxDept
   }
   
   .toc-content {
-    /* No scrolling needed - content flows naturally */
+    /* Simple viewport-based max height */
+    max-height: 60vh;
+    overflow-x: hidden;
+    overflow-y: auto; /* Allow vertical scrolling */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    width: 100%;
+    box-sizing: border-box;
+
+    /* Custom scrollbar styling for the content container */
+    scrollbar-width: thin;
+    scrollbar-color: rgb(var(--color-primary-300)) transparent;
+  }
+  
+  .toc-link {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+    line-height: 1.5;
+    display: block;
+    box-sizing: border-box;
+  }
+  
+  /* Level 2 (no indentation) - full width */
+  .toc-level-2 .toc-link {
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  /* Indented levels - account for left margin in width calculation */
+  .toc-level-3 .toc-link {
+    width: calc(100% - 1rem);
+    max-width: calc(100% - 1rem);
+  }
+  
+  .toc-level-4 .toc-link {
+    width: calc(100% - 2rem);
+    max-width: calc(100% - 2rem);
+  }
+  
+  .toc-level-5 .toc-link {
+    width: calc(100% - 3rem);
+    max-width: calc(100% - 3rem);
+  }
+  
+  .toc-level-6 .toc-link {
+    width: calc(100% - 4rem);
+    max-width: calc(100% - 4rem);
   }
   
   /* Desktop floating TOC */
   @media (min-width: 1280px) {
     .toc-nav {
-      width: 280px;
-      max-width: 280px;
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
     }
   }
   
@@ -203,7 +398,56 @@ const filteredHeadings = headings.filter(h => h.depth >= 2 && h.depth <= maxDept
     }
   }
   
-  /* No scrollbar needed - content flows naturally */
+  /* The toc-list no longer handles scrolling - that's now handled by toc-content */
+  .toc-list {
+    overflow-x: hidden;
+    overflow-y: visible; /* Don't scroll here */
+    width: 100%;
+    padding-right: 0; /* No padding needed since scrolling is on parent */
+    box-sizing: border-box;
+  }
+
+  /* Webkit scrollbar styling for the content container (Chrome/Safari/Edge) */
+  .toc-content::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .toc-content::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 3px;
+  }
+
+  .toc-content::-webkit-scrollbar-thumb {
+    background: rgb(var(--color-primary-300));
+    border-radius: 3px;
+    transition: background 0.2s ease;
+  }
+
+  .toc-content::-webkit-scrollbar-thumb:hover {
+    background: rgb(var(--color-primary-400));
+  }
+
+  /* Dark mode scrollbar for content container */
+  .dark .toc-content {
+    scrollbar-color: rgb(var(--color-primary-600)) transparent;
+  }
+
+  .dark .toc-content::-webkit-scrollbar-thumb {
+    background: rgb(var(--color-primary-600));
+  }
+
+  .dark .toc-content::-webkit-scrollbar-thumb:hover {
+    background: rgb(var(--color-primary-500));
+  }
+  
+  .toc-item {
+    min-width: 0;
+    width: 100%;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    box-sizing: border-box;
+  }
+  
   
   .toc-chevron {
     @apply transition-transform duration-200;

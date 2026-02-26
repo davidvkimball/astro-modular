@@ -1,4 +1,5 @@
 // Site configuration with TypeScript types
+import type { NavigationItem } from "./types";
 
 // Aspect ratio options for post cards
 export type AspectRatio = 
@@ -93,7 +94,7 @@ export interface SiteConfig {
     showNavigation: boolean;
     style: "minimal" | "traditional";
     showMobileMenu: boolean;
-    pages: Array<{ title: string; url: string }>;
+    pages: NavigationItem[];
     social: Array<{ title: string; url: string; icon: string }>;
   };
   
@@ -310,11 +311,14 @@ export const siteConfig: SiteConfig = {
     showMobileMenu: true,
     // [CONFIG:NAVIGATION_PAGES]
     pages: [
-      { title: "Posts", url: "/posts" },
-      { title: "Projects", url: "/projects" },
-      { title: "Docs", url: "/docs" },
-      { title: "About", url: "/about" },
-      { title: "GitHub", url: "https://github.com/davidvkimball/astro-modular" },
+      { title: "Posts", url: "/posts/" },
+      { title: "Projects", url: "/projects/" },
+      { title: "Docs", url: "/docs/" },
+      { title: "About", url: "/about/",
+        children: [
+          { title: "Privacy Policy", url: "/privacy-policy/" }
+        ] },
+      { title: "GitHub", url: "https://github.com/davidvkimball/astro-modular" }
     ],
     // [CONFIG:NAVIGATION_SOCIAL]
     social: [

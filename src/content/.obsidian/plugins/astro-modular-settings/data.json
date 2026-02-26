@@ -42,19 +42,25 @@
     "pages": [
       {
         "title": "Posts",
-        "url": "/posts"
+        "url": "/posts/"
       },
       {
         "title": "Projects",
-        "url": "/projects"
+        "url": "/projects/"
       },
       {
         "title": "Docs",
-        "url": "/docs"
+        "url": "/docs/"
       },
       {
         "title": "About",
-        "url": "/about"
+        "url": "/about/",
+        "children": [
+          {
+            "title": "Privacy Policy",
+            "url": "/privacy-policy/"
+          }
+        ]
       },
       {
         "title": "GitHub",
@@ -157,7 +163,6 @@
   },
   "features": {
     "commandPalette": true,
-    "tableOfContents": true,
     "readingTime": true,
     "linkedMentions": true,
     "linkedMentionsCompact": false,
@@ -243,5 +248,6 @@
   },
   "availableThemes": "default",
   "customThemes": "",
-  "customThemeGenerationEnabled": false
+  "customThemeGenerationEnabled": false,
+  "removeRibbonIcon": false
 }

@@ -55,8 +55,8 @@ const shouldShowCoverImage = true;
 const showCoverImage = shouldShowCoverImage && image && context !== 'home';
 ---
 
-<div class="group relative bg-white dark:bg-primary-800 rounded-lg border border-primary-200 dark:border-primary-700 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-  <a href={`/docs/${documentation.id}`} class="block" aria-label={`View documentation: ${title}`}>
+<div class="group relative bg-white dark:bg-primary-800 rounded-lg border border-primary-200 dark:border-primary-700 hover:shadow-lg transition-all duration-300 h-full flex flex-col">
+  <a href={`/docs/${documentation.id}`} class="block flex flex-col h-full" aria-label={`View documentation: ${title}`}>
     <!-- Header with icon and version -->
     <div class="flex items-center justify-between p-4 pb-2">
       <Icon name="book-text" class="w-4 h-4 text-primary-500 dark:text-primary-400" />
@@ -135,7 +135,7 @@ const showCoverImage = shouldShowCoverImage && image && context !== 'home';
     )}
 
     <!-- Content -->
-    <div class="p-4 pt-2">
+    <div class="p-4 pt-2 flex-grow flex flex-col">
       <!-- Title -->
       <h3 class="text-lg font-semibold text-primary-900 dark:text-primary-50 mb-2 group-hover:text-highlight-600 dark:group-hover:text-highlight-400 transition-colors line-clamp-2">
         {title}
@@ -150,10 +150,10 @@ const showCoverImage = shouldShowCoverImage && image && context !== 'home';
 
       <!-- Footer -->
       {lastModified && (
-        <div class="pt-2 border-t border-primary-200 dark:border-primary-700">
+        <div class="pt-2 border-t border-primary-200 dark:border-primary-700 mt-auto">
           {isValidDate(lastModified) && (
             <time datetime={lastModified.toISOString()} class="text-xs text-primary-500 dark:text-primary-400">
-              Updated {lastModified.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+              Updated {formatDate(lastModified)}
             </time>
           )}
         </div>

@@ -1,15 +1,39 @@
 {
   "pluginList": [
+    "davidvkimball/obsidian-image-manager",
+    "davidvkimball/obsidian-home-base",
+    "davidvkimball/obsidian-explorer-focus",
+    "davidvkimball/obsidian-ui-tweaker",
+    "davidvkimball/obsidian-vault-cms",
     "davidvkimball/obsidian-bases-cms",
     "davidvkimball/obsidian-astro-modular-settings",
     "davidvkimball/obsidian-oxygen-settings",
     "davidvkimball/obsidian-alias-file-name-history",
     "davidvkimball/obsidian-seo",
     "davidvkimball/obsidian-property-over-filename",
-    "davidvkimball/obsidian-disable-tabs",
     "davidvkimball/obsidian-astro-composer"
   ],
   "pluginSubListFrozenVersion": [
+    {
+      "repo": "davidvkimball/obsidian-image-manager",
+      "version": "latest"
+    },
+    {
+      "repo": "davidvkimball/obsidian-home-base",
+      "version": "latest"
+    },
+    {
+      "repo": "davidvkimball/obsidian-explorer-focus",
+      "version": "latest"
+    },
+    {
+      "repo": "davidvkimball/obsidian-ui-tweaker",
+      "version": "latest"
+    },
+    {
+      "repo": "davidvkimball/obsidian-vault-cms",
+      "version": "latest"
+    },
     {
       "repo": "davidvkimball/obsidian-bases-cms",
       "version": "latest"
@@ -35,20 +59,11 @@
       "version": "latest"
     },
     {
-      "repo": "davidvkimball/obsidian-disable-tabs",
-      "version": "latest"
-    },
-    {
       "repo": "davidvkimball/obsidian-astro-composer",
       "version": "latest"
     }
   ],
-  "themesList": [
-    {
-      "repo": "davidvkimball/obsidian-oxygen",
-      "lastUpdate": "23486114"
-    }
-  ],
+  "themesList": [],
   "updateAtStartup": true,
   "updateThemesAtStartup": true,
   "enableAfterInstall": true,
@@ -58,5 +73,6 @@
   "debuggingMode": false,
   "notificationsEnabled": true,
   "personalAccessToken": "",
-  "selectLatestPluginVersionByDefault": false
+  "selectLatestPluginVersionByDefault": false,
+  "allowIncompatiblePlugins": false
 }

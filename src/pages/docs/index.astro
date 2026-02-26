@@ -109,61 +109,139 @@ seoData.noIndex = (docsPageContent?.data as any)?.noIndex || false;
         )}
       </header>
 
-      <!-- Documentation by category -->
-      {sortedCategories.length > 0 ? (
-        <div class="relative">
+      <div class="relative">
+        <!-- Documentation by category -->
+        {sortedCategories.length > 0 ? (
           <div class="space-y-12">
-            {sortedCategories.map(category => (
-              <section id={`category-${category.toLowerCase().replace(/\s+/g, '-')}`}>
+            {sortedCategories.map(category => {
+              const categoryId = `category-${category.toLowerCase().replace(/\s+/g, '-')}`;
+              const contentId = `${categoryId}-content`;
+              const toggleId = `${categoryId}-toggle`;
+              const chevronId = `${categoryId}-chevron`;
+              
+              return (
+              <section id={categoryId} class="category-section">
                 {docsHaveCategories && (
-                  <h2 class="text-lg font-semibold text-primary-900 dark:text-primary-50 mb-6 pb-2 border-b border-primary-200 dark:border-primary-700">
-                    <a href={`#category-${category.toLowerCase().replace(/\s+/g, '-')}`} class="anchor-link text-primary-900 dark:text-primary-50 hover:text-highlight-600 dark:hover:text-highlight-400 no-underline transition-colors duration-200" aria-label="Link to this section">
-                      {category}
-                    </a>
-                  </h2>
+                  <div class="mb-6 flex items-center justify-between group">
+                    <h2 class="text-lg font-semibold text-primary-900 dark:text-primary-50 group-hover:text-highlight-600 dark:group-hover:text-highlight-400 transition-colors duration-200">
+                      <a href={`#${categoryId}`} class="anchor-link text-primary-900 dark:text-primary-50 group-hover:text-highlight-600 dark:group-hover:text-highlight-400 no-underline transition-colors duration-200" aria-label="Link to this section">
+                        {category}
+                      </a>
+                    </h2>
+                    <button
+                      id={toggleId}
+                      class="ml-2 flex items-center cursor-pointer p-1"
+                      aria-expanded="true"
+                      aria-controls={contentId}
+                      aria-label="Toggle category"
+                    >
+                      <span id={chevronId} class="transition-transform duration-300 ease-in-out rotate-0">
+                        <Icon
+                          name="chevron-down"
+                          class="w-5 h-5 text-primary-500 dark:text-primary-400"
+                        />
+                      </span>
+                    </button>
+                  </div>
                 )}
 
-              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {docsByCategory[category].map((doc, index) => (
-                  <DocumentationCard
-                    documentation={doc}
-                    eager={index < 6}
-                    context="docs"
-                  />
-                ))}
-              </div>
+                <div id={contentId} class="category-content overflow-hidden transition-all duration-300 ease-in-out">
+                  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {docsByCategory[category].map((doc, index) => (
+                      <DocumentationCard
+                        documentation={doc}
+                        eager={index < 6}
+                        context="docs"
+                      />
+                    ))}
+                  </div>
+                </div>
               </section>
-            ))}
+            )})}
           </div>
+        ) : (
+          <div class="text-center py-12">
+            <Icon name="book-open" class="w-12 h-12 text-primary-300 dark:text-primary-600 mx-auto mb-4" />
+            <h3 class="text-lg font-medium text-primary-900 dark:text-primary-50 mb-2">
+              No documentation yet
+            </h3>
+            <p class="text-primary-600 dark:text-primary-300">
+              Check back soon for guides and tutorials!
+            </p>
+          </div>
+        )}
 
-        </div>
-
-        <!-- Desktop TOC - floats to the right of the content container -->
+        <!-- Desktop TOC - floats to the right of the content container, aligned with first documentation section -->
         {shouldShowTOC && (
-          <div class="hidden xl:block absolute top-0 left-full ml-1 w-64">
-            <div class="sticky top-24" id="toc">
+          <div class="hidden xl:block absolute top-0 left-full ml-8 w-64 h-full">
+            <div class="sticky top-24 pb-6" id="toc">
               <TableOfContents headings={tocHeadings} />
             </div>
           </div>
         )}
-      ) : (
-        <div class="text-center py-12">
-          <Icon name="book-open" class="w-12 h-12 text-primary-300 dark:text-primary-600 mx-auto mb-4" />
-          <h3 class="text-lg font-medium text-primary-900 dark:text-primary-50 mb-2">
-            No documentation yet
-          </h3>
-          <p class="text-primary-600 dark:text-primary-300">
-            Check back soon for guides and tutorials!
-          </p>
-        </div>
-      )}
+      </div>
     </div>
   </div>
 
   <Fragment slot="scripts">
     <script>
+      // Initialize collapsible category sections
+      function initializeCollapsibleCategories() {
+        const categorySections = document.querySelectorAll('.category-section');
+        
+        categorySections.forEach(section => {
+          const toggle = section.querySelector('button[id$="-toggle"]') as HTMLButtonElement;
+          const content = section.querySelector('.category-content') as HTMLElement;
+          const chevron = section.querySelector('span[id$="-chevron"]') as HTMLElement;
+          
+          if (!toggle || !content || !chevron) return;
+          
+          // Remove existing event listeners by cloning
+          const newToggle = toggle.cloneNode(true) as HTMLButtonElement;
+          toggle.parentNode?.replaceChild(newToggle, toggle);
+          
+          // Get fresh references
+          const freshToggle = section.querySelector('button[id$="-toggle"]') as HTMLButtonElement;
+          const freshContent = section.querySelector('.category-content') as HTMLElement;
+          const freshChevron = section.querySelector('span[id$="-chevron"]') as HTMLElement;
+          
+          if (!freshToggle || !freshContent || !freshChevron) return;
+          
+          // Initialize with expanded state
+          freshContent.style.maxHeight = freshContent.scrollHeight + 'px';
+          freshContent.style.opacity = '1';
+          freshChevron.classList.remove('rotate-90');
+          freshChevron.classList.add('rotate-0');
+
+          // Add click handler - toggle collapse/expand
+          freshToggle.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const isExpanded = freshToggle.getAttribute('aria-expanded') === 'true';
+
+            if (isExpanded) {
+              // Collapse - rotate chevron to point right
+              freshContent.style.maxHeight = '0';
+              freshContent.style.opacity = '0';
+              freshContent.style.marginBottom = '0';
+              freshChevron.classList.remove('rotate-0');
+              freshChevron.classList.add('rotate-90');
+              freshToggle.setAttribute('aria-expanded', 'false');
+            } else {
+              // Expand - rotate chevron to point down
+              freshContent.style.maxHeight = freshContent.scrollHeight + 'px';
+              freshContent.style.opacity = '1';
+              freshContent.style.marginBottom = '';
+              freshChevron.classList.remove('rotate-90');
+              freshChevron.classList.add('rotate-0');
+              freshToggle.setAttribute('aria-expanded', 'true');
+            }
+          });
+        });
+      }
+
       // Custom scroll behavior for documentation categories
-      document.addEventListener('DOMContentLoaded', () => {
+      function initializeCategoryScroll() {
         const tocLinks = document.querySelectorAll('.toc-link');
         const categorySections = document.querySelectorAll('section[id^="category-"]');
 
@@ -227,8 +305,29 @@ seoData.noIndex = (docsPageContent?.data as any)?.noIndex || false;
             ticking = true;
           }
         });
+      }
+
+      // Initialize on DOM ready
+      document.addEventListener('DOMContentLoaded', () => {
+        initializeCollapsibleCategories();
+        initializeCategoryScroll();
       });
+
+      // Make functions globally accessible for Swup re-initialization
+      (window as any).initializeCollapsibleCategories = initializeCollapsibleCategories;
+      (window as any).initializeCategoryScroll = initializeCategoryScroll;
     </script>
+
+    <style>
+      /* Category chevron rotation */
+      .rotate-0 {
+        transform: rotate(0deg);
+      }
+
+      .rotate-90 {
+        transform: rotate(90deg);
+      }
+    </style>
   </Fragment>
 </BaseLayout>
 )}

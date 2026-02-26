@@ -1,0 +1,303 @@
+{
+  "projectRoot": "C:\\Users\\david\\Development\\astro-modular",
+  "configFilePath": "../config.ts",
+  "contentTypes": [
+    {
+      "id": "content-1765432406133",
+      "name": "Documentation",
+      "folder": "docs",
+      "fileOrganization": "file",
+      "indexFileName": "index",
+      "linkBasePath": "/docs/",
+      "enabled": true
+    },
+    {
+      "id": "pages-1765432337485",
+      "name": "Pages",
+      "folder": "pages",
+      "fileOrganization": "file",
+      "indexFileName": "index",
+      "linkBasePath": "/",
+      "enabled": true
+    },
+    {
+      "id": "posts-1765432337485",
+      "name": "Posts",
+      "folder": "posts",
+      "fileOrganization": "file",
+      "indexFileName": "index",
+      "linkBasePath": "/posts/",
+      "enabled": true
+    },
+    {
+      "id": "content-1765432392567",
+      "name": "Projects",
+      "folder": "projects",
+      "fileOrganization": "file",
+      "indexFileName": "index",
+      "linkBasePath": "/projects/",
+      "enabled": true
+    },
+    {
+      "id": "content-type-1769839757487-w482ctdm8",
+      "name": "Special Pages",
+      "folder": "special",
+      "fileOrganization": "file",
+      "enabled": true,
+      "indexFileName": "index",
+      "linkBasePath": "/"
+    }
+  ],
+  "frontmatterProperties": {
+    "content-1765432406133": {
+      "titleProperty": "title",
+      "dateProperty": "lastModified",
+      "descriptionProperty": "description",
+      "draftProperty": "draft",
+      "draftLogic": "true-draft",
+      "hasDraftStatus": true,
+      "imageProperty": "image",
+      "template": "---\ntitle: \"{{title}}\"\ndescription: \"\"\ncategory: \"\"\norder: 2\nversion: \"\"\nlastModified: {{date}}\nimage:\nimageAlt:\nhideCoverImage: false\nhideTOC: false\ndraft: false\nfeatured: true\n---\n"
+    },
+    "pages-1765432337485": {
+      "titleProperty": "title",
+      "descriptionProperty": "description",
+      "draftProperty": "draft",
+      "draftLogic": "true-draft",
+      "hasDraftStatus": true,
+      "template": "---\ntitle: \"{{title}}\"\ndescription: \"\"\nnoIndex: false\nhideTOC: false\ndraft: false\n---\n"
+    },
+    "posts-1765432337485": {
+      "titleProperty": "title",
+      "dateProperty": "date",
+      "descriptionProperty": "description",
+      "tagsProperty": "tags",
+      "draftProperty": "draft",
+      "draftLogic": "true-draft",
+      "hasDraftStatus": true,
+      "imageProperty": "image",
+      "template": "---\ntitle: \"{{title}}\"\ndate: {{date}}\ndescription: \"\"\ntags: []\nimage: \"\"\nimageAlt: \"\"\nimageOG: false\nhideCoverImage: false\nhideTOC: false\ntargetKeyword: \"\"\ndraft: false\n---\n"
+    },
+    "content-1765432392567": {
+      "titleProperty": "title",
+      "dateProperty": "date",
+      "descriptionProperty": "description",
+      "draftProperty": "draft",
+      "draftLogic": "true-draft",
+      "hasDraftStatus": true,
+      "imageProperty": "image",
+      "template": "---\ntitle: \"{{title}}\"\ndescription: \"\"\ndate: {{date}}\ncategories: []\nrepositoryUrl:\nprojectUrl: \"\"\nstatus: \"\"\nimage: \"\"\nimageAlt: \"\"\nhideCoverImage: false\nhideTOC: false\ndraft: false\nfeatured: false\n---\n"
+    },
+    "content-type-1769839757487-w482ctdm8": {
+      "titleProperty": "title",
+      "descriptionProperty": "description",
+      "hasDraftStatus": false,
+      "template": "---\ntitle: \"{{title}}\"\ndescription: \"\"\n---\n"
+    }
+  },
+  "attachmentHandlingMode": "subfolder",
+  "preset": "vanilla",
+  "presetName": "",
+  "presetsRepo": "davidvkimball/vault-cms-presets",
+  "enableEditingToolbar": false,
+  "enableExtendedFileTypes": false,
+  "enabledPlugins": [
+    "astro-composer",
+    "bases-cms",
+    "editing-toolbar",
+    "home-base",
+    "image-manager",
+    "property-over-file-name",
+    "seo",
+    "ui-tweaker",
+    "alias-file-name-history",
+    "explorer-focus",
+    "iconic",
+    "settings-search",
+    "tag-wrangler",
+    "zenmode"
+  ],
+  "disabledPlugins": [],
+  "theme": "",
+  "basesCMSConfig": {
+    "views": []
+  },
+  "astroComposerConfig": {
+    "customContentTypes": [],
+    "defaultTemplate": "",
+    "configFilePath": "",
+    "terminalProjectRootPath": ""
+  },
+  "seoConfig": {
+    "titleProperty": "title",
+    "scanDirectories": "docs,pages,posts,projects,special",
+    "useFilenameAsTitle": false,
+    "useFilenameAsSlug": true
+  },
+  "propertyOverFileName": {
+    "propertyKey": "title"
+  },
+  "imageManager": {
+    "enableRenameOnPaste": true,
+    "enableRenameOnDrop": true,
+    "imageNameTemplate": "{{fileName}}",
+    "attachmentLocation": "obsidian",
+    "customAttachmentPath": "./assets",
+    "defaultProvider": "unsplash",
+    "unsplashProxyServer": "",
+    "pexelsApiKey": "",
+    "pexelsApiKeySecretId": "pexels-api-key",
+    "pixabayApiKey": "",
+    "pixabayApiKeySecretId": "pixabay-api-key",
+    "defaultOrientation": "any",
+    "defaultImageSize": "large",
+    "enablePropertyPaste": true,
+    "propertyLinkFormat": "custom",
+    "customPropertyLinkFormat": "[[attachments/{image-url}]]",
+    "defaultPropertyName": "image",
+    "defaultIconPropertyName": "icon",
+    "autoConvertRemoteImages": false,
+    "convertOnNoteOpen": false,
+    "convertOnNoteSave": false,
+    "autoRename": false,
+    "dupNumberDelimiter": "-",
+    "dupNumberAtStart": false,
+    "disableRenameNotice": false,
+    "enableDescriptiveImages": true,
+    "insertSize": "",
+    "insertReferral": true,
+    "insertBackLink": false,
+    "appendReferral": false,
+    "banner": {
+      "properties": {
+        "imageProperty": "image",
+        "iconProperty": "icon"
+      },
+      "desktop": {
+        "enabled": true,
+        "height": 240,
+        "viewOffset": 0,
+        "noteOffset": -32,
+        "borderRadius": [
+          8,
+          8,
+          8,
+          8
+        ],
+        "padding": 0,
+        "fade": true,
+        "iconEnabled": false,
+        "iconSize": 96,
+        "iconRadius": 8,
+        "iconBackground": true,
+        "iconBorder": 2,
+        "iconFrame": true,
+        "iconAlignmentH": "flex-start",
+        "iconAlignmentV": "flex-end",
+        "iconOffsetX": 0,
+        "iconOffsetY": -24,
+        "animation": false
+      },
+      "tablet": {
+        "enabled": true,
+        "height": 190,
+        "viewOffset": 0,
+        "noteOffset": -32,
+        "borderRadius": [
+          8,
+          8,
+          8,
+          8
+        ],
+        "padding": 8,
+        "fade": true,
+        "iconEnabled": false,
+        "iconSize": 96,
+        "iconRadius": 8,
+        "iconBackground": true,
+        "iconBorder": 2,
+        "iconFrame": true,
+        "iconAlignmentH": "flex-start",
+        "iconAlignmentV": "flex-end",
+        "iconOffsetX": 0,
+        "iconOffsetY": -24
+      },
+      "phone": {
+        "enabled": true,
+        "height": 160,
+        "viewOffset": 0,
+        "noteOffset": -32,
+        "borderRadius": [
+          8,
+          8,
+          8,
+          8
+        ],
+        "padding": 8,
+        "fade": true,
+        "iconEnabled": false,
+        "iconSize": 56,
+        "iconRadius": 8,
+        "iconBackground": true,
+        "iconBorder": 2,
+        "iconFrame": true,
+        "iconAlignmentH": "flex-start",
+        "iconAlignmentV": "flex-end",
+        "iconOffsetX": 0,
+        "iconOffsetY": -24
+      }
+    },
+    "supportedExtensions": [
+      "md"
+    ],
+    "debugMode": false
+  },
+  "homeBase": {
+    "homeBasePath": "bases/Home.base",
+    "homeBaseType": "File",
+    "homeBaseValue": "bases/Home.base",
+    "openOnStartup": true,
+    "openViewMode": "default",
+    "openMode": "replace-all",
+    "manualOpenMode": "retain",
+    "replaceNewTab": false,
+    "newTabMode": "only-when-empty",
+    "openWhenAllTabsClosed": false,
+    "keepExistingTabs": false,
+    "useDifferentFileForNewTab": false,
+    "newTabType": "File",
+    "newTabValue": "bases/Home.base",
+    "newTabSeparateMobile": false,
+    "mobileNewTabType": "Graph view",
+    "mobileNewTabValue": "",
+    "showStickyHomeIcon": true,
+    "stickyIconName": "lucide-home",
+    "hideHomeTabHeader": true,
+    "replaceMobileNewTab": false,
+    "separateMobile": false,
+    "mobileHomeBasePath": "",
+    "mobileHomeBaseType": "File",
+    "mobileHomeBaseValue": "",
+    "commandOnOpen": "",
+    "revertView": false,
+    "autoScroll": false,
+    "hideReleaseNotes": false,
+    "openWhenEmpty": false,
+    "stickyIconReplaceTab": false
+  },
+  "explorerFocus": {},
+  "ignoreConfig": {
+    "gitIgnoreConfigured": true,
+    "viteIgnoreConfigured": true
+  },
+  "gitConfig": {
+    "enabled": false,
+    "isPrivate": true,
+    "branchName": "main",
+    "autoConfigureObsidianGit": true
+  },
+  "runWizardOnStartup": false,
+  "wizardCompleted": true,
+  "enableMdxSupport": false,
+  "defaultContentTypeId": "posts-1765432337485"
+}

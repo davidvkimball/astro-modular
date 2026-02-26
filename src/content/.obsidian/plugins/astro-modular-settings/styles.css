@@ -1,5 +1,47 @@
 /* Astro Modular Settings Plugin Styles */
 
+/* Preset Warning Modal Styles */
+.preset-warning-modal-header {
+	margin-top: 0;
+}
+
+.preset-warning-message {
+	margin-bottom: 16px;
+}
+
+.preset-warning-changes-list {
+	margin-bottom: 24px;
+	padding-left: 20px;
+}
+
+.preset-warning-list-item {
+	margin-bottom: 4px;
+}
+
+.preset-warning-question {
+	font-weight: bold;
+	margin-bottom: 24px;
+}
+
+.modal-button-container {
+	display: flex;
+	gap: 12px;
+	justify-content: flex-end;
+}
+
+/* Hide ribbon icon from context menu when removed */
+body[data-astro-modular-ribbon-removed="true"] .menu-item:has(svg[data-lucide="wand-sparkles"]),
+body[data-astro-modular-ribbon-removed="true"] .menu-item:has(.lucide-wand-sparkles),
+body[data-astro-modular-ribbon-removed="true"] .menu-item .menu-item-icon:has(svg[data-lucide="wand-sparkles"]),
+body[data-astro-modular-ribbon-removed="true"] .menu-item .menu-item-icon:has(.lucide-wand-sparkles) {
+	display: none !important;
+}
+
+/* Wizard skip button opacity */
+.wizard-skip-button {
+	opacity: 0.6;
+}
+
 /* Wizard Modal Styles */
 .astro-modular-wizard {
 	font-family: var(--font-family);
@@ -28,12 +70,14 @@
 
 .wizard-progress {
 	display: flex;
-	align-items: center;
-	gap: 15px;
+	flex-direction: column;
+	gap: 8px;
+	margin-bottom: 1rem;
+	margin-top: 1rem;
 }
 
 .progress-bar {
-	flex: 1;
+	width: 100%;
 	height: 12px !important;
 	background: var(--background-modifier-border);
 	border-radius: 4px;
@@ -65,6 +109,8 @@
 	font-size: 14px;
 	color: var(--text-muted);
 	font-weight: 500;
+	text-align: center;
+	margin-top: 4px;
 }
 
 .wizard-content {
@@ -91,7 +137,8 @@
 }
 
 .welcome-content h2 {
-	margin-bottom: 15px;
+	margin-bottom: 8px;
+	margin-top: 0;
 	color: var(--text-normal);
 }
 
@@ -142,7 +189,8 @@
 .features-selection h2,
 .plugin-config h2,
 .finalize-step h2 {
-	margin-bottom: 15px;
+	margin-bottom: 8px;
+	margin-top: 0;
 	color: var(--text-normal);
 }
 
@@ -445,11 +493,11 @@
 	transition: transform 0.2s ease;
 }
 
-.feature-toggle input[type="checkbox"]:checked + .toggle-slider {
+.feature-toggle input[type="checkbox"]:checked+.toggle-slider {
 	background: var(--interactive-accent);
 }
 
-.feature-toggle input[type="checkbox"]:checked + .toggle-slider::before {
+.feature-toggle input[type="checkbox"]:checked+.toggle-slider::before {
 	transform: translateX(20px);
 }
 
@@ -484,6 +532,11 @@
 	border-color: var(--color-red);
 }
 
+.plugin-item.partially-configured {
+	border-color: #f59e0b;
+	/* Orange/amber color */
+}
+
 .plugin-icon {
 	display: flex;
 	align-items: center;
@@ -499,8 +552,14 @@
 	color: var(--text-error);
 }
 
+.plugin-item.partially-configured .plugin-icon {
+	color: #f59e0b;
+	/* Orange/amber color to match border */
+}
+
 .plugin-info h3 {
-	margin: 0 0 5px 0;
+	margin: 0 0 5px 0 !important;
+	padding: 0 !important;
 	color: var(--text-normal);
 	font-size: 14px;
 }
@@ -509,6 +568,18 @@
 	margin: 0;
 	color: var(--text-muted);
 	font-size: 12px;
+}
+
+/* Fix indentation for all h3 elements in settings */
+.astro-modular-settings h3 {
+	margin-left: 0 !important;
+	padding-left: 0 !important;
+}
+
+/* Fix indentation for h3 in plugin items specifically */
+.astro-modular-settings .plugin-item .plugin-info h3 {
+	margin-left: 0 !important;
+	padding-left: 0 !important;
 }
 
 .config-options {
@@ -584,12 +655,22 @@
 }
 
 /* Settings Tab Styles - Minimal and Clean */
+/* Override parent padding to get full width, then apply padding to children */
+.vertical-tab-content:has(.astro-modular-settings),
+.vertical-tab-container:has(.astro-modular-settings) {
+	padding: 0 !important;
+	margin: 0 !important;
+}
+
 .astro-modular-settings {
 	font-family: var(--font-family);
 	height: 100%;
+	width: 100%;
 	display: flex;
 	flex-direction: column;
 	overflow: hidden;
+	margin: 0;
+	padding: 0;
 }
 
 /* Vertical Tab Content (Shell Commands style) - SCOPED to this plugin only */
@@ -608,17 +689,24 @@
 }
 
 .astro-modular-settings .tab-nav {
+	position: sticky;
+	top: 0;
+	z-index: 0;
 	display: flex;
 	border-bottom: 1px solid var(--background-modifier-border);
 	margin: 0;
-	padding: 0;
+	padding: var(--size-4-8) var(--size-4-12) 0 var(--size-4-12);
 	gap: 0;
-	background: var(--background-primary);
 	overflow-x: auto;
 	overflow-y: hidden;
 	scrollbar-width: thin;
 	scrollbar-color: var(--background-modifier-border) transparent;
 	-webkit-overflow-scrolling: touch;
+	pointer-events: none;
+}
+
+.astro-modular-settings .tab-nav .tab-button {
+	pointer-events: auto;
 }
 
 .astro-modular-settings .tab-nav::-webkit-scrollbar {
@@ -668,10 +756,11 @@
 
 .astro-modular-settings .tab-content {
 	flex: 1;
-	padding: 20px;
+	padding: var(--size-4-12) var(--size-4-12) var(--size-4-16) var(--size-4-12);
 	margin: 0;
 	overflow-y: auto;
 	min-height: 0;
+	height: 100%;
 }
 
 .astro-modular-settings .tab-content-container {
@@ -694,9 +783,26 @@
 	margin-bottom: 30px;
 }
 
-.astro-modular-settings .settings-section h2 {
-	margin-bottom: 10px;
-	color: var(--text-normal);
+/* Fix indentation for heading settings - remove padding/margin */
+/* Only apply to headings within .settings-section (Navigation pages and Social links) */
+/* This excludes headings created by createSettingsGroup in other tabs */
+.astro-modular-settings .settings-section .setting-item-heading {
+	margin-left: 0 !important;
+	margin-right: 0 !important;
+	padding-left: 0 !important;
+	padding-right: 0 !important;
+	border: none !important;
+}
+
+.astro-modular-settings .settings-section .setting-item-heading .setting-item-name {
+	margin: 0 !important;
+	padding: 0 !important;
+	font-weight: var(--font-medium);
+}
+
+.astro-modular-settings .settings-section .setting-item-heading .setting-item-info {
+	margin: 0 !important;
+	padding: 0 !important;
 }
 
 .astro-modular-settings .settings-section p {
@@ -709,13 +815,23 @@
 	background: var(--background-secondary);
 	padding: 20px;
 	border-radius: 8px;
-	border: 1px solid var(--background-modifier-border);
 	margin: 20px 0;
 }
 
-.astro-modular-settings .config-info h3 {
-	margin: 0 0 15px 0;
-	color: var(--text-normal);
+/* Fix heading indentation in config-info */
+.astro-modular-settings .config-info .setting-item-heading,
+.astro-modular-settings .config-info .setting-item.setting-item-heading {
+	margin-left: 0 !important;
+	margin-right: 0 !important;
+	padding-left: 0 !important;
+	padding-right: 0 !important;
+	border: none !important;
+}
+
+.astro-modular-settings .config-info .setting-item-heading .setting-item-name,
+.astro-modular-settings .config-info .setting-item.setting-item-heading .setting-item-name {
+	margin: 0 0 15px 0 !important;
+	padding: 0 !important;
 }
 
 .astro-modular-settings .config-item {
@@ -727,6 +843,18 @@
 	margin-bottom: 0;
 }
 
+/* Config items container - ensure left alignment */
+.astro-modular-settings .config-items {
+	width: 100%;
+	display: block;
+}
+
+.astro-modular-settings .setting-item:has(.config-items) {
+	display: block !important;
+	flex-direction: column !important;
+	align-items: flex-start !important;
+}
+
 /* Form elements in settings - Match Shell Commands exactly */
 .astro-modular-settings .setting-item {
 	margin-bottom: 16px;
@@ -736,8 +864,24 @@
 	margin-bottom: 0;
 }
 
+/* Ensure last setting in group without heading has proper spacing before next heading */
+.astro-modular-settings .setting-group:not(:has(.setting-item-heading)) .setting-items>.setting-item:last-child {
+	margin-bottom: var(--size-4-6) !important;
+}
+
+/* Direct spacing when heading follows a group without heading (sibling selector) */
+.astro-modular-settings .setting-group:not(:has(.setting-item-heading))+.setting-item-heading,
+.astro-modular-settings .setting-group:not(:has(.setting-item-heading))~.setting-item-heading {
+	margin-top: var(--size-4-6) !important;
+}
+
+/* Also handle assets-section case */
+.astro-modular-settings .setting-group:not(:has(.setting-item-heading))+.assets-section .setting-item-heading {
+	margin-top: var(--size-4-6) !important;
+}
+
 /* Remove top border from first setting item when it comes after an empty settings-section */
-.astro-modular-settings .tab-content .settings-section:empty + .setting-item {
+.astro-modular-settings .tab-content .settings-section:empty+.setting-item {
 	border-top: none !important;
 }
 
@@ -748,6 +892,15 @@
 	line-height: 1.4;
 }
 
+/* Footer content setting - add spacing between description and textarea */
+.astro-modular-settings .footer-content-setting .setting-item-description {
+	margin-bottom: var(--size-4-3) !important;
+}
+
+.astro-modular-settings .footer-content-setting .setting-item-control {
+	display: block !important;
+}
+
 .astro-modular-settings .setting-item-control {
 	margin: 0;
 }
@@ -756,6 +909,69 @@
 .astro-modular-settings .setting-item-control select,
 .astro-modular-settings .setting-item-control textarea {
 	margin: 0;
+}
+
+/* Standardize text input widths to match dropdown width (exclude textareas) */
+.astro-modular-settings .setting-item-control input[type="text"] {
+	width: 200px !important;
+}
+
+/* Standardize dropdown widths to match text input width - override all conflicting rules */
+.astro-modular-settings .setting-item-control select,
+.astro-modular-settings .setting-item select,
+.astro-modular-settings select.dropdown {
+	width: 200px !important;
+	min-width: 200px !important;
+	max-width: 200px !important;
+}
+
+/* Override the .setting-group select rule that sets width to 100% */
+.astro-modular-settings .setting-group select {
+	width: 200px !important;
+	min-width: 200px !important;
+	max-width: 200px !important;
+}
+
+/* Fix assets header heading with folder button */
+.astro-modular-settings .assets-section .setting-item-heading {
+	position: relative;
+}
+
+.astro-modular-settings .assets-section .setting-item-heading .setting-item-control {
+	position: relative;
+}
+
+/* Fix theme pills container - allow wrapping */
+.astro-modular-settings .theme-pills-container {
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.astro-modular-settings .theme-pills-wrapper {
+	width: 100%;
+	box-sizing: border-box;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+/* Theme pill styling - restore personality */
+.astro-modular-settings .theme-pill {
+	display: inline-flex;
+	align-items: center;
+	padding: 6px 12px;
+	border-radius: 16px;
+	font-size: 12px;
+	font-weight: 500;
+	gap: 6px;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	border: 1px solid;
+}
+
+.astro-modular-settings .theme-pill:hover {
+	transform: translateY(-1px);
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Button spacing in settings */
@@ -800,21 +1016,21 @@
 		max-width: 95vw;
 		margin: 10px;
 	}
-	
+
 	.template-options,
 	.theme-options,
 	.org-options {
 		grid-template-columns: 1fr;
 	}
-	
+
 	.welcome-features {
 		grid-template-columns: 1fr;
 	}
-	
+
 	.wizard-buttons {
 		flex-direction: column;
 	}
-	
+
 	.wizard-button {
 		width: 100%;
 		text-align: center;
@@ -922,20 +1138,25 @@
 	gap: 1rem;
 }
 
-.setting-group {
+/* SCOPED to plugin UI only */
+.astro-modular-settings .setting-group,
+.astro-modular-wizard .setting-group {
 	display: flex;
 	flex-direction: column;
 	gap: 0.5rem;
 }
 
-.setting-group label {
+.astro-modular-settings .setting-group label,
+.astro-modular-wizard .setting-group label {
 	font-weight: 500;
 	color: var(--text-normal);
 	font-size: 0.875rem;
 }
 
-.setting-group input,
-.setting-group select {
+.astro-modular-settings .setting-group input,
+.astro-modular-settings .setting-group select,
+.astro-modular-wizard .setting-group input,
+.astro-modular-wizard .setting-group select {
 	/* Use Obsidian's native form control styling */
 	width: 100%;
 }
@@ -1007,8 +1228,6 @@
 
 .deployment-header h3 {
 	margin: 0;
-	font-size: 1.125rem;
-	font-weight: 600;
 	color: var(--text-normal);
 }
 
@@ -1030,7 +1249,6 @@
 .site-info-form h3 {
 	margin: 0 0 15px 0;
 	color: var(--text-normal);
-	font-size: 1.125rem;
 }
 
 .form-group {
@@ -1082,7 +1300,6 @@
 .nav-section h3 {
 	margin: 0 0 5px 0;
 	color: var(--text-normal);
-	font-size: 1.125rem;
 }
 
 .nav-section p {
@@ -1105,7 +1322,8 @@
 	border-radius: 6px;
 	transition: all 0.2s ease;
 	display: flex;
-	align-items: flex-start;
+	flex-direction: column;
+	align-items: stretch;
 	gap: 12px;
 	cursor: move;
 }
@@ -1127,9 +1345,11 @@
 
 .nav-item-content {
 	display: flex;
+	flex-direction: row;
 	align-items: center;
 	gap: 12px;
 	flex: 1;
+	width: 100%;
 }
 
 .nav-item-fields {
@@ -1137,26 +1357,35 @@
 	flex: 1;
 	gap: 10px;
 	align-items: center;
+	min-width: 0;
+	/* Allow flex items to shrink below their content size */
 }
 
 .nav-item-fields .nav-title {
-	flex: 0 0 100px; /* Fixed width for title */
+	flex: 0 0 120px;
+	/* Fixed width for title */
+	min-width: 0;
+	max-width: 120px;
 	padding: 6px 10px;
 	border: 1px solid var(--background-modifier-border);
 	border-radius: 4px;
 	background: var(--background-primary);
 	color: var(--text-normal);
 	font-size: 13px;
+	box-sizing: border-box;
 }
 
 .nav-item-fields .nav-url {
-	flex: 1; /* Takes remaining space */
+	flex: 1;
+	/* Takes remaining space */
+	min-width: 0;
 	padding: 6px 10px;
 	border: 1px solid var(--background-modifier-border);
 	border-radius: 4px;
 	background: var(--background-primary);
 	color: var(--text-normal);
 	font-size: 13px;
+	box-sizing: border-box;
 }
 
 .nav-item-fields .nav-title:focus,
@@ -1206,8 +1435,36 @@
 }
 
 .nav-remove {
-	padding: 6px 12px;
+	padding: 6px;
 	font-size: 12px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 28px;
+	height: 28px;
+}
+
+.nav-child-remove {
+	padding: 6px;
+	font-size: 12px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 28px;
+	height: 28px;
+	/* Override Obsidian's global button styles that affect child buttons */
+	--text-color: var(--text-normal);
+	-webkit-app-region: no-drag;
+	color: var(--text-color);
+	border-radius: var(--button-radius);
+	border: 0;
+	height: 28px;
+	font-weight: var(--input-font-weight);
+	cursor: var(--cursor);
+	font-family: inherit;
+	outline: none;
+	user-select: none;
+	white-space: nowrap;
 }
 
 /* Navigation add button uses Obsidian's native styling */
@@ -1230,13 +1487,93 @@
 	text-decoration: underline;
 }
 
-.nav-item {
-	cursor: grab;
+
+/* Navigation children container - appears on new line */
+.nav-children-container {
+	margin-top: 12px;
+	padding-top: 12px;
+	border-top: 1px solid var(--background-modifier-border);
+	width: 100%;
+	display: block;
+	clear: both;
+}
+
+.nav-children-label {
+	font-size: 12px;
+	font-weight: 500;
+	color: var(--text-muted);
+	margin-bottom: 8px;
+}
+
+.nav-children {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	margin-left: 16px;
+	padding-left: 16px;
+	border-left: 2px solid var(--background-modifier-border);
+}
+
+.nav-child-item {
+	display: flex;
+	align-items: center;
+	gap: 10px;
 	padding: 8px;
+	background: var(--background-secondary);
 	border: 1px solid var(--background-modifier-border);
 	border-radius: 4px;
-	margin-bottom: 8px;
-	background-color: var(--background-primary);
+}
+
+.nav-child-item .nav-item-fields {
+	display: flex;
+	flex: 1;
+	gap: 10px;
+}
+
+.nav-child-item .nav-child-title,
+.nav-child-item .nav-child-url {
+	padding: 6px 10px;
+	border: 1px solid var(--background-modifier-border);
+	border-radius: 4px;
+	background: var(--background-primary);
+	color: var(--text-normal);
+	font-size: 13px;
+}
+
+.nav-child-item .nav-child-title {
+	flex: 0 0 120px;
+}
+
+.nav-child-item .nav-child-url {
+	flex: 1;
+}
+
+.nav-child-item .nav-child-title:focus,
+.nav-child-item .nav-child-url:focus {
+	outline: none;
+	border-color: var(--interactive-accent);
+	box-shadow: 0 0 0 2px var(--interactive-accent-2);
+}
+
+.nav-item-actions {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+	flex-shrink: 0;
+	/* Prevent buttons from shrinking */
+}
+
+.nav-add-child {
+	padding: 6px 12px;
+	font-size: 12px;
+	white-space: nowrap;
+	/* Prevent button text from wrapping */
+}
+
+.nav-add {
+	margin-top: 10px;
+	padding: 8px 16px;
+	font-size: 14px;
 }
 
 .nav-item:hover {
@@ -1255,21 +1592,26 @@
 	margin-top: 15px;
 }
 
-.setting-group {
+/* SCOPED to plugin UI only - Profile picture and comments options */
+.astro-modular-settings .setting-group,
+.astro-modular-wizard .setting-group {
 	display: flex;
 	flex-direction: column;
 	gap: 5px;
 }
 
-.setting-group label {
+.astro-modular-settings .setting-group label,
+.astro-modular-wizard .setting-group label {
 	font-weight: 500;
 	color: var(--text-normal);
 	font-size: 13px;
 	margin-bottom: 3px;
 }
 
-.setting-group input,
-.setting-group select {
+.astro-modular-settings .setting-group input,
+.astro-modular-settings .setting-group select,
+.astro-modular-wizard .setting-group input,
+.astro-modular-wizard .setting-group select {
 	width: 100%;
 	padding: 6px 10px;
 	border: 1px solid var(--background-modifier-border);
@@ -1280,8 +1622,10 @@
 	transition: border-color 0.2s ease;
 }
 
-.setting-group input:focus,
-.setting-group select:focus {
+.astro-modular-settings .setting-group input:focus,
+.astro-modular-settings .setting-group select:focus,
+.astro-modular-wizard .setting-group input:focus,
+.astro-modular-wizard .setting-group select:focus {
 	outline: none;
 	border-color: var(--interactive-accent);
 	box-shadow: 0 0 0 2px var(--interactive-accent-2);
@@ -1486,34 +1830,46 @@
 		grid-template-columns: 1fr;
 		gap: 10px;
 	}
-	
+
 	.profile-picture-options,
 	.comments-options {
 		padding: 10px;
 	}
-	
+
 	.color-preview-container {
 		gap: 6px;
 	}
-	
+
 	.color-box {
 		width: 18px;
 		height: 18px;
 	}
-	
+
 	.simple-color-input {
 		flex-direction: column;
 		align-items: flex-start;
 		gap: 8px;
 	}
-	
+
 	.simple-color-input label {
 		min-width: auto;
 	}
 }
 
-/* Fix checkbox checkmark centering - use proper vertical centering */
-input[type=checkbox]:checked:after {
+/* Group settings compatibility styling for older Obsidian builds (< 1.11.0) */
+/* Scoped to only this plugin's settings container to avoid affecting other plugins */
+.astro-modular-settings-settings-compat .setting-group-heading h3 {
+	margin: 0 0 0.75rem;
+	padding-bottom: 0.5rem;
+	padding-top: 0.5rem;
+	font-size: 1rem;
+	font-weight: 600;
+	border-bottom: none !important;
+}
+
+/* Fix checkbox checkmark centering - SCOPED to plugin UI only */
+.astro-modular-settings input[type=checkbox]:checked:after,
+.astro-modular-wizard input[type=checkbox]:checked:after {
 	content: "";
 	inset-inline-start: -1px;
 	position: absolute;
@@ -1523,8 +1879,66 @@ input[type=checkbox]:checked:after {
 	height: var(--checkbox-size);
 	display: block;
 	background-color: var(--checkbox-marker-color);
+	mask-position: 52% 52%;
 	-webkit-mask-position: 52% 52%;
+	mask-size: 65%;
 	-webkit-mask-size: 65%;
+	mask-repeat: no-repeat;
 	-webkit-mask-repeat: no-repeat;
-	-webkit-mask-image: url(data:image/svg+xml; utf8, <svg width="12px"height="10px"viewBox="0 0 12 8"version="1.1"xmlns="http://www.w3.org/2000/svg"xmlns:xlink="http://www.w3.org/1999/xlink"><g stroke="none"stroke-width="1"fill="none"fill-rule="evenodd"><g transform="translate%28-4.000000, -6.000000%29"fill="%23000000"><path d="M8.1043257,14.0367999 L4.52468714,10.5420499 C4.32525014,10.3497722 4.32525014,10.0368095 4.52468714,9.8424863 L5.24777413,9.1439454 C5.44721114,8.95166768 5.77142411,8.95166768 5.97086112,9.1439454 L8.46638057,11.5903727 L14.0291389,6.1442083 C14.2285759,5.95193057 14.5527889,5.95193057 14.7522259,6.1442083 L15.4753129,6.84377194 C15.6747499,7.03604967 15.6747499,7.35003511 15.4753129,7.54129009 L8.82741268,14.0367999 C8.62797568,14.2290777 8.3037627,14.2290777 8.1043257,14.0367999"></path></g></g></svg>);
+	mask-image: url("data:image/svg+xml,%3Csvg width='12px' height='10px' viewBox='0 0 12 8' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3Cg stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cg transform='translate(-4.000000, -6.000000)' fill='%23000000'%3E%3Cpath d='M8.1043257,14.0367999 L4.52468714,10.5420499 C4.32525014,10.3497722 4.32525014,10.0368095 4.52468714,9.8424863 L5.24777413,9.1439454 C5.44721114,8.95166768 5.77142411,8.95166768 5.97086112,9.1439454 L8.46638057,11.5903727 L14.0291389,6.1442083 C14.2285759,5.95193057 14.5527889,5.95193057 14.7522259,6.1442083 L15.4753129,6.84377194 C15.6747499,7.03604967 15.6747499,7.35003511 15.4753129,7.54129009 L8.82741268,14.0367999 C8.62797568,14.2290777 8.3037627,14.2290777 8.1043257,14.0367999'%3E%3C/path%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+	-webkit-mask-image: url("data:image/svg+xml,%3Csvg width='12px' height='10px' viewBox='0 0 12 8' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3Cg stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cg transform='translate(-4.000000, -6.000000)' fill='%23000000'%3E%3Cpath d='M8.1043257,14.0367999 L4.52468714,10.5420499 C4.32525014,10.3497722 4.32525014,10.0368095 4.52468714,9.8424863 L5.24777413,9.1439454 C5.44721114,8.95166768 5.77142411,8.95166768 5.97086112,9.1439454 L8.46638057,11.5903727 L14.0291389,6.1442083 C14.2285759,5.95193057 14.5527889,5.95193057 14.7522259,6.1442083 L15.4753129,6.84377194 C15.6747499,7.03604967 15.6747499,7.35003511 15.4753129,7.54129009 L8.82741268,14.0367999 C8.62797568,14.2290777 8.3037627,14.2290777 8.1043257,14.0367999'%3E%3C/path%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* ========================================
+   Settings Refactor
+   ======================================== */
+
+.astro-modular-settings-tab-root {
+	display: block;
+	min-height: 0;
+}
+
+/* Settings tabs layout and navigation */
+.astro-modular-settings-tabs {
+	display: block;
+	min-height: 0;
+}
+
+.astro-modular-settings-tabs-nav {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--size-2-3);
+	flex-shrink: 0;
+	margin-bottom: var(--size-4-4);
+}
+
+.astro-modular-settings-tab-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 6px 12px;
+	font-size: var(--font-ui-small);
+}
+
+/* Specific active state matching Obsidian's clickable-icon behavior but with cta emphasis */
+.astro-modular-settings-tab-button.is-active {
+	background-color: var(--interactive-accent);
+	color: var(--text-on-accent);
+}
+
+.astro-modular-settings-tabs-content {
+	position: static;
+	min-height: 0;
+	overflow: visible;
+	box-sizing: border-box;
+	padding-inline-end: 0;
+}
+
+/* Hide tabs by default, show only active tab */
+.astro-modular-settings-tab {
+	display: none;
+}
+
+.astro-modular-settings-tab.is-active {
+	display: block;
 }

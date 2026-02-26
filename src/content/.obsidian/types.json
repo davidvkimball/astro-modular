@@ -3,7 +3,6 @@
     "aliases": "aliases",
     "cssclasses": "multitext",
     "tags": "tags",
-    "pubDate": "date",
     "imageOG": "checkbox",
     "draft": "checkbox",
     "noIndex": "checkbox",

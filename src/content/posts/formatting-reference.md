@@ -54,19 +54,19 @@ Our theme supports Obsidian-style callouts with proper icons and styling. Each c
 
 ### Basic Callouts
 
-> [!note] Note
+> [!note]
 > This is a note callout. Use it for general information that readers should be aware of.
 
-> [!tip] Tip
+> [!tip]
 > This is a tip callout. Perfect for helpful suggestions and best practices.
 
-> [!important] Important
+> [!important]
 > This is an important callout. Use it to highlight critical information.
 
-> [!warning] Warning
+> [!warning]
 > This is a warning callout. Use it to alert readers about potential issues.
 
-> [!caution] Caution
+> [!caution]
 > This is a caution callout. Use it for dangerous or risky situations.
 
 ### Custom Titles
@@ -92,21 +92,25 @@ You can make callouts collapsible by adding `+` (expanded by default) or `-` (co
 
 ### Extended Callout Types
 
-> [!info] Info
+> [!info]
 > Info callouts provide additional context or details.
 
-> [!success] Success
+> [!success]
 > Success callouts highlight positive outcomes or achievements.
 
-> [!question] Question
+> [!question]
 > Question callouts can be used to pose questions or highlight areas of uncertainty.
 
-> [!example] Example
+> [!example]
 > Example callouts are perfect for showcasing code examples or demonstrations.
 
-> [!quote] Quote
+> [!quote]
 > Quote callouts can be used to highlight important quotes or references.
 
+### Callouts with Formatting 
+
+> [!example]
+> You can use markdown syntax in callout content like *italics*, **bolded text**, or [links](posts/formatting-reference.md#Media%20Content).
 ## Media Content
 
 ### Images
@@ -122,21 +126,21 @@ This theme automatically arranges consecutive images in responsive grid layouts 
 
 **Two Images Side by Side**
 
-![Mountain landscape](https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop)
-![Ocean view](https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=800&h=600&fit=crop)
+![Mountain landscape](attachments/mountain-landscape.jpg)
+![Ocean view](attachments/ocean-view.jpg)
 
 **Three Images in a Row**
 
-![Forest path](https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&h=600&fit=crop)
-![Desert sunset](https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop)
-![City skyline](https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800&h=600&fit=crop)
+![Forest path](attachments/forest-path.jpg)
+![Desert sunset](attachments/desert-sunset.jpg)
+![City skyline](attachments/city-skyline.jpg)
 
 **Four Images in a Row**
 
-![Winter landscape](https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=800&h=600&fit=crop)
-![Spring flowers](https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=800&h=600&fit=crop)
-![Summer beach](https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=600&fit=crop)
-![Autumn leaves](https://images.unsplash.com/photo-1441260038675-7329ab4cc264?w=800&h=600&fit=crop)
+![Winter landscape](attachments/winter-landscape.jpg)
+![Spring flowers](attachments/spring-flowers.jpg)
+![Summer beach](attachments/summer-beach.jpg)
+![Autumn leaves](attachments/autumn-leaves.jpg)
 
 **How to Use Multiple Images / Gallery**
 
@@ -197,10 +201,10 @@ Here's an [external link](https://obsidian.md).
 
 You can create internal links using double brackets (wikilinks) or with standard markdown. 
 
-For example: [[getting-started|Getting Started]] or [Astro Suite Obsidian Vault Guide (Astro Modular)](obsidian-vault-guide.md).
+For example: [[getting-started|Getting Started]] or [Astro Suite Obsidian Vault Guide (Astro Modular)](vault-cms-guide.md).
 
 ```markdown
-For example: [[getting-started|Getting Started]] or [Astro Suite Vault (Modular) Guide](astro-suite-vault-modular-guide).
+For example: [[getting-started|Getting Started]] or [Obsidian Embeds Demo](obsidian-embeds-demo).
 ```
 
 Here's an internal link with an anchor: [[sample-folder-based-post/index#Benefits of Folder-Based Approach|Benefits of Folder-Based Approach]]
@@ -213,7 +217,7 @@ Here's the same internal link with an anchor formatted in 4 different ways (both
 [Choose Your Workflow](/posts/getting-started#choose-your-workflow)
 
 
-Here's a relative link: [Mermaid Diagram Test](mermaid-diagrams.md) 
+Here's a relative link: [Obsidian Embeds Demo](obsidian-embeds-demo.md)
 ### Reference Links
 
 This is a [reference link][1] and this is another [reference link][markdown].
@@ -349,6 +353,10 @@ This content is hidden by default and can be expanded by clicking the summary.
 </details>
 
 <small>Small text for fine print</small>
+
+<sup>Superscript</sup>
+
+<sub>Subscript</sub>
 
 ### Keyboard Shortcuts
 

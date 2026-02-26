@@ -56,23 +56,89 @@ const paletteIcon = allSectionsDisabled ? 'search' : 'command';
         {siteConfig.navigation.showNavigation && (  
     <nav class={`hidden md:flex items-center ${  
       siteConfig.navigation.style === 'minimal' ? `space-x-5 ${siteConfig.featureButton === 'none' && !siteConfig.commandPalette.enabled ? '' : 'mr-4'}` : 'space-x-5' }`} aria-label="Main navigation">
-            {siteConfig.navigation.pages.map(page => (
-              <a 
-                href={page.url}
-                class={
-                  siteConfig.navigation.style === 'minimal' 
-                    ? `flex items-center space-x-1 text-xs font-normal transition-colors hover:text-highlight-600 dark:hover:text-highlight-400 text-primary-500 dark:text-primary-400`
-                    : `flex items-center space-x-1 text-sm font-medium transition-colors hover:text-highlight-600 dark:hover:text-highlight-400 text-primary-600 dark:text-primary-300`
-                }
-                target={page.url.startsWith('http') ? '_blank' : undefined}
-                aria-label={`Navigate to ${page.title}`}
-              >
-                <span>{siteConfig.navigation.style === 'minimal' ? page.title.toLowerCase() : page.title}</span>
-                {page.url.startsWith('http') && (
-                  <Icon name="external-link" class="w-3 h-3 text-primary-400 dark:text-primary-500" />
-                )}
-              </a>
-            ))}
+            {siteConfig.navigation.pages.map((page, index) => {
+              const hasChildren = page.children && page.children.length > 0;
+              const hasUrl = page.url && page.url.trim() !== '';
+              
+              if (hasChildren) {
+                // Parent item with children - dropdown menu
+                return (
+                  <div class="relative nav-dropdown-container" data-nav-index={index}>
+                    {hasUrl ? (
+                      // Clickable parent with dropdown
+                      <a 
+                        href={page.url}
+                        class={
+                          siteConfig.navigation.style === 'minimal' 
+                            ? `flex items-center space-x-1 text-xs font-normal transition-colors hover:text-highlight-600 dark:hover:text-highlight-400 text-primary-500 dark:text-primary-400`
+                            : `flex items-center space-x-1 text-sm font-medium transition-colors hover:text-highlight-600 dark:hover:text-highlight-400 text-primary-600 dark:text-primary-300`
+                        }
+                        target={page.url.startsWith('http') ? '_blank' : undefined}
+                        aria-label={`Navigate to ${page.title}`}
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                      >
+                        <span>{siteConfig.navigation.style === 'minimal' ? page.title.toLowerCase() : page.title}</span>
+                        {page.url.startsWith('http') && (
+                          <Icon name="external-link" class="w-3 h-3 text-primary-400 dark:text-primary-500" />
+                        )}
+                        <Icon name="chevron-down" class="w-3 h-3 ml-1 text-primary-400 dark:text-primary-500" />
+                      </a>
+                    ) : (
+                      // Dropdown-only parent (non-clickable trigger)
+                      <button
+                        class={
+                          siteConfig.navigation.style === 'minimal' 
+                            ? `flex items-center space-x-1 text-xs font-normal transition-colors hover:text-highlight-600 dark:hover:text-highlight-400 text-primary-500 dark:text-primary-400`
+                            : `flex items-center space-x-1 text-sm font-medium transition-colors hover:text-highlight-600 dark:hover:text-highlight-400 text-primary-600 dark:text-primary-300`
+                        }
+                        aria-label={`${page.title} menu`}
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                      >
+                        <span>{siteConfig.navigation.style === 'minimal' ? page.title.toLowerCase() : page.title}</span>
+                        <Icon name="chevron-down" class="w-3 h-3 ml-1 text-primary-400 dark:text-primary-500" />
+                      </button>
+                    )}
+                    {/* Dropdown menu */}
+                    <div class="nav-dropdown-menu absolute top-full left-0 mt-1 hidden bg-white dark:bg-primary-900 border border-primary-200 dark:border-primary-700 rounded-lg shadow-lg py-2 min-w-[200px] z-50">
+                      {page.children.map(child => (
+                        <a
+                          href={child.url || '#'}
+                          class="block px-4 py-2 text-sm text-primary-700 dark:text-primary-200 hover:text-highlight-600 dark:hover:text-highlight-400 transition-colors"
+                          target={child.url?.startsWith('http') ? '_blank' : undefined}
+                          aria-label={`Navigate to ${child.title}`}
+                        >
+                          {child.title}
+                          {child.url?.startsWith('http') && (
+                            <Icon name="external-link" class="w-3 h-3 ml-2 inline text-primary-400 dark:text-primary-500" />
+                          )}
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                );
+              } else {
+                // Regular navigation item without children
+                return (
+                  <a 
+                    href={page.url || '#'}
+                    class={
+                      siteConfig.navigation.style === 'minimal' 
+                        ? `flex items-center space-x-1 text-xs font-normal transition-colors hover:text-highlight-600 dark:hover:text-highlight-400 text-primary-500 dark:text-primary-400`
+                        : `flex items-center space-x-1 text-sm font-medium transition-colors hover:text-highlight-600 dark:hover:text-highlight-400 text-primary-600 dark:text-primary-300`
+                    }
+                    target={page.url?.startsWith('http') ? '_blank' : undefined}
+                    aria-label={`Navigate to ${page.title}`}
+                  >
+                    <span>{siteConfig.navigation.style === 'minimal' ? page.title.toLowerCase() : page.title}</span>
+                    {page.url?.startsWith('http') && (
+                      <Icon name="external-link" class="w-3 h-3 text-primary-400 dark:text-primary-500" />
+                    )}
+                  </a>
+                );
+              }
+            })}
           </nav>
         )}
       </div>
@@ -143,20 +209,79 @@ const paletteIcon = allSectionsDisabled ? 'search' : 'command';
       <div id="mobile-menu" class="md:hidden hidden py-4 border-t border-primary-200 dark:border-primary-700" role="dialog"
           aria-modal="true"
           aria-label="Mobile navigation menu">
-        <nav class="flex flex-col space-y-3">
-          {siteConfig.navigation.pages.map(page => (
-            <a 
-              href={page.url}
-              class="flex items-center justify-between px-3 py-2 text-primary-600 dark:text-primary-300 hover:text-highlight-600 dark:hover:text-highlight-400 hover:bg-primary-50 dark:hover:bg-primary-800 transition-colors font-medium rounded-md"
-              target={page.url.startsWith('http') ? '_blank' : undefined}
-              aria-label={`Navigate to ${page.title}`}
-            >
-              <span>{page.title}</span>
-              {page.url.startsWith('http') && (
-                <Icon name="external-link" class="w-3 h-3 text-primary-400 dark:text-primary-500" />
-              )}
-            </a>
-          ))}
+        <nav class="flex flex-col space-y-1">
+          {siteConfig.navigation.pages.map((page, index) => {
+            const hasChildren = page.children && page.children.length > 0;
+            const hasUrl = page.url && page.url.trim() !== '';
+            
+            if (hasChildren) {
+              // Parent item with children - accordion
+              return (
+                <div class="mobile-nav-parent" data-mobile-nav-index={index}>
+                  <div class="flex items-center justify-between">
+                    {hasUrl ? (
+                      // Clickable parent with expand button
+                      <a 
+                        href={page.url}
+                        class="flex-1 flex items-center justify-between px-3 py-2 text-primary-600 dark:text-primary-300 hover:text-highlight-600 dark:hover:text-highlight-400 hover:bg-primary-50 dark:hover:bg-primary-800 transition-colors font-medium rounded-md"
+                        target={page.url.startsWith('http') ? '_blank' : undefined}
+                        aria-label={`Navigate to ${page.title}`}
+                      >
+                        <span>{page.title}</span>
+                        {page.url.startsWith('http') && (
+                          <Icon name="external-link" class="w-3 h-3 text-primary-400 dark:text-primary-500" />
+                        )}
+                      </a>
+                    ) : (
+                      // Non-clickable parent (just title)
+                      <span class="flex-1 px-3 py-2 text-primary-600 dark:text-primary-300 font-medium">
+                        {page.title}
+                      </span>
+                    )}
+                    <button
+                      class="mobile-nav-toggle px-3 py-2 text-primary-500 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-800 rounded-md transition-colors"
+                      aria-label={`Toggle ${page.title} submenu`}
+                      aria-expanded="false"
+                      data-toggle-index={index}
+                    >
+                      <Icon name="chevron-down" class="w-4 h-4 transition-transform" />
+                    </button>
+                  </div>
+                  {/* Children menu (collapsed by default) */}
+                  <div class="mobile-nav-children hidden pl-4 pt-1">
+                    {page.children.map(child => (
+                      <a
+                        href={child.url || '#'}
+                        class="block px-3 py-2 text-sm text-primary-600 dark:text-primary-300 hover:text-highlight-600 dark:hover:text-highlight-400 hover:bg-primary-50 dark:hover:bg-primary-800 transition-colors font-medium rounded-md"
+                        target={child.url?.startsWith('http') ? '_blank' : undefined}
+                        aria-label={`Navigate to ${child.title}`}
+                      >
+                        {child.title}
+                        {child.url?.startsWith('http') && (
+                          <Icon name="external-link" class="w-3 h-3 ml-2 inline text-primary-400 dark:text-primary-500" />
+                        )}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              );
+            } else {
+              // Regular navigation item without children
+              return (
+                <a 
+                  href={page.url || '#'}
+                  class="flex items-center justify-between px-3 py-2 text-primary-600 dark:text-primary-300 hover:text-highlight-600 dark:hover:text-highlight-400 hover:bg-primary-50 dark:hover:bg-primary-800 transition-colors font-medium rounded-md"
+                  target={page.url?.startsWith('http') ? '_blank' : undefined}
+                  aria-label={`Navigate to ${page.title}`}
+                >
+                  <span>{page.title}</span>
+                  {page.url?.startsWith('http') && (
+                    <Icon name="external-link" class="w-3 h-3 text-primary-400 dark:text-primary-500" />
+                  )}
+                </a>
+              );
+            }
+          })}
         </nav>
       </div>
     )}
@@ -189,6 +314,77 @@ const paletteIcon = allSectionsDisabled ? 'search' : 'command';
         }
       });
     }
+
+    // Desktop dropdown menu hover behavior
+    const dropdownContainers = document.querySelectorAll('.nav-dropdown-container');
+    let hoverTimeout: ReturnType<typeof setTimeout> | null = null;
+
+    dropdownContainers.forEach(container => {
+      const trigger = container.querySelector('a, button');
+      const dropdown = container.querySelector('.nav-dropdown-menu') as HTMLElement;
+      
+      if (!trigger || !dropdown) return;
+
+      const showDropdown = () => {
+        if (hoverTimeout) {
+          clearTimeout(hoverTimeout);
+          hoverTimeout = null;
+        }
+        dropdown.classList.remove('hidden');
+        trigger.setAttribute('aria-expanded', 'true');
+      };
+
+      const hideDropdown = () => {
+        hoverTimeout = window.setTimeout(() => {
+          dropdown.classList.add('hidden');
+          trigger.setAttribute('aria-expanded', 'false');
+        }, 150); // Small delay to prevent accidental closes
+      };
+
+      // Show on hover
+      container.addEventListener('mouseenter', showDropdown);
+      container.addEventListener('mouseleave', hideDropdown);
+
+      // Keyboard navigation
+      trigger.addEventListener('keydown', (e: KeyboardEvent) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          if (dropdown.classList.contains('hidden')) {
+            showDropdown();
+          } else {
+            hideDropdown();
+          }
+        } else if (e.key === 'Escape') {
+          hideDropdown();
+          trigger.focus();
+        }
+      });
+    });
+
+    // Mobile accordion functionality
+    const mobileNavToggles = document.querySelectorAll('.mobile-nav-toggle');
+    mobileNavToggles.forEach(toggle => {
+      toggle.addEventListener('click', () => {
+        const index = toggle.getAttribute('data-toggle-index');
+        const parent = toggle.closest('.mobile-nav-parent');
+        const children = parent?.querySelector('.mobile-nav-children') as HTMLElement;
+        const icon = toggle.querySelector('svg');
+        
+        if (!children || !icon) return;
+
+        const isExpanded = !children.classList.contains('hidden');
+        
+        if (isExpanded) {
+          children.classList.add('hidden');
+          icon.classList.remove('rotate-180');
+          toggle.setAttribute('aria-expanded', 'false');
+        } else {
+          children.classList.remove('hidden');
+          icon.classList.add('rotate-180');
+          toggle.setAttribute('aria-expanded', 'true');
+        }
+      });
+    });
 
     // Function to close mobile menu
     function closeMobileMenu() {
@@ -323,3 +519,48 @@ const paletteIcon = allSectionsDisabled ? 'search' : 'command';
     }
   });
 </script>
+
+<style>
+  /* Dropdown menu styles */
+  .nav-dropdown-container {
+    position: relative;
+  }
+
+  .nav-dropdown-menu {
+    min-width: 200px;
+    max-width: 300px;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  }
+
+  .dark .nav-dropdown-menu {
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.2);
+  }
+
+  /* Mobile accordion styles */
+  .mobile-nav-parent {
+    margin-bottom: 0.25rem;
+  }
+
+  .mobile-nav-children {
+    padding-left: 1rem;
+    margin-top: 0.25rem;
+    border-left: 2px solid rgb(var(--color-primary-200));
+  }
+
+  .dark .mobile-nav-children {
+    border-left-color: rgb(var(--color-primary-700));
+  }
+
+  .mobile-nav-toggle svg {
+    transition: transform 0.2s ease;
+  }
+
+  .mobile-nav-toggle svg.rotate-180 {
+    transform: rotate(180deg);
+  }
+
+  /* Command palette grouped navigation styles */
+  .command-palette-nav-group {
+    margin-bottom: 0.5rem;
+  }
+</style>

@@ -3,7 +3,7 @@
   command = "pnpm run build"
 
 [build.environment]
-  NODE_VERSION = "18"
+  NODE_VERSION = "22"
   PNPM_VERSION = "8"
 
 # Enable compression for all text-based files
@@ -195,19 +195,31 @@
 
 [[redirects]]
   from = "/posts/astro-suite-vault-modular-guide"
-  to = "/posts/obsidian-vault-guide"
+  to = "/posts/vault-cms-guide"
   status = 301
   force = true
 
 [[redirects]]
   from = "/posts/astro-suite-obsidian-vault-guide-astro-modular"
-  to = "/posts/obsidian-vault-guide"
+  to = "/posts/vault-cms-guide"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/posts/obsidian-vault-guide"
+  to = "/posts/vault-cms-guide"
   status = 301
   force = true
 
 [[redirects]]
   from = "/projects/obsidian-astro-composer"
   to = "/projects/astro-composer"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/projects/obsidian-astro-suite"
+  to = "/projects/vault-cms"
   status = 301
   force = true
 

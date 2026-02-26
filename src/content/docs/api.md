@@ -2,9 +2,9 @@
 title: API
 description: Complete API reference for the Astro Modular theme
 category: Astro Modular
-order: 3
-version: 1.1.0
-lastModified: 2025-10-23
+order: 2
+version: 0.8.1
+lastModified: 2026-02-22
 image:
 imageAlt:
 hideCoverImage: false
@@ -14,7 +14,7 @@ featured: true
 aliases:
   - api-reference
 ---
-This document provides a complete reference for the Astro Modular theme APIs, utilities, and configuration options.
+This document provides a complete reference for the Astro Modular theme APIs, utilities, and configuration options. 
 
 ## Content Collections
 
@@ -118,11 +118,13 @@ interface SiteConfig {
   description: string;
   author: string;
   language: string;
+  faviconThemeAdaptive: boolean;
+  defaultOgImageAlt: string;
   
   // Global Settings
   theme: "minimal" | "oxygen" | "atom" | "ayu" | "catppuccin" | "charcoal" | "dracula" | "everforest" | "flexoki" | "gruvbox" | "macos" | "nord" | "obsidian" | "rose-pine" | "sky" | "solarized" | "things" | "custom";
   customThemeFile?: string;
-  availableThemes: "all" | Array<ThemeName>;
+  availableThemes: "default" | Array<string>;
   fonts: {
     source: "local" | "cdn";
     families: {
@@ -147,11 +149,8 @@ interface SiteConfig {
   hideScrollBar: boolean;
   scrollToTop: boolean;
   featureButton: "mode" | "graph" | "theme" | "none";
-  seo: {
-    defaultOgImageAlt: string;
-  };
   deployment: {
-    platform: "netlify" | "vercel" | "github-pages";
+    platform: "netlify" | "vercel" | "github-pages" | "cloudflare-workers";
   };
   
   // Command Palette
@@ -194,7 +193,7 @@ interface SiteConfig {
     showNavigation: boolean;
     style: "minimal" | "traditional";
     showMobileMenu: boolean;
-    pages: Array<{ title: string; url: string }>;
+    pages: NavigationItem[];
     social: Array<{ title: string; url: string; icon: string }>;
   };
   
@@ -235,7 +234,6 @@ interface SiteConfig {
     graphView: {
       enabled: boolean;
       showInSidebar: boolean;
-      showInCommandPalette: boolean;
       maxNodes: number;
       showOrphanedPosts: boolean;
     };
@@ -292,7 +290,7 @@ generatePostSEO(post: Post, url: string): SEOData
 generateProjectSEO(project: Project, url: string): SEOData
 
 // Generate SEO data for documentation
-generateDocumentationSEO(doc: Documentation, url: string): SEOData
+generateDocumentationSEO(doc: Docs, url: string): SEOData
 
 // Generate SEO data for pages
 generatePageSEO(page: Page, url: string): SEOData
@@ -300,93 +298,59 @@ generatePageSEO(page: Page, url: string): SEOData
 
 ### Markdown Processing
 ```typescript
-// Process markdown content with all plugins
+// Process markdown content and extract data
 processMarkdown(content: string): {
   excerpt: string;
   wordCount: number;
   hasMore: boolean;
-  readingTime: ReadingTime;
-  headings: Heading[];
 }
 
 // Calculate reading time
 calculateReadingTime(content: string): ReadingTime
 
-// Generate table of contents
-generateTOC(headings: Heading[]): Heading[]
+// Extract reading time from remark plugin or calculate manually
+getReadingTime(remarkData: any, content?: string): ReadingTime | null
+
+// Generate table of contents (async)
+generateTOC(headings: Heading[]): Promise<Heading[]>
+
+// Process content data for display (posts, projects, docs, etc.)
+processPost(post: any): Promise<any>
 ```
 
 ### Image Optimization
 ```typescript
-// Optimize post image paths
-optimizePostImagePath(image: string, slug: string, id?: string): string
+// Optimize image path specifically for posts
+optimizePostImagePath(imagePath: string, postSlug?: string, postId?: string): string
+
+// Generic image optimization function for all content types
+optimizeContentImagePath(imagePath: string, contentType: string, contentSlug?: string, contentId?: string): string
+
+// Strip Obsidian double bracket syntax from image paths
+stripObsidianBrackets(imagePath: string): string
 
 // Get fallback OG image
-getFallbackOGImage(): OpenGraphImage
-
-// Process folder-based images
-processFolderImages(content: string, slug: string): string
+getDefaultOGImage(): OpenGraphImage
 ```
 
 ### Internal Links Processing
+The theme uses custom remark plugins to handle internal links and embeds.
+
 ```typescript
-// Process wikilinks (posts only)
-remarkWikilinks(): Plugin
+// Remark wikilinks processing
+remarkInternalLinks()
 
-// Process standard markdown links (all content types)
-remarkStandardLinks(): Plugin
-
-// Combined internal links processing
-remarkInternalLinks(): Plugin
-
-// Map relative URLs to site URLs
-mapRelativeUrlToSiteUrl(url: string): string
+// Obsidian embeds processing
+remarkObsidianEmbeds()
 ```
 
 ### Theme Management
 ```typescript
-// Get theme colors for components
+// Get theme colors for graph view
 getGraphThemeColors(): GraphThemeColors
 
 // Update theme CSS variables
 updateThemeCSSVariables(theme: string): Promise<void>
-
-// Change theme with persistence
-changeTheme(theme: string): Promise<void>
-```
-
-### Graph Data Processing
-```typescript
-// Generate graph data from posts
-generateGraphData(posts: Post[]): GraphData
-
-// Filter graph data for local view
-filterGraphDataForPost(graphData: GraphData, postSlug: string): GraphData
-```
-
-### Mermaid Diagram Support
-```typescript
-// Initialize Mermaid with lazy loading
-renderAllDiagrams(): void
-
-// Handle theme changes for diagrams
-handleThemeChange(): void
-
-// Clear diagram cache
-clearMermaidCache(): void
-```
-
-### Obsidian Embeds Processing
-```typescript
-// Process Obsidian embed syntax
-remarkObsidianEmbeds(): Plugin
-
-// Supported embed types:
-// - Audio: ![[audio.mp3]]
-// - Video: ![[video.mp4]]
-// - YouTube: ![](https://youtube.com/watch?v=ID)
-// - PDF: ![[document.pdf]]
-// - Twitter: ![](https://twitter.com/user/status/ID)
 ```
 
 ## Component Props
@@ -394,11 +358,10 @@ remarkObsidianEmbeds(): Plugin
 ### PostCard Component
 ```typescript
 interface PostCardProps {
-  post: Post | Project | Documentation;
+  post: Post | Project | Docs;
   eager?: boolean;
   showCoverImage?: boolean;
-  aspectRatio?: AspectRatio;
-  customAspectRatio?: string;
+  aspectRatio?: string;
 }
 ```
 
@@ -407,65 +370,6 @@ interface PostCardProps {
 interface TableOfContentsProps {
   headings: Heading[];
   maxDepth?: number;
-}
-```
-
-### CommandPalette Component
-```typescript
-interface CommandPaletteProps {
-  enabled: boolean;
-  shortcut: string;
-  placeholder: string;
-  search: {
-    posts: boolean;
-    pages: boolean;
-    projects: boolean;
-    docs: boolean;
-  };
-  sections: {
-    quickActions: boolean;
-    pages: boolean;
-    social: boolean;
-  };
-}
-```
-
-### GraphModal Component
-```typescript
-interface GraphModalProps {
-  enabled: boolean;
-  maxNodes: number;
-  showOrphanedPosts: boolean;
-}
-```
-
-### LocalGraph Component
-```typescript
-interface LocalGraphProps {
-  postSlug: string;
-  enabled: boolean;
-  maxNodes: number;
-}
-```
-
-### MermaidDiagram Component
-```typescript
-interface MermaidDiagramProps {
-  source: string;
-  theme?: string;
-}
-```
-
-### ImageWrapper Component
-```typescript
-interface ImageWrapperProps {
-  src: string;
-  alt: string;
-  width?: number;
-  height?: number;
-  loading?: "lazy" | "eager";
-  fetchpriority?: "high" | "low" | "auto";
-  class?: string;
 }
 ```
 
@@ -511,157 +415,30 @@ interface SEOData {
   canonical: string;
   ogImage?: OpenGraphImage;
   ogType: 'website' | 'article';
-  twitterCard: 'summary' | 'summary_large_image';
-  twitterSite?: string;
-  twitterCreator?: string;
+  publishedTime?: string;
+  modifiedTime?: string;
+  tags?: string[];
+  noIndex?: boolean;
 }
 
 interface OpenGraphImage {
   url: string;
+  alt: string;
   width: number;
   height: number;
-  alt: string;
-}
-
-interface GraphData {
-  nodes: GraphNode[];
-  connections: GraphConnection[];
-}
-
-interface GraphNode {
-  id: string;
-  type: "post";
-  title: string;
-  slug: string;
-  date: string;
-  connections: number;
-}
-
-interface GraphConnection {
-  source: string;
-  target: string;
-  type: string;
-}
-
-interface GraphThemeColors {
-  postFill: string;
-  postStroke: string;
-  postText: string;
-  tagFill: string;
-  tagStroke: string;
-  tagText: string;
-  linkStroke: string;
-  highlight: string;
-  background: string;
-  backgroundSecondary: string;
 }
 ```
-
-### Plugin Types
-```typescript
-// Remark plugins for markdown processing
-type RemarkPlugin = Plugin<[any?], Root>;
-
-// Rehype plugins for HTML processing
-type RehypePlugin = Plugin<[any?], Root, Root>;
-```
-
-## Error Handling
-
-### Development Mode
-- **Graceful fallbacks** for missing images with placeholder system
-- **Detailed error logging** with helpful messages
-- **Continue processing** with warnings for missing assets
-- **Placeholder images** automatically used for missing assets
-
-### Production Mode
-- **Strict validation** for all required assets
-- **Build failures** for missing critical assets
-- **Optimized error handling** with minimal overhead
-- **Clean console output** for professional deployments
-
-### Error Types
-```typescript
-interface MissingImageError {
-  type: 'missing-image';
-  path: string;
-  source: string;
-  line: number;
-  fallback: string;
-}
-
-interface MissingTagError {
-  type: 'missing-tag';
-  tag: string;
-  source: string;
-  line: number;
-}
-
-interface ConfigurationError {
-  type: 'configuration';
-  field: string;
-  message: string;
-  suggestion: string;
-}
-```
-
-## Performance Considerations
-
-### Image Loading
-- **Lazy loading** for below-the-fold images
-- **Eager loading** for above-the-fold content
-- **WebP format priority** with fallbacks
-- **Responsive image generation** with multiple sizes
-- **Placeholder system** for missing images
-
-### Search Performance
-- **Debounced search input** to prevent excessive queries
-- **Cached search results** for repeated queries
-- **Fuse.js fuzzy search** integration for accurate results
-- **Virtual scrolling** for large result sets
-
-### Theme Performance
-- **CSS custom properties** for dynamic theming
-- **Theme caching** for graph components
-- **Lazy theme loading** for custom themes
-- **Optimized color calculations** for graph rendering
-
-### Mermaid Performance
-- **Intersection Observer** for lazy diagram loading
-- **Diagram caching** by source and theme
-- **Progressive loading** with skeleton states
-- **Memory management** with automatic cleanup
-
-### Graph Performance
-- **D3 force simulation** with optimized settings
-- **Node filtering** for local graph views
-- **Event cleanup** to prevent memory leaks
-- **Efficient rendering** with SVG optimization
 
 ## Build Process
 
 ### Asset Sync
-```typescript
-// Supported media types
-const supportedMediaTypes = {
-  images: ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'tiff', 'tif', 'ico'],
-  audio: ['mp3', 'wav', 'ogg', 'm4a', '3gp', 'flac', 'aac'],
-  video: ['mp4', 'webm', 'ogv', 'mov', 'mkv', 'avi'],
-  documents: ['pdf']
-};
-```
-
-### RSS and Atom Feeds
-- **Automatic generation** during build process
-- **Post filtering** (excludes drafts in production)
-- **Image support** with Open Graph integration
-- **Category mapping** from post tags
-- **Cache headers** for optimal performance
+The theme automatically synchronizes assets from content folders to the public directory during build and development.
 
 ### Deployment Platforms
-- **Netlify**: `netlify.toml` with redirects and build settings
-- **Vercel**: `vercel.json` with redirects and cache headers
-- **GitHub Pages**: `public/redirects.txt` for redirects
+- **Netlify**: Full support for redirects and forms
+- **Vercel**: Full support for redirects and caching
+- **Cloudflare Workers**: Compatible deployment configuration
+- **GitHub Pages**: Static site deployment support
 
 ## Development Tools
 
@@ -670,19 +447,10 @@ const supportedMediaTypes = {
 # Development
 pnpm run dev              # Start development server
 pnpm run build            # Build for production
-pnpm run check-images     # Check for missing images
 pnpm run sync-images      # Sync images from content to public
 pnpm run process-aliases  # Process content aliases
-pnpm run generate-deployment-config # Generate deployment configs
-
-# Version management
-pnpm run version          # Get current theme version
+pnpm run check-images     # Check for missing images
+pnpm run version          # Get theme version
 ```
-
-### Configuration Validation
-- **TypeScript interfaces** for all configuration options
-- **Runtime validation** for critical settings
-- **Helpful error messages** with suggestions
-- **Default fallbacks** for missing configuration
 
 This API reference provides comprehensive documentation for all aspects of the Astro Modular theme, from content collections to utility functions and component interfaces.

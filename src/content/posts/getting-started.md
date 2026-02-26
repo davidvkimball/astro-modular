@@ -8,7 +8,7 @@ tags:
   - quick-start
   - astro
   - blog
-image: "[[attachments/sunset.jpg]]"
+image: "[[attachments/sunset.png]]"
 imageAlt: Sunset skyline.
 imageOG: true
 hideCoverImage: false
@@ -60,7 +60,7 @@ Perfect! Astro Modular is designed specifically for Obsidian users.
 - **Preconfigured plugins & hotkeys**: all optimized for blogging
 
 **Next Steps:**
-- Read the [Obsidian Vault Guide](obsidian-vault-guide.md) for detailed setup
+- Read the [Obsidian Vault Guide](vault-cms-guide.md) for detailed setup
 - Use the **Astro Modular Settings** plugin to customize your theme and preferences
 - Start writing your first post with the included templates
 
@@ -119,7 +119,7 @@ Optimized for performance with automatic image optimization and lazy loading.
 1. **Set up the vault** - Open `src/content/` in Obsidian
 2. **Configure with the plugin** - Use Astro Modular Settings
 3. **Start writing** - Use the included templates and hotkeys
-4. **Read the vault guide** - [Obsidian Vault Guide](obsidian-vault-guide.md)
+4. **Read the vault guide** - [Obsidian Vault Guide](vault-cms-guide.md)
 
 ### For Non-Obsidian Users:
 1. **Customize your site** - Edit `src/config.ts`
@@ -130,7 +130,7 @@ Optimized for performance with automatic image optimization and lazy loading.
 ## Need Help?
 
 - **Complete Setup Guide**: [Configuration Documentation](docs/configuration.md)
-- **Obsidian Vault Guide**: [Obsidian Vault Guide](obsidian-vault-guide.md)
-- **Formatting Reference**: [Formatting Reference](posts/formatting-reference.md)
+- **Obsidian Vault Guide**: [Obsidian Vault Guide](vault-cms-guide.md)
+- **Formatting Reference**: [Formatting Reference](formatting-reference.md)
 
 Your modular Astro blog is ready to go!

@@ -1,0 +1,183 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Icon from './Icon.astro';
+
+export interface Props {
+  currentDocId: string;
+  currentCategory: string | null;
+  allDocs: CollectionEntry<'docs'>[];
+}
+
+const { currentDocId, currentCategory, allDocs } = Astro.props;
+
+// Filter docs by category
+// If current page has no category (or "General"), show all docs
+// Otherwise, show only docs matching the current category
+let filteredDocs: CollectionEntry<'docs'>[] = [];
+
+if (!currentCategory || currentCategory.trim() === '' || currentCategory === 'General') {
+  // Show all docs if no category
+  filteredDocs = allDocs;
+} else {
+  // Filter by category - handle "Unsorted" specially
+  if (currentCategory === 'Unsorted') {
+    filteredDocs = allDocs.filter(doc => 
+      !doc.data.category || 
+      doc.data.category.trim() === '' || 
+      doc.data.category === 'General'
+    );
+  } else {
+    filteredDocs = allDocs.filter(doc =>
+      doc.data.category &&
+      doc.data.category.trim() !== '' &&
+      doc.data.category !== 'General' &&
+      doc.data.category === currentCategory
+    );
+  }
+}
+
+// Sort by order, then by title
+filteredDocs.sort((a, b) => {
+  if (a.data.order !== b.data.order) {
+    return a.data.order - b.data.order;
+  }
+  return a.data.title.localeCompare(b.data.title);
+});
+
+// Determine sidebar header text
+const sidebarHeader = currentCategory && currentCategory !== 'General' ? currentCategory : 'Documentation';
+---
+
+<!-- Desktop Sidebar (visible at xl breakpoint and above, hidden on mobile - same behavior as TOC) -->
+<aside
+  id="docs-sidebar-desktop"
+  class="hidden xl:block absolute top-0 right-full w-64 mr-4 h-full pointer-events-auto"
+  aria-label="Documentation navigation"
+>
+  <div class="sticky top-24 pb-6">
+    <div class="bg-primary-50 dark:bg-primary-900 rounded-lg border border-primary-200 dark:border-primary-700 shadow-sm p-4">
+      <div class="flex items-center gap-2 mb-4">
+        <Icon name="book-open" class="w-5 h-5 text-primary-600 dark:text-primary-400" />
+        <h2 class="text-sm font-semibold text-primary-900 dark:text-primary-50">
+          {sidebarHeader}
+        </h2>
+      </div>
+      <div class="docs-sidebar-content overflow-x-hidden overflow-y-auto">
+        <nav class="space-y-1">
+        {filteredDocs.map((doc) => {
+          const isActive = doc.id === currentDocId;
+          return (
+            <a
+              href={`/docs/${doc.id}`}
+              class={`block px-3 py-2 rounded-md text-sm transition-colors ${
+                isActive
+                  ? 'bg-highlight-50 dark:bg-highlight-900/20 text-highlight-600 dark:text-highlight-400 font-semibold'
+                  : 'text-primary-600 dark:text-primary-300 hover:bg-primary-100 dark:hover:bg-primary-800 hover:text-highlight-600 dark:hover:text-highlight-400'
+              }`}
+              aria-current={isActive ? 'page' : undefined}
+            >
+              {doc.data.title}
+            </a>
+          );
+        })}
+        </nav>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<script>
+  // Constants for docs sidebar height calculation
+  const BOTTOM_SPACING = 96; // 6rem = 96px - fixed spacing from bottom of viewport
+  const MIN_SIDEBAR_HEIGHT = 200; // Minimum height for sidebar to be useful
+
+  // Simplified height management - just ensure scrolling works
+  function updateDocsSidebarHeight() {
+    const sidebarContent = document.querySelector('.docs-sidebar-content') as HTMLElement;
+
+    if (!sidebarContent) return;
+
+    // Set a reasonable max height using viewport units - no dynamic calculation
+    sidebarContent.style.maxHeight = '60vh'; // 60% of viewport height
+    sidebarContent.style.overflowY = 'auto';
+  }
+
+  // Debounce function for performance
+  function debounce(func: Function, wait: number) {
+    let timeout: ReturnType<typeof setTimeout>;
+    return function executedFunction(...args: any[]) {
+      const later = () => {
+        clearTimeout(timeout);
+        func(...args);
+      };
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
+  }
+
+  // Global function to initialize docs sidebar
+  function initializeDocsSidebar() {
+    const sidebarContainer = document.querySelector('#docs-sidebar-desktop') as HTMLElement;
+
+    if (!sidebarContainer) return;
+
+    // Calculate initial sidebar height immediately
+    updateDocsSidebarHeight();
+
+    // No complex observers needed with simplified height management
+  }
+
+  // Make functions globally available
+  (window as any).initializeDocsSidebar = initializeDocsSidebar;
+  (window as any).updateDocsSidebarHeight = updateDocsSidebarHeight;
+
+  // Initialize on DOMContentLoaded
+  document.addEventListener('DOMContentLoaded', initializeDocsSidebar);
+</script>
+
+<style>
+  /* Docs sidebar content area - scrollable */
+  .docs-sidebar-content {
+    /* Simple viewport-based max height */
+    max-height: 60vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    /* Custom scrollbar styling */
+    scrollbar-width: thin;
+    scrollbar-color: rgb(var(--color-primary-300)) transparent;
+  }
+
+  /* Webkit scrollbar styling for Chrome/Safari/Edge */
+  .docs-sidebar-content::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .docs-sidebar-content::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 3px;
+  }
+
+  .docs-sidebar-content::-webkit-scrollbar-thumb {
+    background: rgb(var(--color-primary-300));
+    border-radius: 3px;
+    transition: background 0.2s ease;
+  }
+
+  .docs-sidebar-content::-webkit-scrollbar-thumb:hover {
+    background: rgb(var(--color-primary-400));
+  }
+
+  /* Dark mode scrollbar for docs sidebar */
+  .dark .docs-sidebar-content {
+    scrollbar-color: rgb(var(--color-primary-600)) transparent;
+  }
+
+  .dark .docs-sidebar-content::-webkit-scrollbar-thumb {
+    background: rgb(var(--color-primary-600));
+  }
+
+  .dark .docs-sidebar-content::-webkit-scrollbar-thumb:hover {
+    background: rgb(var(--color-primary-500));
+  }
+</style>

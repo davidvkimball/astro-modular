@@ -1,6 +1,7 @@
 # Dependencies
 node_modules/
 .pnpm-store/
+cli/node_modules/
 
 # Build
 dist/
@@ -42,6 +43,7 @@ ehthumbs.db
 # Obsidian workspace files
 src/content/.obsidian/workspace.json
 src/content/.obsidian/workspace-mobile.json
+obsidian_askpass.sh
 
 # Generated deployment platform files (GitHub Pages + Cloudflare Workers only)
 public/_redirects

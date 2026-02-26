@@ -212,8 +212,8 @@ const pagination = {
         </div>
 
         <!-- Desktop sidebar - floats to the right of the content container -->
-        <div class="hidden xl:block absolute top-0 left-full ml-8 w-64">
-          <div class="sticky top-24 space-y-3 max-h-[calc(100vh-12rem)] overflow-y-auto pb-6">
+        <div class="hidden xl:block absolute top-0 left-full ml-8 w-64 h-full">
+          <div class="sticky top-24 pb-6" id="tags-sidebar">
             <!-- Tags -->
             {siteConfig.postOptions.tags && allTags.length > 0 && (
               <Tags tags={allTags} />
@@ -243,3 +243,73 @@ const pagination = {
     @apply bg-gradient-to-r from-highlight-500 to-highlight-600 text-white;
   }
 </style>
+
+<Fragment slot="scripts">
+  <script>
+    // Constants for tags sidebar height calculation
+    const BOTTOM_SPACING = 96; // 6rem = 96px - fixed spacing from bottom of viewport
+    const MIN_SIDEBAR_HEIGHT = 200; // Minimum height for sidebar to be useful
+
+    // Global function to calculate and set tags sidebar max height
+    function updateTagsSidebarHeight() {
+      const sidebarContent = document.querySelector('.tags-container') as HTMLElement;
+      const sidebarContainer = document.querySelector('#tags-sidebar') as HTMLElement;
+
+      if (!sidebarContent || !sidebarContainer) return;
+
+      // Get the sidebar container's position relative to viewport
+      const rect = sidebarContainer.getBoundingClientRect();
+      const sidebarTop = rect.top;
+
+      // Calculate available space: viewport height - sidebar top position - bottom spacing
+      const availableHeight = window.innerHeight - sidebarTop - BOTTOM_SPACING;
+
+      // Ensure minimum height and maximum reasonable height (don't let it be too tall)
+      const maxHeight = Math.max(MIN_SIDEBAR_HEIGHT, Math.min(availableHeight, window.innerHeight * 0.7));
+
+      // Apply the max height to the tags container
+      const currentMaxHeight = parseInt(sidebarContent.style.maxHeight || '0', 10);
+      if (Math.abs(maxHeight - currentMaxHeight) > 10) {
+        sidebarContent.style.maxHeight = `${maxHeight}px`;
+        sidebarContent.style.overflowY = 'auto';
+      }
+    }
+
+    // Debounce function for performance
+    function debounce(func: Function, wait: number) {
+      let timeout: ReturnType<typeof setTimeout>;
+      return function executedFunction(...args: any[]) {
+        const later = () => {
+          clearTimeout(timeout);
+          func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+      };
+    }
+
+    // Global function to initialize tags sidebar
+    function initializeTagsSidebar() {
+      const sidebarContainer = document.querySelector('#tags-sidebar') as HTMLElement;
+
+      if (!sidebarContainer) return;
+
+      // Calculate initial sidebar height immediately
+      updateTagsSidebarHeight();
+
+      // Set up resize observer for height recalculation
+      const debouncedUpdateHeight = debounce(() => {
+        updateTagsSidebarHeight();
+      }, 150);
+
+      window.addEventListener('resize', debouncedUpdateHeight);
+    }
+
+    // Make functions globally available
+    (window as any).initializeTagsSidebar = initializeTagsSidebar;
+    (window as any).updateTagsSidebarHeight = updateTagsSidebarHeight;
+
+    // Initialize on DOMContentLoaded
+    document.addEventListener('DOMContentLoaded', initializeTagsSidebar);
+  </script>
+</Fragment>

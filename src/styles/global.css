@@ -3,6 +3,18 @@
 @import 'katex/dist/katex.css';
 
 @tailwind base;
+
+/* Immediately override Tailwind preflight border styles for KaTeX */
+@layer base {
+  .katex *,
+  .katex *::before,
+  .katex *::after {
+    border-style: none !important;
+    border-color: transparent !important;
+    border-width: 0 !important;
+  }
+}
+
 @tailwind components;
 @tailwind utilities;
 
@@ -12,13 +24,65 @@
   color: rgb(var(--color-foreground));
 }
 
-/* Fix KaTeX SVG sizing issues - constrain the problematic 400em width */
-.katex svg {
-  max-width: 100% !important;
-  width: auto !important;
-  overflow: hidden;
+/* Fix Tailwind border-style conflict with KaTeX table-cell layout */
+/* KaTeX uses table-cell display for vlist elements, and Tailwind sets border-style: solid on all elements */
+/* Combined with KaTeX's border-color: currentColor, this creates visible borders */
+.katex *,
+.katex *::before,
+.katex *::after {
+  border: 0 none transparent !important;
+  border-style: none !important;
+  border-width: 0 !important;
 }
 
+.katex .vlist,
+.katex .vlist-t,
+.katex .vlist-r,
+.katex .vlist-s,
+.katex .vlist > span,
+.katex .vlist > span > span {
+  border: 0 none transparent !important;
+  border-style: none !important;
+  border-width: 0 !important;
+  border-collapse: separate !important;
+}
+
+/* Aggressive fix for equation numbers - covers all possible sources of the strikethrough */
+.katex .eqn-num,
+.katex .tag,
+.katex .eqn-num *,
+.katex .tag * {
+  border: 0 none transparent !important;
+  border-style: none !important;
+  border-width: 0 !important;
+  text-decoration: none !important;
+  text-decoration-line: none !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.katex .eqn-num::before,
+.katex .eqn-num::after,
+.katex .tag::before,
+.katex .tag::after {
+  border: 0 none transparent !important;
+  border-style: none !important;
+  border-width: 0 !important;
+  border-color: transparent !important;
+  text-decoration: none !important;
+  text-decoration-line: none !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Override KaTeX's border-color: currentColor which combines with Tailwind's solid border */
+.katex * {
+  border-color: transparent !important;
+}
+
+/* Fix KaTeX SVG sizing issues - only for specific problematic elements */
 .katex .hide-tail {
   max-width: 100%;
   overflow: hidden;
@@ -30,16 +94,7 @@
   height: auto !important;
 }
 
-/* Force SVG colors to match theme */
-.katex svg {
-  fill: currentColor;
-}
-
-.dark .katex svg {
-  filter: brightness(0) invert(1);
-}
-
-/* Hide MathML and show only HTML output for better browser support */
+/* Hide MathML and show HTML output for visual rendering */
 .katex-mathml {
   display: none !important;
 }
@@ -60,9 +115,18 @@
 /* Ensure display math is properly centered and separated */
 .katex-display > .katex {
   display: inline-block;
-  white-space: nowrap;
-  max-width: 100%;
   text-align: initial;
+}
+
+/* KaTeX equation tags (numbers) - ensure proper rendering */
+.katex .tag {
+  position: absolute;
+  right: 0;
+}
+
+/* Aligned equations need proper width for tags */
+.katex .katex-html > .tag {
+  position: relative;
 }
 
 /* Ensure display math blocks are properly separated */
@@ -135,7 +199,7 @@ p:has(.katex-display) {
   --code-text: 240 240 240;
   --inline-code-bg: 240 240 240;
   --inline-code-text: 33 33 33;
-  
+
   /* Highlight/selection colors */
   --selection-bg: 112 135 148;
 }
@@ -354,40 +418,40 @@ pre.astro-code code {
   border-radius: 0 !important;
 }
 
-/* Enhanced code block scrolling */  
-pre, .prose pre, .astro-code, .prose .astro-code {  
-  overflow-x: auto !important;  
-  scrollbar-width: thin !important;  
-  scrollbar-color: rgba(156, 163, 175, 0.5) transparent !important;  
-}  
-  
-/* Show scrollbars on hover for better UX */  
-pre:hover, .prose pre:hover,   
-.astro-code:hover, .prose .astro-code:hover {  
-  scrollbar-color: rgba(156, 163, 175, 0.8) transparent !important;  
-}  
-  
-/* Webkit scrollbar styling for code blocks */  
-pre::-webkit-scrollbar, .prose pre::-webkit-scrollbar,  
-.astro-code::-webkit-scrollbar, .prose .astro-code::-webkit-scrollbar {  
-  height: 8px !important;  
-  display: block !important;  
-}  
-  
-pre::-webkit-scrollbar-track, .prose pre::-webkit-scrollbar-track,  
-.astro-code::-webkit-scrollbar-track, .prose .astro-code::-webkit-scrollbar-track {  
-  background: transparent !important;  
-}  
-  
-pre::-webkit-scrollbar-thumb, .prose pre::-webkit-scrollbar-thumb,  
-.astro-code::-webkit-scrollbar-thumb, .prose .astro-code::-webkit-scrollbar-thumb {  
-  background-color: rgba(156, 163, 175, 0.5) !important;  
-  border-radius: 4px !important;  
-}  
-  
-pre::-webkit-scrollbar-thumb:hover, .prose pre::-webkit-scrollbar-thumb:hover,  
-.astro-code::-webkit-scrollbar-thumb:hover, .prose .astro-code::-webkit-scrollbar-thumb:hover {  
-  background-color: rgba(156, 163, 175, 0.8) !important;  
+/* Enhanced code block scrolling */
+pre, .prose pre, .astro-code, .prose .astro-code {
+  overflow-x: auto !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: rgba(156, 163, 175, 0.5) transparent !important;
+}
+
+/* Show scrollbars on hover for better UX */
+pre:hover, .prose pre:hover,
+.astro-code:hover, .prose .astro-code:hover {
+  scrollbar-color: rgba(156, 163, 175, 0.8) transparent !important;
+}
+
+/* Webkit scrollbar styling for code blocks */
+pre::-webkit-scrollbar, .prose pre::-webkit-scrollbar,
+.astro-code::-webkit-scrollbar, .prose .astro-code::-webkit-scrollbar {
+  height: 8px !important;
+  display: block !important;
+}
+
+pre::-webkit-scrollbar-track, .prose pre::-webkit-scrollbar-track,
+.astro-code::-webkit-scrollbar-track, .prose .astro-code::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+pre::-webkit-scrollbar-thumb, .prose pre::-webkit-scrollbar-thumb,
+.astro-code::-webkit-scrollbar-thumb, .prose .astro-code::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.5) !important;
+  border-radius: 4px !important;
+}
+
+pre::-webkit-scrollbar-thumb:hover, .prose pre::-webkit-scrollbar-thumb:hover,
+.astro-code::-webkit-scrollbar-thumb:hover, .prose .astro-code::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(156, 163, 175, 0.8) !important;
 }
 
 /* Keyboard Shortcuts */
@@ -463,14 +527,14 @@ input[type="search"],
 textarea {
   @apply block w-full px-3 py-2 border border-primary-300 dark:border-primary-600 rounded-lg bg-white dark:bg-primary-800 text-primary-900 dark:text-primary-100 placeholder-primary-500 dark:placeholder-primary-400 focus:outline-none focus:ring-2 focus:ring-highlight-500 focus:border-transparent;
 }
-  
-.form-sleek {  
-  @apply space-y-4;  
-}  
-  
-.form-sleek input,  
-.form-sleek textarea {  
-  @apply bg-primary-50/50 dark:bg-primary-800/50 border-primary-200/50 dark:border-primary-600/50 backdrop-blur-sm;  
+
+.form-sleek {
+  @apply space-y-4;
+}
+
+.form-sleek input,
+.form-sleek textarea {
+  @apply bg-primary-50/50 dark:bg-primary-800/50 border-primary-200/50 dark:border-primary-600/50 backdrop-blur-sm;
 }
 
 /* Animations */
@@ -732,13 +796,13 @@ textarea {
   @apply text-highlight-600 dark:text-highlight-400 no-underline;
 }
 
-.prose a {  
-  @apply text-highlight-600 dark:text-highlight-400 font-medium no-underline transition-colors duration-200;  
-}  
-  
-.prose a:hover {  
-  @apply text-highlight-700 dark:text-highlight-300 no-underline;  
-} 
+.prose a {
+  @apply text-highlight-600 dark:text-highlight-400 font-medium no-underline transition-colors duration-200;
+}
+
+.prose a:hover {
+  @apply text-highlight-700 dark:text-highlight-300 no-underline;
+}
 
 
 .prose strong {
@@ -749,8 +813,37 @@ textarea {
   @apply border-l-4 border-primary-300 dark:border-primary-600 pl-6 py-2 bg-primary-50 dark:bg-primary-800/30 rounded-lg;
 }
 
+/* Default image styling */
 .prose img {
   @apply rounded-lg shadow-sm;
+}
+
+/* Obsidian-sized images - respect manual width/height, centered, no cropping */
+.prose img.obsidian-sized {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Ensure manually-sized images in grids don't get forced into grid aspect ratio */
+.prose .image-grid img.obsidian-sized {
+  aspect-ratio: auto;
+  object-fit: contain;
+}
+
+/* Prevent gallery styles from affecting obsidian-sized images */
+.prose .image-item img.obsidian-sized,
+.prose .image-button img.obsidian-sized {
+  object-fit: contain !important;
+  aspect-ratio: auto !important;
+}
+
+/* Hide <br> elements after obsidian-sized images to prevent unwanted gaps */
+.prose img.obsidian-sized + br {
+  display: none;
 }
 
 .prose mark {
@@ -1391,15 +1484,15 @@ svg:has(text:contains("mermaid version")) {
     min-height: 300px;
     max-height: 500px;
   }
-  
+
   .pdf-embed .pdf-info {
     @apply flex-col items-start gap-2;
   }
-  
+
   .pdf-embed .pdf-download-link {
     @apply w-full text-center;
   }
-  
+
   .audio-embed,
   .video-embed,
   .youtube-embed {
