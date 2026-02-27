@@ -1,6 +1,6 @@
 ---
 title: Vault CMS Guide
-date: 2025-09-10
+date: 2026-02-27
 description: How to use this Obsidian vault as a content management system.
 tags:
   - tutorial

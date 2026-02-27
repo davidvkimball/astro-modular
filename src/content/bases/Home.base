@@ -35,7 +35,7 @@ properties:
   note.draft:
     displayName: Draft
 views:
-  - type: bases-cms
+  - type: cms
     name: Posts
     filters:
       and:
