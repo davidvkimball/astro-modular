@@ -85,12 +85,13 @@ Disabled default core plugins:
 - Sync
 
 Community plugins enabled: 
-- Alias Filename History
+- File Name History
 - Astro Composer
 - Astro Modular Settings
 - Bases CMS
 - Editing Toolbar
 - Explorer Focus
+- File Name History
 - Git
 - Home Base
 - Iconic
@@ -120,7 +121,7 @@ Bases CMS lets us treat a grid of content like a content management system. You 
 
 To edit a view, select the current view on the top left, revealing the list, and then select the right chevron arrow to open up the "configure view" options. Configure your desired properties here. At the very bottom, you can set where new notes are created when the "new" button is clicked on the top right. By default they'll be the same location as the base folder for the content type you're viewing.
 
-### Astro Composer and Alias Filename History
+### Astro Composer and File Name History
 
 Handy for easily creating new notes as Astro blog posts, pages, projects, or docs. Just create a new note with `CTRL + N`, type in a title in Title case or with special characters, and the note or folder name generated is a kebab-case version of the title without special characters. This is ideal for automating content page slugs. 
 
@@ -130,7 +131,7 @@ Unlike other themes, you can use wikilinks or standard markdown links, ***withou
 
 You can also easily grab links to headings by right clicking one and selecting "Copy Heading Link". 
 
-`CTRL + R` allows you to easily rename blog posts, and note filenames (or parent folders) get updated in kebab-case automatically. When this happens, the old filename will be stored as an alias by default via the Alias Filename History plugin. This means redirects of the old post or page URL will go to the current post's slug, which is configured in Astro. 
+`CTRL + R` allows you to easily rename blog posts, and note filenames (or parent folders) get updated in kebab-case automatically. When this happens, the old filename will be stored as an alias by default via the File Name History plugin. This means redirects of the old post or page URL will go to the current post's slug, which is configured in Astro. 
 
 You can adjust lots of settings including regex for ignoring names (like `Untitled` or a `_` prefix), timeout in seconds to store the name, or looking for changes in the parent folder name as well if you use the folder-based post option.
 

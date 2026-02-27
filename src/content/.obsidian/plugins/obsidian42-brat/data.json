@@ -1,5 +1,6 @@
 {
   "pluginList": [
+    "davidvkimball/obsidian-file-name-history",
     "davidvkimball/obsidian-image-manager",
     "davidvkimball/obsidian-home-base",
     "davidvkimball/obsidian-explorer-focus",
@@ -8,12 +9,15 @@
     "davidvkimball/obsidian-bases-cms",
     "davidvkimball/obsidian-astro-modular-settings",
     "davidvkimball/obsidian-oxygen-settings",
-    "davidvkimball/obsidian-alias-file-name-history",
     "davidvkimball/obsidian-seo",
     "davidvkimball/obsidian-property-over-filename",
     "davidvkimball/obsidian-astro-composer"
   ],
   "pluginSubListFrozenVersion": [
+    {
+      "repo": "davidvkimball/obsidian-file-name-history",
+      "version": "latest"
+    },
     {
       "repo": "davidvkimball/obsidian-image-manager",
       "version": "latest"
@@ -47,10 +51,6 @@
       "version": "latest"
     },
     {
-      "repo": "davidvkimball/obsidian-alias-file-name-history",
-      "version": "latest"
-    },
-    {
       "repo": "davidvkimball/obsidian-seo",
       "version": "latest"
     },
@@ -72,6 +72,7 @@
   "loggingVerboseEnabled": false,
   "debuggingMode": false,
   "notificationsEnabled": true,
+  "globalTokenName": "",
   "personalAccessToken": "",
   "selectLatestPluginVersionByDefault": false,
   "allowIncompatiblePlugins": false

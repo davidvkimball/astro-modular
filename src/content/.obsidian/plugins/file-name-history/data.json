@@ -1,4 +1,5 @@
 {
+  "historyPropertyName": "aliases",
   "ignoreRegexes": [
     "^_",
     "^Untitled$",
@@ -18,7 +19,5 @@
     "md"
   ],
   "trackFolderRenames": "index",
-  "propertyName": "",
-  "propertyValue": true,
-  "propertyExcludes": false
+  "excludePropertyName": ""
 }

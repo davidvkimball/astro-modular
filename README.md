@@ -95,15 +95,7 @@ This downloads the latest template, removes dev-only files, and installs depende
    cd your-repo-name
    ```
 
-#### Option 3: Fork the Repository
 
-1. Click the **"Fork"** button on the [repository page](https://github.com/davidvkimball/astro-modular)
-2. Choose where to fork the repository (your personal account or organization)
-3. Clone your forked repository:
-   ```bash
-   git clone https://github.com/your-username/your-repo-name.git
-   cd your-repo-name
-   ```
 
 ### Prerequisites
 - Node.js 24.13.0+
@@ -166,6 +158,8 @@ For detailed guides, see the included blog posts:
 ## Contributing
 
 This is an open-source project. Feel free to submit feature requests, report bugs, or contribute improvements.
+
+If you are contributing code back to the theme itself, please fork the repository and submit a Pull Request. **Do not fork the repository if you are just building your own site from this template.**
 
 ## License
 

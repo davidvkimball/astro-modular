@@ -1,6 +1,6 @@
 /* Group settings compatibility styling for older Obsidian builds (< 1.11.0) */
 /* Scoped to only this plugin's settings container to avoid affecting other plugins */
-.alias-file-name-history-settings-compat .setting-group-heading h3 {
+.file-name-history-settings-compat .setting-group-heading h3 {
 	margin: 0 0 0.75rem;
 	padding-bottom: 0.5rem;
 	padding-top: 0.5rem;

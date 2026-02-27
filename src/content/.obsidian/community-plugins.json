@@ -1,5 +1,4 @@
 [
-  "alias-file-name-history",
   "astro-modular-settings",
   "bases-cms",
   "editing-toolbar",
@@ -17,5 +16,6 @@
   "ui-tweaker",
   "obsidian42-brat",
   "obsidian-git",
-  "vault-cms"
+  "vault-cms",
+  "file-name-history"
 ]
