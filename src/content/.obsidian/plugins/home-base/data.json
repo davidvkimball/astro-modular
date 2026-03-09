@@ -5,7 +5,7 @@
   "openViewMode": "default",
   "openMode": "replace-all",
   "manualOpenMode": "retain",
-  "replaceNewTab": true,
+  "replaceNewTab": false,
   "newTabMode": "always",
   "openWhenAllTabsClosed": false,
   "useDifferentFileForNewTab": false,

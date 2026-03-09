@@ -23,7 +23,7 @@ import Icon from './Icon.astro';
       </button>
 
       <!-- Graph Container -->
-      <div id="graph-modal-container" class="w-full h-full bg-primary-50 dark:bg-primary-800 rounded-xl overflow-hidden">
+      <div id="graph-modal-container" class="w-full h-full bg-primary-50 dark:bg-primary-800 rounded-xl overflow-hidden" style="touch-action: none;">
         <!-- Graph will be rendered here -->
       </div>
     </div>
@@ -86,7 +86,7 @@ import Icon from './Icon.astro';
               <path d="M6 6l12 12"/>
             </svg>
           </button>
-          <div id="graph-modal-container" class="w-full h-full bg-primary-50 dark:bg-primary-800 rounded-xl overflow-hidden">
+          <div id="graph-modal-container" class="w-full h-full bg-primary-50 dark:bg-primary-800 rounded-xl overflow-hidden" style="touch-action: none;">
             <div class="flex items-center justify-center h-full text-primary-500 dark:text-primary-400">
               <div class="text-center">
                 <div class="animate-spin w-8 h-8 mx-auto mb-4 opacity-50">
@@ -307,6 +307,10 @@ import Icon from './Icon.astro';
         if (isDraggingNode) return false;
         if (event.type === 'wheel') return true;
         if (event.type === 'mousedown') {
+          return !event.target.closest('g[data-id]');
+        }
+        if (event.type === 'touchstart' || event.type === 'touchmove') {
+          if (event.touches && event.touches.length >= 2) return true;
           return !event.target.closest('g[data-id]');
         }
         return false;
