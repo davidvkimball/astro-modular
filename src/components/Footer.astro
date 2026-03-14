@@ -42,7 +42,7 @@ const getProfilePictureClasses = (size: string, style: string) => {
             href={profilePicture.url}
             class="inline-block hover:opacity-80 transition-opacity"
             target={profilePicture.url.startsWith('http') ? '_blank' : undefined}
-            rel={profilePicture.url.startsWith('http') ? 'noopener noreferrer' : undefined}
+            rel={undefined}
           >
             <img
               src={profilePicture.image}
@@ -114,7 +114,7 @@ const getProfilePictureClasses = (size: string, style: string) => {
                 href={profilePicture.url}
                 class="inline-block hover:opacity-80 transition-opacity"
                 target={profilePicture.url.startsWith('http') ? '_blank' : undefined}
-                rel={profilePicture.url.startsWith('http') ? 'noopener noreferrer' : undefined}
+                rel={undefined}
               >
                 <img
                   src={profilePicture.image}

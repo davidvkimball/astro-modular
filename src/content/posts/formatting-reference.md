@@ -1,7 +1,7 @@
 ---
 title: Formatting Reference
 date: 2025-09-07
-description: Explore all the markdown, extended markdown, and other embed features available in this blog theme.
+description: Explore all the markdown, extended markdown, and other features available in this blog theme. For Obsidian-specific embeds, check the Obsidian embeds post.
 tags:
   - markdown
   - formatting

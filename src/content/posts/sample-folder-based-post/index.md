@@ -1,6 +1,6 @@
 ---
 title: Sample Folder-Based Post
-description: This is a test post to demonstrate the folder-based approach
+description: This is a test post to demonstrate the folder-based approach, which differs from file-based by using an index.md file and a folder name as the slug.
 date: 2025-09-08
 tags:
   - astro

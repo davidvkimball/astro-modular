@@ -429,7 +429,7 @@ export const remarkObsidianEmbeds: Plugin<[], Root> = () => {
   <iframe class="pdf-viewer" src="${pdfUrl}" title="${title}"></iframe>
   <div class="pdf-info">
     <span class="pdf-filename">${filename}</span>
-    <a href="${pdfUrl}" download class="pdf-download-link" target="_blank" rel="noopener noreferrer">Download PDF</a>
+    <a href="${pdfUrl}" download class="pdf-download-link" target="_blank">Download PDF</a>
   </div>
 </div>`;
         parent.children[index] = createHtmlNode(html);

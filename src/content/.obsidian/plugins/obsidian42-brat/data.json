@@ -1,5 +1,6 @@
 {
   "pluginList": [
+    "davidvkimball/obsidian-property-over-file-name",
     "davidvkimball/obsidian-file-name-history",
     "davidvkimball/obsidian-image-manager",
     "davidvkimball/obsidian-home-base",
@@ -10,10 +11,13 @@
     "davidvkimball/obsidian-astro-modular-settings",
     "davidvkimball/obsidian-oxygen-settings",
     "davidvkimball/obsidian-seo",
-    "davidvkimball/obsidian-property-over-filename",
     "davidvkimball/obsidian-astro-composer"
   ],
   "pluginSubListFrozenVersion": [
+    {
+      "repo": "davidvkimball/obsidian-property-over-file-name",
+      "version": "latest"
+    },
     {
       "repo": "davidvkimball/obsidian-file-name-history",
       "version": "latest"
@@ -52,10 +56,6 @@
     },
     {
       "repo": "davidvkimball/obsidian-seo",
-      "version": "latest"
-    },
-    {
-      "repo": "davidvkimball/obsidian-property-over-filename",
       "version": "latest"
     },
     {

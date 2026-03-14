@@ -217,7 +217,7 @@ const { prev: prevProject, next: nextProject } = getAdjacentPosts(visibleProject
                 <a
                   href={project.data.repositoryUrl}
                   target="_blank"
-                  rel="noopener noreferrer"
+
                   class="inline-flex items-center justify-center px-2 py-2 text-sm text-primary-600 dark:text-primary-300 bg-primary-50 dark:bg-primary-800 rounded-lg border border-primary-200 dark:border-primary-700 hover:bg-highlight-100 dark:hover:bg-highlight-800 hover:text-highlight-700 dark:hover:text-highlight-300 transition-all duration-200 hover:shadow-md"
                   title="View Repository"
                 >
@@ -228,7 +228,7 @@ const { prev: prevProject, next: nextProject } = getAdjacentPosts(visibleProject
                 <a
                   href={project.data.projectUrl || project.data.demoUrl || project.data.demoURL}
                   target="_blank"
-                  rel="noopener noreferrer"
+
                   class="inline-flex items-center gap-1.5 px-3 py-2 text-sm bg-highlight-600 dark:bg-highlight-400 text-white border-highlight-600 dark:border-highlight-400 rounded-lg hover:opacity-90 transition-all duration-200"
                   style="color: white !important;"
                   title="View Project"
@@ -415,7 +415,6 @@ const { prev: prevProject, next: nextProject } = getAdjacentPosts(visibleProject
             // Skip if already has target attribute (e.g., manually set)
             if (!link.hasAttribute('target')) {
               link.setAttribute('target', '_blank');
-              link.setAttribute('rel', 'noopener noreferrer');
             }
           }
         });

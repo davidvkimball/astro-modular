@@ -1044,7 +1044,6 @@ const scrollbarClass = siteConfig.hideScrollBar ? '' : 'show-scrollbars';
         const href = link.getAttribute('href');
         if (href && (href.startsWith('http://') || href.startsWith('https://'))) {
           link.setAttribute('target', '_blank');
-          link.setAttribute('rel', 'noopener noreferrer');
         }
       });
 
@@ -1056,8 +1055,7 @@ const scrollbarClass = siteConfig.hideScrollBar ? '' : 'show-scrollbars';
           // Skip if already has target attribute (e.g., manually set)
           if (!link.hasAttribute('target')) {
             link.setAttribute('target', '_blank');
-            link.setAttribute('rel', 'noopener noreferrer');
-          }
+            }
         }
       });
     }
@@ -1773,44 +1771,38 @@ const scrollbarClass = siteConfig.hideScrollBar ? '' : 'show-scrollbars';
       }
     }
 
-    // Handle URL hash scrolling on page load (start at top, then smooth scroll)
+    // Handle URL hash scrolling on page load, accounting for images that
+    // load after the initial scroll and push content down.
     function handleInitialHashScroll() {
       const hash = window.location.hash;
-      if (hash && hash.length > 1) {
-        // First, scroll to top instantly
-        window.scrollTo(0, 0);
+      if (!hash || hash.length <= 1) return;
 
-        // Then wait a bit and smooth scroll to target
-        setTimeout(() => {
-          const targetElement = document.querySelector(hash);
-          if (targetElement) {
-            // Custom smooth scroll animation
-            const targetPosition = targetElement.offsetTop - 100; // Account for header
-            const startPosition = window.pageYOffset;
-            const distance = targetPosition - startPosition;
-            const duration = 800; // 800ms duration
-            let start = null;
+      const targetElement = document.querySelector(hash);
+      if (!targetElement) return;
 
-            function step(timestamp) {
-              if (!start) start = timestamp;
-              const progress = timestamp - start;
-              const percentage = Math.min(progress / duration, 1);
+      // Scroll immediately
+      targetElement.scrollIntoView();
 
-              // Easing function (ease-in-out)
-              const easeInOut = percentage < 0.5
-                ? 2 * percentage * percentage
-                : 1 - Math.pow(-2 * percentage + 2, 2) / 2;
+      // Watch prose images and re-scroll each time one finishes loading
+      const prose = document.querySelector('.prose');
+      if (!prose) return;
 
-              window.scrollTo(0, startPosition + distance * easeInOut);
+      const imgs = prose.querySelectorAll('img');
+      let pending = 0;
+      imgs.forEach(img => {
+        if (!img.complete) {
+          pending++;
+          const done = () => {
+            pending--;
+            targetElement.scrollIntoView();
+          };
+          img.addEventListener('load', done, { once: true });
+          img.addEventListener('error', done, { once: true });
+        }
+      });
 
-              if (progress < duration) {
-                requestAnimationFrame(step);
-              }
-            }
-
-            requestAnimationFrame(step);
-          }
-        }, 100);
+      if (pending === 0) {
+        requestAnimationFrame(() => targetElement.scrollIntoView());
       }
     }
 
