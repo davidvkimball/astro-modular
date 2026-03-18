@@ -63,7 +63,7 @@ function getMaxNodesFromConfig() {
 }
 
 // Simple logging utility
-const isDev = process.env.NODE_ENV !== "production";
+const isDev = process.env.NODE_ENV !== "production" && !process.argv.includes("--production");
 const log = {
   info: (...args) => isDev && console.log(...args),
   error: (...args) => console.error(...args),
@@ -425,7 +425,7 @@ async function generateGraphData() {
     log.info(`📄 Found ${posts.length} posts`);
 
     // Filter out draft posts in production
-    const isDev = process.env.NODE_ENV !== "production";
+    const isDev = process.env.NODE_ENV !== "production" && !process.argv.includes("--production");
     const visiblePosts = posts.filter((post) => isDev || !post.data.draft);
 
     log.info(`📄 Processing ${visiblePosts.length} visible posts`);
