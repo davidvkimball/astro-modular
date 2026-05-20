@@ -72,6 +72,8 @@ views:
     draftStatusReverse: false
     scheduledDateProperty: note.date
     showScheduledBadge: true
+    richContentPreview: false
+    descriptionMaxLines: 5
   - type: cms
     name: Pages
     filters:

@@ -44,11 +44,15 @@
 	to { transform: rotate(360deg); }
 }
 
-/* Header with flexbox layout */
+/* Collapsible header for issues lists. Flexbox layout plus padding/cursor for the click target. */
 .seo-issues-header-container {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
+	margin-bottom: 1rem;
+	padding: 0.5rem;
+	border-radius: 4px;
+	cursor: default;
 }
 
 /* Collapsible score section */
@@ -82,40 +86,21 @@
 	gap: 0.5rem;
 }
 
-/* Sort button styling */
-.seo-sort-btn {
-	border: none !important;
-	background: none !important;
-	box-shadow: none !important;
+/* Sort button styling. Specificity is boosted via the .seo-panel scope to beat default button rules through the cascade. */
+.seo-panel .seo-sort-btn,
+.seo-panel .seo-sort-btn.clickable-icon {
+	border: none;
+	background: none;
+	box-shadow: none;
 	cursor: default;
-	padding: 0 !important;
+	padding: 0;
 	color: var(--text-muted);
 	transition: color 0.2s ease;
 }
 
-.seo-sort-btn:hover {
-	background: none !important;
+.seo-panel .seo-sort-btn:hover {
+	background: none;
 	color: var(--text-normal);
-}
-
-/* Right-align checkmark icons in menu */
-.menu .menu-item {
-	display: flex !important;
-	justify-content: space-between !important;
-	align-items: center !important;
-}
-
-.menu .menu-item .menu-item-icon {
-	margin-left: auto !important;
-	order: 2 !important;
-}
-
-/* Override any clickable-icon styling */
-.seo-sort-btn.clickable-icon {
-	border: none !important;
-	background: none !important;
-	box-shadow: none !important;
-	padding: 0 !important;
 }
 
 .seo-audit-btn {
@@ -138,6 +123,7 @@
 	max-width: 100%;
 	box-sizing: border-box;
 	height: 100%;
+	overflow-x: hidden;
 	overflow-y: auto;
 	scrollbar-gutter: stable;
 	position: relative;
@@ -212,6 +198,7 @@
 	background: var(--background-secondary);
 	border-radius: 8px;
 	border: 1px solid var(--background-modifier-border);
+	overflow-x: hidden;
 }
 
 .seo-section h3 {
@@ -257,6 +244,7 @@
 	border-radius: 4px;
 	padding: 1rem;
 	transition: all 0.2s ease;
+	overflow-x: hidden;
 }
 
 /* Color-coded check blocks */
@@ -331,6 +319,10 @@
 
 .seo-result {
 	padding: 0.5rem 0;
+	word-wrap: break-word;
+	word-break: break-word;
+	overflow-wrap: break-word;
+	hyphens: auto;
 }
 
 .seo-result:last-child {
@@ -354,6 +346,10 @@
 	color: var(--text-muted);
 	margin-top: 0.25rem;
 	font-style: italic;
+	word-wrap: break-word;
+	word-break: break-word;
+	overflow-wrap: break-word;
+	hyphens: auto;
 }
 
 .seo-top-btn {
@@ -426,58 +422,52 @@
 	font-size: 0.9rem;
 }
 
-/* Color coding for stats numbers */
-.seo-score-excellent {
-	color: var(--color-green, #22c55e) !important;
+/* Color coding for stats numbers. Specificity boosted via .seo-panel scope so these win over inherited text colors. */
+.seo-panel .seo-score-excellent {
+	color: var(--color-green, #22c55e);
 }
 
-.seo-score-good {
-	color: var(--color-lime, #84cc16) !important;
+.seo-panel .seo-score-good {
+	color: var(--color-lime, #84cc16);
 }
 
-.seo-score-fair {
-	color: var(--color-yellow, #eab308) !important;
+.seo-panel .seo-score-fair {
+	color: var(--color-yellow, #eab308);
 }
 
-.seo-score-poor {
-	color: var(--color-red, #ef4444) !important;
+.seo-panel .seo-score-poor {
+	color: var(--color-red, #ef4444);
 }
 
-.seo-issues-count {
-	color: var(--color-red, #ef4444) !important;
+.seo-panel .seo-issues-count {
+	color: var(--color-red, #ef4444);
 }
 
-.seo-warnings-count {
-	color: var(--color-yellow, #eab308) !important;
+.seo-panel .seo-warnings-count {
+	color: var(--color-yellow, #eab308);
 }
 
-.seo-notices-count {
-	color: var(--color-blue, #3b82f6) !important;
+.seo-panel .seo-notices-count {
+	color: var(--color-blue, #3b82f6);
 }
 
 /* Current note color coding */
-.seo-issues-count-text {
-	color: var(--color-red, #ef4444) !important;
+.seo-panel .seo-issues-count-text {
+	color: var(--color-red, #ef4444);
 }
 
-.seo-warnings-count-text {
-	color: var(--color-yellow, #eab308) !important;
+.seo-panel .seo-warnings-count-text {
+	color: var(--color-yellow, #eab308);
 }
 
-.seo-notices-count-text {
-	color: var(--color-blue, #3b82f6) !important;
+.seo-panel .seo-notices-count-text {
+	color: var(--color-blue, #3b82f6);
 }
 
 .seo-issues-list {
 	margin-top: 1rem;
 }
 
-.seo-issues-header-container {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	margin-bottom: 1rem;
-}
 
 .seo-sort-buttons {
 	display: flex;
@@ -566,12 +556,6 @@
 	overflow: visible;
 }
 
-/* Collapsible header for files with issues */
-.seo-issues-header-container {
-	padding: 0.5rem;
-	border-radius: 4px;
-	cursor: default;
-}
 
 /* Only the collapse icon should be clickable */
 .seo-collapse-icon.seo-collapsible-header {
@@ -586,23 +570,9 @@
 
 /* Ensure consistent spacing - removed problematic overflow hidden */
 
-/* Text overflow handling for long strings */
-.seo-result {
-	word-wrap: break-word;
-	word-break: break-word;
-	overflow-wrap: break-word;
-	hyphens: auto;
-}
-
-.seo-suggestion {
-	word-wrap: break-word;
-	word-break: break-word;
-	overflow-wrap: break-word;
-	hyphens: auto;
-}
-
-/* Specific handling for long URLs and links */
-.seo-result:has([href*="http"]) {
+/* Specific handling for long URLs and links. Targets the link element directly to
+   avoid a parent-containing selector that has performance implications from broad invalidation. */
+.seo-result a[href*="http"] {
 	word-break: break-all;
 }
 
@@ -618,24 +588,12 @@
 	text-overflow: ellipsis;
 }
 
-/* Ensure containers don't overflow */
-.seo-panel {
-	overflow-x: hidden;
-}
 
-.seo-section {
-	overflow-x: hidden;
-}
-
-.seo-check {
-	overflow-x: hidden;
-}
-
-/* Clickable navigation styles */
-.seo-clickable {
-	cursor: pointer !important;
-	text-decoration: underline !important;
-	color: var(--text-accent) !important;
+/* Clickable navigation styles. Specificity boosted via .seo-panel scope so these win over default text styling. */
+.seo-panel .seo-clickable {
+	cursor: pointer;
+	text-decoration: underline;
+	color: var(--text-accent);
 }
 
 .seo-result-message {
@@ -743,13 +701,14 @@
 	text-decoration: underline;
 }
 
-/* Styles for dynamic elements that were previously set via JavaScript */
-.seo-header-hidden {
-	display: none !important;
+/* Styles for dynamic elements that were previously set via JavaScript.
+   Specificity boosted via .seo-panel scope so these toggle classes win over default display. */
+.seo-panel .seo-header-hidden {
+	display: none;
 }
 
-.seo-header-visible {
-	display: block !important;
+.seo-panel .seo-header-visible {
+	display: block;
 }
 
 .seo-no-results-message {
@@ -761,12 +720,12 @@
 	color: var(--text-muted);
 }
 
-.seo-progress-container-visible {
-	display: block !important;
+.seo-panel .seo-progress-container-visible {
+	display: block;
 }
 
-.seo-progress-container-hidden {
-	display: none !important;
+.seo-panel .seo-progress-container-hidden {
+	display: none;
 }
 
 .seo-progress-bar-dynamic {

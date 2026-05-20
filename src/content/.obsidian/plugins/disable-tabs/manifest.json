@@ -1,7 +1,7 @@
 {
 	"id": "disable-tabs",
 	"name": "Disable Tabs",
-	"version": "1.0.10",
+	"version": "1.0.11",
 	"minAppVersion": "1.11.0",
 	"description": "Disables having more than one tab open at a time.",
 	"author": "David V. Kimball",

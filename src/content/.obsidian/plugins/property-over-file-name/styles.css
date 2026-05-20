@@ -122,9 +122,11 @@
   background-color: var(--text-error-hover);
 }
 
-/* Hidden modal utility class - SCOPED to plugin only */
-.property-over-filename-modal .modal.hidden {
-  display: none !important;
+/* Hidden modal utility class - SCOPED to plugin only. Doubled class
+   raises specificity to 0,3,0 so we beat Obsidian's default modal rules
+   through cascade alone, without needing !important. */
+.property-over-filename-modal .modal.hidden.hidden {
+  display: none;
 }
 
 /* Mobile-specific adjustments - SCOPED to plugin only */
@@ -296,28 +298,24 @@
   opacity: 0.7;
 }
 
-/* Group settings compatibility styling for older Obsidian builds (< 1.11.0) */
-/* Base styling for setting-group-heading - drop default border */
-.setting-group-heading h3 {
+/* Group settings styling. The plugin's minAppVersion is 1.11.0+ where the
+   first .setting-item no longer gets a default border-top, so we don't need
+   the old :has(+ .setting-item) carve-out. Doubled class boosts specificity
+   to 0,2,1 to win against Obsidian's default heading rules without !important. */
+.setting-group-heading.setting-group-heading h3 {
 	margin: 1.5rem 0 0.75rem;
 	padding-bottom: 0.5rem;
 	font-size: 1rem;
 	font-weight: 600;
-	border-bottom: none !important;
+	border-bottom: none;
 }
 
 .setting-group-heading:first-child h3 {
 	margin-top: 0;
 }
 
-/* Only reintroduce border-bottom if heading is NOT immediately followed by a setting-item */
-/* This prevents double divider lines in older Obsidian builds where the first .setting-item */
-/* already has a border-top, creating a double line with the heading's border-bottom */
-.setting-group-heading:not(:has(+ .setting-item)) h3 {
-	border-bottom: 1px solid var(--background-modifier-border) !important;
-}
-
-/* Utility class for hiding elements via plugin logic */
-.pov-hidden {
-  display: none !important;
+/* Utility class for hiding elements via plugin logic. Doubled class lets us
+   win over default display rules without needing !important. */
+.pov-hidden.pov-hidden {
+  display: none;
 }

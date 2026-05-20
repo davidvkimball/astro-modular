@@ -99,8 +99,8 @@
 
 /* Hide home base tab header when sticky icon is enabled */
 /* Completely remove from DOM flow to prevent tab counting */
-.workspace-tab-header.is-home-base-tab,
-.workspace-tab-header[data-home-base-ghost="true"] {
+.workspace-tab-header-container-inner:has(> .home-base-sticky-icon) > .workspace-tab-header.is-home-base-tab,
+.workspace-tab-header-container-inner:has(> .home-base-sticky-icon) > .workspace-tab-header[data-home-base-ghost="true"] {
 	display: none !important;
 	/* Remove from accessibility tree */
 	visibility: hidden !important;

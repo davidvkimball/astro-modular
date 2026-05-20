@@ -1,7 +1,7 @@
 {
 	"id": "file-name-history",
 	"name": "File Name History",
-	"version": "0.2.7",
+	"version": "0.2.8",
 	"minAppVersion": "1.11.0",
 	"description": "Store file name or folder name change history into note properties.",
 	"author": "David V. Kimball",

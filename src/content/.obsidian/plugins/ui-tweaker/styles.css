@@ -20,7 +20,7 @@ body:not(.always-show-title-bar).auto-hide-title-bar-reveal .view-header-title-c
 
 /* Always show title bar when set to "show" */
 body.always-show-title-bar .view-header-title-container {
-	opacity: 1 !important;
+	opacity: 1;
 	transition: opacity 0.1s ease-in-out;
 }
 
@@ -33,7 +33,7 @@ body.auto-hide-title-bar-hide .view-header-title-container {
 /* Ensure hover states don't interfere when always show is enabled */
 body.always-show-title-bar .view-header:hover .view-header-title-container,
 body.always-show-title-bar .view-header-title-container:hover {
-	opacity: 1 !important;
+	opacity: 1;
 }
 
 /* ========================================
@@ -196,26 +196,26 @@ body.auto-hide-right-tab-headers-hide .mod-right-split .mod-top-right-space .wor
 body:not(.is-mobile).auto-collapse-ribbon .workspace-ribbon.side-dock-ribbon.mod-left {
 	flex-basis: 20px;
 	transition: flex-basis 0.5s ease;
-	background: var(--background-secondary) !important;
+	background: var(--background-secondary);
 }
 
 body:not(.is-mobile).auto-collapse-ribbon .workspace-ribbon.side-dock-ribbon.mod-left:hover {
 	flex-basis: 44px;
 	transition: flex-basis 0.1s ease;
-	background: var(--background-secondary) !important;
+	background: var(--background-secondary);
 }
 
 /* Collapse the :before pseudo-element to match ribbon width */
 body:not(.is-mobile).auto-collapse-ribbon .workspace-ribbon.mod-left:before {
-	width: 20px !important;
+	width: 20px;
 	transition: width 0.5s ease;
-	background-color: var(--background-secondary) !important;
+	background-color: var(--background-secondary);
 }
 
 body:not(.is-mobile).auto-collapse-ribbon .workspace-ribbon.mod-left:hover:before {
-	width: 44px !important;
+	width: 44px;
 	transition: width 0.1s ease;
-	background-color: var(--background-secondary) !important;
+	background-color: var(--background-secondary);
 }
 
 body:not(.is-mobile).auto-collapse-ribbon .workspace-ribbon.side-dock-ribbon.mod-left .side-dock-ribbon-action {
@@ -234,12 +234,12 @@ body:not(.is-mobile).auto-collapse-ribbon .workspace-ribbon.side-dock-ribbon.mod
 body:not(.is-mobile):not(.mod-macos).auto-collapse-ribbon .workspace-ribbon.side-dock-ribbon.mod-left .sidebar-toggle-button.mod-left {
 	width: 20px;
 	transition: width 0.5s ease;
-	padding-top: 6px !important;
-	padding-bottom: 6px !important;
+	padding-top: 6px;
+	padding-bottom: 6px;
 }
 
 body:not(.is-mobile):not(.mod-macos).auto-collapse-ribbon .workspace-ribbon.side-dock-ribbon.mod-left:hover .sidebar-toggle-button.mod-left {
-	width: 44px !important;
+	width: 44px;
 	transition: width 0.1s ease;
 }
 
@@ -381,7 +381,7 @@ body.hider-vault:not(.is-mobile) .mod-sidedock.mod-left-split .workspace-drawer-
 body.hider-vault:not(.is-mobile) .workspace-split.mod-left-split .workspace-drawer-vault-actions {
 	position: relative;
 	z-index: 1;
-	background-color: var(--background-secondary) !important;
+	background-color: var(--background-secondary);
 }
 
 /* ========================================
@@ -390,7 +390,7 @@ body.hider-vault:not(.is-mobile) .workspace-split.mod-left-split .workspace-draw
 
 .hider-tabs .mod-root .workspace-tabs .workspace-tab-header-container,
 body.hider-tabs .mod-root .workspace-tabs .workspace-tab-header-container {
-	display: none !important;
+	display: none;
 }
 
 /* ========================================
@@ -406,8 +406,12 @@ body:not(.is-mobile).auto-hide-tab-bar-when-single-tab .mod-root .workspace-tabs
 		max-height 0.3s ease;
 }
 
-/* Only apply overflow: hidden when there's actually a single tab */
-body:not(.is-mobile).auto-hide-tab-bar-when-single-tab .mod-root .workspace-tabs:not(.mod-stacked):not( :has(.workspace-tab-header:nth-of-type(2))) .workspace-tab-header-container {
+/* Only apply overflow: hidden when there's actually a single tab.
+   `.ui-tweaker-single-tab` is added to `.workspace-tabs` containers from
+   uiManager.markSingleTabContainers(), replacing the old
+   `.ui-tweaker-single-tab` selector that was
+   flagged for `:has()` performance. */
+body:not(.is-mobile).auto-hide-tab-bar-when-single-tab .mod-root .workspace-tabs.ui-tweaker-single-tab:not(.mod-stacked) .workspace-tab-header-container {
 	max-height: 0;
 	opacity: 0;
 	overflow: hidden;
@@ -429,73 +433,73 @@ body:not(.is-mobile).auto-hide-tab-bar-when-single-tab .view-header .view-header
 }
 
 /* Windows: Offset view-actions when right sidebar is collapsed and it's a single tab pane */
-body:not(.is-mobile).auto-hide-tab-bar-when-single-tab.auto-hide-tab-bar-windows.is-right-sidebar-collapsed .workspace-tabs:not(.mod-stacked):not(:has(.workspace-tab-header:nth-of-type(2))) .view-header .view-actions {
-	padding-right: var(--view-actions-right-offset) !important;
+body:not(.is-mobile).auto-hide-tab-bar-when-single-tab.auto-hide-tab-bar-windows.is-right-sidebar-collapsed .workspace-tabs:not(.mod-stacked).ui-tweaker-single-tab .view-header .view-actions {
+	padding-right: var(--view-actions-right-offset);
 }
 
 /* macOS: Offset view-header-left when left sidebar is collapsed and it's a single tab pane */
-body:not(.is-mobile).auto-hide-tab-bar-when-single-tab.auto-hide-tab-bar-macos.is-left-sidebar-collapsed .workspace-tabs:not(.mod-stacked):not(:has(.workspace-tab-header:nth-of-type(2))) .view-header .view-header-left {
-	padding-left: var(--view-header-left-offset) !important;
+body:not(.is-mobile).auto-hide-tab-bar-when-single-tab.auto-hide-tab-bar-macos.is-left-sidebar-collapsed .workspace-tabs:not(.mod-stacked).ui-tweaker-single-tab .view-header .view-header-left {
+	padding-left: var(--view-header-left-offset);
 }
 
 /* Make view-header draggable when tab bar is hidden (single tab) */
-body:not(.is-mobile).auto-hide-tab-bar-when-single-tab .workspace-tabs:not(.mod-stacked):not(:has(.workspace-tab-header:nth-of-type(2))) .view-header {
+body:not(.is-mobile).auto-hide-tab-bar-when-single-tab .workspace-tabs:not(.mod-stacked).ui-tweaker-single-tab .view-header {
 	position: relative;
-	-webkit-app-region: drag !important;
+	-webkit-app-region: drag;
 }
 
 /* Windows: Exclude right side from dragging when right sidebar is collapsed */
-body:not(.is-mobile).auto-hide-tab-bar-when-single-tab.auto-hide-tab-bar-windows.is-right-sidebar-collapsed .workspace-tabs:not(.mod-stacked):not(:has(.workspace-tab-header:nth-of-type(2))) .view-header {
-	-webkit-app-region: no-drag !important;
+body:not(.is-mobile).auto-hide-tab-bar-when-single-tab.auto-hide-tab-bar-windows.is-right-sidebar-collapsed .workspace-tabs:not(.mod-stacked).ui-tweaker-single-tab .view-header {
+	-webkit-app-region: no-drag;
 }
 
 /* Create draggable pseudo-element for Windows */
-body:not(.is-mobile).auto-hide-tab-bar-when-single-tab.auto-hide-tab-bar-windows.is-right-sidebar-collapsed .workspace-tabs:not(.mod-stacked):not(:has(.workspace-tab-header:nth-of-type(2))) .view-header::before {
+body:not(.is-mobile).auto-hide-tab-bar-when-single-tab.auto-hide-tab-bar-windows.is-right-sidebar-collapsed .workspace-tabs:not(.mod-stacked).ui-tweaker-single-tab .view-header::before {
 	content: '';
 	position: absolute;
 	top: 0;
 	left: 0;
 	right: var(--view-actions-right-offset);
 	height: 100%;
-	-webkit-app-region: drag !important;
+	-webkit-app-region: drag;
 	z-index: 0;
 	pointer-events: auto;
 }
 
 /* macOS: Exclude left side from dragging when left sidebar is collapsed */
-body:not(.is-mobile).auto-hide-tab-bar-when-single-tab.auto-hide-tab-bar-macos.is-left-sidebar-collapsed .workspace-tabs:not(.mod-stacked):not(:has(.workspace-tab-header:nth-of-type(2))) .view-header {
-	-webkit-app-region: no-drag !important;
+body:not(.is-mobile).auto-hide-tab-bar-when-single-tab.auto-hide-tab-bar-macos.is-left-sidebar-collapsed .workspace-tabs:not(.mod-stacked).ui-tweaker-single-tab .view-header {
+	-webkit-app-region: no-drag;
 }
 
 /* Create draggable pseudo-element for macOS */
-body:not(.is-mobile).auto-hide-tab-bar-when-single-tab.auto-hide-tab-bar-macos.is-left-sidebar-collapsed .workspace-tabs:not(.mod-stacked):not(:has(.workspace-tab-header:nth-of-type(2))) .view-header::before {
+body:not(.is-mobile).auto-hide-tab-bar-when-single-tab.auto-hide-tab-bar-macos.is-left-sidebar-collapsed .workspace-tabs:not(.mod-stacked).ui-tweaker-single-tab .view-header::before {
 	content: '';
 	position: absolute;
 	top: 0;
 	left: var(--view-header-left-offset);
 	right: 0;
 	height: 100%;
-	-webkit-app-region: drag !important;
+	-webkit-app-region: drag;
 	z-index: 0;
 	pointer-events: auto;
 }
 
 /* Make interactive elements in view-header non-draggable and above pseudo-element */
-body:not(.is-mobile).auto-hide-tab-bar-when-single-tab .workspace-tabs:not(.mod-stacked):not(:has(.workspace-tab-header:nth-of-type(2))) .view-header .view-action,
-body:not(.is-mobile).auto-hide-tab-bar-when-single-tab .workspace-tabs:not(.mod-stacked):not(:has(.workspace-tab-header:nth-of-type(2))) .view-header .view-header-title,
-body:not(.is-mobile).auto-hide-tab-bar-when-single-tab .workspace-tabs:not(.mod-stacked):not(:has(.workspace-tab-header:nth-of-type(2))) .view-header button,
-body:not(.is-mobile).auto-hide-tab-bar-when-single-tab .workspace-tabs:not(.mod-stacked):not(:has(.workspace-tab-header:nth-of-type(2))) .view-header .clickable-icon,
-body:not(.is-mobile).auto-hide-tab-bar-when-single-tab .workspace-tabs:not(.mod-stacked):not(:has(.workspace-tab-header:nth-of-type(2))) .view-header .view-header-left,
-body:not(.is-mobile).auto-hide-tab-bar-when-single-tab .workspace-tabs:not(.mod-stacked):not(:has(.workspace-tab-header:nth-of-type(2))) .view-header .view-actions {
+body:not(.is-mobile).auto-hide-tab-bar-when-single-tab .workspace-tabs:not(.mod-stacked).ui-tweaker-single-tab .view-header .view-action,
+body:not(.is-mobile).auto-hide-tab-bar-when-single-tab .workspace-tabs:not(.mod-stacked).ui-tweaker-single-tab .view-header .view-header-title,
+body:not(.is-mobile).auto-hide-tab-bar-when-single-tab .workspace-tabs:not(.mod-stacked).ui-tweaker-single-tab .view-header button,
+body:not(.is-mobile).auto-hide-tab-bar-when-single-tab .workspace-tabs:not(.mod-stacked).ui-tweaker-single-tab .view-header .clickable-icon,
+body:not(.is-mobile).auto-hide-tab-bar-when-single-tab .workspace-tabs:not(.mod-stacked).ui-tweaker-single-tab .view-header .view-header-left,
+body:not(.is-mobile).auto-hide-tab-bar-when-single-tab .workspace-tabs:not(.mod-stacked).ui-tweaker-single-tab .view-header .view-actions {
 	position: relative;
 	z-index: 1;
-	-webkit-app-region: no-drag !important;
+	-webkit-app-region: no-drag;
 }
 
 /* Hide view-header when tabs are hidden (matches original Hider plugin behavior) */
 .hider-tabs .mod-root .view-header,
 body.hider-tabs .mod-root .view-header {
-	display: none !important;
+	display: none;
 }
 
 .hider-tabs .mod-top-left-space .view-header {
@@ -555,7 +559,7 @@ body:not(.is-mobile).hider-right-sidebar-button-reveal .sidebar-toggle-button.mo
 
 .hider-status .status-bar,
 .is-mobile.hider-status-mobile .status-bar {
-	display: none !important;
+	display: none;
 }
 
 /* ========================================
@@ -572,7 +576,7 @@ body:not(.is-mobile).hider-right-sidebar-button-reveal .sidebar-toggle-button.mo
 /* Don't override scrollbar width - let Obsidian handle it naturally */
 
 body.hider-scroll-reveal ::-webkit-scrollbar-thumb {
-	background-color: transparent !important;
+	background-color: transparent;
 }
 
 /* Show scrollbars when hover class is present (added by JavaScript when near scrollbar area) */
@@ -580,14 +584,14 @@ body.hider-scroll-reveal ::-webkit-scrollbar-thumb {
 body.hider-scroll-reveal .ui-tweaker-scrollbar-hover ::-webkit-scrollbar-thumb,
 body.hider-scroll-reveal.ui-tweaker-scrollbar-hover ::-webkit-scrollbar-thumb,
 .hider-scroll-reveal .ui-tweaker-scrollbar-hover::-webkit-scrollbar-thumb {
-	background-color: var(--scrollbar-thumb-bg) !important;
+	background-color: var(--scrollbar-thumb-bg);
 }
 
 
 
 
 body.theme-dark.hider-scroll-reveal .ui-tweaker-scrollbar-hover ::-webkit-scrollbar-thumb {
-	background-color: rgba(255, 255, 255, 0.2) !important;
+	background-color: rgba(255, 255, 255, 0.2);
 }
 
 /* Also handle Firefox scrollbars */
@@ -709,42 +713,30 @@ body:not(.is-mobile).hide-new-tab-icon-reveal .workspace-tab-header-new-tab:hove
 
 /* Hide tab close button */
 body.hide-tab-close-button-hide .workspace-tab-header-inner-close-button {
-	display: none !important;
+	display: none;
 }
 
 /* Reveal tab close button on hover (independent reveal per tab) */
 body:not(.is-mobile).hide-tab-close-button-reveal .workspace-tab-header .workspace-tab-header-inner-close-button {
-	opacity: 0 !important;
+	opacity: 0;
 	transition: opacity 0.3s ease;
 }
 
 body:not(.is-mobile).hide-tab-close-button-reveal .workspace-tab-header:hover .workspace-tab-header-inner-close-button,
 body:not(.is-mobile).hide-tab-close-button-reveal .workspace-tab-header-inner-close-button:hover {
-	opacity: 1 !important;
+	opacity: 1;
 }
 
 /* ========================================
    Desktop Hide Buttons
    ======================================== */
 
-.hide-button-new-note .clickable-icon.nav-action-button:has(.svg-icon.lucide-edit) {
-	display: none;
-}
-
-.hide-button-new-folder .clickable-icon.nav-action-button:has(.svg-icon.lucide-folder-plus) {
-	display: none;
-}
-
-.hide-button-sort-order .clickable-icon.nav-action-button:has(.svg-icon.lucide-sort-asc) {
-	display: none;
-}
-
-.hide-button-auto-reveal .clickable-icon.nav-action-button:has(.svg-icon.lucide-gallery-vertical) {
-	display: none;
-}
-
-.hide-button-collapse-all .clickable-icon.nav-action-button:has(.svg-icon.lucide-chevrons-up-down),
-.hide-button-collapse-all .clickable-icon.nav-action-button:has(.svg-icon.lucide-chevrons-down-up) {
+/* Buttons whose icon matches one of the configured hide settings (new note,
+   new folder, sort order, auto-reveal, collapse all, reading mode, bookmark,
+   search settings, mobile chevrons) get the `ui-tweaker-hidden-button`
+   marker class added by `uiManager.applyIconButtonHides()`. The doubled
+   class lifts specificity above Obsidian's default rules. */
+.ui-tweaker-hidden-button.ui-tweaker-hidden-button {
 	display: none;
 }
 
@@ -762,26 +754,15 @@ body:not(.is-mobile).hide-tab-close-button-reveal .workspace-tab-header-inner-cl
 /* Colors are applied via inline styles in ExplorerManager.ts when custom colors are set */
 /* No CSS rules here to avoid interfering with default icon styling */
 
-.hide-button-reading-mode .view-header .clickable-icon.view-action:has(.svg-icon.lucide-book-open),
-.hide-button-reading-mode .view-header .clickable-icon.view-action:has(.svg-icon.lucide-edit-3) {
-	display: none;
-}
-
-.hide-button-bookmarked .view-header .clickable-icon.view-action:has(.svg-icon.lucide-bookmark) {
-	display: none;
-}
-
-.hide-button-search-settings .search-row .clickable-icon:has(.svg-icon.lucide-sliders-horizontal) {
-	display: none;
-}
+/* Reading-mode, bookmarked, and search-settings button hides are handled by
+   the unified `.ui-tweaker-hidden-button` rule above; uiManager tags the
+   right buttons based on settings. */
 
 /* ========================================
    Mobile Hide Icons
    ======================================== */
 
-.hide-icon-mobile-chevrons .mobile-navbar .navbar-action-flair:has(.svg-icon.lucide-chevrons-up-down) {
-	display: none;
-}
+/* Mobile chevrons icon hide is also driven by `.ui-tweaker-hidden-button`. */
 
 /* ========================================
    Mobile Hide Buttons
@@ -831,7 +812,7 @@ body.hide-mobile-title .minimal-tab-title-visible .view-header-title-container {
 .hide-mobile-sync-icon.is-mobile .workspace-drawer.mod-right .workspace-drawer-header .workspace-drawer-header-icon.sync-status-icon:not(.ui-tweaker-sync-replacement),
 .hide-mobile-sync-icon.is-mobile .workspace-drawer.mod-right .workspace-drawer-header .clickable-icon.sync-status-icon:not(.ui-tweaker-sync-replacement),
 .hide-mobile-sync-icon.is-mobile .status-bar>.plugin-sync:not(.ui-tweaker-sync-replacement) {
-	display: none !important;
+	display: none;
 }
 
 /* ========================================
@@ -1016,49 +997,49 @@ body:not(.is-mobile).hider-tabs-windows {
 
 /* Draggable strip (leave OS window buttons untouched) */
 body:not(.is-mobile).hider-tabs.enable-window-dragging-windows .titlebar {
-	display: block !important;
-	position: fixed !important;
-	top: 0 !important;
-	left: 0 !important;
-	width: 100% !important;
-	z-index: 10 !important;
-	background: transparent !important;
-	-webkit-app-region: drag !important;
+	display: block;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	z-index: 10;
+	background: transparent;
+	-webkit-app-region: drag;
 }
 
 /* Inline title editable */
 body:not(.is-mobile).hider-tabs-windows .inline-title {
-	-webkit-app-region: no-drag !important;
-	z-index: 11 !important;
-	position: relative !important;
-	margin-top: 0 !important;
+	-webkit-app-region: no-drag;
+	z-index: 11;
+	position: relative;
+	margin-top: 0;
 	/* reset by default */
 }
 
 /* Only apply bump when tab bar is hidden */
 body:not(.is-mobile).hider-tabs-windows .workspace-leaf-content[data-type="markdown"] .inline-title {
-	margin-top: var(--drag-bump) !important;
+	margin-top: var(--drag-bump);
 }
 
 body:not(.is-mobile).hider-tabs-windows .workspace-leaf-content[data-type="markdown"] .document-search-container {
-	margin-top: var(--drag-bump) !important;
+	margin-top: var(--drag-bump);
 	/* Match note content offset */
-	z-index: 12 !important;
+	z-index: 12;
 	/* Above titlebar and inline-title */
 }
 
 /* Graph & Canvas controls stay clear of window buttons (only when right sidebar is closed) */
 body:not(.is-mobile).hider-tabs-windows .workspace:not(.is-right-sidedock-open) .graph-controls {
-	top: var(--controls-offset) !important;
+	top: var(--controls-offset);
 }
 
 body:not(.is-mobile).hider-tabs-windows .workspace:not(.is-right-sidedock-open) .canvas-controls {
-	top: var(--controls-offset) !important;
+	top: var(--controls-offset);
 }
 
 /* Push entire toolbar to the right of minimize/maximize/close (only when right sidebar is closed) */
 body:not(.is-mobile).hider-tabs-windows .workspace:not(.is-right-sidedock-open) .bases-toolbar {
-	padding-right: var(--toolbar-right-offset) !important;
+	padding-right: var(--toolbar-right-offset);
 }
 
 /* ========================================
@@ -1075,40 +1056,40 @@ body:not(.is-mobile).hider-tabs-macos {
 
 /* Draggable strip (leave OS window buttons untouched) */
 body:not(.is-mobile).hider-tabs.enable-window-dragging-macos .titlebar {
-	display: block !important;
-	position: fixed !important;
-	top: 0 !important;
-	left: 0 !important;
-	width: 100% !important;
-	z-index: 10 !important;
-	background: transparent !important;
-	-webkit-app-region: drag !important;
+	display: block;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	z-index: 10;
+	background: transparent;
+	-webkit-app-region: drag;
 }
 
 /* Inline title editable */
 body:not(.is-mobile).hider-tabs-macos .inline-title {
-	-webkit-app-region: no-drag !important;
-	z-index: 11 !important;
-	position: relative !important;
-	margin-top: 0 !important;
+	-webkit-app-region: no-drag;
+	z-index: 11;
+	position: relative;
+	margin-top: 0;
 	/* reset by default */
 }
 
 /* Only apply bump when tab bar is hidden */
 body:not(.is-mobile).hider-tabs-macos .workspace-leaf-content[data-type="markdown"] .inline-title {
-	margin-top: var(--drag-bump) !important;
+	margin-top: var(--drag-bump);
 }
 
 body:not(.is-mobile).hider-tabs-macos .workspace-leaf-content[data-type="markdown"] .document-search-container {
-	margin-top: var(--drag-bump) !important;
+	margin-top: var(--drag-bump);
 	/* Match note content offset */
-	z-index: 12 !important;
+	z-index: 12;
 	/* Above titlebar and inline-title */
 }
 
 /* Push entire toolbar to the right of Mac window buttons (only when left sidebar is closed) */
 body:not(.is-mobile).hider-tabs-macos .workspace:not(.is-left-sidedock-open) .bases-toolbar {
-	padding-left: var(--toolbar-left-offset) !important;
+	padding-left: var(--toolbar-left-offset);
 }
 
 /* ========================================
@@ -1123,34 +1104,34 @@ body:not(.is-mobile).hider-tabs-neutral {
 
 /* Draggable strip (leave OS window buttons untouched) */
 body:not(.is-mobile).hider-tabs.enable-window-dragging-neutral .titlebar {
-	display: block !important;
-	position: fixed !important;
-	top: 0 !important;
-	left: 0 !important;
-	width: 100% !important;
-	z-index: 10 !important;
-	background: transparent !important;
-	-webkit-app-region: drag !important;
+	display: block;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	z-index: 10;
+	background: transparent;
+	-webkit-app-region: drag;
 }
 
 /* Inline title editable */
 body:not(.is-mobile).hider-tabs-neutral .inline-title {
-	-webkit-app-region: no-drag !important;
-	z-index: 11 !important;
-	position: relative !important;
-	margin-top: 0 !important;
+	-webkit-app-region: no-drag;
+	z-index: 11;
+	position: relative;
+	margin-top: 0;
 	/* reset by default */
 }
 
 /* Only apply bump when tab bar is hidden */
 body:not(.is-mobile).hider-tabs-neutral .workspace-leaf-content[data-type="markdown"] .inline-title {
-	margin-top: var(--drag-bump) !important;
+	margin-top: var(--drag-bump);
 }
 
 body:not(.is-mobile).hider-tabs-neutral .workspace-leaf-content[data-type="markdown"] .document-search-container {
-	margin-top: var(--drag-bump) !important;
+	margin-top: var(--drag-bump);
 	/* Match note content offset */
-	z-index: 12 !important;
+	z-index: 12;
 	/* Above titlebar and inline-title */
 }
 
@@ -1158,9 +1139,11 @@ body:not(.is-mobile).hider-tabs-neutral .workspace-leaf-content[data-type="markd
    Help Button Replacement
    ======================================== */
 
-/* Hide help button when replacement is enabled or when helpButton is set to "hide" */
-body.ui-tweaker-hide-help-button .workspace-drawer-vault-actions .clickable-icon:has(svg.help) {
-	display: none !important;
+/* Hide help button when replacement is enabled or when helpButton is set to
+   "hide". `uiManager.markHelpButton()` tags the actual button with this
+   marker class so we don't need `:has(svg.help)`. */
+body .ui-tweaker-hidden-help-button.ui-tweaker-hidden-help-button {
+	display: none;
 }
 
 /* ========================================
@@ -1175,7 +1158,7 @@ body.ui-tweaker-hide-sync-button.is-mobile .workspace-drawer.mod-right .workspac
 body.ui-tweaker-hide-sync-button.is-mobile .workspace-drawer.mod-right .workspace-drawer-header .workspace-drawer-header-icon.sync-status-icon:not(.ui-tweaker-sync-replacement),
 body.ui-tweaker-hide-sync-button.is-mobile .workspace-drawer.mod-right .workspace-drawer-header .clickable-icon.sync-status-icon:not(.ui-tweaker-sync-replacement),
 body.ui-tweaker-hide-sync-button.is-mobile .status-bar>.plugin-sync:not(.ui-tweaker-sync-replacement) {
-	display: none !important;
+	display: none;
 }
 
 /* ========================================
@@ -1185,9 +1168,9 @@ body.ui-tweaker-hide-sync-button.is-mobile .status-bar>.plugin-sync:not(.ui-twea
 /* Ensure custom replacement buttons are visible and properly aligned */
 .ui-tweaker-help-replacement,
 .ui-tweaker-sync-replacement {
-	display: flex !important;
-	align-items: center !important;
-	justify-content: center !important;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 /* Ensure the sync replacement is on the far right if we're not cloning */
@@ -1203,7 +1186,7 @@ body.ui-tweaker-sync-replacement-enabled .workspace-drawer.mod-right .workspace-
 
 .ui-tweaker-help-replacement svg,
 .ui-tweaker-sync-replacement svg {
-	margin: 0 !important;
+	margin: 0;
 }
 
 
@@ -1214,12 +1197,10 @@ body.ui-tweaker-sync-replacement-enabled .workspace-drawer.mod-right .workspace-
    Tab Navigation - Matching Astro Modular Settings
    ======================================== */
 
-/* Override parent padding to get full width, then apply padding to children */
-.vertical-tab-content:has(.ui-tweaker-settings),
-.vertical-tab-container:has(.ui-tweaker-settings) {
-	padding: 0 !important;
-	margin: 0 !important;
-}
+/* (Removed: the original `:has(.ui-tweaker-settings)` rule that lived here
+   was dead code — the JS never adds a `.ui-tweaker-settings` class to any
+   element, only `.ui-tweaker-settings-tab-root`. Obsidian's own padding on
+   `.vertical-tab-content` is what the settings UI has been relying on. */
 
 .ui-tweaker-settings {
 	font-family: var(--font-family);
@@ -1441,42 +1422,38 @@ body.ui-tweaker-sync-replacement-enabled .workspace-drawer.mod-right .workspace-
 
 /* Icon picker - remove background box from icons */
 .suggestion-flair.ui-tweaker-icon-no-bg {
-	background: none !important;
-	background-color: transparent !important;
-	padding: 0 !important;
-	margin: 0 !important;
-	border: none !important;
+	background: none;
+	background-color: transparent;
+	padding: 0;
+	margin: 0;
+	border: none;
 }
 
-/* Status bar hidden items */
-.ui-tweaker-status-bar-hidden {
-	display: none !important;
+/* Status bar hidden items. Doubled class lifts specificity above
+   Obsidian's default `.status-bar-item` rule so we don't need !important. */
+.ui-tweaker-status-bar-hidden.ui-tweaker-status-bar-hidden {
+	display: none;
 }
 
-/* Explorer button hidden items */
-.ui-tweaker-explorer-button-hidden {
-	display: none !important;
+/* Explorer button hidden items. Doubled class for the same reason. */
+.ui-tweaker-explorer-button-hidden.ui-tweaker-explorer-button-hidden {
+	display: none;
 }
 
 /* Disabled buttons (grayed out) */
 .ui-tweaker-disabled-button {
-	opacity: 0.3 !important;
-	cursor: not-allowed !important;
+	opacity: 0.3;
+	cursor: not-allowed;
 }
 
 /* Name input full width */
 .ui-tweaker-name-input {
-	width: 100% !important;
-}
-
-/* Status bar hidden items */
-.ui-tweaker-status-bar-hidden {
-	display: none !important;
+	width: 100%;
 }
 
 /* Status bar container - use flexbox for ordering */
 .status-bar {
-	display: flex !important;
+	display: flex;
 	flex-direction: row;
 	align-items: center;
 }
@@ -1493,15 +1470,15 @@ body.ui-tweaker-sync-replacement-enabled .workspace-drawer.mod-right .workspace-
 
 /* Collapse icon for status bar items and tab bar items */
 .ui-tweaker-collapse-icon {
-	cursor: default !important;
-	background: transparent !important;
-	padding: 0 !important;
-	margin: 0 !important;
+	cursor: default;
+	background: transparent;
+	padding: 0;
+	margin: 0;
 	opacity: 0.6;
 	transition: opacity 0.2s, transform 0.2s;
-	display: inline-flex !important;
-	align-items: center !important;
-	justify-content: center !important;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
 	vertical-align: middle;
 	line-height: 1;
 }
@@ -1558,7 +1535,7 @@ body.ui-tweaker-sync-replacement-enabled .workspace-drawer.mod-right .workspace-
 	display: block;
 	border-radius: 0.25em;
 	margin-top: 0.5em;
-	padding: 0.5em !important;
+	padding: 0.5em;
 	font-size: 0.8rem;
 	background: var(--background-secondary-alt);
 	overflow: hidden;
@@ -1573,7 +1550,7 @@ body.ui-tweaker-sync-replacement-enabled .workspace-drawer.mod-right .workspace-
 /* Shift description text to the right for status bar items (to align with title and give chevron space) */
 /* Only apply to status bar items that have the specific class */
 .setting-item-description.ui-tweaker-status-bar-item-desc {
-	padding-left: 1.5rem !important;
+	padding-left: 1.5rem;
 	/* Space for chevron icon (1em icon + 0.5rem gap) */
 }
 
@@ -1625,7 +1602,7 @@ span.ui-tweaker-status-bar-row-title {
 
 span.ui-tweaker-status-bar-row-preview {
 	border-radius: 0.25em;
-	padding: 0.5em !important;
+	padding: 0.5em;
 	font-size: 0.8rem;
 	background: var(--background-secondary-alt);
 	overflow: visible;
@@ -1638,15 +1615,15 @@ span.ui-tweaker-status-bar-row-preview {
 
 /* Ensure cloned status bar items and their children are visible */
 span.ui-tweaker-status-bar-row-preview>* {
-	display: flex !important;
-	visibility: visible !important;
-	opacity: 1 !important;
+	display: flex;
+	visibility: visible;
+	opacity: 1;
 }
 
 span.ui-tweaker-status-bar-row-preview>*>* {
-	display: inline-flex !important;
-	visibility: visible !important;
-	opacity: 1 !important;
+	display: inline-flex;
+	visibility: visible;
+	opacity: 1;
 }
 
 /* For custom items, left-align the icon */
@@ -1664,12 +1641,12 @@ span.ui-tweaker-status-bar-row-reset-color {
 span.ui-tweaker-status-bar-row-reset-color button {
 	opacity: 0.6;
 	transition: opacity 0.2s;
-	background: transparent !important;
+	background: transparent;
 }
 
 span.ui-tweaker-status-bar-row-reset-color button:hover {
 	opacity: 1;
-	background: transparent !important;
+	background: transparent;
 }
 
 span.ui-tweaker-status-bar-row-color-picker {
@@ -1686,12 +1663,12 @@ span.ui-tweaker-status-bar-row-color-picker>div {
 /* Fix color picker on mobile - make it square/circular instead of long tube */
 body.is-mobile span.ui-tweaker-status-bar-row-color-picker input[type="color"],
 body.is-mobile .ui-tweaker-settings .setting-item-control input[type="color"] {
-	width: 44px !important;
-	height: 44px !important;
-	min-width: 44px !important;
-	min-height: 44px !important;
-	max-width: 44px !important;
-	max-height: 44px !important;
+	width: 44px;
+	height: 44px;
+	min-width: 44px;
+	min-height: 44px;
+	max-width: 44px;
+	max-height: 44px;
 	border-radius: 6px;
 	padding: 0;
 	border: 1px solid var(--background-modifier-border);
@@ -1769,7 +1746,7 @@ div.ui-tweaker-status-bar-row-drag.ui-tweaker-status-bar-row-disabled {
 }
 
 div.ui-tweaker-status-bar-row-drag.ui-tweaker-status-bar-row-disabled * {
-	color: var(--text-normal) !important;
+	color: var(--text-normal);
 }
 
 div.ui-tweaker-status-bar-row-clone {
@@ -1777,7 +1754,7 @@ div.ui-tweaker-status-bar-row-clone {
 }
 
 div.ui-tweaker-status-bar-row-clone>span {
-	visibility: hidden !important;
+	visibility: hidden;
 }
 
 div.ui-tweaker-status-bar-row-disabled {
@@ -1829,7 +1806,7 @@ div.ui-tweaker-status-bar-row-hidden:not(div.ui-tweaker-status-bar-row-disabled)
 
 /* Hide default icons in minimal mode if NOT custom */
 .metadata-property.ui-tweaker-property-minimal:not(.ui-tweaker-property-custom-icon) .metadata-property-icon {
-	display: none !important;
+	display: none;
 }
 
 /* Specific target for the SVG inside the icon container if needed, though display:none on container is better */
@@ -1837,7 +1814,7 @@ div.ui-tweaker-status-bar-row-hidden:not(div.ui-tweaker-status-bar-row-disabled)
 /* Ensure custom icons are always shown, even in minimal mode */
 .metadata-property.ui-tweaker-property-custom-icon .metadata-property-icon,
 .ui-tweaker-property-custom-icon .tree-item-icon {
-	display: flex !important;
+	display: flex;
 	align-items: center;
 	justify-content: center;
 }
@@ -1938,16 +1915,16 @@ div.ui-tweaker-status-bar-row-hidden:not(div.ui-tweaker-status-bar-row-disabled)
 }
 
 .ui-tweaker-reset-setting {
-	background-color: transparent !important;
-	border: none !important;
-	padding: 0 !important;
-	margin-top: 0 !important;
-	margin-bottom: 0 !important;
-	flex: 0 0 auto !important;
+	background-color: transparent;
+	border: none;
+	padding: 0;
+	margin-top: 0;
+	margin-bottom: 0;
+	flex: 0 0 auto;
 }
 
 .ui-tweaker-reset-setting .setting-item-info {
-	flex: 0 0 auto !important;
+	flex: 0 0 auto;
 	margin-right: 8px;
 }
 

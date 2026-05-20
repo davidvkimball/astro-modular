@@ -96,6 +96,13 @@
       "mdOnly": false
     },
     {
+      "id": "plugin-properties;1",
+      "name": "0 properties",
+      "type": "existing",
+      "hidden": false,
+      "mdOnly": false
+    },
+    {
       "id": "plugin-editing-toolbar-editingToolbar-statusbar-button-statusbar-organizer-element-hidden;1",
       "name": "plugin-editing-toolbar-editingToolbar-statusbar-bu",
       "type": "existing",
@@ -151,13 +158,6 @@
       "commandId": "obsidian-git:push",
       "mode": "any",
       "sticky": "right"
-    },
-    {
-      "id": "plugin-properties;1",
-      "name": "0 properties",
-      "type": "existing",
-      "hidden": false,
-      "mdOnly": false
     }
   ],
   "explorerCommands": [],

@@ -8,15 +8,6 @@
     }
 }
 
-.git-signs-gutter {
-    .cm-gutterElement {
-        /* Needed to align the sign properly for different line heigts. Such as
-         * when having a heading or list item.
-         */
-        padding-top: 0 !important;
-    }
-}
-
 .workspace-leaf-content[data-type="git-view"] .button-border {
     border: 2px solid var(--interactive-accent);
     border-radius: var(--radius-s);
@@ -108,7 +99,7 @@
     display: flex;
 }
 .git-tools .buttons > * {
-    padding: 0 0;
+    padding: 0;
     height: auto;
 }
 
@@ -175,7 +166,7 @@ which itself is adapted from the diff2html library with the following original l
     --git-change-bg: #ffd55840;
     --git-selected: #3572b0;
 
-    --git-delete: #c33;
+    --git-delete: #cc3333;
     --git-insert: #399839;
     --git-change: #d0b44c;
     --git-move: #3572b0;
@@ -538,13 +529,24 @@ which itself is adapted from the diff2html library with the following original l
     .d2h-diff-tbody {
         position: relative;
     }
+
+    /* My additions */
+    .cm-merge-revert {
+        width: 4em;
+    }
+    /* Ensure that merge revert markers are positioned correctly */
+    .cm-merge-revert > * {
+        position: absolute;
+        background-color: var(--background-secondary);
+        display: flex;
+    }
 }
 
 /* ====================== Line Authoring Information ====================== */
 
 .cm-gutterElement.obs-git-blame-gutter {
     /* Add background color to spacing inbetween and around the gutter for better aesthetics */
-    border-width: 0px 2px 0.2px 2px;
+    border-width: 0px 2px 0.2px;
     border-style: solid;
     border-color: var(--background-secondary);
     background-color: var(--background-secondary);
@@ -557,7 +559,7 @@ which itself is adapted from the diff2html library with the following original l
     font-family: monospace;
     height: 100%; /* ensure, that age-based background color occupies entire parent */
     text-align: right;
-    padding: 0px 6px 0px 6px;
+    padding: 0px 6px;
     white-space: pre; /* Keep spaces and do not collapse them. */
 }
 
@@ -602,6 +604,11 @@ which itself is adapted from the diff2html library with the following original l
 .git-signs-gutter {
     .cm-gutterElement {
         display: grid;
+
+        /* Needed to align the sign properly for different line heigts. Such as
+         * when having a heading or list item.
+         */
+        padding-top: 0 !important;
     }
 }
 
@@ -667,18 +674,6 @@ div:hover > .git-gutter-marker.git-changedelete {
 
 .git-gutter-marker.staged {
     opacity: 0.5;
-}
-
-.git-diff {
-    .cm-merge-revert {
-        width: 4em;
-    }
-    /* Ensure that merge revert markers are positioned correctly */
-    .cm-merge-revert > * {
-        position: absolute;
-        background-color: var(--background-secondary);
-        display: flex;
-    }
 }
 
 /* Prevent shifting of the editor when git signs gutter is the only gutter present */

@@ -94,7 +94,7 @@
         "keywordDensity": [
           {
             "passed": false,
-            "message": "Keyword density too low: 0.0%",
+            "message": "Keyword density too low: 0.1%",
             "suggestion": "Aim for at least 1% density",
             "severity": "warning"
           }
@@ -256,6 +256,135 @@
       "noticesCount": 8
     },
     {
+      "file": "posts/sample-folder-based-post/index.md",
+      "displayName": "Sample Folder-Based Post",
+      "checks": {
+        "titleLength": [
+          {
+            "passed": true,
+            "message": "Good title length: 40 characters (Sample Folder-Based Post + \" - Astro Modular\")",
+            "severity": "info"
+          }
+        ],
+        "metaDescription": [
+          {
+            "passed": true,
+            "message": "Good description length: 148 characters",
+            "severity": "info"
+          }
+        ],
+        "titleH1Uniqueness": [
+          {
+            "passed": true,
+            "message": "Meta title and H1 are unique (prefix/suffix configured)",
+            "severity": "info"
+          }
+        ],
+        "keywordInTitle": [
+          {
+            "passed": true,
+            "message": "No valid keyword defined in properties",
+            "severity": "notice"
+          }
+        ],
+        "keywordInDescription": [],
+        "keywordInHeadings": [
+          {
+            "passed": true,
+            "message": "No valid keyword defined in properties",
+            "severity": "notice"
+          }
+        ],
+        "keywordInSlug": [
+          {
+            "passed": true,
+            "message": "No valid keyword defined in properties",
+            "severity": "notice"
+          }
+        ],
+        "slugFormat": [],
+        "keywordDensity": [
+          {
+            "passed": true,
+            "message": "No valid keyword defined in properties",
+            "severity": "notice"
+          }
+        ],
+        "headingOrder": [
+          {
+            "passed": true,
+            "message": "Heading structure is correct",
+            "severity": "info"
+          }
+        ],
+        "contentLength": [
+          {
+            "passed": false,
+            "message": "Content too short: 91 words",
+            "suggestion": "Aim for at least 300 words",
+            "severity": "warning"
+          }
+        ],
+        "duplicateTitles": [],
+        "duplicateDescriptions": [],
+        "duplicateContent": [],
+        "altText": [
+          {
+            "passed": true,
+            "message": "All media elements have alt text",
+            "severity": "info"
+          }
+        ],
+        "imageFileNames": [
+          {
+            "passed": true,
+            "message": "All images have good file names",
+            "severity": "info"
+          }
+        ],
+        "nakedLinks": [
+          {
+            "passed": true,
+            "message": "No naked links found",
+            "severity": "info"
+          }
+        ],
+        "brokenLinks": [
+          {
+            "passed": true,
+            "message": "No broken internal links found",
+            "severity": "info"
+          }
+        ],
+        "potentiallyBrokenLinks": [
+          {
+            "passed": true,
+            "message": "No potentially broken links found",
+            "severity": "info"
+          }
+        ],
+        "potentiallyBrokenEmbeds": [],
+        "externalBrokenLinks": [
+          {
+            "passed": true,
+            "message": "No external links found",
+            "severity": "info"
+          }
+        ],
+        "readingLevel": [
+          {
+            "passed": true,
+            "message": "Good reading level: 9.6 (Moderately easy to read)",
+            "severity": "info"
+          }
+        ]
+      },
+      "overallScore": 90,
+      "issuesCount": 0,
+      "warningsCount": 1,
+      "noticesCount": 4
+    },
+    {
       "file": "posts/obsidian-embeds-demo.md",
       "displayName": "Obsidian Embeds Demo",
       "checks": {
@@ -313,7 +442,7 @@
         "keywordDensity": [
           {
             "passed": false,
-            "message": "Keyword density too low: 0.1%",
+            "message": "Keyword density too low: 0.2%",
             "suggestion": "Aim for at least 1% density",
             "severity": "warning"
           }
@@ -344,15 +473,9 @@
         ],
         "imageFileNames": [
           {
-            "passed": false,
-            "message": "Image 2 has random file name: 1933196479801536736",
-            "suggestion": "Use descriptive file names",
-            "severity": "warning",
-            "position": {
-              "line": 53,
-              "searchText": "![Why doesn't everyone use Astro? Writing blog posts in markdown is beautiful.](https://x.com/davidvkimball/status/1933196479801536736)",
-              "context": "### Twitter/X Posts\n\n![Why doesn't everyone use Astro? Writing blog posts in markdown is beautiful.](https://x.com/davidvkimball/status/1933196479801536736)\n\nTwitter posts are embedded with theme-aware styling that matches your site's light/dark mode."
-            }
+            "passed": true,
+            "message": "All images have good file names",
+            "severity": "info"
           }
         ],
         "nakedLinks": [
@@ -411,7 +534,7 @@
       },
       "overallScore": 83,
       "issuesCount": 0,
-      "warningsCount": 3,
+      "warningsCount": 2,
       "noticesCount": 2
     },
     {
@@ -742,148 +865,8 @@
       "issuesCount": 0,
       "warningsCount": 3,
       "noticesCount": 9
-    },
-    {
-      "file": "posts/sample-folder-based-post/index.md",
-      "displayName": "Sample Folder-Based Post",
-      "checks": {
-        "titleLength": [
-          {
-            "passed": true,
-            "message": "Good title length: 40 characters (Sample Folder-Based Post + \" - Astro Modular\")",
-            "severity": "info"
-          }
-        ],
-        "metaDescription": [
-          {
-            "passed": true,
-            "message": "Good description length: 148 characters",
-            "severity": "info"
-          }
-        ],
-        "titleH1Uniqueness": [
-          {
-            "passed": true,
-            "message": "Meta title and H1 are unique (prefix/suffix configured)",
-            "severity": "info"
-          }
-        ],
-        "keywordInTitle": [
-          {
-            "passed": false,
-            "message": "Keyword not found in title",
-            "suggestion": "Include your target keyword in the title",
-            "severity": "warning"
-          }
-        ],
-        "keywordInDescription": [
-          {
-            "passed": false,
-            "message": "Keyword not found in description",
-            "suggestion": "Include your target keyword in the description",
-            "severity": "warning"
-          }
-        ],
-        "keywordInHeadings": [
-          {
-            "passed": false,
-            "message": "Keyword not found in H1",
-            "suggestion": "Include your target keyword in the H1 heading for better SEO",
-            "severity": "warning"
-          }
-        ],
-        "keywordInSlug": [
-          {
-            "passed": false,
-            "message": "Target keyword \"\"\"\" not found in slug",
-            "suggestion": "Include your target keyword in the filename",
-            "severity": "warning"
-          }
-        ],
-        "slugFormat": [],
-        "keywordDensity": [
-          {
-            "passed": false,
-            "message": "Keyword density too low: 0.0%",
-            "suggestion": "Aim for at least 1% density",
-            "severity": "warning"
-          }
-        ],
-        "headingOrder": [
-          {
-            "passed": true,
-            "message": "Heading structure is correct",
-            "severity": "info"
-          }
-        ],
-        "contentLength": [
-          {
-            "passed": false,
-            "message": "Content too short: 91 words",
-            "suggestion": "Aim for at least 300 words",
-            "severity": "warning"
-          }
-        ],
-        "duplicateTitles": [],
-        "duplicateDescriptions": [],
-        "duplicateContent": [],
-        "altText": [
-          {
-            "passed": true,
-            "message": "All media elements have alt text",
-            "severity": "info"
-          }
-        ],
-        "imageFileNames": [
-          {
-            "passed": true,
-            "message": "All images have good file names",
-            "severity": "info"
-          }
-        ],
-        "nakedLinks": [
-          {
-            "passed": true,
-            "message": "No naked links found",
-            "severity": "info"
-          }
-        ],
-        "brokenLinks": [
-          {
-            "passed": true,
-            "message": "No broken internal links found",
-            "severity": "info"
-          }
-        ],
-        "potentiallyBrokenLinks": [
-          {
-            "passed": true,
-            "message": "No potentially broken links found",
-            "severity": "info"
-          }
-        ],
-        "potentiallyBrokenEmbeds": [],
-        "externalBrokenLinks": [
-          {
-            "passed": true,
-            "message": "No external links found",
-            "severity": "info"
-          }
-        ],
-        "readingLevel": [
-          {
-            "passed": true,
-            "message": "Good reading level: 9.6 (Moderately easy to read)",
-            "severity": "info"
-          }
-        ]
-      },
-      "overallScore": 80,
-      "issuesCount": 0,
-      "warningsCount": 6,
-      "noticesCount": 0
     }
   ],
-  "lastScanTimestamp": 1773463954001,
+  "lastScanTimestamp": 1778733113377,
   "showNotices": true
 }

@@ -107,9 +107,6 @@
 @media only screen and (min-width: 600px) {
 	.image-inserter-container .container {
 		padding: 10px;
-	}
-
-	.image-inserter-container .container {
 		max-width: 80vw;
 	}
 
@@ -344,7 +341,9 @@ div.image-manager-banner > div.banner-content::after {
 	z-index: 3;
 	content: '';
 	border-radius: var(--im-banner-radius);
-	background: var(--im-banner-mask);
+	/* Obsidian runs on Chromium, so the -webkit- masked value is always the
+	   one that applies; the prior `background: var(--im-banner-mask)` was a
+	   non-Chromium fallback that only produced a duplicate-property warning. */
 	background: var(--im-banner-mask-webkit);
 	transform: translate3d(0, 0, 0);
 }
@@ -354,16 +353,18 @@ div.image-manager-banner.static > div.banner-content::after {
 	animation: none;
 }
 
-div.image-manager-banner.static > div.banner-content::before {
-	animation: none !important;
-	opacity: 1 !important;
+/* Doubled `.static` class raises specificity enough to beat the animated
+   :not(.static) rules below through the cascade, no override flag needed. */
+div.image-manager-banner.static.static > div.banner-content::before {
+	animation: none;
+	opacity: 1;
 	transition: background-position-x 0.5s ease-in-out, background-position-y 0.5s ease-in-out;
 }
 
 /* Static video */
-div.image-manager-banner.static > div.banner-content > video {
-	animation: none !important;
-	opacity: 1 !important;
+div.image-manager-banner.static.static > div.banner-content > video {
+	animation: none;
+	opacity: 1;
 }
 
 /* During animation, disable transition to prevent conflicts */
