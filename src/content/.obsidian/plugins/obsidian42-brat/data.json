@@ -1,8 +1,13 @@
 {
   "pluginList": [
+    "davidvkimball/obsidian-astro-modular-settings",
     "davidvkimball/obsidian-vault-cms"
   ],
   "pluginSubListFrozenVersion": [
+    {
+      "repo": "davidvkimball/obsidian-astro-modular-settings",
+      "version": "latest"
+    },
     {
       "repo": "davidvkimball/obsidian-vault-cms",
       "version": "latest"
