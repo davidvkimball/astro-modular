@@ -42,10 +42,37 @@ const { seoData, bodyClass = '' } = Astro.props;
 
 // Determine scrollbar class based on configuration
 const scrollbarClass = siteConfig.hideScrollBar ? '' : 'show-scrollbars';
+
+// Eagerly load every custom theme at build time so the inline runtime script
+// doesn't have to do a `/src/...` dynamic import (which works in dev but 404s
+// in production builds). The glob pattern is a static literal — Vite resolves
+// it and bundles the matching modules during build.
+const customThemeModules = import.meta.glob('/src/themes/custom/*.ts', { eager: true }) as Record<string, Record<string, any>>;
+
+// Resolve each module to its theme object using the same export-name fallback
+// chain as the legacy runtime loader (customTheme → {filename}Theme → default → any
+// export with .primary + .highlight). Produces a { filename: themeData } map
+// that we serialize into a data attribute for the inline script.
+const customThemes: Record<string, { primary: Record<string, string>; highlight: Record<string, string> }> = {};
+for (const [path, mod] of Object.entries(customThemeModules)) {
+  const fileName = path.split('/').pop()?.replace(/\.ts$/, '') ?? '';
+  if (!fileName) continue;
+  let themeData: any = null;
+  if (mod.customTheme) themeData = mod.customTheme;
+  else if (mod[`${fileName}Theme`]) themeData = mod[`${fileName}Theme`];
+  else if (mod.default) themeData = mod.default;
+  else {
+    const themeExport = Object.keys(mod).find(k => mod[k] && typeof mod[k] === 'object' && mod[k].primary && mod[k].highlight);
+    if (themeExport) themeData = mod[themeExport];
+  }
+  if (themeData?.primary && themeData?.highlight) {
+    customThemes[fileName] = themeData;
+  }
+}
 ---
 
 <!DOCTYPE html>
-<html lang={siteConfig.language} class={`scrollbar-hide ${scrollbarClass}`} data-theme-config={siteConfig.theme} data-custom-theme-file={siteConfig.customThemeFile} data-available-themes={JSON.stringify(siteConfig.availableThemes)} data-command-palette-enabled={siteConfig.commandPalette.enabled} data-command-palette-change-theme={siteConfig.commandPalette.quickActions.changeTheme} data-feature-button={siteConfig.featureButton} data-favicon-theme-adaptive={siteConfig.faviconThemeAdaptive}>
+<html lang={siteConfig.language} class={`scrollbar-hide ${scrollbarClass}`} data-theme-config={siteConfig.theme} data-custom-theme-file={siteConfig.customThemeFile} data-custom-themes={JSON.stringify(customThemes)} data-available-themes={JSON.stringify(siteConfig.availableThemes)} data-command-palette-enabled={siteConfig.commandPalette.enabled} data-command-palette-change-theme={siteConfig.commandPalette.quickActions.changeTheme} data-feature-button={siteConfig.featureButton} data-favicon-theme-adaptive={siteConfig.faviconThemeAdaptive}>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -724,56 +751,22 @@ const scrollbarClass = siteConfig.hideScrollBar ? '' : 'show-scrollbars';
           customThemeFile = themeName;
         }
 
-        // Try to load the custom theme
+        // Custom themes are pre-resolved server-side (see frontmatter) and
+        // injected as JSON on <html data-custom-themes>. This avoids a runtime
+        // `import('/src/themes/custom/...')` which works in dev but 404s in
+        // production builds.
+        let customThemesMap = {};
         try {
-          // Import the custom theme dynamically
-          const customThemeModule = await import(`/src/themes/custom/${customThemeFile}.ts`);
+          customThemesMap = JSON.parse(document.documentElement.getAttribute('data-custom-themes') || '{}');
+        } catch (e) {
+          customThemesMap = {};
+        }
 
-          // Look for the theme export - try different possible export names
-          let themeData = null;
-          if (customThemeModule.customTheme) {
-            themeData = customThemeModule.customTheme;
-          } else if (customThemeModule[`${customThemeFile}Theme`]) {
-            // Try filename + "Theme" (e.g., minimalismTheme)
-            themeData = customThemeModule[`${customThemeFile}Theme`];
-          } else if (customThemeModule.default) {
-            // Try default export
-            themeData = customThemeModule.default;
-          } else {
-            // Look for any export that looks like a theme object
-            const exports = Object.keys(customThemeModule);
-            const themeExport = exports.find(key =>
-              customThemeModule[key] &&
-              typeof customThemeModule[key] === 'object' &&
-              customThemeModule[key].primary &&
-              customThemeModule[key].highlight
-            );
-            if (themeExport) {
-              themeData = customThemeModule[themeExport];
-            }
-          }
-
-          if (themeData) {
-            themes[themeName] = themeData;
-          } else {
-            // Fallback if custom theme doesn't export properly
-            console.warn(`Custom theme "${customThemeFile}" doesn't export theme data properly. Available exports:`, Object.keys(customThemeModule));
-            themes[themeName] = {
-              primary: {
-                50: '#ffffff', 100: '#f8f8f8', 200: '#e8e8e8', 300: '#d0d0d0',
-                400: '#a0a0a0', 500: '#808080', 600: '#606060', 700: '#404040',
-                800: '#202020', 900: '#101010', 950: '#000000'
-              },
-              highlight: {
-                50: '#f0f8ff', 100: '#e0f2fe', 200: '#bae6fd', 300: '#7dd3fc',
-                400: '#38bdf8', 500: '#0ea5e9', 600: '#0284c7', 700: '#0369a1',
-                800: '#075985', 900: '#0c4a6e', 950: '#082f49'
-              }
-            };
-          }
-        } catch (error) {
-          console.warn(`Could not load custom theme "${customThemeFile}", using fallback:`, error);
-          // Fallback custom theme
+        const resolved = customThemesMap[customThemeFile];
+        if (resolved && resolved.primary && resolved.highlight) {
+          themes[themeName] = resolved;
+        } else {
+          console.warn(`Custom theme "${customThemeFile}" was not found in the build. Make sure src/themes/custom/${customThemeFile}.ts exists and exports a theme object with .primary and .highlight. Using fallback.`);
           themes[themeName] = {
             primary: {
               50: '#ffffff', 100: '#f8f8f8', 200: '#e8e8e8', 300: '#d0d0d0',

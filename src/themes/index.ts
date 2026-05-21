@@ -525,12 +525,33 @@ export function isCustomTheme(themeName: string): boolean {
 }
 
 // Load a custom theme by filename (for dynamic loading)
+//
+// Uses `import.meta.glob` with a static literal pattern so Vite can statically
+// analyze and bundle every file in ./custom/ at build time. A runtime
+// `await import(`./custom/${name}`)` works in dev but is fragile in prod
+// builds, and (separately) the old implementation only looked for the
+// `customTheme` export — files that export under a different name (e.g.
+// `export const custom = {...}` from the Obsidian extractor) would silently
+// return undefined. This matches the resolution logic in BaseLayout.astro.
+const customThemeModules = import.meta.glob('./custom/*.ts', { eager: true }) as Record<string, Record<string, any>>;
+
 export async function loadCustomTheme(themeName: string) {
-  try {
-    const customTheme = await import(`./custom/${themeName}`);
-    return customTheme.customTheme;
-  } catch (error) {
+  const mod = customThemeModules[`./custom/${themeName}.ts`];
+  if (!mod) {
     console.warn(`Custom theme "${themeName}" not found in themes/custom/`);
     return null;
   }
+
+  // Export-name fallback chain: customTheme → {filename}Theme → default →
+  // any export with .primary + .highlight.
+  if (mod.customTheme) return mod.customTheme;
+  if (mod[`${themeName}Theme`]) return mod[`${themeName}Theme`];
+  if (mod.default) return mod.default;
+  const themeExport = Object.keys(mod).find(
+    k => mod[k] && typeof mod[k] === 'object' && mod[k].primary && mod[k].highlight
+  );
+  if (themeExport) return mod[themeExport];
+
+  console.warn(`Custom theme "${themeName}" was found but doesn't export a theme object with .primary and .highlight.`);
+  return null;
 }
