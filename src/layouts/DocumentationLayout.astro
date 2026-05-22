@@ -106,7 +106,7 @@ const structuredData = {
         allDocs={visibleDocs}
       />
       <!-- Documentation content -->
-      <article class={`bg-primary-50 dark:bg-primary-900 rounded-lg border border-primary-200 dark:border-primary-700 shadow-sm ${documentation.data.image && documentation.data.hideCoverImage !== true ? 'overflow-hidden' : ''}`}>
+      <article class={`bg-white dark:bg-primary-900 rounded-lg border border-primary-200 dark:border-primary-700 shadow-sm ${documentation.data.image && documentation.data.hideCoverImage !== true ? 'overflow-hidden' : ''}`}>
         {documentation.data.image && documentation.data.hideCoverImage !== true && (() => {
           // Process image path similar to other layouts
           let rawImage = documentation.data.image;
