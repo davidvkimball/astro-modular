@@ -1,7 +1,7 @@
 {
 	"id": "ui-tweaker",
 	"name": "UI Tweaker",
-	"version": "0.4.4",
+	"version": "0.4.3",
 	"minAppVersion": "1.11.0",
 	"description": "Add, hide, or modify various interface elements.",
 	"author": "David V. Kimball",
