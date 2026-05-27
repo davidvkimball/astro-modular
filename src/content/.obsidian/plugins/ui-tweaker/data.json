@@ -33,6 +33,7 @@
   "propertiesInHeading": true,
   "addPropertyButton": true,
   "deemphasizeProperties": false,
+  "alwaysShowBasesSearch": true,
   "instructions": false,
   "mobileChevronsIcon": false,
   "navigateBackButton": false,

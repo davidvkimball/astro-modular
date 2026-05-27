@@ -614,7 +614,7 @@ imageAlt: ""
 imageOG: false              # use cover as OG image instead of generating
 hideCoverImage: false
 hideTOC: false
-targetKeyword: ""           # SEO plugin
+targetKeyword: ""           # Search Engine Optimization plugin
 draft: false
 aliases:                    # populated by file-name-history
   - old-slug

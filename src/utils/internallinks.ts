@@ -1790,7 +1790,15 @@ export function remarkFolderImages() {
         // Sync script copies images to post folder root, removing subfolder prefixes
         // Strip 'images/' or 'attachments/' prefixes if present
         let cleanImagePath = imagePath;
-        if (cleanImagePath.startsWith('images/') || cleanImagePath.startsWith('attachments/')) {
+        // Accept Obsidian's "Path from vault folder" format for body image
+        // pastes: strip the post's own folder prefix if the markdown
+        // referenced the image by full vault path (e.g. `posts/my-slug/foo.png`
+        // from this same post). Without this, paste-inserted images 404 with
+        // a doubled URL prefix.
+        const postPrefix = `${collection}/${contentSlug}/`;
+        if (cleanImagePath.startsWith(postPrefix)) {
+          cleanImagePath = cleanImagePath.slice(postPrefix.length);
+        } else if (cleanImagePath.startsWith('images/') || cleanImagePath.startsWith('attachments/')) {
           cleanImagePath = cleanImagePath.replace(/^(images|attachments)\//, '');
         }
         // Image is relative to the folder: /posts/my-post/image.png

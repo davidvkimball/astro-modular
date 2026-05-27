@@ -12,6 +12,7 @@ import remarkInlineTags from './src/utils/remark-inline-tags.ts';
 import { remarkObsidianComments } from './src/utils/remark-obsidian-comments.ts';
 import remarkObsidianImageSize from './src/utils/remark-obsidian-image-size.ts';
 import remarkMath from 'remark-math';
+import remarkRescueCurrency from './src/utils/remark-rescue-currency.ts';
 import remarkReadingTime from 'remark-reading-time';
 import remarkToc from 'remark-toc';
 import remarkBreaks from 'remark-breaks';
@@ -147,6 +148,7 @@ image: {
       remarkBases,
       remarkImageCaptions,
       remarkMath,
+      remarkRescueCurrency,
       remarkCallouts,
       remarkBreaks,
       remarkImageGrids,

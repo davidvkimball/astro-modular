@@ -67,6 +67,7 @@ var DEFAULT_SETTINGS = {
   propertiesInHeading: false,
   addPropertyButton: false,
   deemphasizeProperties: false,
+  alwaysShowBasesSearch: false,
   instructions: false,
   // Mobile-specific
   mobileChevronsIcon: false,
@@ -1118,7 +1119,8 @@ var HiderTab = class extends TabRenderer {
       "propertiesInReadingView",
       "deemphasizeProperties",
       "propertiesInHeading",
-      "addPropertyButton"
+      "addPropertyButton",
+      "alwaysShowBasesSearch"
     ]);
     const generalGroup = new import_obsidian5.SettingGroup(container);
     this.addVisibilitySetting(
@@ -1243,6 +1245,8 @@ var HiderTab = class extends TabRenderer {
     this.addToggleSetting(propertiesGroup, "Deemphasize properties", "Softens visual prominence of file properties. They become more visible on hover.", "deemphasizeProperties");
     this.addToggleSetting(propertiesGroup, "Hide properties heading", 'Hide "Properties" heading above properties.', "propertiesInHeading");
     this.addToggleSetting(propertiesGroup, 'Hide "Add property" button', 'Hide "Add property" button below properties.', "addPropertyButton");
+    const basesGroup = new import_obsidian5.SettingGroup(container).setHeading("Bases");
+    this.addToggleSetting(basesGroup, "Always show Bases search", `Automatically expand the Bases search bar each time you open a base, so you don't have to click "Search" first.`, "alwaysShowBasesSearch");
   }
   addVisibilitySetting(group, name, desc, key) {
     group.addSetting((setting) => {
@@ -5960,6 +5964,10 @@ var UITweakerPlugin = class extends import_obsidian20.Plugin {
     super(...arguments);
     // Track wrapped commands to avoid double-wrapping and allow cleanup
     this.wrappedCommands = /* @__PURE__ */ new Map();
+    /** Toolbars we've already auto-expanded so we don't fight a user who
+     *  manually closes the Bases search row after we open it. WeakSet so
+     *  destroyed elements are GC'd. */
+    this.processedBasesToolbars = /* @__PURE__ */ new WeakSet();
   }
   get isMobile() {
     return import_obsidian20.Platform.isMobile || activeDocument.body.classList.contains("is-mobile") || activeDocument.body.classList.contains("emulate-mobile");
@@ -5991,6 +5999,7 @@ var UITweakerPlugin = class extends import_obsidian20.Plugin {
     });
     this.setupToggleStateRefresh();
     this.setupToggleStateObservers();
+    this.setupBasesSearchAutoExpand();
     this.settingTab = new UITweakerSettingTab(this.app, this);
     this.addSettingTab(this.settingTab);
     this.setupHelpButtonReplacement();
@@ -6399,5 +6408,50 @@ var UITweakerPlugin = class extends import_obsidian20.Plugin {
         });
       }
     }
+  }
+  /**
+   * Watch the workspace DOM for `.bases-toolbar-search` elements being
+   * added, and click the Search toggle on each new one (once) when the
+   * setting is on. MutationObserver is more reliable than polling
+   * workspace events because the toolbar may render after the events fire.
+   */
+  setupBasesSearchAutoExpand() {
+    var _a;
+    const root = (_a = activeDocument.querySelector(".workspace")) != null ? _a : activeDocument.body;
+    const tryExpand = (toolbar) => {
+      var _a2;
+      if (!this.settings.alwaysShowBasesSearch) return;
+      if (this.processedBasesToolbars.has(toolbar)) return;
+      const viewRoot = (_a2 = toolbar.closest(".view-content")) != null ? _a2 : toolbar.parentElement;
+      if (viewRoot == null ? void 0 : viewRoot.querySelector(".bases-search-row")) {
+        this.processedBasesToolbars.add(toolbar);
+        return;
+      }
+      const inner = toolbar.querySelector(".text-icon-button");
+      const target = inner !== null && inner.instanceOf(HTMLElement) ? inner : toolbar;
+      target.click();
+      this.processedBasesToolbars.add(toolbar);
+    };
+    const scan = (node) => {
+      if (node.matches(".bases-toolbar-search")) {
+        tryExpand(node);
+      }
+      node.querySelectorAll(".bases-toolbar-search").forEach((el) => {
+        if (el.instanceOf(HTMLElement)) tryExpand(el);
+      });
+    };
+    this.app.workspace.onLayoutReady(() => {
+      if (root.instanceOf(HTMLElement)) scan(root);
+    });
+    const observer = new MutationObserver((mutations) => {
+      if (!this.settings.alwaysShowBasesSearch) return;
+      for (const m of mutations) {
+        m.addedNodes.forEach((node) => {
+          if (node.instanceOf(HTMLElement)) scan(node);
+        });
+      }
+    });
+    observer.observe(root, { childList: true, subtree: true });
+    this.register(() => observer.disconnect());
   }
 };
