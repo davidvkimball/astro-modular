@@ -1255,6 +1255,7 @@ var TitleModal = class extends import_obsidian4.Modal {
     this.type = type;
     this.isRename = isRename;
     this.isNewNote = isNewNote;
+    this.modalEl.addClass("astro-composer-title-modal");
     const settings = plugin.settings;
     this.fileOps = new FileOperations(app, settings, plugin);
     this.templateParser = new TemplateParser(app, settings);
@@ -2555,6 +2556,451 @@ var AstroComposerSettingTab = class extends import_obsidian9.PluginSettingTab {
       this.renderCustomContentTypes();
     }
   }
+  // Re-run the visible predicates so dependent rows appear or disappear after a
+  // render callback mutates state. refreshDomState exists on Obsidian 1.13.0+,
+  // which is the only version that calls getSettingDefinitions in the first place.
+  refreshDomStateIfAvailable() {
+    const refresh = this.refreshDomState;
+    if (refresh) refresh.call(this);
+  }
+  // Rebuild the tab from getSettingDefinitions when the set of rows changes (rows
+  // added or removed, or a row label needs refreshing after a modal selection).
+  // update exists on Obsidian 1.13.0+, which is the only version that calls
+  // getSettingDefinitions in the first place.
+  updateIfAvailable() {
+    const update = this.update;
+    if (update) update.call(this);
+  }
+  // 1.13.0+: framework calls this and skips display().
+  // Pre-1.13.0: this method is not invoked; display() below runs as before.
+  // See https://docs.obsidian.md/plugins/guides/migrate-declarative-settings
+  getSettingDefinitions() {
+    const settings = this.plugin.settings;
+    return [
+      // General settings without heading (first section doesn't need a heading)
+      {
+        type: "group",
+        items: [
+          {
+            name: "Date format",
+            // Date format codes (MMMM, yyyy, etc.) are technical notation, not UI text
+            desc: "Format for the date in properties (yyyy-mm-dd, MMMM D, yyyy, yyyy-mm-dd HH:mm)",
+            // Render: empty input falls back to a default value.
+            render: (setting) => {
+              setting.addText(
+                (text) => text.setPlaceholder("YYYY-MM-DD").setValue(settings.dateFormat).onChange(async (value) => {
+                  settings.dateFormat = value || "YYYY-MM-DD";
+                  await this.plugin.saveSettings();
+                })
+              );
+            }
+          },
+          {
+            name: "Enable copy heading links",
+            desc: "Add right-click context menu option to copy heading links in various formats.",
+            // Render: toggling this shows or hides the heading link format row below,
+            // so refresh the DOM state to re-evaluate its visible predicate.
+            render: (setting) => {
+              setting.addToggle(
+                (toggle) => toggle.setValue(settings.enableCopyHeadingLink).onChange(async (value) => {
+                  settings.enableCopyHeadingLink = value;
+                  await this.plugin.saveSettings();
+                  this.refreshDomStateIfAvailable();
+                })
+              );
+            }
+          },
+          {
+            name: "Default heading link format",
+            // "Astro" is a proper noun (framework name) and should be capitalized
+            desc: "Choose the default format for copied heading links. Obsidian format respects your Obsidian settings for wikilink vs Markdown preference. Astro link uses your link base path from above and converts the heading into kebab-case format as an anchor link",
+            // Shown only when copy heading links is enabled.
+            visible: () => settings.enableCopyHeadingLink,
+            control: {
+              type: "dropdown",
+              key: "copyHeadingLinkFormat",
+              options: { obsidian: "Obsidian link", astro: "Astro link" }
+            }
+          },
+          {
+            name: "Add trailing slash to links",
+            desc: "Add trailing slashes to all converted internal links (/about/ instead of /about).",
+            control: { type: "toggle", key: "addTrailingSlashToLinks" }
+          },
+          {
+            name: "Process background file changes",
+            // Technical terms like "Obsidian", "git" are proper nouns in this context
+            desc: "Automatically process new files when they're changed in the background (by Git or other plugins). Disable to prevent modal spam when files are already processed on other devices during a sync.",
+            control: { type: "toggle", key: "processBackgroundFileChanges" }
+          },
+          {
+            // "MDX" is a proper noun (file format) and should be capitalized
+            name: "Show MDX files in file explorer",
+            desc: "Make .mdx files visible in Obsidian's file explorer. Requires reload to take effect.",
+            control: { type: "toggle", key: "showMdxFilesInExplorer" }
+          }
+        ]
+      },
+      {
+        type: "group",
+        heading: "Property automation",
+        items: [
+          {
+            name: "Auto-insert properties",
+            desc: "Automatically insert the properties template when creating new files.",
+            control: { type: "toggle", key: "autoInsertProperties" }
+          },
+          {
+            name: "Rename file on title property click",
+            desc: "When enabled, clicking into the title property will trigger the rename file command, keeping the file slug in sync.",
+            control: { type: "toggle", key: "renameOnTitleClick" }
+          },
+          {
+            name: "Update date on publish",
+            desc: "Update 'date' property when switching from draft to published status.",
+            // Render: toggling this shows or hides the draft detection rows below,
+            // so refresh the DOM state to re-evaluate their visible predicates.
+            render: (setting) => {
+              setting.addToggle(
+                (toggle) => toggle.setValue(settings.syncDraftDate).onChange(async (value) => {
+                  settings.syncDraftDate = value;
+                  await this.plugin.saveSettings();
+                  this.refreshDomStateIfAvailable();
+                })
+              );
+            }
+          },
+          {
+            name: "Draft detection mode",
+            desc: "How draft status is determined. Property-based uses a boolean property (draft: true). Underscore prefix uses the file name (_my-post.md = draft).",
+            // Shown only when update date on publish is enabled.
+            visible: () => settings.syncDraftDate,
+            // Render: side effect (draft status map re-init) and toggling between
+            // modes shows or hides the property rows below, so refresh the DOM state.
+            render: (setting) => {
+              setting.addDropdown(
+                (dropdown) => dropdown.addOption("property", "Property-based").addOption("underscore-prefix", "Underscore prefix").setValue(settings.draftDetectionMode || "property").onChange(async (value) => {
+                  var _a;
+                  settings.draftDetectionMode = value;
+                  await this.plugin.saveSettings();
+                  (_a = this.plugin.frontmatterService) == null ? void 0 : _a.initializeDraftStatusMap();
+                  this.refreshDomStateIfAvailable();
+                })
+              );
+            }
+          },
+          {
+            name: "Draft property name",
+            desc: "The property field to use for draft status.",
+            // Shown only when update date on publish is enabled and not using the underscore prefix mode.
+            visible: () => settings.syncDraftDate && settings.draftDetectionMode !== "underscore-prefix",
+            // Render: side effect (draft status map re-init).
+            render: (setting) => {
+              setting.addText(
+                (text) => text.setPlaceholder("Draft").setValue(settings.draftProperty || "").onChange(async (value) => {
+                  var _a;
+                  settings.draftProperty = value;
+                  await this.plugin.saveSettings();
+                  (_a = this.plugin.frontmatterService) == null ? void 0 : _a.initializeDraftStatusMap();
+                })
+              );
+            }
+          },
+          {
+            name: "Draft logic",
+            desc: "Whether the property value 'true' means it is a draft or published.",
+            // Shown only when update date on publish is enabled and not using the underscore prefix mode.
+            visible: () => settings.syncDraftDate && settings.draftDetectionMode !== "underscore-prefix",
+            // Render: side effect (draft status map re-init).
+            render: (setting) => {
+              setting.addDropdown(
+                (dropdown) => dropdown.addOption("true-is-draft", "True = draft").addOption("false-is-draft", "True = published").setValue(settings.draftLogic || "true-is-draft").onChange(async (value) => {
+                  var _a;
+                  settings.draftLogic = value;
+                  await this.plugin.saveSettings();
+                  (_a = this.plugin.frontmatterService) == null ? void 0 : _a.initializeDraftStatusMap();
+                })
+              );
+            }
+          },
+          {
+            name: "Published date property name",
+            desc: "The property field to update when published ('date' or 'pubdate').",
+            // Shown only when update date on publish is enabled.
+            visible: () => settings.syncDraftDate,
+            control: { type: "text", key: "publishDateField", placeholder: "Date" }
+          }
+        ]
+      },
+      {
+        type: "group",
+        heading: "Content types",
+        items: [
+          {
+            name: "",
+            // Render: the content types section is a fully custom, mutable UI with
+            // per-type collapse, reorder, enable toggles, an add button, and a remove
+            // confirmation modal. It builds its own container and manages its own
+            // rows imperatively via renderCustomContentTypes.
+            render: (setting) => {
+              setting.settingEl.addClass("astro-composer-setting-hidden-elements");
+              setting.settingEl.addClass("astro-composer-setting-container-full-width");
+              this.customContentTypesContainer = setting.settingEl.createDiv({
+                cls: "custom-content-types-container astro-composer-custom-types-container-visible"
+              });
+              this.renderCustomContentTypes();
+            }
+          }
+        ]
+      },
+      // Developer commands (desktop only - not available on mobile)
+      ...!import_obsidian9.Platform.isMobile ? [{
+        type: "group",
+        heading: "Developer commands",
+        items: [
+          {
+            name: "Enable open terminal command",
+            desc: "Enable command to open terminal in project root directory.",
+            // Render: toggling this shows or hides the terminal command rows below,
+            // and side effect (ribbon icon re-register). Refresh the DOM state so the
+            // dependent rows appear or disappear.
+            render: (setting) => {
+              setting.addToggle(
+                (toggle) => toggle.setValue(settings.enableOpenTerminalCommand).onChange(async (value) => {
+                  settings.enableOpenTerminalCommand = value;
+                  await this.plugin.saveSettings();
+                  if (this.plugin.registerRibbonIcons) {
+                    this.plugin.registerRibbonIcons();
+                  }
+                  this.refreshDomStateIfAvailable();
+                })
+              );
+            }
+          },
+          {
+            name: "Project root directory path",
+            // Shown only when the open terminal command is enabled.
+            visible: () => settings.enableOpenTerminalCommand,
+            // Render: multi-line description built as a document fragment.
+            render: (setting) => {
+              const descFragment = activeDocument.createDocumentFragment();
+              descFragment.createEl("div", { text: 'Path relative to the Obsidian vault root folder. For two levels up, use "../..". Leave blank to use the vault folder' });
+              descFragment.createEl("div", { text: "This is where the terminal will open. Absolute paths work also." });
+              setting.setDesc(descFragment).addText(
+                (text) => text.setPlaceholder("../..").setValue(settings.terminalProjectRootPath).onChange(async (value) => {
+                  settings.terminalProjectRootPath = value;
+                  await this.plugin.saveSettings();
+                })
+              );
+            }
+          },
+          {
+            name: "Terminal application name",
+            // Shown only when the open terminal command is enabled.
+            visible: () => settings.enableOpenTerminalCommand,
+            // Render: multi-line description built as a document fragment.
+            render: (setting) => {
+              const descFragment = activeDocument.createDocumentFragment();
+              descFragment.createEl("div", { text: "Leave blank to use platform defaults. On macOS, the default is Terminal. On Windows, it's Windows Terminal (Win 11) or cmd.exe (Win 10). On Linux, it's gnome-terminal, konsole, or xterm" });
+              descFragment.createEl("div", { text: "Examples include terminal, iTerm, PowerShell, and Alacritty" });
+              setting.setDesc(descFragment).addText(
+                (text) => text.setPlaceholder("Terminal").setValue(settings.terminalApplicationName).onChange(async (value) => {
+                  settings.terminalApplicationName = value;
+                  await this.plugin.saveSettings();
+                })
+              );
+            }
+          },
+          {
+            name: "Enable debug logging",
+            desc: "Log terminal launch commands and platform decisions to the developer console for troubleshooting.",
+            // Shown only when the open terminal command is enabled.
+            visible: () => settings.enableOpenTerminalCommand,
+            control: { type: "toggle", key: "enableTerminalDebugLogging" }
+          },
+          {
+            name: "Show open terminal ribbon icon",
+            desc: "Add a ribbon icon to launch the terminal command.",
+            // Shown only when the open terminal command is enabled.
+            visible: () => settings.enableOpenTerminalCommand,
+            // Render: side effect (ribbon icon re-register after a short delay).
+            render: (setting) => {
+              setting.addToggle(
+                (toggle) => toggle.setValue(settings.enableTerminalRibbonIcon).setDisabled(!settings.enableOpenTerminalCommand).onChange(async (value) => {
+                  this.plugin.settings.enableTerminalRibbonIcon = value;
+                  settings.enableTerminalRibbonIcon = value;
+                  await this.plugin.saveSettings();
+                  window.setTimeout(() => {
+                    if (this.plugin.registerRibbonIcons) {
+                      this.plugin.registerRibbonIcons();
+                    }
+                  }, 50);
+                })
+              );
+            }
+          },
+          {
+            name: "Enable edit config file command",
+            // "Astro" is a proper noun (framework name) and should be capitalized
+            desc: "Enable command to open Astro config file in default editor.",
+            // Render: toggling this shows or hides the config command rows below,
+            // and side effect (ribbon icon re-register). Refresh the DOM state so the
+            // dependent rows appear or disappear.
+            render: (setting) => {
+              setting.addToggle(
+                (toggle) => toggle.setValue(settings.enableOpenConfigFileCommand).onChange(async (value) => {
+                  settings.enableOpenConfigFileCommand = value;
+                  await this.plugin.saveSettings();
+                  if (this.plugin.registerRibbonIcons) {
+                    this.plugin.registerRibbonIcons();
+                  }
+                  this.refreshDomStateIfAvailable();
+                })
+              );
+            }
+          },
+          {
+            name: "Config file path",
+            // Shown only when the edit config file command is enabled.
+            visible: () => settings.enableOpenConfigFileCommand,
+            // Render: multi-line description built as a document fragment.
+            render: (setting) => {
+              const descFragment = activeDocument.createDocumentFragment();
+              descFragment.createEl("div", { text: "Path to the config file relative to the vault root. Use ../config.ts or ../../astro.config.mjs." });
+              descFragment.createEl("div", { text: "Absolute paths work also." });
+              setting.setDesc(descFragment).addText(
+                (text) => text.setPlaceholder("../config.ts").setValue(settings.configFilePath).onChange(async (value) => {
+                  settings.configFilePath = value;
+                  await this.plugin.saveSettings();
+                })
+              );
+            }
+          },
+          {
+            name: "Show open config ribbon icon",
+            desc: "Add a ribbon icon to launch the config file command.",
+            // Shown only when the edit config file command is enabled.
+            visible: () => settings.enableOpenConfigFileCommand,
+            // Render: side effect (ribbon icon re-register after a short delay).
+            render: (setting) => {
+              setting.addToggle(
+                (toggle) => toggle.setValue(settings.enableConfigRibbonIcon).setDisabled(!settings.enableOpenConfigFileCommand).onChange(async (value) => {
+                  this.plugin.settings.enableConfigRibbonIcon = value;
+                  settings.enableConfigRibbonIcon = value;
+                  await this.plugin.saveSettings();
+                  window.setTimeout(() => {
+                    if (this.plugin.registerRibbonIcons) {
+                      this.plugin.registerRibbonIcons();
+                    }
+                  }, 50);
+                })
+              );
+            }
+          },
+          {
+            name: "Swap out help button for custom action",
+            desc: "Replace the help button in the vault profile area with a custom action.",
+            // Render: side effect (help button replacement update) and toggling this
+            // adds or removes the command and icon picker rows below, so rebuild the tab.
+            render: (setting) => {
+              setting.addToggle(
+                (toggle) => {
+                  var _a, _b;
+                  return toggle.setValue((_b = (_a = settings.helpButtonReplacement) == null ? void 0 : _a.enabled) != null ? _b : false).onChange(async (value) => {
+                    if (!settings.helpButtonReplacement) {
+                      settings.helpButtonReplacement = {
+                        enabled: false,
+                        commandId: "edit-astro-config",
+                        iconId: "rocket"
+                      };
+                    }
+                    settings.helpButtonReplacement.enabled = value;
+                    await this.plugin.saveSettings();
+                    if (this.plugin.updateHelpButton) {
+                      await this.plugin.updateHelpButton();
+                    }
+                    this.updateIfAvailable();
+                  });
+                }
+              );
+            }
+          },
+          {
+            name: "Command",
+            desc: "Select the command to execute when the button is clicked.",
+            // Shown only when the help button replacement is enabled.
+            visible: () => {
+              var _a, _b;
+              return (_b = (_a = settings.helpButtonReplacement) == null ? void 0 : _a.enabled) != null ? _b : false;
+            },
+            // Render: opens a command picker modal and rebuilds the tab to refresh the label.
+            render: (setting) => {
+              var _a, _b;
+              const commandName = this.getCommandName((_b = (_a = settings.helpButtonReplacement) == null ? void 0 : _a.commandId) != null ? _b : "");
+              setting.addButton(
+                (button) => button.setButtonText(commandName || "Select command").onClick(() => {
+                  const modal = new CommandPickerModal(this.app, (commandId) => {
+                    void (async () => {
+                      if (!settings.helpButtonReplacement) {
+                        settings.helpButtonReplacement = {
+                          enabled: true,
+                          commandId: "edit-astro-config",
+                          iconId: "rocket"
+                        };
+                      }
+                      settings.helpButtonReplacement.commandId = commandId;
+                      await this.plugin.saveSettings();
+                      if (this.plugin.updateHelpButton) {
+                        await this.plugin.updateHelpButton();
+                      }
+                      this.updateIfAvailable();
+                    })();
+                  });
+                  modal.open();
+                })
+              );
+            }
+          },
+          {
+            name: "Icon",
+            desc: "Select the icon to display on the button.",
+            // Shown only when the help button replacement is enabled.
+            visible: () => {
+              var _a, _b;
+              return (_b = (_a = settings.helpButtonReplacement) == null ? void 0 : _a.enabled) != null ? _b : false;
+            },
+            // Render: opens an icon picker modal and rebuilds the tab to refresh the label.
+            render: (setting) => {
+              var _a, _b;
+              const iconName = this.getIconName((_b = (_a = settings.helpButtonReplacement) == null ? void 0 : _a.iconId) != null ? _b : "");
+              setting.addButton(
+                (button) => button.setButtonText(iconName || "Select icon...").onClick(() => {
+                  const modal = new IconPickerModal(this.app, (iconId) => {
+                    void (async () => {
+                      if (!settings.helpButtonReplacement) {
+                        settings.helpButtonReplacement = {
+                          enabled: true,
+                          commandId: "edit-astro-config",
+                          iconId: "rocket"
+                        };
+                      }
+                      settings.helpButtonReplacement.iconId = iconId;
+                      await this.plugin.saveSettings();
+                      if (this.plugin.updateHelpButton) {
+                        await this.plugin.updateHelpButton();
+                      }
+                      this.updateIfAvailable();
+                    })();
+                  });
+                  modal.open();
+                })
+              );
+            }
+          }
+        ]
+      }] : []
+    ];
+  }
   display() {
     const { containerEl } = this;
     containerEl.empty();
@@ -3828,26 +4274,31 @@ var CreateEventService = class {
       if (!matchedContentTypeId) {
         return;
       }
+      const suppressor = this.installRenameModalSuppressor();
       const fileName = file.basename;
       const isUntitled = /^Untitled(\s\d+)?$/.test(fileName);
       if (!isUntitled) {
         if (!this.plugin.settings.processBackgroundFileChanges) {
+          suppressor.dispose();
           return;
         }
         const stat = await this.app.vault.adapter.stat(file.path);
         const isRecent = (stat == null ? void 0 : stat.mtime) && now - stat.mtime < CONSTANTS.STAT_MTIME_THRESHOLD;
         if (!isRecent) {
+          suppressor.dispose();
           return;
         }
         let content;
         try {
           content = await this.app.vault.read(file);
         } catch (e) {
+          suppressor.dispose();
           return;
         }
         if (content.trim().length > 0) {
           const contentWithoutFrontmatter = content.startsWith("---") ? content.slice(content.indexOf("\n---", 3) + 4).trim() : content.trim();
           if (contentWithoutFrontmatter.length > 0) {
+            suppressor.dispose();
             return;
           }
         }
@@ -3859,6 +4310,49 @@ var CreateEventService = class {
       }, CONSTANTS.DEBOUNCE_MS + 100);
       new TitleModal(this.app, file, this.plugin, matchedContentTypeId, false, true).open();
     })();
+  }
+  /**
+   * Install a MutationObserver that intercepts and removes any
+   * `.modal-container` added to the document body, *except* our own
+   * TitleModal (identified by the `astro-composer-title-modal` class on its
+   * inner modalEl). Used to suppress Obsidian's auto-rename modal that
+   * fires when both inline title and tab title bar are disabled in
+   * Appearance settings.
+   *
+   * The observer runs synchronously during DOM mutation, so a colliding
+   * modal is yanked before the browser paints — no visible flash.
+   *
+   * Returns a `dispose` hook for early returns; on the happy path the
+   * observer self-disconnects after our modal is seen, with a 2s safety
+   * timer as a backstop.
+   */
+  installRenameModalSuppressor() {
+    let acModalSeen = false;
+    const observer = new MutationObserver((muts) => {
+      for (const m of muts) {
+        m.addedNodes.forEach((node) => {
+          if (!node.instanceOf(HTMLElement)) return;
+          if (!node.matches(".modal-container")) return;
+          const isOurs = node.querySelector(".astro-composer-title-modal") !== null;
+          if (isOurs) {
+            acModalSeen = true;
+            observer.disconnect();
+            window.clearTimeout(timeoutId);
+            return;
+          }
+          if (acModalSeen) return;
+          node.remove();
+        });
+      }
+    });
+    observer.observe(activeDocument.body, { childList: true });
+    const timeoutId = window.setTimeout(() => observer.disconnect(), 2e3);
+    return {
+      dispose: () => {
+        observer.disconnect();
+        window.clearTimeout(timeoutId);
+      }
+    };
   }
 };
 
@@ -4128,6 +4622,14 @@ var AstroComposerPlugin = class extends import_obsidian14.Plugin {
     this.terminalRibbonIcon = null;
     this.configRibbonIcon = null;
   }
+  // The main app window's document. Obsidian 1.13.0+ opens Settings in a
+  // separate window, so `activeDocument` (the focused window) points at the
+  // Settings window while a setting is being changed — which would apply our
+  // ribbon/help-button body classes and inject the swapped button into the
+  // wrong window. The workspace container always lives in the main window.
+  get doc() {
+    return this.app.workspace.containerEl.ownerDocument;
+  }
   /**
    * Migrate old posts/pages settings to unified content types
    */
@@ -4189,7 +4691,7 @@ var AstroComposerPlugin = class extends import_obsidian14.Plugin {
     this.createEventRef = createEventRef;
   }
   registerTitlePropertyClickListener() {
-    this.registerDomEvent(activeDocument, "click", (evt) => {
+    this.registerDomEvent(this.doc, "click", (evt) => {
       if (!this.settings.renameOnTitleClick) return;
       const target = evt.target;
       const propertyEl = target.closest(".metadata-property");
@@ -4323,9 +4825,9 @@ var AstroComposerPlugin = class extends import_obsidian14.Plugin {
         this.configRibbonIcon = null;
       }
       try {
-        const terminalIcons = activeDocument.querySelectorAll('.side-dock-ribbon-action[aria-label="Open project terminal"]');
+        const terminalIcons = this.doc.querySelectorAll('.side-dock-ribbon-action[aria-label="Open project terminal"]');
         terminalIcons.forEach((icon) => icon.remove());
-        const configIcons = activeDocument.querySelectorAll('.side-dock-ribbon-action[aria-label="Edit Astro config"]');
+        const configIcons = this.doc.querySelectorAll('.side-dock-ribbon-action[aria-label="Edit Astro config"]');
         configIcons.forEach((icon) => icon.remove());
       } catch (e) {
       }
@@ -4348,8 +4850,8 @@ var AstroComposerPlugin = class extends import_obsidian14.Plugin {
       this.configRibbonIcon = null;
     }
     try {
-      activeDocument.querySelectorAll('.side-dock-ribbon-action[aria-label="Open project terminal"]').forEach((el) => el.remove());
-      activeDocument.querySelectorAll('.side-dock-ribbon-action[aria-label="Edit Astro config"]').forEach((el) => el.remove());
+      this.doc.querySelectorAll('.side-dock-ribbon-action[aria-label="Open project terminal"]').forEach((el) => el.remove());
+      this.doc.querySelectorAll('.side-dock-ribbon-action[aria-label="Edit Astro config"]').forEach((el) => el.remove());
     } catch (e) {
     }
     if (terminalShouldExist) {
@@ -4390,8 +4892,8 @@ var AstroComposerPlugin = class extends import_obsidian14.Plugin {
       this.ribbonContextMenuObserver.disconnect();
       this.ribbonContextMenuObserver = void 0;
     }
-    activeDocument.body.removeClass("astro-composer-hide-terminal-icon");
-    activeDocument.body.removeClass("astro-composer-hide-config-icon");
+    this.doc.body.removeClass("astro-composer-hide-terminal-icon");
+    this.doc.body.removeClass("astro-composer-hide-config-icon");
     if (this.helpButtonObserver) {
       this.helpButtonObserver.disconnect();
       this.helpButtonObserver = void 0;
@@ -4409,10 +4911,10 @@ var AstroComposerPlugin = class extends import_obsidian14.Plugin {
   updateRibbonContextMenuCSS() {
     const terminalShouldBeHidden = !this.settings.enableTerminalRibbonIcon || !this.settings.enableOpenTerminalCommand;
     const configShouldBeHidden = !this.settings.enableConfigRibbonIcon || !this.settings.enableOpenConfigFileCommand;
-    if (terminalShouldBeHidden) activeDocument.body.addClass("astro-composer-hide-terminal-icon");
-    else activeDocument.body.removeClass("astro-composer-hide-terminal-icon");
-    if (configShouldBeHidden) activeDocument.body.addClass("astro-composer-hide-config-icon");
-    else activeDocument.body.removeClass("astro-composer-hide-config-icon");
+    if (terminalShouldBeHidden) this.doc.body.addClass("astro-composer-hide-terminal-icon");
+    else this.doc.body.removeClass("astro-composer-hide-terminal-icon");
+    if (configShouldBeHidden) this.doc.body.addClass("astro-composer-hide-config-icon");
+    else this.doc.body.removeClass("astro-composer-hide-config-icon");
   }
   setupRibbonContextMenuObserver() {
     if (this.ribbonContextMenuObserver) this.ribbonContextMenuObserver.disconnect();
@@ -4432,7 +4934,7 @@ var AstroComposerPlugin = class extends import_obsidian14.Plugin {
         }
       }
     });
-    this.ribbonContextMenuObserver.observe(activeDocument.body, { childList: true, subtree: true });
+    this.ribbonContextMenuObserver.observe(this.doc.body, { childList: true, subtree: true });
   }
   /**
    * Starts a robust monitor that keeps the help button in sync with settings.
@@ -4452,7 +4954,7 @@ var AstroComposerPlugin = class extends import_obsidian14.Plugin {
         timer = window.setTimeout(() => this.syncHelpButton(), delay);
       }
     });
-    this.helpButtonObserver.observe(activeDocument.body, {
+    this.helpButtonObserver.observe(this.doc.body, {
       childList: true,
       subtree: true,
       attributes: true,
@@ -4465,8 +4967,8 @@ var AstroComposerPlugin = class extends import_obsidian14.Plugin {
   syncHelpButton() {
     var _a, _b, _c, _d;
     const enabled = (_a = this.settings.helpButtonReplacement) == null ? void 0 : _a.enabled;
-    if (enabled) activeDocument.body.addClass("astro-composer-hide-help-button");
-    else activeDocument.body.removeClass("astro-composer-hide-help-button");
+    if (enabled) this.doc.body.addClass("astro-composer-hide-help-button");
+    else this.doc.body.removeClass("astro-composer-hide-help-button");
     if (!enabled) {
       if (this.customHelpButton) {
         this.customHelpButton.remove();
@@ -4482,7 +4984,7 @@ var AstroComposerPlugin = class extends import_obsidian14.Plugin {
     ];
     let helpButtonSvg = null;
     for (const selector of selectors) {
-      helpButtonSvg = activeDocument.querySelector(selector);
+      helpButtonSvg = this.doc.querySelector(selector);
       if (helpButtonSvg) break;
     }
     if (!helpButtonSvg) return;
@@ -4525,12 +5027,12 @@ var AstroComposerPlugin = class extends import_obsidian14.Plugin {
     this.customHelpButton = customButton;
   }
   restoreHelpButton() {
-    activeDocument.body.removeClass("astro-composer-hide-help-button");
+    this.doc.body.removeClass("astro-composer-hide-help-button");
     if (this.customHelpButton) {
       this.customHelpButton.remove();
       this.customHelpButton = void 0;
     }
-    const tagged = activeDocument.querySelectorAll(".astro-composer-original-help-button");
+    const tagged = this.doc.querySelectorAll(".astro-composer-original-help-button");
     tagged.forEach((el) => el.removeClass("astro-composer-original-help-button"));
     this.helpButtonElement = void 0;
   }

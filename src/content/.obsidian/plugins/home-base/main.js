@@ -34,9 +34,9 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 ));
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
-// node_modules/.pnpm/obsidian-daily-notes-interface@0.9.4_@codemirror+state@6.5.0_@codemirror+view@6.38.6/node_modules/obsidian-daily-notes-interface/dist/main.js
+// node_modules/.pnpm/obsidian-daily-notes-interf_8d9fc24b0fc622d94fd11fa5e9b185b3/node_modules/obsidian-daily-notes-interface/dist/main.js
 var require_main = __commonJS({
-  "node_modules/.pnpm/obsidian-daily-notes-interface@0.9.4_@codemirror+state@6.5.0_@codemirror+view@6.38.6/node_modules/obsidian-daily-notes-interface/dist/main.js"(exports) {
+  "node_modules/.pnpm/obsidian-daily-notes-interf_8d9fc24b0fc622d94fd11fa5e9b185b3/node_modules/obsidian-daily-notes-interface/dist/main.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var obsidian = require("obsidian");
@@ -1033,6 +1033,459 @@ var HomeBaseSettingTab = class extends import_obsidian4.PluginSettingTab {
     super(app, plugin);
     this.icon = "lucide-house";
     this.plugin = plugin;
+  }
+  // Re-run the visible predicates so dependent rows appear or disappear after a
+  // render callback mutates state. refreshDomState exists on Obsidian 1.13.0+,
+  // which is the only version that calls getSettingDefinitions in the first place.
+  refreshDomStateIfAvailable() {
+    const refresh = this.refreshDomState;
+    if (refresh) refresh.call(this);
+  }
+  // Rebuild the tab from getSettingDefinitions so dependent rows re-render with
+  // updated names, descriptions, suggesters, or control values. update exists on
+  // Obsidian 1.13.0+, which is the only version that calls getSettingDefinitions.
+  updateIfAvailable() {
+    const update = this.update;
+    if (update) update.call(this);
+  }
+  // 1.13.0+: framework calls this and skips display().
+  // Pre-1.13.0: this method is not invoked; display() below runs as before.
+  // See https://docs.obsidian.md/plugins/guides/migrate-declarative-settings
+  getSettingDefinitions() {
+    const isMobile = this.plugin.settings.separateMobile;
+    const activeType = isMobile ? this.plugin.settings.mobileHomeBaseType : this.plugin.settings.homeBaseType;
+    const activeValue = isMobile ? this.plugin.settings.mobileHomeBaseValue : this.plugin.settings.homeBaseValue;
+    const renderTypeDropdown = (setting, selected, onSelect) => {
+      setting.addDropdown((dropdown) => {
+        let pluginDisabled = false;
+        for (const type of Object.values(HomeBaseType)) {
+          if (!this.plugin.hasRequiredPlugin(type)) {
+            if (type === selected) {
+              pluginDisabled = true;
+              dropdown.addOption(type, type);
+            } else {
+              dropdown.selectEl.createEl("option", {
+                text: type,
+                attr: { disabled: "true" }
+              });
+              continue;
+            }
+          } else {
+            dropdown.addOption(type, type);
+          }
+        }
+        dropdown.setValue(selected).onChange(async (value) => {
+          await onSelect(value);
+          this.updateIfAvailable();
+        });
+        if (pluginDisabled) {
+          setting.descEl.createDiv({
+            text: "The required plugin has not been enabled or configured for this type.",
+            cls: "mod-warning"
+          });
+        }
+      });
+    };
+    return [
+      // General settings (no heading for first group)
+      {
+        type: "group",
+        items: [
+          {
+            name: "Type",
+            desc: "What to open as your home base",
+            // Render: dynamic options, disabled entries, and a missing-plugin warning.
+            render: (setting) => {
+              renderTypeDropdown(setting, activeType || "File" /* File */, async (value) => {
+                if (isMobile) {
+                  this.plugin.settings.mobileHomeBaseType = value;
+                } else {
+                  this.plugin.settings.homeBaseType = value;
+                }
+                await this.plugin.saveSettings();
+              });
+            }
+          },
+          {
+            name: activeType === "File" /* File */ ? "File" : activeType === "Workspace" /* Workspace */ ? "Workspace" : activeType === "Random in folder" /* RandomFolder */ || activeType === "New note" /* NewNote */ ? "Folder" : activeType === "Journal" /* Journal */ ? "Journal" : "Value",
+            desc: activeType === "File" /* File */ ? "The file to open as your home base (supports .md, .mdx, .canvas, .base)" : activeType === "Workspace" /* Workspace */ ? "The workspace to load as your home base" : activeType === "Random in folder" /* RandomFolder */ ? "The folder to pick a random file from" : activeType === "New note" /* NewNote */ ? "The folder to create new notes in" : activeType === "Journal" /* Journal */ ? "The journal name" : "",
+            // Shown only for types that need a value input.
+            visible: () => !UNCHANGEABLE_TYPES.includes(activeType),
+            // Render: attaches a type-specific suggester to the text input.
+            render: (setting) => {
+              const placeholder = activeType === "File" /* File */ ? "Path to home base file" : activeType === "Workspace" /* Workspace */ ? "Workspace name" : activeType === "Random in folder" /* RandomFolder */ || activeType === "New note" /* NewNote */ ? "Folder path" : activeType === "Journal" /* Journal */ ? "Journal name" : "";
+              setting.addText((text) => {
+                if (activeType === "File" /* File */) {
+                  new FilePathSuggest(this.app, text.inputEl);
+                } else if (activeType === "Workspace" /* Workspace */) {
+                  new WorkspaceSuggest(this.app, text.inputEl);
+                } else if (activeType === "Random in folder" /* RandomFolder */ || activeType === "New note" /* NewNote */) {
+                  new FolderSuggest(this.app, text.inputEl);
+                }
+                text.setPlaceholder(placeholder).setValue(activeValue || "").onChange(async (value) => {
+                  if (isMobile) {
+                    this.plugin.settings.mobileHomeBaseValue = value;
+                  } else {
+                    this.plugin.settings.homeBaseValue = value;
+                  }
+                  await this.plugin.saveSettings();
+                });
+              });
+            }
+          },
+          {
+            name: "Open on startup",
+            desc: "Open the home base when launching Obsidian",
+            // Render: appends a warning about overriding Obsidian's native open setting.
+            render: (setting) => {
+              setting.addToggle((toggle) => {
+                toggle.setValue(this.plugin.settings.openOnStartup).onChange(async (value) => {
+                  this.plugin.settings.openOnStartup = value;
+                  await this.plugin.saveSettings();
+                });
+              });
+              if ((0, import_obsidian4.requireApiVersion)("1.11.0")) {
+                const nativeOpenBehavior = this.plugin.homeService.getNativeOpenBehavior();
+                if (nativeOpenBehavior) {
+                  setting.descEl.createDiv({
+                    text: `Note: This will override Obsidian's native "Default file to open" setting (currently set to "${nativeOpenBehavior}").`,
+                    cls: "mod-warning"
+                  });
+                }
+              }
+            }
+          },
+          {
+            name: "Opening mode (startup)",
+            desc: "How to handle existing tabs when opening on startup",
+            control: { type: "dropdown", key: "openMode", options: { ...OPENING_MODE_OPTIONS } }
+          },
+          {
+            name: "Opening mode (manual)",
+            desc: "How to handle existing tabs when opening manually",
+            control: { type: "dropdown", key: "manualOpenMode", options: { ...OPENING_MODE_OPTIONS } }
+          },
+          {
+            name: "View mode",
+            desc: "How to open Markdown files",
+            control: { type: "dropdown", key: "openViewMode", options: { ...VIEW_MODE_OPTIONS } }
+          },
+          {
+            name: "Revert view on close",
+            desc: "When navigating away from the home base, restore the default view",
+            control: { type: "toggle", key: "revertView" }
+          },
+          {
+            name: "Auto-scroll",
+            desc: "When opening the home base, scroll to the bottom and focus on the last line",
+            control: { type: "toggle", key: "autoScroll" }
+          },
+          {
+            name: "Hide release notes",
+            desc: "Never display release notes when Obsidian updates",
+            control: { type: "toggle", key: "hideReleaseNotes" }
+          }
+        ]
+      },
+      {
+        type: "group",
+        heading: "Tab behavior",
+        items: [
+          {
+            name: "Open home base when all tabs are closed",
+            desc: "When you close all tabs, automatically open the home base",
+            control: { type: "toggle", key: "openWhenAllTabsClosed" }
+          },
+          {
+            name: "Replace new tabs",
+            desc: 'Open home base instead of new empty tabs (works independently of "open home base when all tabs are closed")',
+            // Plain bind: toggling shows or hides the dependent rows below, whose
+            // visible predicates the framework re-evaluates automatically after a
+            // control change.
+            control: { type: "toggle", key: "replaceNewTab" }
+          },
+          {
+            name: "New tab replacement mode",
+            desc: "When to replace new tabs (only when no tabs are open, or always)",
+            visible: () => this.plugin.settings.replaceNewTab,
+            control: { type: "dropdown", key: "newTabMode", options: { ...NEW_TAB_MODE_OPTIONS } }
+          },
+          {
+            name: "Use different home base for new tabs",
+            desc: "Configure a different home base to open for new tabs (instead of the main home base)",
+            visible: () => this.plugin.settings.replaceNewTab,
+            // Plain bind: toggling shows or hides the new tab configuration rows
+            // below, which the framework re-evaluates automatically.
+            control: { type: "toggle", key: "useDifferentFileForNewTab" }
+          },
+          {
+            name: "New tab type",
+            desc: "What to open for new tabs",
+            visible: () => this.plugin.settings.replaceNewTab && this.plugin.settings.useDifferentFileForNewTab,
+            // Render: dynamic options, disabled entries, and a missing-plugin warning.
+            render: (setting) => {
+              renderTypeDropdown(setting, this.plugin.settings.newTabType || "File" /* File */, async (value) => {
+                this.plugin.settings.newTabType = value;
+                await this.plugin.saveSettings();
+              });
+            }
+          },
+          {
+            name: (() => {
+              const t = this.plugin.settings.newTabType || "File" /* File */;
+              return t === "File" /* File */ ? "New tab file" : t === "Workspace" /* Workspace */ ? "New tab workspace" : t === "Random in folder" /* RandomFolder */ ? "New tab folder" : t === "Journal" /* Journal */ ? "New tab journal" : "New tab value";
+            })(),
+            desc: (() => {
+              const t = this.plugin.settings.newTabType || "File" /* File */;
+              return t === "File" /* File */ ? "The file to open for new tabs (supports .md, .mdx, .canvas, .base)" : t === "Workspace" /* Workspace */ ? "The workspace to load for new tabs" : t === "Random in folder" /* RandomFolder */ ? "The folder to pick a random file from for new tabs" : t === "Journal" /* Journal */ ? "The journal name for new tabs" : "";
+            })(),
+            visible: () => this.plugin.settings.replaceNewTab && this.plugin.settings.useDifferentFileForNewTab && !UNCHANGEABLE_TYPES.includes(this.plugin.settings.newTabType || "File" /* File */),
+            // Render: attaches a type-specific suggester to the text input.
+            render: (setting) => {
+              const t = this.plugin.settings.newTabType || "File" /* File */;
+              const placeholder = t === "File" /* File */ ? "Path to new tab file" : t === "Workspace" /* Workspace */ ? "Workspace name" : t === "Random in folder" /* RandomFolder */ ? "Folder path" : t === "Journal" /* Journal */ ? "Journal name" : "";
+              setting.addText((text) => {
+                if (t === "File" /* File */) {
+                  new FilePathSuggest(this.app, text.inputEl);
+                } else if (t === "Workspace" /* Workspace */) {
+                  new WorkspaceSuggest(this.app, text.inputEl);
+                } else if (t === "Random in folder" /* RandomFolder */) {
+                  new FolderSuggest(this.app, text.inputEl);
+                }
+                text.setPlaceholder(placeholder).setValue(this.plugin.settings.newTabValue || "").onChange(async (value) => {
+                  this.plugin.settings.newTabValue = value;
+                  await this.plugin.saveSettings();
+                });
+              });
+            }
+          }
+        ]
+      },
+      {
+        type: "group",
+        heading: "UI features",
+        items: [
+          {
+            name: "Sticky home icon",
+            desc: "Show a home icon in the tab bar that stays pinned to the left (desktop only)",
+            // Render: side effect (sticky tab icon update). Toggling this shows or
+            // hides the icon rows below, so refresh the DOM state to re-evaluate
+            // their visible predicates.
+            render: (setting) => {
+              setting.addToggle((toggle) => {
+                toggle.setValue(this.plugin.settings.showStickyHomeIcon).onChange(async (value) => {
+                  this.plugin.settings.showStickyHomeIcon = value;
+                  await this.plugin.saveSettings();
+                  this.plugin.updateStickyTabIcon();
+                  this.refreshDomStateIfAvailable();
+                });
+              });
+            }
+          },
+          {
+            name: "Icon",
+            desc: "The icon to display in the sticky home icon",
+            visible: () => this.plugin.settings.showStickyHomeIcon,
+            // Render: opens the icon picker; the chosen icon updates the button face.
+            render: (setting) => {
+              setting.addButton((button) => {
+                const iconName = this.plugin.settings.stickyIconName || "home";
+                button.setButtonText("Change icon").setIcon(iconName).onClick(() => {
+                  const picker = new IconPicker(
+                    this.app,
+                    this.plugin.settings.stickyIconName,
+                    (icon) => {
+                      void (async () => {
+                        this.plugin.settings.stickyIconName = icon;
+                        await this.plugin.saveSettings();
+                        this.plugin.stickyTabService.update();
+                        this.updateIfAvailable();
+                      })();
+                    }
+                  );
+                  picker.open();
+                });
+              });
+            }
+          },
+          {
+            name: "Hide tab header",
+            desc: "Hide the sticky home tab header when it's open, using the sticky icon as the tab indicator",
+            visible: () => this.plugin.settings.showStickyHomeIcon,
+            // Render: side effect (tab header update).
+            render: (setting) => {
+              setting.addToggle((toggle) => {
+                toggle.setValue(this.plugin.settings.hideHomeTabHeader).onChange(async (value) => {
+                  this.plugin.settings.hideHomeTabHeader = value;
+                  await this.plugin.saveSettings();
+                  this.plugin.stickyTabService.updateTabHeaders();
+                });
+              });
+            }
+          }
+        ]
+      },
+      {
+        type: "group",
+        heading: "Mobile",
+        items: [
+          {
+            name: "Separate mobile home base",
+            desc: "Use a different home base on mobile devices",
+            // Plain bind: toggling shows or hides the mobile rows below, which the
+            // framework re-evaluates automatically after a control change.
+            control: { type: "toggle", key: "separateMobile" }
+          },
+          {
+            name: "Mobile home base",
+            desc: "What to open as your home base on mobile",
+            visible: () => this.plugin.settings.separateMobile,
+            // Render: dynamic options, disabled entries, and a missing-plugin warning.
+            render: (setting) => {
+              renderTypeDropdown(setting, this.plugin.settings.mobileHomeBaseType || "File" /* File */, async (value) => {
+                this.plugin.settings.mobileHomeBaseType = value;
+                await this.plugin.saveSettings();
+              });
+            }
+          },
+          {
+            name: (() => {
+              const t = this.plugin.settings.mobileHomeBaseType;
+              return t === "File" /* File */ ? "Mobile file" : t === "Workspace" /* Workspace */ ? "Mobile workspace" : t === "Random in folder" /* RandomFolder */ ? "Mobile folder" : t === "Journal" /* Journal */ ? "Mobile journal" : "Mobile value";
+            })(),
+            desc: (() => {
+              const t = this.plugin.settings.mobileHomeBaseType;
+              return t === "File" /* File */ ? "The file to open as your home base on mobile" : t === "Workspace" /* Workspace */ ? "The workspace to load as your home base on mobile" : t === "Random in folder" /* RandomFolder */ ? "The folder to pick a random file from on mobile" : t === "Journal" /* Journal */ ? "The journal name for mobile" : "";
+            })(),
+            visible: () => this.plugin.settings.separateMobile && !UNCHANGEABLE_TYPES.includes(this.plugin.settings.mobileHomeBaseType),
+            // Render: attaches a type-specific suggester to the text input.
+            render: (setting) => {
+              const t = this.plugin.settings.mobileHomeBaseType;
+              const placeholder = t === "File" /* File */ ? "Path to home base file" : t === "Workspace" /* Workspace */ ? "Workspace name" : t === "Random in folder" /* RandomFolder */ ? "Folder path" : t === "Journal" /* Journal */ ? "Journal name" : "";
+              setting.addText((text) => {
+                if (t === "File" /* File */) {
+                  new FilePathSuggest(this.app, text.inputEl);
+                } else if (t === "Workspace" /* Workspace */) {
+                  new WorkspaceSuggest(this.app, text.inputEl);
+                } else if (t === "Random in folder" /* RandomFolder */) {
+                  new FolderSuggest(this.app, text.inputEl);
+                }
+                text.setPlaceholder(placeholder).setValue(this.plugin.settings.mobileHomeBaseValue || "").onChange(async (value) => {
+                  this.plugin.settings.mobileHomeBaseValue = value;
+                  await this.plugin.saveSettings();
+                });
+              });
+            }
+          },
+          {
+            name: "Replace mobile new tab button",
+            desc: "Change the mobile new tab button to a home icon",
+            // Render: side effect (mobile button update).
+            render: (setting) => {
+              setting.addToggle((toggle) => {
+                toggle.setValue(this.plugin.settings.replaceMobileNewTab).onChange(async (value) => {
+                  this.plugin.settings.replaceMobileNewTab = value;
+                  await this.plugin.saveSettings();
+                  this.plugin.updateMobileButton();
+                });
+              });
+            }
+          },
+          {
+            name: "Separate mobile new tab",
+            desc: "Use a different new tab file on mobile devices",
+            // Shown only when a different home base is used for new tabs.
+            visible: () => this.plugin.settings.useDifferentFileForNewTab,
+            // Plain bind: toggling shows or hides the mobile new tab rows below,
+            // which the framework re-evaluates automatically.
+            control: { type: "toggle", key: "newTabSeparateMobile" }
+          },
+          {
+            name: "Mobile new tab type",
+            desc: "What to open for new tabs on mobile",
+            visible: () => this.plugin.settings.useDifferentFileForNewTab && this.plugin.settings.newTabSeparateMobile,
+            // Render: dynamic options, disabled entries, and a missing-plugin warning.
+            render: (setting) => {
+              renderTypeDropdown(setting, this.plugin.settings.mobileNewTabType || "File" /* File */, async (value) => {
+                this.plugin.settings.mobileNewTabType = value;
+                await this.plugin.saveSettings();
+              });
+            }
+          },
+          {
+            name: (() => {
+              const t = this.plugin.settings.mobileNewTabType || "File" /* File */;
+              return t === "File" /* File */ ? "Mobile new tab file" : t === "Workspace" /* Workspace */ ? "Mobile new tab workspace" : t === "Random in folder" /* RandomFolder */ ? "Mobile new tab folder" : t === "Journal" /* Journal */ ? "Mobile new tab journal" : "Mobile new tab value";
+            })(),
+            desc: (() => {
+              const t = this.plugin.settings.mobileNewTabType || "File" /* File */;
+              return t === "File" /* File */ ? "The file to open for new tabs on mobile" : t === "Workspace" /* Workspace */ ? "The workspace to load for new tabs on mobile" : t === "Random in folder" /* RandomFolder */ ? "The folder to pick a random file from for new tabs on mobile" : t === "Journal" /* Journal */ ? "The journal name for new tabs on mobile" : "";
+            })(),
+            visible: () => this.plugin.settings.useDifferentFileForNewTab && this.plugin.settings.newTabSeparateMobile && !UNCHANGEABLE_TYPES.includes(this.plugin.settings.mobileNewTabType || "File" /* File */),
+            // Render: attaches a type-specific suggester to the text input.
+            render: (setting) => {
+              const t = this.plugin.settings.mobileNewTabType || "File" /* File */;
+              const placeholder = t === "File" /* File */ ? "Path to mobile new tab file" : t === "Workspace" /* Workspace */ ? "Workspace name" : t === "Random in folder" /* RandomFolder */ ? "Folder path" : t === "Journal" /* Journal */ ? "Journal name" : "";
+              setting.addText((text) => {
+                if (t === "File" /* File */) {
+                  new FilePathSuggest(this.app, text.inputEl);
+                } else if (t === "Workspace" /* Workspace */) {
+                  new WorkspaceSuggest(this.app, text.inputEl);
+                } else if (t === "Random in folder" /* RandomFolder */) {
+                  new FolderSuggest(this.app, text.inputEl);
+                }
+                text.setPlaceholder(placeholder).setValue(this.plugin.settings.mobileNewTabValue || "").onChange(async (value) => {
+                  this.plugin.settings.mobileNewTabValue = value;
+                  await this.plugin.saveSettings();
+                });
+              });
+            }
+          }
+        ]
+      },
+      {
+        type: "group",
+        heading: "Automation",
+        items: [
+          {
+            name: "Command on open",
+            desc: "Run an Obsidian command when opening home base",
+            // Render: command suggester plus a clear button that resets the input.
+            render: (setting) => {
+              const commandId = this.plugin.settings.commandOnOpen;
+              const command = commandId ? getCommandById(this.app, commandId) : void 0;
+              const displayValue = command ? command.name : commandId;
+              setting.addText((text) => {
+                new CommandSuggest(this.app, text.inputEl);
+                text.setPlaceholder("Search for a command...").setValue(displayValue || "").onChange(async (value) => {
+                  this.plugin.settings.commandOnOpen = value;
+                  await this.plugin.saveSettings();
+                });
+              }).addExtraButton((btn) => {
+                btn.setIcon("x").setTooltip("Clear command").onClick(async () => {
+                  this.plugin.settings.commandOnOpen = "";
+                  await this.plugin.saveSettings();
+                  this.updateIfAvailable();
+                });
+              });
+            }
+          },
+          {
+            name: "Wait for Git sync",
+            desc: "Wait before creating periodic or journal notes to allow Git sync to finish pulling existing notes. Only applies when a note doesn't already exist.",
+            // Plain bind: toggling shows or hides the timeout row below, which the
+            // framework re-evaluates automatically after a control change.
+            control: { type: "toggle", key: "waitForGitSync" }
+          },
+          {
+            name: "Git sync timeout",
+            desc: "How long to wait for Git sync to finish before creating a new note",
+            visible: () => this.plugin.settings.waitForGitSync,
+            control: { type: "number", key: "gitSyncTimeout", placeholder: "3", min: 0 }
+          }
+        ]
+      }
+    ];
   }
   display() {
     const { containerEl } = this;
@@ -3520,6 +3973,14 @@ var MobileButtonService = class {
   constructor(plugin) {
     this.plugin = plugin;
   }
+  // The main app window's document. Obsidian 1.13.0+ opens Settings in a
+  // separate window, so `activeDocument` (the focused window) can point at the
+  // Settings window while a setting is being changed. This feature is mobile-
+  // only (where there is no separate Settings window), but using the main
+  // window's document keeps it correct under desktop "emulate mobile" too.
+  get doc() {
+    return this.plugin.app.workspace.containerEl.ownerDocument;
+  }
   /**
    * Update the mobile button based on settings
    */
@@ -3538,13 +3999,13 @@ var MobileButtonService = class {
    * Apply the mobile button replacement
    */
   apply() {
-    activeDocument.body.classList.add(MOBILE_HOME_CLASS);
+    this.doc.body.classList.add(MOBILE_HOME_CLASS);
   }
   /**
    * Remove the mobile button replacement
    */
   remove() {
-    activeDocument.body.classList.remove(MOBILE_HOME_CLASS);
+    this.doc.body.classList.remove(MOBILE_HOME_CLASS);
   }
 };
 

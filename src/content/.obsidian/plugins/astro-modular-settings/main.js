@@ -1031,7 +1031,7 @@ var init_TemplateStep = __esm({
           }));
           const settingEl = setting.settingEl;
           if (settingEl) {
-            settingEl.setCssProps({ marginTop: "2rem" });
+            settingEl.setCssStyles({ marginTop: "2rem" });
           }
         }
       }
@@ -1247,11 +1247,11 @@ var init_ThemeStep = __esm({
             themeOption.addClass("selected");
           }
           themeOption.setAttribute("data-theme", theme.id);
-          themeOption.setCssProps({
+          themeOption.setCssStyles({
             background: isDarkMode ? theme.backgroundColorDark : theme.backgroundColorLight
           });
           const themePreview = themeOption.createDiv("theme-preview");
-          themePreview.setCssProps({
+          themePreview.setCssStyles({
             background: `linear-gradient(135deg, ${theme.previewColors.join(", ")})`
           });
           const previewContent = themePreview.createDiv("theme-preview-content");
@@ -1497,7 +1497,7 @@ var init_NavigationStep = __esm({
         const childrenContainer = navItem.createDiv("nav-children-container");
         childrenContainer.setAttribute("data-parent-index", index.toString());
         if (!hasChildren) {
-          childrenContainer.setCssProps({ display: "none" });
+          childrenContainer.setCssStyles({ display: "none" });
         }
         childrenContainer.createDiv("nav-children-label").textContent = "Child pages:";
         const childrenDiv = childrenContainer.createDiv("nav-children");
@@ -1695,7 +1695,7 @@ var init_NavigationStep = __esm({
               const navItem = target.closest(".nav-item");
               const childrenContainer = navItem == null ? void 0 : navItem.querySelector(".nav-children-container");
               if (childrenContainer && (!state.selectedNavigation.pages[parentIndex].children || state.selectedNavigation.pages[parentIndex].children.length === 0)) {
-                childrenContainer.setCssProps({ display: "none" });
+                childrenContainer.setCssStyles({ display: "none" });
               }
             }
             this.render(container);
@@ -1710,7 +1710,7 @@ var init_NavigationStep = __esm({
             const navItem = target.closest(".nav-item");
             const childrenContainer = navItem == null ? void 0 : navItem.querySelector(".nav-children-container");
             if (childrenContainer) {
-              childrenContainer.setCssProps({ display: "block" });
+              childrenContainer.setCssStyles({ display: "block" });
             }
             this.render(container);
           }
@@ -1730,13 +1730,13 @@ var init_NavigationStep = __esm({
           const target = e.target;
           if (target.classList.contains("nav-item")) {
             draggedElement = target;
-            target.setCssProps({ opacity: "0.5" });
+            target.setCssStyles({ opacity: "0.5" });
           }
         };
         const dragEndHandler = (e) => {
           const target = e.target;
           if (target.classList.contains("nav-item")) {
-            target.setCssProps({ opacity: "1" });
+            target.setCssStyles({ opacity: "1" });
             draggedElement = null;
           }
         };
@@ -1747,12 +1747,12 @@ var init_NavigationStep = __esm({
             const rect = target.getBoundingClientRect();
             const midpoint = rect.top + rect.height / 2;
             if (e.clientY < midpoint) {
-              target.setCssProps({
+              target.setCssStyles({
                 borderTop: "2px solid var(--interactive-accent)",
                 borderBottom: "none"
               });
             } else {
-              target.setCssProps({
+              target.setCssStyles({
                 borderBottom: "2px solid var(--interactive-accent)",
                 borderTop: "none"
               });
@@ -1762,7 +1762,7 @@ var init_NavigationStep = __esm({
         const dragLeaveHandler = (e) => {
           const target = e.target;
           if (target.classList.contains("nav-item")) {
-            target.setCssProps({
+            target.setCssStyles({
               borderTop: "none",
               borderBottom: "none"
             });
@@ -1776,7 +1776,7 @@ var init_NavigationStep = __esm({
             const draggedIndex = parseInt(draggedElement.getAttribute("data-index") || "0");
             const isPage = target.closest("#pages-list");
             const isSocial = target.closest("#social-list");
-            target.setCssProps({
+            target.setCssStyles({
               borderTop: "none",
               borderBottom: "none"
             });
@@ -1961,10 +1961,10 @@ var init_OptionalFeaturesStep = __esm({
             }
           });
           const optionsDiv = container.querySelector(".profile-picture-options");
-          if (optionsDiv) optionsDiv.setCssProps({ display: value ? "block" : "none" });
+          if (optionsDiv) optionsDiv.setCssStyles({ display: value ? "block" : "none" });
         }));
         const optionsContainer = container.createDiv("profile-picture-options");
-        optionsContainer.setCssProps({ display: isEnabled ? "block" : "none" });
+        optionsContainer.setCssStyles({ display: isEnabled ? "block" : "none" });
         optionsContainer.className = "profile-picture-options";
         const createSetting = (name4, desc, type, options) => {
           const setting = new import_obsidian4.Setting(optionsContainer).setName(name4).setDesc(desc);
@@ -2049,14 +2049,14 @@ var init_OptionalFeaturesStep = __esm({
               }
             });
             const optionsDiv = container.querySelector(".comments-options");
-            if (optionsDiv) optionsDiv.setCssProps({ display: value ? "block" : "none" });
+            if (optionsDiv) optionsDiv.setCssStyles({ display: value ? "block" : "none" });
           });
         });
         const optionsContainer = container.createDiv("comments-options");
-        optionsContainer.setCssProps({ display: isEnabled ? "block" : "none" });
+        optionsContainer.setCssStyles({ display: isEnabled ? "block" : "none" });
         optionsContainer.className = "comments-options";
         const instructionsDiv = optionsContainer.createDiv("comments-instructions");
-        instructionsDiv.setCssProps({
+        instructionsDiv.setCssStyles({
           marginBottom: "15px",
           padding: "10px",
           background: "var(--background-modifier-border)",
@@ -2064,7 +2064,7 @@ var init_OptionalFeaturesStep = __esm({
           borderLeft: "3px solid var(--interactive-accent)"
         });
         const instructionsText = instructionsDiv.createEl("p");
-        instructionsText.setCssProps({
+        instructionsText.setCssStyles({
           margin: "0",
           fontSize: "13px",
           color: "var(--text-muted)",
@@ -2080,16 +2080,16 @@ var init_OptionalFeaturesStep = __esm({
             rel: "noopener noreferrer"
           }
         });
-        giscusLink.setCssProps({
+        giscusLink.setCssStyles({
           color: "var(--interactive-accent)",
           textDecoration: "none"
         });
         instructionsText.appendText(" and configure your comments\n2. Copy the generated script\n3. Paste it below");
         giscusLink.addEventListener("mouseenter", () => {
-          giscusLink.setCssProps({ textDecoration: "underline" });
+          giscusLink.setCssStyles({ textDecoration: "underline" });
         });
         giscusLink.addEventListener("mouseleave", () => {
-          giscusLink.setCssProps({ textDecoration: "none" });
+          giscusLink.setCssStyles({ textDecoration: "none" });
         });
         const scriptSetting = new import_obsidian4.Setting(optionsContainer).setName("Giscus script").setDesc("Paste your Giscus script here (the plugin will automatically parse all settings)");
         const textarea = scriptSetting.controlEl.createEl("textarea", {
@@ -2113,7 +2113,7 @@ var init_OptionalFeaturesStep = __esm({
             rows: "8"
           }
         });
-        textarea.setCssProps({
+        textarea.setCssStyles({
           width: "100%",
           fontFamily: "var(--font-monospace)",
           fontSize: "12px",
@@ -2126,7 +2126,7 @@ var init_OptionalFeaturesStep = __esm({
         });
         textarea.value = commentsSettings.rawScript || "";
         const validationDiv = optionsContainer.createDiv("script-validation");
-        validationDiv.setCssProps({
+        validationDiv.setCssStyles({
           marginTop: "8px",
           fontSize: "12px"
         });
@@ -2167,7 +2167,7 @@ var init_OptionalFeaturesStep = __esm({
           if (validation.valid) {
             validationDiv.empty();
             const successSpan = validationDiv.createEl("span", { text: "\u2713 Valid Giscus script detected" });
-            successSpan.setCssProps({ color: "var(--text-success)" });
+            successSpan.setCssStyles({ color: "var(--text-success)" });
             const parsed = GiscusScriptParser2.parseScript(scriptContent);
             if (parsed) {
               const currentState = this.getState();
@@ -2199,7 +2199,7 @@ var init_OptionalFeaturesStep = __esm({
           } else {
             validationDiv.empty();
             const errorSpan = validationDiv.createEl("span", { text: `\u2717 ${validation.error}` });
-            errorSpan.setCssProps({ color: "var(--text-error)" });
+            errorSpan.setCssStyles({ color: "var(--text-error)" });
           }
         };
         textarea.addEventListener("input", () => {
@@ -2342,7 +2342,7 @@ var init_PluginConfigStep = __esm({
         info.createEl("p", { text: statusText });
         if (hasSyncIssues && plugin.outOfSyncContentTypes) {
           const syncDetails = info.createEl("p", { text: `Out of sync: ${plugin.outOfSyncContentTypes.join(", ")}`, cls: "sync-details" });
-          syncDetails.setCssProps({
+          syncDetails.setCssStyles({
             fontSize: "0.9em",
             opacity: "0.8",
             marginTop: "4px"
@@ -2420,7 +2420,7 @@ var init_PluginConfigStep = __esm({
               const instructionModal = new import_obsidian5.Modal(this.app);
               instructionModal.titleEl.setText("Manual Configuration Instructions");
               const contentDiv = instructionModal.contentEl.createDiv();
-              contentDiv.setCssProps({
+              contentDiv.setCssStyles({
                 padding: "20px",
                 lineHeight: "1.6"
               });
@@ -2436,7 +2436,7 @@ var init_PluginConfigStep = __esm({
                   }
                   const h2 = contentDiv.createEl("h2");
                   h2.setText(trimmedLine.substring(3));
-                  h2.setCssProps({
+                  h2.setCssStyles({
                     marginTop: "20px",
                     marginBottom: "10px",
                     fontSize: "1.2em",
@@ -2446,7 +2446,7 @@ var init_PluginConfigStep = __esm({
                   if (!currentList) {
                     currentList = contentDiv.createEl("ol");
                     if (currentList) {
-                      currentList.setCssProps({
+                      currentList.setCssStyles({
                         marginLeft: "20px",
                         marginBottom: "15px"
                       });
@@ -2454,7 +2454,7 @@ var init_PluginConfigStep = __esm({
                   }
                   if (currentList) {
                     const li = currentList.createEl("li");
-                    li.setCssProps({
+                    li.setCssStyles({
                       marginBottom: "5px"
                     });
                     this.parseBoldText(li, trimmedLine.replace(/^\d+\.\s/, ""));
@@ -2463,7 +2463,7 @@ var init_PluginConfigStep = __esm({
                   if (!currentList) {
                     currentList = contentDiv.createEl("ul");
                     if (currentList) {
-                      currentList.setCssProps({
+                      currentList.setCssStyles({
                         marginLeft: "20px",
                         marginBottom: "15px"
                       });
@@ -2471,7 +2471,7 @@ var init_PluginConfigStep = __esm({
                   }
                   if (currentList) {
                     const li = currentList.createEl("li");
-                    li.setCssProps({
+                    li.setCssStyles({
                       marginBottom: "5px"
                     });
                     this.parseBoldText(li, trimmedLine.substring(2));
@@ -2481,7 +2481,7 @@ var init_PluginConfigStep = __esm({
                     currentList = null;
                   }
                   const p = contentDiv.createEl("p");
-                  p.setCssProps({
+                  p.setCssStyles({
                     marginBottom: "10px"
                   });
                   this.parseBoldText(p, trimmedLine);
@@ -2697,7 +2697,7 @@ var init_SetupWizardModal = __esm({
         const progress = container.createDiv("wizard-progress");
         const progressBar = progress.createDiv("progress-bar");
         const progressFill = progressBar.createDiv("progress-fill");
-        progressFill.setCssProps({ width: `${this.stateManager.getProgress()}%` });
+        progressFill.setCssStyles({ width: `${this.stateManager.getProgress()}%` });
         const progressText = progress.createDiv("progress-text");
         progressText.textContent = `Step ${state.currentStep} of ${state.totalSteps}`;
       }
@@ -2888,1574 +2888,6 @@ function registerCommands(plugin) {
 
 // src/ui/SettingsTab.ts
 var import_obsidian17 = require("obsidian");
-
-// src/ui/tabs/GeneralTab.ts
-var import_obsidian9 = require("obsidian");
-
-// src/ui/common/TabRenderer.ts
-var import_obsidian8 = require("obsidian");
-var TabRenderer = class {
-  constructor(app, plugin) {
-    this.configDebounceTimer = null;
-    this.app = app;
-    this.plugin = plugin;
-  }
-  /** Save data.json immediately, debounce config file write by 1s. */
-  debouncedSave() {
-    void this.plugin.saveData(this.getSettings());
-    if (this.configDebounceTimer) clearTimeout(this.configDebounceTimer);
-    this.configDebounceTimer = setTimeout(() => {
-      void this.applyCurrentConfiguration();
-      this.configDebounceTimer = null;
-    }, 1e3);
-  }
-  /** Flush any pending debounced config write immediately. */
-  flushConfigWrite() {
-    if (this.configDebounceTimer) {
-      clearTimeout(this.configDebounceTimer);
-      this.configDebounceTimer = null;
-      void this.applyCurrentConfiguration();
-    }
-  }
-  /**
-   * Wire up a text input with debounced save: data.json saves immediately,
-   * config file write is debounced. On blur, pending write is flushed.
-   */
-  bindDebouncedText(textComponent, setter) {
-    textComponent.onChange((v) => {
-      setter(v);
-      this.debouncedSave();
-    });
-    textComponent.inputEl.addEventListener("blur", () => this.flushConfigWrite());
-  }
-  getSettings() {
-    const plugin = this.plugin;
-    return plugin.settings || {};
-  }
-  async applyCurrentConfiguration(showNotice = false) {
-    try {
-      const settings = this.getSettings();
-      const plugin = this.plugin;
-      const success = plugin.configManager.updateIndividualFeatures(settings);
-      if (success) {
-        if (showNotice) {
-          new import_obsidian8.Notice("Configuration applied successfully!");
-        }
-        await plugin.configManager.triggerRebuild();
-      } else {
-        if (showNotice) {
-          new import_obsidian8.Notice("Failed to apply configuration. Check the console for errors.");
-        }
-      }
-    } catch (error) {
-      if (showNotice) {
-        new import_obsidian8.Notice(`Error applying configuration: ${error instanceof Error ? error.message : String(error)}`);
-      }
-    }
-  }
-  createDropdownSetting(container, name4, description4, value, options, onChange) {
-    return new import_obsidian8.Setting(container).setName(name4).setDesc(description4).addDropdown((dropdown) => {
-      Object.entries(options).forEach(([key, label]) => {
-        dropdown.addOption(key, label);
-      });
-      dropdown.setValue(value);
-      dropdown.onChange(async (value2) => {
-        onChange(value2);
-        await this.plugin.saveData(this.getSettings());
-      });
-      return dropdown;
-    });
-  }
-  createTextSetting(container, name4, description4, value, onChange, debounceMs = 1e3, onApplyConfig, placeholder) {
-    return new import_obsidian8.Setting(container).setName(name4).setDesc(description4).addText((text) => {
-      text.setValue(value);
-      if (placeholder) {
-        text.setPlaceholder(placeholder);
-      }
-      let timeoutId = null;
-      text.onChange((value2) => {
-        if (timeoutId) {
-          clearTimeout(timeoutId);
-        }
-        onChange(value2);
-        void this.plugin.saveData(this.getSettings());
-        timeoutId = window.setTimeout(() => {
-          if (onApplyConfig) {
-            void onApplyConfig();
-          }
-        }, debounceMs);
-      });
-      text.inputEl.addEventListener("blur", () => {
-        if (timeoutId) {
-          clearTimeout(timeoutId);
-          if (onApplyConfig) {
-            void onApplyConfig();
-          }
-        }
-      });
-      return text;
-    });
-  }
-  createToggleSetting(container, name4, description4, value, onChange) {
-    return new import_obsidian8.Setting(container).setName(name4).setDesc(description4).addToggle((toggle) => {
-      toggle.setValue(value);
-      toggle.onChange(async (value2) => {
-        onChange(value2);
-        await this.plugin.saveData(this.getSettings());
-      });
-      return toggle;
-    });
-  }
-};
-
-// src/ui/tabs/GeneralTab.ts
-init_types();
-var GeneralTab = class extends TabRenderer {
-  render(container) {
-    container.empty();
-    const settings = this.getSettings();
-    const configGroup = new import_obsidian9.SettingGroup(container).setHeading("Current configuration");
-    configGroup.addSetting((setting) => {
-      var _a, _b;
-      const nameEl = setting.settingEl.querySelector(".setting-item-name");
-      const descEl = setting.settingEl.querySelector(".setting-item-description");
-      const controlEl = setting.settingEl.querySelector(".setting-item-control");
-      if (nameEl) nameEl.setCssProps({ display: "none" });
-      if (descEl) descEl.setCssProps({ display: "none" });
-      if (controlEl) controlEl.setCssProps({ display: "none" });
-      setting.settingEl.setCssProps({
-        borderTop: "none",
-        paddingTop: "0",
-        paddingBottom: "0",
-        display: "block"
-      });
-      const configItems = setting.settingEl.createDiv("config-items");
-      configItems.setCssProps({
-        width: "100%",
-        marginBottom: "0"
-      });
-      const templateItem = configItems.createDiv("config-item");
-      templateItem.createEl("strong", { text: "Template: " });
-      templateItem.createSpan({ text: ((_a = TEMPLATE_OPTIONS.find((t) => t.id === settings.currentTemplate)) == null ? void 0 : _a.name) || "Unknown" });
-      const themeItem = configItems.createDiv("config-item");
-      themeItem.createEl("strong", { text: "Theme: " });
-      themeItem.createSpan({ text: ((_b = THEME_OPTIONS.find((t) => t.id === settings.currentTheme)) == null ? void 0 : _b.name) || "Unknown" });
-      const orgItem = configItems.createDiv("config-item");
-      orgItem.createEl("strong", { text: "Organization: " });
-      orgItem.createSpan({ text: settings.contentOrganization === "file-based" ? "File-based" : "Folder-based" });
-      const deploymentItem = configItems.createDiv("config-item");
-      deploymentItem.createEl("strong", { text: "Deployment: " });
-      deploymentItem.createSpan({ text: this.formatDeploymentName(settings.deployment.platform) });
-      const siteTitleItem = configItems.createDiv("config-item");
-      siteTitleItem.createEl("strong", { text: "Site title: " });
-      siteTitleItem.createSpan({ text: settings.siteInfo.title });
-      const siteUrlItem = configItems.createDiv("config-item");
-      siteUrlItem.createEl("strong", { text: "Site URL: " });
-      siteUrlItem.createSpan({ text: settings.siteInfo.site });
-    });
-    const wizardGroup = new import_obsidian9.SettingGroup(container).setHeading("Wizard");
-    wizardGroup.addSetting((setting) => {
-      setting.setName("Setup wizard").setDesc("Run the setup wizard to reconfigure your theme").addButton((button) => button.setButtonText("Run setup wizard").setCta().onClick(async () => {
-        const plugin = this.plugin;
-        await this.plugin.loadData().then((data) => {
-          if (data) {
-            Object.assign(plugin.settings, data);
-          }
-        });
-        const { SetupWizardModal: SetupWizardModal2 } = await Promise.resolve().then(() => (init_SetupWizardModal(), SetupWizardModal_exports));
-        const wizard = new SetupWizardModal2(this.app, plugin);
-        wizard.open();
-      }));
-    });
-    wizardGroup.addSetting((setting) => {
-      setting.setName("Run wizard on startup").setDesc("Show the setup wizard when Obsidian starts (if not disabled)").addToggle((toggle) => toggle.setValue(settings.runWizardOnStartup).onChange(async (value) => {
-        settings.runWizardOnStartup = value;
-        await this.plugin.saveData(settings);
-      }));
-    });
-    wizardGroup.addSetting((setting) => {
-      setting.setName("Remove ribbon icon").setDesc("Remove the wizard icon from the left ribbon").addToggle((toggle) => {
-        var _a;
-        return toggle.setValue((_a = settings.removeRibbonIcon) != null ? _a : false).onChange(async (value) => {
-          settings.removeRibbonIcon = value;
-          await this.plugin.saveData(settings);
-          const plugin = this.plugin;
-          if (plugin.updateRibbonIcon) {
-            await plugin.updateRibbonIcon();
-          }
-        });
-      });
-    });
-  }
-  formatDeploymentName(deployment) {
-    switch (deployment) {
-      case "netlify":
-        return "Netlify";
-      case "vercel":
-        return "Vercel";
-      case "github-pages":
-        return "GitHub Pages";
-      case "cloudflare-workers":
-        return "Cloudflare Workers";
-      default:
-        return deployment;
-    }
-  }
-};
-
-// src/ui/tabs/SiteInfoTab.ts
-var import_obsidian10 = require("obsidian");
-var Buffer2 = require("buffer").Buffer;
-var SiteInfoTab = class extends TabRenderer {
-  render(container) {
-    var _a;
-    container.empty();
-    const settings = this.getSettings();
-    const siteInfoGroup = new import_obsidian10.SettingGroup(container);
-    siteInfoGroup.addSetting((setting) => {
-      setting.setName("Site URL").setDesc("Your site's base URL (like https://yoursite.com)").addText((text) => {
-        text.setValue(settings.siteInfo.site);
-        let timeoutId = null;
-        text.onChange((value) => {
-          if (timeoutId) {
-            clearTimeout(timeoutId);
-          }
-          settings.siteInfo.site = value;
-          void this.plugin.saveData(settings);
-          timeoutId = window.setTimeout(() => {
-            void this.applyCurrentConfiguration();
-          }, 1e3);
-        });
-        text.inputEl.addEventListener("blur", () => {
-          if (timeoutId) {
-            clearTimeout(timeoutId);
-            void this.applyCurrentConfiguration();
-          }
-        });
-      });
-    });
-    siteInfoGroup.addSetting((setting) => {
-      setting.setName("Site title").setDesc("Your site's title").addText((text) => {
-        text.setValue(settings.siteInfo.title);
-        let timeoutId = null;
-        text.onChange((value) => {
-          if (timeoutId) {
-            clearTimeout(timeoutId);
-          }
-          settings.siteInfo.title = value;
-          void this.plugin.saveData(settings);
-          timeoutId = window.setTimeout(() => {
-            void this.applyCurrentConfiguration();
-          }, 1e3);
-        });
-        text.inputEl.addEventListener("blur", () => {
-          if (timeoutId) {
-            clearTimeout(timeoutId);
-            void this.applyCurrentConfiguration();
-          }
-        });
-      });
-    });
-    siteInfoGroup.addSetting((setting) => {
-      setting.setName("Homepage title").setDesc("Custom meta title for the homepage only. If empty, uses the site title.").addText((text) => {
-        var _a2;
-        text.setValue((_a2 = settings.siteInfo.homepageTitle) != null ? _a2 : "");
-        let timeoutId = null;
-        text.onChange((value) => {
-          if (timeoutId) {
-            clearTimeout(timeoutId);
-          }
-          settings.siteInfo.homepageTitle = value;
-          void this.plugin.saveData(settings);
-          timeoutId = window.setTimeout(() => {
-            void this.applyCurrentConfiguration();
-          }, 1e3);
-        });
-        text.inputEl.addEventListener("blur", () => {
-          if (timeoutId) {
-            clearTimeout(timeoutId);
-            void this.applyCurrentConfiguration();
-          }
-        });
-      });
-    });
-    siteInfoGroup.addSetting((setting) => {
-      setting.setName("Site description").setDesc("A brief description of your site").addText((text) => {
-        text.setValue(settings.siteInfo.description);
-        let timeoutId = null;
-        text.onChange((value) => {
-          if (timeoutId) {
-            clearTimeout(timeoutId);
-          }
-          settings.siteInfo.description = value;
-          void this.plugin.saveData(settings);
-          timeoutId = window.setTimeout(() => {
-            void this.applyCurrentConfiguration();
-          }, 1e3);
-        });
-        text.inputEl.addEventListener("blur", () => {
-          if (timeoutId) {
-            clearTimeout(timeoutId);
-            void this.applyCurrentConfiguration();
-          }
-        });
-      });
-    });
-    siteInfoGroup.addSetting((setting) => {
-      setting.setName("Author name").setDesc("Your name or the site author's name").addText((text) => {
-        text.setValue(settings.siteInfo.author);
-        let timeoutId = null;
-        text.onChange((value) => {
-          if (timeoutId) {
-            clearTimeout(timeoutId);
-          }
-          settings.siteInfo.author = value;
-          void this.plugin.saveData(settings);
-          timeoutId = window.setTimeout(() => {
-            void this.applyCurrentConfiguration();
-          }, 1e3);
-        });
-        text.inputEl.addEventListener("blur", () => {
-          if (timeoutId) {
-            clearTimeout(timeoutId);
-            void this.applyCurrentConfiguration();
-          }
-        });
-      });
-    });
-    siteInfoGroup.addSetting((setting) => {
-      setting.setName("Language code").setDesc("Your site's primary language (ISO 639-1 code)").addText((text) => {
-        text.setValue(settings.siteInfo.language);
-        let timeoutId = null;
-        text.onChange((value) => {
-          if (timeoutId) {
-            clearTimeout(timeoutId);
-          }
-          settings.siteInfo.language = value;
-          void this.plugin.saveData(settings);
-          timeoutId = window.setTimeout(() => {
-            void this.applyCurrentConfiguration();
-          }, 1e3);
-        });
-        text.inputEl.addEventListener("blur", () => {
-          if (timeoutId) {
-            clearTimeout(timeoutId);
-            void this.applyCurrentConfiguration();
-          }
-        });
-      });
-      setting.settingEl.setCssProps({
-        marginBottom: "var(--size-4-6)"
-      });
-    });
-    const assetsSection = container.createDiv("assets-section");
-    const assetsHeaderSetting = new import_obsidian10.Setting(assetsSection).setHeading().setName("Assets & metadata");
-    assetsHeaderSetting.settingEl.setCssProps({
-      marginTop: "var(--size-4-6)",
-      marginBottom: "var(--size-4-2)",
-      position: "relative"
-    });
-    const sharedFolderButton = assetsHeaderSetting.controlEl.createEl("button", {
-      cls: "clickable-icon",
-      attr: { "aria-label": "Open public folder" }
-    });
-    sharedFolderButton.setCssProps({
-      padding: "4px",
-      border: "none",
-      backgroundColor: "transparent",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      position: "absolute",
-      right: "0",
-      top: "50%",
-      transform: "translateY(-50%)"
-    });
-    (0, import_obsidian10.setIcon)(sharedFolderButton, "folder");
-    sharedFolderButton.addEventListener("click", () => {
-      var _a2, _b, _c;
-      const publicPath = "../../public";
-      void ((_c = (_b = (_a2 = this.app).openWithDefaultApp) == null ? void 0 : _b.call(_a2, publicPath)) != null ? _c : Promise.resolve()).catch((error) => {
-        new import_obsidian10.Notice(`Failed to open public folder: ${error instanceof Error ? error.message : String(error)}`);
-      });
-    });
-    const assetsGroup = new import_obsidian10.SettingGroup(assetsSection);
-    const copyImageToPublic = (sourcePath, targetFileName) => {
-      try {
-        const fs = require("fs");
-        const path = require("path");
-        const vaultAdapter = this.app.vault.adapter;
-        const vaultPath = vaultAdapter.basePath || vaultAdapter.path;
-        const vaultPathString = typeof vaultPath === "string" ? vaultPath : String(vaultPath != null ? vaultPath : "");
-        const publicFolderPath = path.join(vaultPathString, "..", "..", "public");
-        const targetPath = path.join(publicFolderPath, targetFileName);
-        if (!fs.existsSync(publicFolderPath)) {
-          fs.mkdirSync(publicFolderPath, { recursive: true });
-        }
-        fs.copyFileSync(sourcePath, targetPath);
-        new import_obsidian10.Notice(`Successfully copied ${targetFileName} to public folder`);
-      } catch (error) {
-        throw new Error(`Failed to copy file: ${error instanceof Error ? error.message : String(error)}`);
-      }
-    };
-    const showFilePicker = (targetFileName) => {
-      const fileInput = document.createElement("input");
-      fileInput.type = "file";
-      fileInput.accept = ".png";
-      let selectedFile = null;
-      fileInput.onchange = (e) => {
-        var _a2;
-        const file = (_a2 = e.target.files) == null ? void 0 : _a2[0];
-        if (file) {
-          if (!file.name.toLowerCase().endsWith(".png")) {
-            new import_obsidian10.Notice("Please select a PNG file");
-            return;
-          }
-          selectedFile = file;
-          setTimeout(() => {
-            const confirmModal = new import_obsidian10.Modal(this.app);
-            confirmModal.titleEl.setText("Replace image");
-            const contentDiv = confirmModal.contentEl.createDiv();
-            contentDiv.createEl("p", {
-              text: `Are you sure you want to replace ${targetFileName} in the public folder with the new image?`
-            });
-            const buttonContainer = contentDiv.createDiv();
-            buttonContainer.setCssProps({
-              marginTop: "20px",
-              display: "flex",
-              gap: "10px",
-              justifyContent: "flex-end"
-            });
-            const cancelButton = buttonContainer.createEl("button", { text: "Cancel" });
-            cancelButton.className = "mod-button";
-            cancelButton.addEventListener("click", () => {
-              confirmModal.close();
-            });
-            const confirmButton = buttonContainer.createEl("button", { text: "Replace" });
-            confirmButton.className = "mod-warning";
-            confirmButton.addEventListener("click", () => {
-              confirmModal.close();
-              if (!selectedFile) {
-                new import_obsidian10.Notice("File selection was lost. Please try again.");
-                return;
-              }
-              void (async () => {
-                try {
-                  const fs = require("fs");
-                  const path = require("path");
-                  const filePath = selectedFile.path;
-                  if (filePath) {
-                    copyImageToPublic(filePath, targetFileName);
-                  } else {
-                    const arrayBuffer = await selectedFile.arrayBuffer();
-                    const buffer = Buffer2.from(arrayBuffer);
-                    const vaultAdapter = this.app.vault.adapter;
-                    const vaultPath = vaultAdapter.basePath || vaultAdapter.path;
-                    const vaultPathString = typeof vaultPath === "string" ? vaultPath : String(vaultPath != null ? vaultPath : "");
-                    const publicFolderPath = path.join(vaultPathString, "..", "..", "public");
-                    const targetPath = path.join(publicFolderPath, targetFileName);
-                    if (!fs.existsSync(publicFolderPath)) {
-                      fs.mkdirSync(publicFolderPath, { recursive: true });
-                    }
-                    fs.writeFileSync(targetPath, buffer);
-                    new import_obsidian10.Notice(`Successfully copied ${targetFileName} to public folder`);
-                  }
-                } catch (err) {
-                  new import_obsidian10.Notice(`Failed to copy file: ${err instanceof Error ? err.message : String(err)}`);
-                }
-              })();
-            });
-            confirmModal.open();
-          }, 100);
-        }
-      };
-      fileInput.click();
-    };
-    assetsGroup.addSetting((setting) => {
-      setting.setName("Open graph image").setDesc("Select a PNG image to replace open-graph.png in the public folder (recommended: 1200 x 630 pixels)");
-      const ogImageButton = setting.controlEl.createEl("button", {
-        text: "Select PNG file",
-        cls: "mod-cta"
-      });
-      ogImageButton.addEventListener("click", () => {
-        void showFilePicker("open-graph.png");
-      });
-    });
-    assetsGroup.addSetting((setting) => {
-      setting.setName("Open Graph image alt text").setDesc("Alternative text for the Open Graph image").addText((text) => {
-        var _a2;
-        text.setValue(settings.siteInfo.defaultOgImageAlt || ((_a2 = settings.seo) == null ? void 0 : _a2.defaultOgImageAlt) || "Astro Modular logo.");
-        let timeoutId = null;
-        text.onChange((value) => {
-          if (timeoutId) {
-            clearTimeout(timeoutId);
-          }
-          settings.siteInfo.defaultOgImageAlt = value;
-          if (!settings.seo) {
-            settings.seo = { defaultOgImageAlt: "" };
-          }
-          settings.seo.defaultOgImageAlt = value;
-          void this.plugin.saveData(settings);
-          timeoutId = window.setTimeout(() => {
-            void this.applyCurrentConfiguration().then(() => {
-              new import_obsidian10.Notice("Open Graph image alt text updated and applied to config.ts");
-            });
-          }, 1e3);
-        });
-        text.inputEl.addEventListener("blur", () => {
-          if (timeoutId) {
-            clearTimeout(timeoutId);
-            void this.applyCurrentConfiguration().then(() => {
-              new import_obsidian10.Notice("Open Graph image alt text updated and applied to config.ts");
-            });
-          }
-        });
-      });
-    });
-    assetsGroup.addSetting((setting) => {
-      setting.setName("Favicon").setDesc("Select a PNG image to replace favicon.png in the public folder (recommended: 256 x 256 pixels). Standard favicon is used when browser preference cannot be determined.");
-      const faviconButton = setting.controlEl.createEl("button", {
-        text: "Select PNG file",
-        cls: "mod-cta"
-      });
-      faviconButton.addEventListener("click", () => {
-        void showFilePicker("favicon.png");
-      });
-    });
-    assetsGroup.addSetting((setting) => {
-      setting.setName("Theme-adaptive favicon").setDesc("If enabled, favicon switches between light and dark variants based on browser theme preference. Standard favicon is used when browser's preference cannot be determined.").addToggle((toggle) => {
-        var _a2;
-        return toggle.setValue((_a2 = settings.siteInfo.faviconThemeAdaptive) != null ? _a2 : true).onChange(async (value) => {
-          settings.siteInfo.faviconThemeAdaptive = value;
-          await this.plugin.saveData(settings);
-          await this.plugin.loadSettings();
-          await this.applyCurrentConfiguration();
-          this.render(container);
-          new import_obsidian10.Notice(`Theme-adaptive favicon ${value ? "enabled" : "disabled"} and applied to config.ts`);
-        });
-      });
-    });
-    if ((_a = settings.siteInfo.faviconThemeAdaptive) != null ? _a : true) {
-      assetsGroup.addSetting((setting) => {
-        setting.setName("Light theme favicon").setDesc("Select a PNG image to replace favicon-light.png in the public folder (recommended: 256 x 256 pixels)");
-        const faviconLightButton = setting.controlEl.createEl("button", {
-          text: "Select PNG file",
-          cls: "mod-cta"
-        });
-        faviconLightButton.addEventListener("click", () => {
-          void showFilePicker("favicon-light.png");
-        });
-      });
-      assetsGroup.addSetting((setting) => {
-        setting.setName("Dark theme favicon").setDesc("Select a PNG image to replace favicon-dark.png in the public folder (recommended: 256 x 256 pixels)");
-        const faviconDarkButton = setting.controlEl.createEl("button", {
-          text: "Select PNG file",
-          cls: "mod-cta"
-        });
-        faviconDarkButton.addEventListener("click", () => {
-          void showFilePicker("favicon-dark.png");
-        });
-      });
-    }
-  }
-};
-
-// src/ui/tabs/NavigationTab.ts
-var import_obsidian11 = require("obsidian");
-var NavigationTab = class extends TabRenderer {
-  constructor() {
-    super(...arguments);
-    this.listenersAttached = false;
-  }
-  render(container) {
-    container.empty();
-    this.listenersAttached = false;
-    const settings = this.getSettings();
-    const pagesSection = container.createDiv("settings-section");
-    new import_obsidian11.Setting(pagesSection).setHeading().setName("Navigation pages").setDesc("Add or remove pages from your main navigation menu.");
-    const pagesList = pagesSection.createDiv("nav-items");
-    pagesList.id = "pages-list";
-    settings.navigation.pages.forEach((page, index) => {
-      this.renderPageItem(pagesList, page, index);
-    });
-    new import_obsidian11.Setting(pagesSection).setName("Add page").setDesc("Add a new page to your navigation").addButton((button) => button.setButtonText("+ Add page").setCta().onClick(async () => {
-      settings.navigation.pages.push({ title: "New Page", url: "/new-page" });
-      await this.plugin.saveData(settings);
-      await this.applyCurrentConfiguration(false);
-      new import_obsidian11.Notice("Navigation page added and applied to config.ts");
-      this.render(container);
-    }));
-    const socialSection = container.createDiv("settings-section");
-    new import_obsidian11.Setting(socialSection).setHeading().setName("Social links").setDesc("Add or remove social media links.");
-    const socialList = socialSection.createDiv("nav-items");
-    socialList.id = "social-list";
-    settings.navigation.social.forEach((social, index) => {
-      this.renderSocialItem(socialList, social, index);
-    });
-    new import_obsidian11.Setting(socialSection).setName("Add social link").setDesc("Add a new social media link").addButton((button) => button.setButtonText("+ Add social link").setCta().onClick(async () => {
-      settings.navigation.social.push({ title: "New Social", url: "https://example.com", icon: "" });
-      await this.plugin.saveData(settings);
-      await this.applyCurrentConfiguration(false);
-      new import_obsidian11.Notice("Social link added and applied to config.ts");
-      this.render(container);
-    }));
-    const navOptionsGroup = new import_obsidian11.SettingGroup(container).setHeading("Navigation options");
-    navOptionsGroup.addSetting((setting) => {
-      setting.setName("Show navigation").setDesc("Display navigation menu on your site").addToggle((toggle) => {
-        var _a;
-        return toggle.setValue((_a = settings.navigation.showNavigation) != null ? _a : true).onChange(async (value) => {
-          settings.navigation.showNavigation = value;
-          await this.plugin.saveData(settings);
-          await this.plugin.loadSettings();
-          await this.applyCurrentConfiguration();
-          new import_obsidian11.Notice(`Navigation ${value ? "enabled" : "disabled"} and applied to config.ts`);
-        });
-      });
-    });
-    navOptionsGroup.addSetting((setting) => {
-      setting.setName("Navigation style").setDesc("Choose between minimal or traditional navigation style").addDropdown((dropdown) => dropdown.addOption("traditional", "Traditional").addOption("minimal", "Minimal").setValue(settings.navigation.style || "traditional").onChange(async (value) => {
-        settings.navigation.style = value;
-        await this.plugin.saveData(settings);
-        await this.plugin.loadSettings();
-        await this.applyCurrentConfiguration();
-        new import_obsidian11.Notice(`Navigation style changed to ${value} and applied to config.ts`);
-      }));
-    });
-    navOptionsGroup.addSetting((setting) => {
-      setting.setName("Show mobile menu").setDesc("Display mobile navigation menu on smaller screens").addToggle((toggle) => {
-        var _a;
-        return toggle.setValue((_a = settings.navigation.showMobileMenu) != null ? _a : true).onChange(async (value) => {
-          settings.navigation.showMobileMenu = value;
-          await this.plugin.saveData(settings);
-          await this.plugin.loadSettings();
-          await this.applyCurrentConfiguration();
-          new import_obsidian11.Notice(`Mobile menu ${value ? "enabled" : "disabled"} and applied to config.ts`);
-        });
-      });
-    });
-    this.setupEventDelegation(container);
-    this.setupDragAndDrop(container);
-  }
-  setupDragAndDrop(container) {
-    let draggedElement = null;
-    const dragStartHandler = (e) => {
-      const target = e.target;
-      if (target.classList.contains("nav-item")) {
-        draggedElement = target;
-        target.setCssProps({ opacity: "0.5" });
-      }
-    };
-    const dragEndHandler = (e) => {
-      const target = e.target;
-      if (target.classList.contains("nav-item")) {
-        target.setCssProps({ opacity: "1" });
-        draggedElement = null;
-      }
-    };
-    const dragOverHandler = (e) => {
-      e.preventDefault();
-      const target = e.target;
-      if (target.classList.contains("nav-item") && draggedElement && target !== draggedElement) {
-        const rect = target.getBoundingClientRect();
-        const midpoint = rect.top + rect.height / 2;
-        if (e.clientY < midpoint) {
-          target.setCssProps({
-            borderTop: "2px solid var(--interactive-accent)",
-            borderBottom: "none"
-          });
-        } else {
-          target.setCssProps({
-            borderBottom: "2px solid var(--interactive-accent)",
-            borderTop: "none"
-          });
-        }
-      }
-    };
-    const dragLeaveHandler = (e) => {
-      const target = e.target;
-      if (target.classList.contains("nav-item")) {
-        target.setCssProps({
-          borderTop: "none",
-          borderBottom: "none"
-        });
-      }
-    };
-    const dropHandler = async (e) => {
-      e.preventDefault();
-      const target = e.target;
-      if (target.classList.contains("nav-item") && draggedElement) {
-        const targetIndex = parseInt(target.getAttribute("data-index") || "0");
-        const draggedIndex = parseInt(draggedElement.getAttribute("data-index") || "0");
-        const isPage = target.closest("#pages-list");
-        const isSocial = target.closest("#social-list");
-        target.setCssProps({
-          borderTop: "none",
-          borderBottom: "none"
-        });
-        if (targetIndex !== draggedIndex) {
-          const currentSettings = this.getSettings();
-          if (isPage) {
-            const newPages = [...currentSettings.navigation.pages];
-            const draggedItem = newPages.splice(draggedIndex, 1)[0];
-            newPages.splice(targetIndex, 0, draggedItem);
-            currentSettings.navigation.pages = newPages;
-          } else if (isSocial) {
-            const newSocial = [...currentSettings.navigation.social];
-            const draggedItem = newSocial.splice(draggedIndex, 1)[0];
-            newSocial.splice(targetIndex, 0, draggedItem);
-            currentSettings.navigation.social = newSocial;
-          }
-          await this.plugin.saveData(currentSettings);
-          await this.applyCurrentConfiguration();
-          this.render(container);
-        }
-      }
-    };
-    const containerWithHandlers = container;
-    if (containerWithHandlers._dragStartHandler) {
-      container.removeEventListener("dragstart", containerWithHandlers._dragStartHandler);
-      container.removeEventListener("dragend", containerWithHandlers._dragEndHandler);
-      container.removeEventListener("dragover", containerWithHandlers._dragOverHandler);
-      container.removeEventListener("dragleave", containerWithHandlers._dragLeaveHandler);
-      container.removeEventListener("drop", containerWithHandlers._dropHandler);
-    }
-    containerWithHandlers._dragStartHandler = dragStartHandler;
-    containerWithHandlers._dragEndHandler = dragEndHandler;
-    containerWithHandlers._dragOverHandler = dragOverHandler;
-    containerWithHandlers._dragLeaveHandler = dragLeaveHandler;
-    containerWithHandlers._dropHandler = dropHandler;
-    if (containerWithHandlers._dragStartHandler) {
-      container.addEventListener("dragstart", containerWithHandlers._dragStartHandler);
-    }
-    if (containerWithHandlers._dragEndHandler) {
-      container.addEventListener("dragend", containerWithHandlers._dragEndHandler);
-    }
-    if (containerWithHandlers._dragOverHandler) {
-      container.addEventListener("dragover", containerWithHandlers._dragOverHandler);
-    }
-    if (containerWithHandlers._dragLeaveHandler) {
-      container.addEventListener("dragleave", containerWithHandlers._dragLeaveHandler);
-    }
-    if (containerWithHandlers._dropHandler) {
-      container.addEventListener("drop", containerWithHandlers._dropHandler);
-    }
-  }
-  setupEventDelegation(container) {
-    const settings = this.getSettings();
-    const pagesList = container.querySelector("#pages-list");
-    const socialList = container.querySelector("#social-list");
-    if (pagesList) {
-      pagesList.addEventListener("input", (e) => {
-        const target = e.target;
-        if (target.classList.contains("nav-title")) {
-          const item = target.closest(".nav-item");
-          const index = parseInt((item == null ? void 0 : item.getAttribute("data-index")) || "0");
-          settings.navigation.pages[index].title = target.value;
-          this.debouncedSave();
-        } else if (target.classList.contains("nav-url")) {
-          const item = target.closest(".nav-item");
-          const index = parseInt((item == null ? void 0 : item.getAttribute("data-index")) || "0");
-          if (target.value.trim() === "") {
-            delete settings.navigation.pages[index].url;
-          } else {
-            settings.navigation.pages[index].url = target.value;
-          }
-          this.debouncedSave();
-        } else if (target.classList.contains("nav-child-title")) {
-          const childItem = target.closest(".nav-child-item");
-          const parentIndex = parseInt((childItem == null ? void 0 : childItem.getAttribute("data-index")) || "0");
-          const childIndex = parseInt((childItem == null ? void 0 : childItem.getAttribute("data-child-index")) || "0");
-          if (!settings.navigation.pages[parentIndex].children) {
-            settings.navigation.pages[parentIndex].children = [];
-          }
-          if (!settings.navigation.pages[parentIndex].children[childIndex]) {
-            settings.navigation.pages[parentIndex].children[childIndex] = { title: "", url: "" };
-          }
-          settings.navigation.pages[parentIndex].children[childIndex].title = target.value;
-          this.debouncedSave();
-        } else if (target.classList.contains("nav-child-url")) {
-          const childItem = target.closest(".nav-child-item");
-          const parentIndex = parseInt((childItem == null ? void 0 : childItem.getAttribute("data-index")) || "0");
-          const childIndex = parseInt((childItem == null ? void 0 : childItem.getAttribute("data-child-index")) || "0");
-          if (!settings.navigation.pages[parentIndex].children) {
-            settings.navigation.pages[parentIndex].children = [];
-          }
-          if (!settings.navigation.pages[parentIndex].children[childIndex]) {
-            settings.navigation.pages[parentIndex].children[childIndex] = { title: "", url: "" };
-          }
-          settings.navigation.pages[parentIndex].children[childIndex].url = target.value;
-          this.debouncedSave();
-        }
-      });
-    }
-    if (socialList) {
-      socialList.addEventListener("input", (e) => {
-        const target = e.target;
-        if (target.classList.contains("nav-title") || target.classList.contains("nav-url") || target.classList.contains("nav-icon")) {
-          const item = target.closest(".nav-item");
-          const index = parseInt((item == null ? void 0 : item.getAttribute("data-index")) || "0");
-          const field = target.classList.contains("nav-title") ? "title" : target.classList.contains("nav-url") ? "url" : "icon";
-          settings.navigation.social[index][field] = target.value;
-          this.debouncedSave();
-        }
-      });
-    }
-    const removeHandler = async (e) => {
-      const target = e.target;
-      if (target.classList.contains("nav-remove")) {
-        e.preventDefault();
-        e.stopPropagation();
-        const item = target.closest(".nav-item");
-        const index = parseInt((item == null ? void 0 : item.getAttribute("data-index")) || "0");
-        const isPage = item == null ? void 0 : item.closest("#pages-list");
-        const currentSettings = this.getSettings();
-        if (isPage) {
-          currentSettings.navigation.pages.splice(index, 1);
-          await this.plugin.saveData(currentSettings);
-          await this.plugin.loadSettings();
-          await this.applyCurrentConfiguration(false);
-          new import_obsidian11.Notice("Navigation page removed and applied to config.ts");
-          this.render(container);
-        } else {
-          currentSettings.navigation.social.splice(index, 1);
-          await this.plugin.saveData(currentSettings);
-          await this.plugin.loadSettings();
-          await this.applyCurrentConfiguration(false);
-          new import_obsidian11.Notice("Social link removed and applied to config.ts");
-          this.render(container);
-        }
-      } else if (target.classList.contains("nav-child-remove")) {
-        e.preventDefault();
-        e.stopPropagation();
-        const parentIndex = parseInt(target.getAttribute("data-index") || "0");
-        const childIndex = parseInt(target.getAttribute("data-child-index") || "0");
-        const currentSettings = this.getSettings();
-        if (currentSettings.navigation.pages[parentIndex].children) {
-          currentSettings.navigation.pages[parentIndex].children.splice(childIndex, 1);
-          if (currentSettings.navigation.pages[parentIndex].children.length === 0) {
-            delete currentSettings.navigation.pages[parentIndex].children;
-          }
-          await this.plugin.saveData(currentSettings);
-          await this.plugin.loadSettings();
-          await this.applyCurrentConfiguration(false);
-          new import_obsidian11.Notice("Child page removed and applied to config.ts");
-          const navItem = target.closest(".nav-item");
-          const childrenContainer = navItem == null ? void 0 : navItem.querySelector(".nav-children-container");
-          if (childrenContainer && (!currentSettings.navigation.pages[parentIndex].children || currentSettings.navigation.pages[parentIndex].children.length === 0)) {
-            childrenContainer.setCssProps({ display: "none" });
-          }
-          this.render(container);
-        }
-      } else if (target.classList.contains("nav-add-child")) {
-        e.preventDefault();
-        e.stopPropagation();
-        const index = parseInt(target.getAttribute("data-index") || "0");
-        const currentSettings = this.getSettings();
-        if (!currentSettings.navigation.pages[index].children) {
-          currentSettings.navigation.pages[index].children = [];
-        }
-        currentSettings.navigation.pages[index].children.push({ title: "New Child", url: "/new-child" });
-        await this.plugin.saveData(currentSettings);
-        await this.plugin.loadSettings();
-        await this.applyCurrentConfiguration(false);
-        new import_obsidian11.Notice("Child page added and applied to config.ts");
-        const navItem = target.closest(".nav-item");
-        const childrenContainer = navItem == null ? void 0 : navItem.querySelector(".nav-children-container");
-        if (childrenContainer) {
-          childrenContainer.setCssProps({ display: "block" });
-        }
-        this.render(container);
-        setTimeout(() => {
-          container.querySelectorAll('button[data-icon="trash"]').forEach((button) => {
-            button.textContent = "";
-            (0, import_obsidian11.setIcon)(button, "trash");
-          });
-        }, 0);
-      }
-    };
-    const containerWithHandlers = container;
-    if (containerWithHandlers._removeHandler) {
-      container.removeEventListener("click", containerWithHandlers._removeHandler);
-    }
-    containerWithHandlers._removeHandler = removeHandler;
-    container.addEventListener("click", containerWithHandlers._removeHandler);
-  }
-  renderPageItem(container, page, index) {
-    const hasChildren = page.children && page.children.length > 0;
-    const navItem = container.createDiv("nav-item");
-    navItem.setAttribute("data-index", index.toString());
-    navItem.setAttribute("draggable", "true");
-    const itemContent = navItem.createDiv("nav-item-content");
-    const itemFields = itemContent.createDiv("nav-item-fields");
-    const titleInput = itemFields.createEl("input", {
-      type: "text",
-      cls: "nav-title",
-      attr: { placeholder: "Page title", draggable: "false" }
-    });
-    titleInput.value = page.title || "";
-    const urlInput = itemFields.createEl("input", {
-      type: "text",
-      cls: "nav-url",
-      attr: { placeholder: "/page-url (leave empty for dropdown-only)", draggable: "false" }
-    });
-    urlInput.value = page.url || "";
-    const itemActions = itemContent.createDiv("nav-item-actions");
-    itemActions.createEl("button", {
-      // "+ Child" is a button label, keep as is
-      // eslint-disable-next-line obsidianmd/ui/sentence-case
-      text: "+ Child",
-      cls: "nav-add-child",
-      attr: { "data-index": index.toString(), title: "Add child page" }
-    });
-    const removeBtn = itemActions.createEl("button", {
-      cls: "nav-remove mod-warning",
-      attr: { "data-index": index.toString(), "data-icon": "trash", title: "Remove", "aria-label": "Remove" }
-    });
-    (0, import_obsidian11.setIcon)(removeBtn, "trash");
-    const childrenContainer = navItem.createDiv("nav-children-container");
-    childrenContainer.setAttribute("data-parent-index", index.toString());
-    if (!hasChildren) {
-      childrenContainer.setCssProps({ display: "none" });
-    }
-    childrenContainer.createDiv("nav-children-label").textContent = "Child pages:";
-    const childrenDiv = childrenContainer.createDiv("nav-children");
-    childrenDiv.setAttribute("data-parent-index", index.toString());
-    if (hasChildren && page.children) {
-      page.children.forEach((child, childIndex) => {
-        this.renderChildItem(childrenDiv, child, index, childIndex);
-      });
-    }
-  }
-  renderChildItem(container, child, parentIndex, childIndex) {
-    const childItem = container.createDiv("nav-child-item");
-    childItem.setAttribute("data-index", parentIndex.toString());
-    childItem.setAttribute("data-child-index", childIndex.toString());
-    const itemFields = childItem.createDiv("nav-item-fields");
-    const titleInput = itemFields.createEl("input", {
-      type: "text",
-      cls: "nav-child-title",
-      attr: { placeholder: "Child title", draggable: "false" }
-    });
-    titleInput.value = child.title || "";
-    const urlInput = itemFields.createEl("input", {
-      type: "text",
-      cls: "nav-child-url",
-      attr: { placeholder: "/child-url", draggable: "false" }
-    });
-    urlInput.value = child.url || "";
-    const removeBtn = childItem.createEl("button", {
-      cls: "nav-child-remove mod-warning",
-      attr: {
-        "data-index": parentIndex.toString(),
-        "data-child-index": childIndex.toString(),
-        "data-icon": "trash",
-        title: "Remove",
-        "aria-label": "Remove"
-      }
-    });
-    (0, import_obsidian11.setIcon)(removeBtn, "trash");
-  }
-  renderSocialItem(container, social, index) {
-    const navItem = container.createDiv("nav-item");
-    navItem.setAttribute("data-index", index.toString());
-    navItem.setAttribute("draggable", "true");
-    const itemContent = navItem.createDiv("nav-item-content");
-    const itemFields = itemContent.createDiv("nav-item-fields");
-    const titleInput = itemFields.createEl("input", {
-      type: "text",
-      cls: "nav-title",
-      attr: { placeholder: "Social title", draggable: "false" }
-    });
-    titleInput.value = social.title || "";
-    const urlInput = itemFields.createEl("input", {
-      type: "text",
-      cls: "nav-url",
-      attr: { placeholder: "https://example.com", draggable: "false" }
-    });
-    urlInput.value = social.url || "";
-    const removeBtn = itemContent.createEl("button", {
-      cls: "nav-remove mod-warning",
-      attr: { "data-index": index.toString(), "data-icon": "trash", title: "Remove", "aria-label": "Remove" }
-    });
-    (0, import_obsidian11.setIcon)(removeBtn, "trash");
-    const iconRow = navItem.createDiv("nav-icon-row");
-    const iconInput = iconRow.createEl("input", {
-      type: "text",
-      cls: "nav-icon",
-      attr: { placeholder: "Icon name", draggable: "false" }
-    });
-    iconInput.value = social.icon || "";
-    const iconHelp = iconRow.createDiv("nav-icon-help");
-    iconHelp.createEl("small", { text: "Icon names from FontAwesome Brands" });
-  }
-};
-
-// src/ui/tabs/ConfigTab.ts
-var import_obsidian13 = require("obsidian");
-init_types();
-
-// src/ui/PresetWarningModal.ts
-var import_obsidian12 = require("obsidian");
-var PresetWarningModal = class extends import_obsidian12.Modal {
-  constructor(app, changes, onConfirm, onCancel) {
-    super(app);
-    this.changes = changes;
-    this.onConfirm = onConfirm;
-    this.onCancel = onCancel;
-  }
-  onOpen() {
-    const { contentEl } = this;
-    contentEl.empty();
-    const header = contentEl.createEl("h2", { text: "Apply template preset" });
-    header.addClass("preset-warning-modal-header");
-    const warning = contentEl.createEl("p", {
-      text: "Applying this template will change the following settings:"
-    });
-    warning.addClass("preset-warning-message");
-    const changesList = contentEl.createEl("ul");
-    changesList.addClass("preset-warning-changes-list");
-    this.changes.forEach((change) => {
-      const listItem = changesList.createEl("li", { text: change });
-      listItem.addClass("preset-warning-list-item");
-    });
-    const question = contentEl.createEl("p", {
-      text: "Do you want to apply this template?"
-    });
-    question.addClass("preset-warning-question");
-    const buttonContainer = contentEl.createDiv("modal-button-container");
-    const cancelButton = buttonContainer.createEl("button", { text: "Cancel" });
-    cancelButton.className = "mod-cta";
-    cancelButton.addEventListener("click", () => {
-      this.onCancel();
-      this.close();
-    });
-    const confirmButton = buttonContainer.createEl("button", { text: "Continue" });
-    confirmButton.className = "mod-warning";
-    confirmButton.addEventListener("click", () => {
-      this.onConfirm();
-      this.close();
-    });
-    confirmButton.focus();
-  }
-  onClose() {
-    const { contentEl } = this;
-    contentEl.empty();
-  }
-};
-
-// src/ui/tabs/ConfigTab.ts
-var ConfigTab = class extends TabRenderer {
-  render(container) {
-    container.empty();
-    const settings = this.getSettings();
-    const configGroup = new import_obsidian13.SettingGroup(container);
-    configGroup.addSetting((setting) => {
-      setting.setName("Template").setDesc("Choose your content template").addDropdown((dropdown) => {
-        TEMPLATE_OPTIONS.forEach((template) => {
-          dropdown.addOption(template.id, template.name);
-        });
-        dropdown.setValue(settings.currentTemplate);
-        dropdown.onChange((value) => {
-          const changes = this.getTemplateChanges(value);
-          const modal = new PresetWarningModal(
-            this.app,
-            changes,
-            () => {
-              void (async () => {
-                try {
-                  await this.updatePluginSettingsWithTemplate(value);
-                  const plugin = this.plugin;
-                  await plugin.loadSettings();
-                  const freshSettings = plugin.settings;
-                  const presetSuccess = plugin.configManager.applyPreset({
-                    name: freshSettings.currentTemplate,
-                    description: "",
-                    features: freshSettings.features,
-                    theme: freshSettings.currentTheme,
-                    contentOrganization: freshSettings.contentOrganization,
-                    config: freshSettings
-                  });
-                  if (presetSuccess) {
-                    new import_obsidian13.Notice(`Template changed to ${value} and applied to config.ts`);
-                  } else {
-                    new import_obsidian13.Notice("Failed to apply template to config.ts");
-                  }
-                } catch (error) {
-                  new import_obsidian13.Notice(`Failed to apply template change: ${error instanceof Error ? error.message : String(error)}`);
-                  dropdown.setValue(settings.currentTemplate);
-                }
-              })();
-            },
-            () => {
-              dropdown.setValue(settings.currentTemplate);
-            }
-          );
-          modal.open();
-        });
-      });
-    });
-    configGroup.addSetting((setting) => {
-      setting.setName("Deployment").setDesc("Choose your deployment platform").addDropdown((dropdown) => {
-        dropdown.addOption("netlify", "Netlify");
-        dropdown.addOption("vercel", "Vercel");
-        dropdown.addOption("github-pages", "GitHub pages");
-        dropdown.addOption("cloudflare-workers", "Cloudflare Workers");
-        dropdown.setValue(settings.deployment.platform);
-        dropdown.onChange(async (value) => {
-          settings.deployment.platform = value;
-          await this.plugin.saveData(settings);
-          await this.plugin.loadSettings();
-          try {
-            await this.applyCurrentConfiguration();
-            new import_obsidian13.Notice(`Deployment platform changed to ${value} and applied to config.ts`);
-          } catch (error) {
-            new import_obsidian13.Notice(`Failed to apply deployment platform change: ${error instanceof Error ? error.message : String(error)}`);
-          }
-        });
-      });
-    });
-    configGroup.addSetting((setting) => {
-      setting.setName("Content organization").setDesc("Choose how to organize your content and assets").addDropdown((dropdown) => {
-        dropdown.addOption("file-based", "File-based");
-        dropdown.addOption("folder-based", "Folder-based");
-        dropdown.setValue(settings.contentOrganization);
-        dropdown.onChange(async (value) => {
-          settings.contentOrganization = value;
-          await this.plugin.saveData(settings);
-          await this.plugin.loadSettings();
-          const contentOrg = value;
-          const config4 = {
-            obsidianSettings: {
-              // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-              attachmentLocation: contentOrg === "file-based" ? "subfolder" : "same-folder",
-              subfolderName: "attachments"
-            },
-            astroComposerSettings: {
-              // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-              creationMode: contentOrg === "file-based" ? "file" : "folder",
-              indexFileName: "index"
-            },
-            imageManagerSettings: {
-              customPropertyLinkFormat: contentOrg === "file-based" ? "[[attachments/{image-url}]]" : "[[{image-url}]]"
-            }
-          };
-          try {
-            await this.plugin.pluginManager.configurePlugins(config4);
-            const attachmentLocation = contentOrg === "file-based" ? "subfolder (attachments/)" : "same folder";
-            const creationMode = contentOrg === "file-based" ? "file" : "folder";
-            new import_obsidian13.Notice(`Content organization changed to ${value}
-
-\u2022 Obsidian: Attachments \u2192 ${attachmentLocation}
-\u2022 Astro Composer: Creation mode \u2192 ${creationMode}
-\u2022 Image Manager: Format updated`, 8e3);
-          } catch (error) {
-            new import_obsidian13.Notice(`Failed to configure plugins for content organization: ${error instanceof Error ? error.message : String(error)}`);
-          }
-        });
-      });
-      setting.settingEl.setCssProps({
-        marginBottom: "var(--size-4-6)"
-      });
-    });
-    const pluginConfigHeading = new import_obsidian13.Setting(container).setHeading().setName("Plugin configuration");
-    pluginConfigHeading.settingEl.setCssProps({
-      marginTop: "0",
-      marginBottom: "var(--size-4-2)"
-    });
-    void this.renderPluginStatus(container, settings);
-  }
-  renderPluginStatus(container, settings) {
-    const contentOrg = settings.contentOrganization;
-    const pluginStatus = this.plugin.pluginManager.getPluginStatus(contentOrg);
-    const statusContainer = container.createDiv("plugin-status-container");
-    const pluginStatusDiv = statusContainer.createDiv("plugin-status");
-    for (const plugin of pluginStatus) {
-      const isSettingsCheck = plugin.name === "Attachment settings";
-      const isConfigured = plugin.installed;
-      const hasSyncIssues = plugin.outOfSyncContentTypes && plugin.outOfSyncContentTypes.length > 0;
-      const allOutOfSync = hasSyncIssues && plugin.outOfSyncContentTypes && plugin.outOfSyncContentTypes.length === 4;
-      const isPartiallyConfigured = hasSyncIssues && !allOutOfSync && plugin.installed && plugin.enabled;
-      const allMismatched = allOutOfSync && plugin.installed && plugin.enabled;
-      const isImageManager = plugin.name === "Image Manager";
-      const imageManagerMismatch = isImageManager && plugin.installed && plugin.enabled && plugin.settingsMatch === false;
-      let itemClass = "plugin-item";
-      if (isSettingsCheck) {
-        itemClass += isConfigured ? " installed" : " missing";
-      } else if (imageManagerMismatch || allMismatched) {
-        itemClass += " missing";
-      } else if (isPartiallyConfigured) {
-        itemClass += " partially-configured";
-      } else {
-        itemClass += plugin.installed && plugin.enabled ? " installed" : " missing";
-      }
-      const pluginItem = pluginStatusDiv.createDiv(itemClass);
-      const icon = pluginItem.createDiv("plugin-icon");
-      if (isSettingsCheck) {
-        (0, import_obsidian13.setIcon)(icon, isConfigured ? "check" : "x");
-      } else if (imageManagerMismatch || allMismatched) {
-        (0, import_obsidian13.setIcon)(icon, "x");
-      } else if (isPartiallyConfigured) {
-        (0, import_obsidian13.setIcon)(icon, "alert-triangle");
-      } else {
-        (0, import_obsidian13.setIcon)(icon, plugin.installed && plugin.enabled ? "check" : "x");
-      }
-      const info = pluginItem.createDiv("plugin-info");
-      info.createEl("h3", { text: plugin.name });
-      let statusText;
-      if (isSettingsCheck) {
-        statusText = isConfigured ? "Configured" : "Doesn't match";
-      } else if (!plugin.installed) {
-        statusText = "Not installed";
-      } else if (!plugin.enabled) {
-        statusText = "Disabled";
-      } else if (imageManagerMismatch || allMismatched) {
-        statusText = "Doesn't match";
-      } else if (isPartiallyConfigured) {
-        statusText = "Partially configured";
-      } else {
-        statusText = "Configured";
-      }
-      info.createEl("p", { text: statusText });
-      if (hasSyncIssues && plugin.outOfSyncContentTypes) {
-        const detailsP = info.createEl("p", {
-          text: `Out of sync: ${plugin.outOfSyncContentTypes.join(", ")}`,
-          cls: "sync-details"
-        });
-        detailsP.setCssProps({
-          fontSize: "0.9em",
-          opacity: "0.8",
-          marginTop: "4px"
-        });
-      }
-    }
-    const pluginActionsGroup = new import_obsidian13.SettingGroup(container).setHeading("Plugin actions");
-    pluginActionsGroup.addSetting((setting) => {
-      setting.setName("Re-apply configuration").setDesc("Re-apply plugin settings based on your content organization choice (useful if settings were changed manually or configuration failed)").addButton((button) => button.setButtonText("Re-apply configuration").setCta().onClick(async () => {
-        const contentOrg2 = settings.contentOrganization;
-        const config4 = {
-          obsidianSettings: {
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-            attachmentLocation: contentOrg2 === "file-based" ? "subfolder" : "same-folder",
-            subfolderName: "attachments"
-          },
-          astroComposerSettings: {
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-            creationMode: contentOrg2 === "file-based" ? "file" : "folder",
-            indexFileName: "index"
-          },
-          imageManagerSettings: {
-            customPropertyLinkFormat: contentOrg2 === "file-based" ? "[[attachments/{image-url}]]" : "[[{image-url}]]"
-          }
-        };
-        const success = await this.plugin.pluginManager.configurePlugins(config4);
-        if (success) {
-          const contentOrg3 = settings.contentOrganization;
-          const attachmentLocation = contentOrg3 === "file-based" ? "subfolder (attachments/)" : "same folder";
-          const creationMode = contentOrg3 === "file-based" ? "file" : "folder";
-          new import_obsidian13.Notice(`Configuration re-applied successfully!
-
-\u2022 Obsidian: Attachments \u2192 ${attachmentLocation}
-\u2022 Astro Composer: Creation mode \u2192 ${creationMode}
-\u2022 Image Manager: Format updated for ${contentOrg3}`, 8e3);
-          const statusContainerEl = container.querySelector(".plugin-status-container");
-          if (statusContainerEl) {
-            statusContainerEl.remove();
-            this.renderPluginStatus(container, settings);
-          }
-        } else {
-          new import_obsidian13.Notice("\u26A0\uFE0F Some plugins could not be configured automatically. Check console for details.", 5e3);
-        }
-      }));
-    });
-    pluginActionsGroup.addSetting((setting) => {
-      setting.setName("Show manual instructions").setDesc("Get step-by-step instructions for manual configuration").addButton((button) => button.setButtonText("Show manual instructions").onClick(() => {
-        const contentOrg2 = settings.contentOrganization;
-        const config4 = {
-          obsidianSettings: {
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-            attachmentLocation: contentOrg2 === "file-based" ? "subfolder" : "same-folder",
-            subfolderName: "attachments"
-          },
-          astroComposerSettings: {
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-            creationMode: contentOrg2 === "file-based" ? "file" : "folder",
-            indexFileName: "index"
-          },
-          imageManagerSettings: {
-            customPropertyLinkFormat: contentOrg2 === "file-based" ? "[[attachments/{image-url}]]" : "[[{image-url}]]"
-          }
-        };
-        const instructions = this.plugin.pluginManager.getManualConfigurationInstructions(config4);
-        const instructionModal = new import_obsidian13.Modal(this.app);
-        instructionModal.titleEl.setText("Manual configuration instructions");
-        const contentDiv = instructionModal.contentEl.createDiv();
-        contentDiv.setCssProps({
-          padding: "20px",
-          lineHeight: "1.6"
-        });
-        const lines = instructions.split("\n");
-        let currentList = null;
-        lines.forEach((line) => {
-          const trimmedLine = line.trim();
-          if (trimmedLine === "") {
-            contentDiv.createEl("br");
-          } else if (trimmedLine.startsWith("## ")) {
-            if (currentList) {
-              currentList = null;
-            }
-            const h2 = contentDiv.createEl("h2");
-            h2.setText(trimmedLine.substring(3));
-            h2.setCssProps({
-              marginTop: "20px",
-              marginBottom: "10px",
-              fontSize: "1.2em",
-              fontWeight: "bold"
-            });
-          } else if (trimmedLine.match(/^\d+\.\s/)) {
-            if (!currentList) {
-              currentList = contentDiv.createEl("ol");
-              currentList.setCssProps({
-                marginLeft: "20px",
-                marginBottom: "15px"
-              });
-            }
-            const li = currentList.createEl("li");
-            li.setCssProps({
-              marginBottom: "5px"
-            });
-            this.parseBoldText(li, trimmedLine.replace(/^\d+\.\s/, ""));
-          } else if (trimmedLine.startsWith("- ") || trimmedLine.startsWith("* ")) {
-            if (!currentList) {
-              currentList = contentDiv.createEl("ul");
-              currentList.setCssProps({
-                marginLeft: "20px",
-                marginBottom: "15px"
-              });
-            }
-            const li = currentList.createEl("li");
-            li.setCssProps({
-              marginBottom: "5px"
-            });
-            this.parseBoldText(li, trimmedLine.substring(2));
-          } else {
-            if (currentList) {
-              currentList = null;
-            }
-            const p = contentDiv.createEl("p");
-            p.setCssProps({
-              marginBottom: "10px"
-            });
-            this.parseBoldText(p, trimmedLine);
-          }
-        });
-        instructionModal.open();
-      }));
-    });
-  }
-  parseBoldText(container, text) {
-    const parts = text.split(/(\*\*.*?\*\*)/g);
-    parts.forEach((part) => {
-      if (part.startsWith("**") && part.endsWith("**")) {
-        const strong = container.createEl("strong");
-        strong.setText(part.substring(2, part.length - 2));
-      } else if (part.trim() !== "") {
-        container.appendText(part);
-      }
-    });
-  }
-  async updatePluginSettingsWithTemplate(template) {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _A, _B, _C, _D, _E, _F, _G;
-    const plugin = this.plugin;
-    const settings = plugin.settings;
-    const templatePreset = plugin.configManager.getTemplatePreset(template);
-    if (!templatePreset || !templatePreset.config) {
-      new import_obsidian13.Notice("Template preset not found");
-      return;
-    }
-    const templateConfig = plugin.configManager.getTemplateConfig(template, settings);
-    settings.currentTemplate = template;
-    if (templatePreset.config.features) {
-      const currentComments = settings.features.comments;
-      const currentProfilePicture = settings.features.profilePicture;
-      settings.features = { ...settings.features, ...templatePreset.config.features };
-      settings.features.comments = currentComments;
-      settings.features.profilePicture = currentProfilePicture;
-      if ((_a = settings.postOptions) == null ? void 0 : _a.graphView) {
-        settings.postOptions.graphView.enabled = (_b = templatePreset.config.features.graphView) != null ? _b : false;
-        settings.features.graphView = settings.postOptions.graphView.enabled;
-      }
-      if ((_c = settings.postOptions) == null ? void 0 : _c.linkedMentions) {
-        settings.postOptions.linkedMentions.enabled = (_d = templatePreset.config.features.linkedMentions) != null ? _d : false;
-        settings.postOptions.linkedMentions.linkedMentionsCompact = (_e = templatePreset.config.features.linkedMentionsCompact) != null ? _e : false;
-      }
-      if (((_f = settings.commandPalette) == null ? void 0 : _f.quickActions) && templatePreset.config.features.quickActions) {
-        settings.commandPalette.quickActions = { ...settings.commandPalette.quickActions, ...templatePreset.config.features.quickActions };
-      }
-    }
-    const commandPalette = templateConfig.commandPalette;
-    if (commandPalette) {
-      settings.commandPalette = {
-        ...settings.commandPalette,
-        enabled: (_g = commandPalette.enabled) != null ? _g : settings.commandPalette.enabled,
-        placeholder: (_h = commandPalette.placeholder) != null ? _h : settings.commandPalette.placeholder,
-        shortcut: (_i = commandPalette.shortcut) != null ? _i : settings.commandPalette.shortcut,
-        search: {
-          ...settings.commandPalette.search,
-          ...commandPalette.search || {}
-        },
-        sections: {
-          ...settings.commandPalette.sections,
-          ...commandPalette.sections || {}
-        },
-        quickActions: {
-          ...settings.commandPalette.quickActions,
-          ...((_j = templatePreset.config.features) == null ? void 0 : _j.quickActions) || {}
-        }
-      };
-      if ((_k = templatePreset.config.features) == null ? void 0 : _k.quickActions) {
-        settings.features.quickActions = {
-          ...settings.features.quickActions,
-          ...templatePreset.config.features.quickActions
-        };
-      }
-    }
-    const homeOptions = templateConfig.homeOptions;
-    if (homeOptions) {
-      settings.homeOptions = {
-        ...settings.homeOptions,
-        featuredPost: {
-          ...settings.homeOptions.featuredPost,
-          ...homeOptions.featuredPost || {}
-        },
-        recentPosts: {
-          ...settings.homeOptions.recentPosts,
-          ...homeOptions.recentPosts || {}
-        },
-        projects: {
-          ...settings.homeOptions.projects,
-          ...homeOptions.projects || {}
-        },
-        docs: {
-          ...settings.homeOptions.docs,
-          ...homeOptions.docs || {}
-        },
-        blurb: {
-          ...settings.homeOptions.blurb,
-          ...homeOptions.blurb || {}
-        }
-      };
-    }
-    const postOptions = templateConfig.postOptions;
-    if (postOptions) {
-      settings.postOptions = {
-        ...settings.postOptions,
-        postsPerPage: (_l = postOptions.postsPerPage) != null ? _l : settings.postOptions.postsPerPage,
-        readingTime: (_m = postOptions.readingTime) != null ? _m : settings.postOptions.readingTime,
-        wordCount: (_n = postOptions.wordCount) != null ? _n : settings.postOptions.wordCount,
-        tags: (_o = postOptions.tags) != null ? _o : settings.postOptions.tags,
-        postNavigation: (_p = postOptions.postNavigation) != null ? _p : settings.postOptions.postNavigation,
-        showPostCardCoverImages: (_q = postOptions.showPostCardCoverImages) != null ? _q : settings.postOptions.showPostCardCoverImages,
-        postCardAspectRatio: (_r = postOptions.postCardAspectRatio) != null ? _r : settings.postOptions.postCardAspectRatio,
-        linkedMentions: {
-          ...settings.postOptions.linkedMentions,
-          ...postOptions.linkedMentions || {}
-        },
-        graphView: {
-          ...settings.postOptions.graphView,
-          enabled: (_t = (_s = postOptions.graphView) == null ? void 0 : _s.enabled) != null ? _t : settings.postOptions.graphView.enabled,
-          showInSidebar: (_v = (_u = postOptions.graphView) == null ? void 0 : _u.showInSidebar) != null ? _v : settings.postOptions.graphView.showInSidebar,
-          maxNodes: (_x = (_w = postOptions.graphView) == null ? void 0 : _w.maxNodes) != null ? _x : settings.postOptions.graphView.maxNodes,
-          showOrphanedPosts: (_z = (_y = postOptions.graphView) == null ? void 0 : _y.showOrphanedPosts) != null ? _z : settings.postOptions.graphView.showOrphanedPosts
-        },
-        comments: settings.postOptions.comments
-        // Preserve comments
-      };
-    }
-    const navigation = templateConfig.navigation;
-    if (navigation) {
-      settings.navigation = {
-        ...settings.navigation,
-        showNavigation: (_A = navigation.showNavigation) != null ? _A : settings.navigation.showNavigation,
-        showMobileMenu: (_B = navigation.showMobileMenu) != null ? _B : settings.navigation.showMobileMenu,
-        style: (_C = navigation.style) != null ? _C : settings.navigation.style
-        // Preserve pages and social arrays from user settings
-      };
-    }
-    if (templatePreset.config.tableOfContents) {
-      settings.tableOfContents = { ...settings.tableOfContents, ...templatePreset.config.tableOfContents };
-    }
-    const optionalContentTypes = templateConfig.optionalContentTypes;
-    if (optionalContentTypes) {
-      settings.optionalContentTypes = {
-        projects: (_D = optionalContentTypes.projects) != null ? _D : false,
-        docs: (_E = optionalContentTypes.docs) != null ? _E : false
-      };
-    }
-    const footer = templateConfig.footer;
-    if (footer) {
-      settings.footer = {
-        ...settings.footer,
-        showSocialIconsInFooter: (_F = footer.showSocialIconsInFooter) != null ? _F : settings.footer.showSocialIconsInFooter
-      };
-      settings.features.showSocialIconsInFooter = (_G = footer.showSocialIconsInFooter) != null ? _G : settings.features.showSocialIconsInFooter;
-    }
-    await this.plugin.saveData(settings);
-  }
-  getTemplateChanges(templateId) {
-    var _a, _b, _c, _d;
-    const changes = [];
-    const settings = this.getSettings();
-    const templatePreset = this.plugin.configManager.getTemplatePreset(templateId);
-    if (!templatePreset || !templatePreset.config) {
-      changes.push("This will apply the template settings to your configuration.");
-      return changes;
-    }
-    const newConfig = templatePreset.config;
-    const featureChanges = [];
-    if (newConfig.features) {
-      const keyFeatures = [
-        { key: "graphView", label: "Graph view" },
-        { key: "tableOfContents", label: "Table of contents" },
-        { key: "readingTime", label: "Reading time" },
-        { key: "linkedMentions", label: "Linked mentions" },
-        { key: "linkedMentionsCompact", label: "Compact linked mentions" },
-        { key: "postNavigation", label: "Post navigation" },
-        { key: "showSocialIconsInFooter", label: "Social icons in footer" },
-        { key: "featureButton", label: "Feature button" }
-      ];
-      keyFeatures.forEach(({ key, label }) => {
-        const oldFeature = settings.features[key];
-        const newFeature = newConfig.features[key];
-        if (newFeature !== void 0 && oldFeature !== newFeature) {
-          const oldVal = typeof oldFeature === "boolean" ? oldFeature ? "ON" : "OFF" : oldFeature === null || oldFeature === void 0 ? "" : typeof oldFeature === "string" || typeof oldFeature === "number" ? String(oldFeature) : JSON.stringify(oldFeature);
-          const newVal = typeof newFeature === "boolean" ? newFeature ? "ON" : "OFF" : newFeature === null || newFeature === void 0 ? "" : typeof newFeature === "string" || typeof newFeature === "number" ? String(newFeature) : JSON.stringify(newFeature);
-          featureChanges.push(`${label}: ${oldVal} \u2192 ${newVal}`);
-        }
-      });
-      if (newConfig.features.quickActions && settings.features.quickActions) {
-        if (newConfig.features.quickActions.enabled !== settings.features.quickActions.enabled) {
-          featureChanges.push(`Quick actions: ${settings.features.quickActions.enabled ? "ON" : "OFF"} \u2192 ${newConfig.features.quickActions.enabled ? "ON" : "OFF"}`);
-        }
-      }
-    }
-    const isStandard = templateId === "standard";
-    if (((_a = settings.optionalContentTypes) == null ? void 0 : _a.projects) !== isStandard) {
-      featureChanges.push(`Projects content type: ${((_b = settings.optionalContentTypes) == null ? void 0 : _b.projects) ? "enabled" : "disabled"} \u2192 ${isStandard ? "enabled" : "disabled"}`);
-    }
-    if (((_c = settings.optionalContentTypes) == null ? void 0 : _c.docs) !== isStandard) {
-      featureChanges.push(`Docs content type: ${((_d = settings.optionalContentTypes) == null ? void 0 : _d.docs) ? "enabled" : "disabled"} \u2192 ${isStandard ? "enabled" : "disabled"}`);
-    }
-    if (featureChanges.length > 0) {
-      changes.push(...featureChanges);
-    } else {
-      changes.push("No changes needed - your settings already match this template.");
-    }
-    return changes;
-  }
-};
-
-// src/ui/tabs/StyleTab.ts
-var import_obsidian14 = require("obsidian");
 init_types();
 
 // src/utils/ThemeColorExtractor.ts
@@ -4589,7 +3021,7 @@ var ThemeColorExtractor = class {
       return colorValue;
     }
     const tempElement = document.createElement("div");
-    tempElement.setCssProps({ color: colorValue });
+    tempElement.setCssStyles({ color: colorValue });
     document.body.appendChild(tempElement);
     const computedColor = getComputedStyle(tempElement).color;
     document.body.removeChild(tempElement);
@@ -4886,7 +3318,1630 @@ export const ${themeName}Theme = {
   }
 };
 
+// src/ui/tabs/GeneralTab.ts
+var import_obsidian9 = require("obsidian");
+
+// src/ui/common/TabRenderer.ts
+var import_obsidian8 = require("obsidian");
+var TabRenderer = class {
+  constructor(app, plugin) {
+    this.configDebounceTimer = null;
+    this.app = app;
+    this.plugin = plugin;
+  }
+  /** Save data.json immediately, debounce config file write by 1s. */
+  debouncedSave() {
+    void this.plugin.saveData(this.getSettings());
+    if (this.configDebounceTimer) clearTimeout(this.configDebounceTimer);
+    this.configDebounceTimer = setTimeout(() => {
+      void this.applyCurrentConfiguration();
+      this.configDebounceTimer = null;
+    }, 1e3);
+  }
+  /** Flush any pending debounced config write immediately. */
+  flushConfigWrite() {
+    if (this.configDebounceTimer) {
+      clearTimeout(this.configDebounceTimer);
+      this.configDebounceTimer = null;
+      void this.applyCurrentConfiguration();
+    }
+  }
+  /**
+   * Wire up a text input with debounced save: data.json saves immediately,
+   * config file write is debounced. On blur, pending write is flushed.
+   */
+  bindDebouncedText(textComponent, setter) {
+    textComponent.onChange((v) => {
+      setter(v);
+      this.debouncedSave();
+    });
+    textComponent.inputEl.addEventListener("blur", () => this.flushConfigWrite());
+  }
+  getSettings() {
+    const plugin = this.plugin;
+    return plugin.settings || {};
+  }
+  async applyCurrentConfiguration(showNotice = false) {
+    try {
+      const settings = this.getSettings();
+      const plugin = this.plugin;
+      const success = plugin.configManager.updateIndividualFeatures(settings);
+      if (success) {
+        if (showNotice) {
+          new import_obsidian8.Notice("Configuration applied successfully!");
+        }
+        await plugin.configManager.triggerRebuild();
+      } else {
+        if (showNotice) {
+          new import_obsidian8.Notice("Failed to apply configuration. Check the console for errors.");
+        }
+      }
+    } catch (error) {
+      if (showNotice) {
+        new import_obsidian8.Notice(`Error applying configuration: ${error instanceof Error ? error.message : String(error)}`);
+      }
+    }
+  }
+  createDropdownSetting(container, name4, description4, value, options, onChange) {
+    return new import_obsidian8.Setting(container).setName(name4).setDesc(description4).addDropdown((dropdown) => {
+      Object.entries(options).forEach(([key, label]) => {
+        dropdown.addOption(key, label);
+      });
+      dropdown.setValue(value);
+      dropdown.onChange(async (value2) => {
+        onChange(value2);
+        await this.plugin.saveData(this.getSettings());
+      });
+      return dropdown;
+    });
+  }
+  createTextSetting(container, name4, description4, value, onChange, debounceMs = 1e3, onApplyConfig, placeholder) {
+    return new import_obsidian8.Setting(container).setName(name4).setDesc(description4).addText((text) => {
+      text.setValue(value);
+      if (placeholder) {
+        text.setPlaceholder(placeholder);
+      }
+      let timeoutId = null;
+      text.onChange((value2) => {
+        if (timeoutId) {
+          clearTimeout(timeoutId);
+        }
+        onChange(value2);
+        void this.plugin.saveData(this.getSettings());
+        timeoutId = window.setTimeout(() => {
+          if (onApplyConfig) {
+            void onApplyConfig();
+          }
+        }, debounceMs);
+      });
+      text.inputEl.addEventListener("blur", () => {
+        if (timeoutId) {
+          clearTimeout(timeoutId);
+          if (onApplyConfig) {
+            void onApplyConfig();
+          }
+        }
+      });
+      return text;
+    });
+  }
+  createToggleSetting(container, name4, description4, value, onChange) {
+    return new import_obsidian8.Setting(container).setName(name4).setDesc(description4).addToggle((toggle) => {
+      toggle.setValue(value);
+      toggle.onChange(async (value2) => {
+        onChange(value2);
+        await this.plugin.saveData(this.getSettings());
+      });
+      return toggle;
+    });
+  }
+};
+
+// src/ui/tabs/GeneralTab.ts
+init_types();
+var GeneralTab = class extends TabRenderer {
+  render(container) {
+    container.empty();
+    const settings = this.getSettings();
+    const configGroup = new import_obsidian9.SettingGroup(container).setHeading("Current configuration");
+    configGroup.addSetting((setting) => {
+      var _a, _b;
+      const nameEl = setting.settingEl.querySelector(".setting-item-name");
+      const descEl = setting.settingEl.querySelector(".setting-item-description");
+      const controlEl = setting.settingEl.querySelector(".setting-item-control");
+      if (nameEl) nameEl.setCssStyles({ display: "none" });
+      if (descEl) descEl.setCssStyles({ display: "none" });
+      if (controlEl) controlEl.setCssStyles({ display: "none" });
+      setting.settingEl.setCssStyles({
+        borderTop: "none",
+        paddingTop: "0",
+        paddingBottom: "0",
+        display: "block"
+      });
+      const configItems = setting.settingEl.createDiv("config-items");
+      configItems.setCssStyles({
+        width: "100%",
+        marginBottom: "0"
+      });
+      const templateItem = configItems.createDiv("config-item");
+      templateItem.createEl("strong", { text: "Template: " });
+      templateItem.createSpan({ text: ((_a = TEMPLATE_OPTIONS.find((t) => t.id === settings.currentTemplate)) == null ? void 0 : _a.name) || "Unknown" });
+      const themeItem = configItems.createDiv("config-item");
+      themeItem.createEl("strong", { text: "Theme: " });
+      themeItem.createSpan({ text: ((_b = THEME_OPTIONS.find((t) => t.id === settings.currentTheme)) == null ? void 0 : _b.name) || "Unknown" });
+      const orgItem = configItems.createDiv("config-item");
+      orgItem.createEl("strong", { text: "Organization: " });
+      orgItem.createSpan({ text: settings.contentOrganization === "file-based" ? "File-based" : "Folder-based" });
+      const deploymentItem = configItems.createDiv("config-item");
+      deploymentItem.createEl("strong", { text: "Deployment: " });
+      deploymentItem.createSpan({ text: this.formatDeploymentName(settings.deployment.platform) });
+      const siteTitleItem = configItems.createDiv("config-item");
+      siteTitleItem.createEl("strong", { text: "Site title: " });
+      siteTitleItem.createSpan({ text: settings.siteInfo.title });
+      const siteUrlItem = configItems.createDiv("config-item");
+      siteUrlItem.createEl("strong", { text: "Site URL: " });
+      siteUrlItem.createSpan({ text: settings.siteInfo.site });
+    });
+    const wizardGroup = new import_obsidian9.SettingGroup(container).setHeading("Wizard");
+    wizardGroup.addSetting((setting) => {
+      setting.setName("Setup wizard").setDesc("Run the setup wizard to reconfigure your theme").addButton((button) => button.setButtonText("Run setup wizard").setCta().onClick(async () => {
+        const plugin = this.plugin;
+        await this.plugin.loadData().then((data) => {
+          if (data) {
+            Object.assign(plugin.settings, data);
+          }
+        });
+        const { SetupWizardModal: SetupWizardModal2 } = await Promise.resolve().then(() => (init_SetupWizardModal(), SetupWizardModal_exports));
+        const wizard = new SetupWizardModal2(this.app, plugin);
+        wizard.open();
+      }));
+    });
+    wizardGroup.addSetting((setting) => {
+      setting.setName("Run wizard on startup").setDesc("Show the setup wizard when Obsidian starts (if not disabled)").addToggle((toggle) => toggle.setValue(settings.runWizardOnStartup).onChange(async (value) => {
+        settings.runWizardOnStartup = value;
+        await this.plugin.saveData(settings);
+      }));
+    });
+    wizardGroup.addSetting((setting) => {
+      setting.setName("Remove ribbon icon").setDesc("Remove the wizard icon from the left ribbon").addToggle((toggle) => {
+        var _a;
+        return toggle.setValue((_a = settings.removeRibbonIcon) != null ? _a : false).onChange(async (value) => {
+          settings.removeRibbonIcon = value;
+          await this.plugin.saveData(settings);
+          const plugin = this.plugin;
+          if (plugin.updateRibbonIcon) {
+            await plugin.updateRibbonIcon();
+          }
+        });
+      });
+    });
+  }
+  formatDeploymentName(deployment) {
+    switch (deployment) {
+      case "netlify":
+        return "Netlify";
+      case "vercel":
+        return "Vercel";
+      case "github-pages":
+        return "GitHub Pages";
+      case "cloudflare-workers":
+        return "Cloudflare Workers";
+      default:
+        return deployment;
+    }
+  }
+};
+
+// src/ui/tabs/SiteInfoTab.ts
+var import_obsidian10 = require("obsidian");
+var Buffer2 = require("buffer").Buffer;
+var SiteInfoTab = class extends TabRenderer {
+  render(container) {
+    var _a;
+    container.empty();
+    const settings = this.getSettings();
+    const siteInfoGroup = new import_obsidian10.SettingGroup(container);
+    siteInfoGroup.addSetting((setting) => {
+      setting.setName("Site URL").setDesc("Your site's base URL (like https://yoursite.com)").addText((text) => {
+        text.setValue(settings.siteInfo.site);
+        let timeoutId = null;
+        text.onChange((value) => {
+          if (timeoutId) {
+            clearTimeout(timeoutId);
+          }
+          settings.siteInfo.site = value;
+          void this.plugin.saveData(settings);
+          timeoutId = window.setTimeout(() => {
+            void this.applyCurrentConfiguration();
+          }, 1e3);
+        });
+        text.inputEl.addEventListener("blur", () => {
+          if (timeoutId) {
+            clearTimeout(timeoutId);
+            void this.applyCurrentConfiguration();
+          }
+        });
+      });
+    });
+    siteInfoGroup.addSetting((setting) => {
+      setting.setName("Site title").setDesc("Your site's title").addText((text) => {
+        text.setValue(settings.siteInfo.title);
+        let timeoutId = null;
+        text.onChange((value) => {
+          if (timeoutId) {
+            clearTimeout(timeoutId);
+          }
+          settings.siteInfo.title = value;
+          void this.plugin.saveData(settings);
+          timeoutId = window.setTimeout(() => {
+            void this.applyCurrentConfiguration();
+          }, 1e3);
+        });
+        text.inputEl.addEventListener("blur", () => {
+          if (timeoutId) {
+            clearTimeout(timeoutId);
+            void this.applyCurrentConfiguration();
+          }
+        });
+      });
+    });
+    siteInfoGroup.addSetting((setting) => {
+      setting.setName("Homepage title").setDesc("Custom meta title for the homepage only. If empty, uses the site title.").addText((text) => {
+        var _a2;
+        text.setValue((_a2 = settings.siteInfo.homepageTitle) != null ? _a2 : "");
+        let timeoutId = null;
+        text.onChange((value) => {
+          if (timeoutId) {
+            clearTimeout(timeoutId);
+          }
+          settings.siteInfo.homepageTitle = value;
+          void this.plugin.saveData(settings);
+          timeoutId = window.setTimeout(() => {
+            void this.applyCurrentConfiguration();
+          }, 1e3);
+        });
+        text.inputEl.addEventListener("blur", () => {
+          if (timeoutId) {
+            clearTimeout(timeoutId);
+            void this.applyCurrentConfiguration();
+          }
+        });
+      });
+    });
+    siteInfoGroup.addSetting((setting) => {
+      setting.setName("Site description").setDesc("A brief description of your site").addText((text) => {
+        text.setValue(settings.siteInfo.description);
+        let timeoutId = null;
+        text.onChange((value) => {
+          if (timeoutId) {
+            clearTimeout(timeoutId);
+          }
+          settings.siteInfo.description = value;
+          void this.plugin.saveData(settings);
+          timeoutId = window.setTimeout(() => {
+            void this.applyCurrentConfiguration();
+          }, 1e3);
+        });
+        text.inputEl.addEventListener("blur", () => {
+          if (timeoutId) {
+            clearTimeout(timeoutId);
+            void this.applyCurrentConfiguration();
+          }
+        });
+      });
+    });
+    siteInfoGroup.addSetting((setting) => {
+      setting.setName("Author name").setDesc("Your name or the site author's name").addText((text) => {
+        text.setValue(settings.siteInfo.author);
+        let timeoutId = null;
+        text.onChange((value) => {
+          if (timeoutId) {
+            clearTimeout(timeoutId);
+          }
+          settings.siteInfo.author = value;
+          void this.plugin.saveData(settings);
+          timeoutId = window.setTimeout(() => {
+            void this.applyCurrentConfiguration();
+          }, 1e3);
+        });
+        text.inputEl.addEventListener("blur", () => {
+          if (timeoutId) {
+            clearTimeout(timeoutId);
+            void this.applyCurrentConfiguration();
+          }
+        });
+      });
+    });
+    siteInfoGroup.addSetting((setting) => {
+      setting.setName("Language code").setDesc("Your site's primary language (ISO 639-1 code)").addText((text) => {
+        text.setValue(settings.siteInfo.language);
+        let timeoutId = null;
+        text.onChange((value) => {
+          if (timeoutId) {
+            clearTimeout(timeoutId);
+          }
+          settings.siteInfo.language = value;
+          void this.plugin.saveData(settings);
+          timeoutId = window.setTimeout(() => {
+            void this.applyCurrentConfiguration();
+          }, 1e3);
+        });
+        text.inputEl.addEventListener("blur", () => {
+          if (timeoutId) {
+            clearTimeout(timeoutId);
+            void this.applyCurrentConfiguration();
+          }
+        });
+      });
+      setting.settingEl.setCssStyles({
+        marginBottom: "var(--size-4-6)"
+      });
+    });
+    const assetsSection = container.createDiv("assets-section");
+    const assetsHeaderSetting = new import_obsidian10.Setting(assetsSection).setHeading().setName("Assets & metadata");
+    assetsHeaderSetting.settingEl.setCssStyles({
+      marginTop: "var(--size-4-6)",
+      marginBottom: "var(--size-4-2)",
+      position: "relative"
+    });
+    const sharedFolderButton = assetsHeaderSetting.controlEl.createEl("button", {
+      cls: "clickable-icon",
+      attr: { "aria-label": "Open public folder" }
+    });
+    sharedFolderButton.setCssStyles({
+      padding: "4px",
+      border: "none",
+      backgroundColor: "transparent",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      position: "absolute",
+      right: "0",
+      top: "50%",
+      transform: "translateY(-50%)"
+    });
+    (0, import_obsidian10.setIcon)(sharedFolderButton, "folder");
+    sharedFolderButton.addEventListener("click", () => {
+      var _a2, _b, _c;
+      const publicPath = "../../public";
+      void ((_c = (_b = (_a2 = this.app).openWithDefaultApp) == null ? void 0 : _b.call(_a2, publicPath)) != null ? _c : Promise.resolve()).catch((error) => {
+        new import_obsidian10.Notice(`Failed to open public folder: ${error instanceof Error ? error.message : String(error)}`);
+      });
+    });
+    const assetsGroup = new import_obsidian10.SettingGroup(assetsSection);
+    const copyImageToPublic = (sourcePath, targetFileName) => {
+      try {
+        const fs = require("fs");
+        const path = require("path");
+        const vaultAdapter = this.app.vault.adapter;
+        const vaultPath = vaultAdapter.basePath || vaultAdapter.path;
+        const vaultPathString = typeof vaultPath === "string" ? vaultPath : String(vaultPath != null ? vaultPath : "");
+        const publicFolderPath = path.join(vaultPathString, "..", "..", "public");
+        const targetPath = path.join(publicFolderPath, targetFileName);
+        if (!fs.existsSync(publicFolderPath)) {
+          fs.mkdirSync(publicFolderPath, { recursive: true });
+        }
+        fs.copyFileSync(sourcePath, targetPath);
+        new import_obsidian10.Notice(`Successfully copied ${targetFileName} to public folder`);
+      } catch (error) {
+        throw new Error(`Failed to copy file: ${error instanceof Error ? error.message : String(error)}`);
+      }
+    };
+    const showFilePicker = (targetFileName) => {
+      const fileInput = document.createElement("input");
+      fileInput.type = "file";
+      fileInput.accept = ".png";
+      let selectedFile = null;
+      fileInput.onchange = (e) => {
+        var _a2;
+        const file = (_a2 = e.target.files) == null ? void 0 : _a2[0];
+        if (file) {
+          if (!file.name.toLowerCase().endsWith(".png")) {
+            new import_obsidian10.Notice("Please select a PNG file");
+            return;
+          }
+          selectedFile = file;
+          setTimeout(() => {
+            const confirmModal = new import_obsidian10.Modal(this.app);
+            confirmModal.titleEl.setText("Replace image");
+            const contentDiv = confirmModal.contentEl.createDiv();
+            contentDiv.createEl("p", {
+              text: `Are you sure you want to replace ${targetFileName} in the public folder with the new image?`
+            });
+            const buttonContainer = contentDiv.createDiv();
+            buttonContainer.setCssStyles({
+              marginTop: "20px",
+              display: "flex",
+              gap: "10px",
+              justifyContent: "flex-end"
+            });
+            const cancelButton = buttonContainer.createEl("button", { text: "Cancel" });
+            cancelButton.className = "mod-button";
+            cancelButton.addEventListener("click", () => {
+              confirmModal.close();
+            });
+            const confirmButton = buttonContainer.createEl("button", { text: "Replace" });
+            confirmButton.className = "mod-warning";
+            confirmButton.addEventListener("click", () => {
+              confirmModal.close();
+              if (!selectedFile) {
+                new import_obsidian10.Notice("File selection was lost. Please try again.");
+                return;
+              }
+              void (async () => {
+                try {
+                  const fs = require("fs");
+                  const path = require("path");
+                  const filePath = selectedFile.path;
+                  if (filePath) {
+                    copyImageToPublic(filePath, targetFileName);
+                  } else {
+                    const arrayBuffer = await selectedFile.arrayBuffer();
+                    const buffer = Buffer2.from(arrayBuffer);
+                    const vaultAdapter = this.app.vault.adapter;
+                    const vaultPath = vaultAdapter.basePath || vaultAdapter.path;
+                    const vaultPathString = typeof vaultPath === "string" ? vaultPath : String(vaultPath != null ? vaultPath : "");
+                    const publicFolderPath = path.join(vaultPathString, "..", "..", "public");
+                    const targetPath = path.join(publicFolderPath, targetFileName);
+                    if (!fs.existsSync(publicFolderPath)) {
+                      fs.mkdirSync(publicFolderPath, { recursive: true });
+                    }
+                    fs.writeFileSync(targetPath, buffer);
+                    new import_obsidian10.Notice(`Successfully copied ${targetFileName} to public folder`);
+                  }
+                } catch (err) {
+                  new import_obsidian10.Notice(`Failed to copy file: ${err instanceof Error ? err.message : String(err)}`);
+                }
+              })();
+            });
+            confirmModal.open();
+          }, 100);
+        }
+      };
+      fileInput.click();
+    };
+    assetsGroup.addSetting((setting) => {
+      setting.setName("Open graph image").setDesc("Select a PNG image to replace open-graph.png in the public folder (recommended: 1200 x 630 pixels)");
+      const ogImageButton = setting.controlEl.createEl("button", {
+        text: "Select PNG file",
+        cls: "mod-cta"
+      });
+      ogImageButton.addEventListener("click", () => {
+        void showFilePicker("open-graph.png");
+      });
+    });
+    assetsGroup.addSetting((setting) => {
+      setting.setName("Open Graph image alt text").setDesc("Alternative text for the Open Graph image").addText((text) => {
+        var _a2;
+        text.setValue(settings.siteInfo.defaultOgImageAlt || ((_a2 = settings.seo) == null ? void 0 : _a2.defaultOgImageAlt) || "Astro Modular logo.");
+        let timeoutId = null;
+        text.onChange((value) => {
+          if (timeoutId) {
+            clearTimeout(timeoutId);
+          }
+          settings.siteInfo.defaultOgImageAlt = value;
+          if (!settings.seo) {
+            settings.seo = { defaultOgImageAlt: "" };
+          }
+          settings.seo.defaultOgImageAlt = value;
+          void this.plugin.saveData(settings);
+          timeoutId = window.setTimeout(() => {
+            void this.applyCurrentConfiguration().then(() => {
+              new import_obsidian10.Notice("Open Graph image alt text updated and applied to config.ts");
+            });
+          }, 1e3);
+        });
+        text.inputEl.addEventListener("blur", () => {
+          if (timeoutId) {
+            clearTimeout(timeoutId);
+            void this.applyCurrentConfiguration().then(() => {
+              new import_obsidian10.Notice("Open Graph image alt text updated and applied to config.ts");
+            });
+          }
+        });
+      });
+    });
+    assetsGroup.addSetting((setting) => {
+      setting.setName("Favicon").setDesc("Select a PNG image to replace favicon.png in the public folder (recommended: 256 x 256 pixels). Standard favicon is used when browser preference cannot be determined.");
+      const faviconButton = setting.controlEl.createEl("button", {
+        text: "Select PNG file",
+        cls: "mod-cta"
+      });
+      faviconButton.addEventListener("click", () => {
+        void showFilePicker("favicon.png");
+      });
+    });
+    assetsGroup.addSetting((setting) => {
+      setting.setName("Theme-adaptive favicon").setDesc("If enabled, favicon switches between light and dark variants based on browser theme preference. Standard favicon is used when browser's preference cannot be determined.").addToggle((toggle) => {
+        var _a2;
+        return toggle.setValue((_a2 = settings.siteInfo.faviconThemeAdaptive) != null ? _a2 : true).onChange(async (value) => {
+          settings.siteInfo.faviconThemeAdaptive = value;
+          await this.plugin.saveData(settings);
+          await this.plugin.loadSettings();
+          await this.applyCurrentConfiguration();
+          this.render(container);
+          new import_obsidian10.Notice(`Theme-adaptive favicon ${value ? "enabled" : "disabled"} and applied to config.ts`);
+        });
+      });
+    });
+    if ((_a = settings.siteInfo.faviconThemeAdaptive) != null ? _a : true) {
+      assetsGroup.addSetting((setting) => {
+        setting.setName("Light theme favicon").setDesc("Select a PNG image to replace favicon-light.png in the public folder (recommended: 256 x 256 pixels)");
+        const faviconLightButton = setting.controlEl.createEl("button", {
+          text: "Select PNG file",
+          cls: "mod-cta"
+        });
+        faviconLightButton.addEventListener("click", () => {
+          void showFilePicker("favicon-light.png");
+        });
+      });
+      assetsGroup.addSetting((setting) => {
+        setting.setName("Dark theme favicon").setDesc("Select a PNG image to replace favicon-dark.png in the public folder (recommended: 256 x 256 pixels)");
+        const faviconDarkButton = setting.controlEl.createEl("button", {
+          text: "Select PNG file",
+          cls: "mod-cta"
+        });
+        faviconDarkButton.addEventListener("click", () => {
+          void showFilePicker("favicon-dark.png");
+        });
+      });
+    }
+  }
+};
+
+// src/ui/tabs/NavigationTab.ts
+var import_obsidian11 = require("obsidian");
+var NavigationTab = class extends TabRenderer {
+  constructor() {
+    super(...arguments);
+    this.listenersAttached = false;
+  }
+  render(container) {
+    container.empty();
+    this.listenersAttached = false;
+    const settings = this.getSettings();
+    const pagesSection = container.createDiv("settings-section");
+    new import_obsidian11.Setting(pagesSection).setHeading().setName("Navigation pages").setDesc("Add or remove pages from your main navigation menu.");
+    this.renderPagesList(pagesSection, () => this.render(container));
+    const socialSection = container.createDiv("settings-section");
+    new import_obsidian11.Setting(socialSection).setHeading().setName("Social links").setDesc("Add or remove social media links.");
+    this.renderSocialList(socialSection, () => this.render(container));
+    const navOptionsGroup = new import_obsidian11.SettingGroup(container).setHeading("Navigation options");
+    navOptionsGroup.addSetting((setting) => {
+      setting.setName("Show navigation").setDesc("Display navigation menu on your site").addToggle((toggle) => {
+        var _a;
+        return toggle.setValue((_a = settings.navigation.showNavigation) != null ? _a : true).onChange(async (value) => {
+          settings.navigation.showNavigation = value;
+          await this.plugin.saveData(settings);
+          await this.plugin.loadSettings();
+          await this.applyCurrentConfiguration();
+          new import_obsidian11.Notice(`Navigation ${value ? "enabled" : "disabled"} and applied to config.ts`);
+        });
+      });
+    });
+    navOptionsGroup.addSetting((setting) => {
+      setting.setName("Navigation style").setDesc("Choose between minimal or traditional navigation style").addDropdown((dropdown) => dropdown.addOption("traditional", "Traditional").addOption("minimal", "Minimal").setValue(settings.navigation.style || "traditional").onChange(async (value) => {
+        settings.navigation.style = value;
+        await this.plugin.saveData(settings);
+        await this.plugin.loadSettings();
+        await this.applyCurrentConfiguration();
+        new import_obsidian11.Notice(`Navigation style changed to ${value} and applied to config.ts`);
+      }));
+    });
+    navOptionsGroup.addSetting((setting) => {
+      setting.setName("Show mobile menu").setDesc("Display mobile navigation menu on smaller screens").addToggle((toggle) => {
+        var _a;
+        return toggle.setValue((_a = settings.navigation.showMobileMenu) != null ? _a : true).onChange(async (value) => {
+          settings.navigation.showMobileMenu = value;
+          await this.plugin.saveData(settings);
+          await this.plugin.loadSettings();
+          await this.applyCurrentConfiguration();
+          new import_obsidian11.Notice(`Mobile menu ${value ? "enabled" : "disabled"} and applied to config.ts`);
+        });
+      });
+    });
+    this.setupEventDelegation(container);
+    this.setupDragAndDrop(container);
+  }
+  /**
+   * Render the navigation pages list, its add-page button, and wire up the
+   * drag/drop + event delegation scoped to the given section element. Used by
+   * both the legacy tabbed render() and the declarative settings page. The
+   * onReRender callback re-renders the owning UI after add/remove/reorder.
+   */
+  renderPagesSection(section, onReRender) {
+    this.renderPagesList(section, onReRender);
+    this.setupEventDelegation(section, onReRender);
+    this.setupDragAndDrop(section, onReRender);
+  }
+  /**
+   * Render the social links list, its add button, and wire up the drag/drop +
+   * event delegation scoped to the given section element.
+   */
+  renderSocialSection(section, onReRender) {
+    this.renderSocialList(section, onReRender);
+    this.setupEventDelegation(section, onReRender);
+    this.setupDragAndDrop(section, onReRender);
+  }
+  renderPagesList(pagesSection, onReRender) {
+    const settings = this.getSettings();
+    const pagesList = pagesSection.createDiv("nav-items");
+    pagesList.id = "pages-list";
+    settings.navigation.pages.forEach((page, index) => {
+      this.renderPageItem(pagesList, page, index);
+    });
+    new import_obsidian11.Setting(pagesSection).setName("Add page").setDesc("Add a new page to your navigation").addButton((button) => button.setButtonText("+ Add page").setCta().onClick(async () => {
+      settings.navigation.pages.push({ title: "New Page", url: "/new-page" });
+      await this.plugin.saveData(settings);
+      await this.applyCurrentConfiguration(false);
+      new import_obsidian11.Notice("Navigation page added and applied to config.ts");
+      onReRender();
+    }));
+  }
+  renderSocialList(socialSection, onReRender) {
+    const settings = this.getSettings();
+    const socialList = socialSection.createDiv("nav-items");
+    socialList.id = "social-list";
+    settings.navigation.social.forEach((social, index) => {
+      this.renderSocialItem(socialList, social, index);
+    });
+    new import_obsidian11.Setting(socialSection).setName("Add social link").setDesc("Add a new social media link").addButton((button) => button.setButtonText("+ Add social link").setCta().onClick(async () => {
+      settings.navigation.social.push({ title: "New Social", url: "https://example.com", icon: "" });
+      await this.plugin.saveData(settings);
+      await this.applyCurrentConfiguration(false);
+      new import_obsidian11.Notice("Social link added and applied to config.ts");
+      onReRender();
+    }));
+  }
+  setupDragAndDrop(container, onReRender) {
+    let draggedElement = null;
+    const dragStartHandler = (e) => {
+      const target = e.target;
+      if (target.classList.contains("nav-item")) {
+        draggedElement = target;
+        target.setCssStyles({ opacity: "0.5" });
+      }
+    };
+    const dragEndHandler = (e) => {
+      const target = e.target;
+      if (target.classList.contains("nav-item")) {
+        target.setCssStyles({ opacity: "1" });
+        draggedElement = null;
+      }
+    };
+    const dragOverHandler = (e) => {
+      e.preventDefault();
+      const target = e.target;
+      if (target.classList.contains("nav-item") && draggedElement && target !== draggedElement) {
+        const rect = target.getBoundingClientRect();
+        const midpoint = rect.top + rect.height / 2;
+        if (e.clientY < midpoint) {
+          target.setCssStyles({
+            borderTop: "2px solid var(--interactive-accent)",
+            borderBottom: "none"
+          });
+        } else {
+          target.setCssStyles({
+            borderBottom: "2px solid var(--interactive-accent)",
+            borderTop: "none"
+          });
+        }
+      }
+    };
+    const dragLeaveHandler = (e) => {
+      const target = e.target;
+      if (target.classList.contains("nav-item")) {
+        target.setCssStyles({
+          borderTop: "none",
+          borderBottom: "none"
+        });
+      }
+    };
+    const dropHandler = async (e) => {
+      e.preventDefault();
+      const target = e.target;
+      if (target.classList.contains("nav-item") && draggedElement) {
+        const targetIndex = parseInt(target.getAttribute("data-index") || "0");
+        const draggedIndex = parseInt(draggedElement.getAttribute("data-index") || "0");
+        const isPage = target.closest("#pages-list");
+        const isSocial = target.closest("#social-list");
+        target.setCssStyles({
+          borderTop: "none",
+          borderBottom: "none"
+        });
+        if (targetIndex !== draggedIndex) {
+          const currentSettings = this.getSettings();
+          if (isPage) {
+            const newPages = [...currentSettings.navigation.pages];
+            const draggedItem = newPages.splice(draggedIndex, 1)[0];
+            newPages.splice(targetIndex, 0, draggedItem);
+            currentSettings.navigation.pages = newPages;
+          } else if (isSocial) {
+            const newSocial = [...currentSettings.navigation.social];
+            const draggedItem = newSocial.splice(draggedIndex, 1)[0];
+            newSocial.splice(targetIndex, 0, draggedItem);
+            currentSettings.navigation.social = newSocial;
+          }
+          await this.plugin.saveData(currentSettings);
+          await this.applyCurrentConfiguration();
+          if (onReRender) {
+            onReRender();
+          } else {
+            this.render(container);
+          }
+        }
+      }
+    };
+    const containerWithHandlers = container;
+    if (containerWithHandlers._dragStartHandler) {
+      container.removeEventListener("dragstart", containerWithHandlers._dragStartHandler);
+      container.removeEventListener("dragend", containerWithHandlers._dragEndHandler);
+      container.removeEventListener("dragover", containerWithHandlers._dragOverHandler);
+      container.removeEventListener("dragleave", containerWithHandlers._dragLeaveHandler);
+      container.removeEventListener("drop", containerWithHandlers._dropHandler);
+    }
+    containerWithHandlers._dragStartHandler = dragStartHandler;
+    containerWithHandlers._dragEndHandler = dragEndHandler;
+    containerWithHandlers._dragOverHandler = dragOverHandler;
+    containerWithHandlers._dragLeaveHandler = dragLeaveHandler;
+    containerWithHandlers._dropHandler = dropHandler;
+    if (containerWithHandlers._dragStartHandler) {
+      container.addEventListener("dragstart", containerWithHandlers._dragStartHandler);
+    }
+    if (containerWithHandlers._dragEndHandler) {
+      container.addEventListener("dragend", containerWithHandlers._dragEndHandler);
+    }
+    if (containerWithHandlers._dragOverHandler) {
+      container.addEventListener("dragover", containerWithHandlers._dragOverHandler);
+    }
+    if (containerWithHandlers._dragLeaveHandler) {
+      container.addEventListener("dragleave", containerWithHandlers._dragLeaveHandler);
+    }
+    if (containerWithHandlers._dropHandler) {
+      container.addEventListener("drop", containerWithHandlers._dropHandler);
+    }
+  }
+  setupEventDelegation(container, onReRender) {
+    const settings = this.getSettings();
+    const reRender = () => {
+      if (onReRender) {
+        onReRender();
+      } else {
+        this.render(container);
+      }
+    };
+    const pagesList = container.querySelector("#pages-list");
+    const socialList = container.querySelector("#social-list");
+    if (pagesList) {
+      pagesList.addEventListener("input", (e) => {
+        const target = e.target;
+        if (target.classList.contains("nav-title")) {
+          const item = target.closest(".nav-item");
+          const index = parseInt((item == null ? void 0 : item.getAttribute("data-index")) || "0");
+          settings.navigation.pages[index].title = target.value;
+          this.debouncedSave();
+        } else if (target.classList.contains("nav-url")) {
+          const item = target.closest(".nav-item");
+          const index = parseInt((item == null ? void 0 : item.getAttribute("data-index")) || "0");
+          if (target.value.trim() === "") {
+            delete settings.navigation.pages[index].url;
+          } else {
+            settings.navigation.pages[index].url = target.value;
+          }
+          this.debouncedSave();
+        } else if (target.classList.contains("nav-child-title")) {
+          const childItem = target.closest(".nav-child-item");
+          const parentIndex = parseInt((childItem == null ? void 0 : childItem.getAttribute("data-index")) || "0");
+          const childIndex = parseInt((childItem == null ? void 0 : childItem.getAttribute("data-child-index")) || "0");
+          if (!settings.navigation.pages[parentIndex].children) {
+            settings.navigation.pages[parentIndex].children = [];
+          }
+          if (!settings.navigation.pages[parentIndex].children[childIndex]) {
+            settings.navigation.pages[parentIndex].children[childIndex] = { title: "", url: "" };
+          }
+          settings.navigation.pages[parentIndex].children[childIndex].title = target.value;
+          this.debouncedSave();
+        } else if (target.classList.contains("nav-child-url")) {
+          const childItem = target.closest(".nav-child-item");
+          const parentIndex = parseInt((childItem == null ? void 0 : childItem.getAttribute("data-index")) || "0");
+          const childIndex = parseInt((childItem == null ? void 0 : childItem.getAttribute("data-child-index")) || "0");
+          if (!settings.navigation.pages[parentIndex].children) {
+            settings.navigation.pages[parentIndex].children = [];
+          }
+          if (!settings.navigation.pages[parentIndex].children[childIndex]) {
+            settings.navigation.pages[parentIndex].children[childIndex] = { title: "", url: "" };
+          }
+          settings.navigation.pages[parentIndex].children[childIndex].url = target.value;
+          this.debouncedSave();
+        }
+      });
+    }
+    if (socialList) {
+      socialList.addEventListener("input", (e) => {
+        const target = e.target;
+        if (target.classList.contains("nav-title") || target.classList.contains("nav-url") || target.classList.contains("nav-icon")) {
+          const item = target.closest(".nav-item");
+          const index = parseInt((item == null ? void 0 : item.getAttribute("data-index")) || "0");
+          const field = target.classList.contains("nav-title") ? "title" : target.classList.contains("nav-url") ? "url" : "icon";
+          settings.navigation.social[index][field] = target.value;
+          this.debouncedSave();
+        }
+      });
+    }
+    const removeHandler = async (e) => {
+      const target = e.target;
+      if (target.classList.contains("nav-remove")) {
+        e.preventDefault();
+        e.stopPropagation();
+        const item = target.closest(".nav-item");
+        const index = parseInt((item == null ? void 0 : item.getAttribute("data-index")) || "0");
+        const isPage = item == null ? void 0 : item.closest("#pages-list");
+        const currentSettings = this.getSettings();
+        if (isPage) {
+          currentSettings.navigation.pages.splice(index, 1);
+          await this.plugin.saveData(currentSettings);
+          await this.plugin.loadSettings();
+          await this.applyCurrentConfiguration(false);
+          new import_obsidian11.Notice("Navigation page removed and applied to config.ts");
+          reRender();
+        } else {
+          currentSettings.navigation.social.splice(index, 1);
+          await this.plugin.saveData(currentSettings);
+          await this.plugin.loadSettings();
+          await this.applyCurrentConfiguration(false);
+          new import_obsidian11.Notice("Social link removed and applied to config.ts");
+          reRender();
+        }
+      } else if (target.classList.contains("nav-child-remove")) {
+        e.preventDefault();
+        e.stopPropagation();
+        const parentIndex = parseInt(target.getAttribute("data-index") || "0");
+        const childIndex = parseInt(target.getAttribute("data-child-index") || "0");
+        const currentSettings = this.getSettings();
+        if (currentSettings.navigation.pages[parentIndex].children) {
+          currentSettings.navigation.pages[parentIndex].children.splice(childIndex, 1);
+          if (currentSettings.navigation.pages[parentIndex].children.length === 0) {
+            delete currentSettings.navigation.pages[parentIndex].children;
+          }
+          await this.plugin.saveData(currentSettings);
+          await this.plugin.loadSettings();
+          await this.applyCurrentConfiguration(false);
+          new import_obsidian11.Notice("Child page removed and applied to config.ts");
+          const navItem = target.closest(".nav-item");
+          const childrenContainer = navItem == null ? void 0 : navItem.querySelector(".nav-children-container");
+          if (childrenContainer && (!currentSettings.navigation.pages[parentIndex].children || currentSettings.navigation.pages[parentIndex].children.length === 0)) {
+            childrenContainer.setCssStyles({ display: "none" });
+          }
+          reRender();
+        }
+      } else if (target.classList.contains("nav-add-child")) {
+        e.preventDefault();
+        e.stopPropagation();
+        const index = parseInt(target.getAttribute("data-index") || "0");
+        const currentSettings = this.getSettings();
+        if (!currentSettings.navigation.pages[index].children) {
+          currentSettings.navigation.pages[index].children = [];
+        }
+        currentSettings.navigation.pages[index].children.push({ title: "New Child", url: "/new-child" });
+        await this.plugin.saveData(currentSettings);
+        await this.plugin.loadSettings();
+        await this.applyCurrentConfiguration(false);
+        new import_obsidian11.Notice("Child page added and applied to config.ts");
+        const navItem = target.closest(".nav-item");
+        const childrenContainer = navItem == null ? void 0 : navItem.querySelector(".nav-children-container");
+        if (childrenContainer) {
+          childrenContainer.setCssStyles({ display: "block" });
+        }
+        reRender();
+        setTimeout(() => {
+          container.querySelectorAll('button[data-icon="trash"]').forEach((button) => {
+            button.textContent = "";
+            (0, import_obsidian11.setIcon)(button, "trash");
+          });
+        }, 0);
+      }
+    };
+    const containerWithHandlers = container;
+    if (containerWithHandlers._removeHandler) {
+      container.removeEventListener("click", containerWithHandlers._removeHandler);
+    }
+    containerWithHandlers._removeHandler = removeHandler;
+    container.addEventListener("click", containerWithHandlers._removeHandler);
+  }
+  renderPageItem(container, page, index) {
+    const hasChildren = page.children && page.children.length > 0;
+    const navItem = container.createDiv("nav-item");
+    navItem.setAttribute("data-index", index.toString());
+    navItem.setAttribute("draggable", "true");
+    const itemContent = navItem.createDiv("nav-item-content");
+    const itemFields = itemContent.createDiv("nav-item-fields");
+    const titleInput = itemFields.createEl("input", {
+      type: "text",
+      cls: "nav-title",
+      attr: { placeholder: "Page title", draggable: "false" }
+    });
+    titleInput.value = page.title || "";
+    const urlInput = itemFields.createEl("input", {
+      type: "text",
+      cls: "nav-url",
+      attr: { placeholder: "/page-url (leave empty for dropdown-only)", draggable: "false" }
+    });
+    urlInput.value = page.url || "";
+    const itemActions = itemContent.createDiv("nav-item-actions");
+    itemActions.createEl("button", {
+      // "+ Child" is a button label, keep as is
+      // eslint-disable-next-line obsidianmd/ui/sentence-case
+      text: "+ Child",
+      cls: "nav-add-child",
+      attr: { "data-index": index.toString(), title: "Add child page" }
+    });
+    const removeBtn = itemActions.createEl("button", {
+      cls: "nav-remove mod-warning",
+      attr: { "data-index": index.toString(), "data-icon": "trash", title: "Remove", "aria-label": "Remove" }
+    });
+    (0, import_obsidian11.setIcon)(removeBtn, "trash");
+    const childrenContainer = navItem.createDiv("nav-children-container");
+    childrenContainer.setAttribute("data-parent-index", index.toString());
+    if (!hasChildren) {
+      childrenContainer.setCssStyles({ display: "none" });
+    }
+    childrenContainer.createDiv("nav-children-label").textContent = "Child pages:";
+    const childrenDiv = childrenContainer.createDiv("nav-children");
+    childrenDiv.setAttribute("data-parent-index", index.toString());
+    if (hasChildren && page.children) {
+      page.children.forEach((child, childIndex) => {
+        this.renderChildItem(childrenDiv, child, index, childIndex);
+      });
+    }
+  }
+  renderChildItem(container, child, parentIndex, childIndex) {
+    const childItem = container.createDiv("nav-child-item");
+    childItem.setAttribute("data-index", parentIndex.toString());
+    childItem.setAttribute("data-child-index", childIndex.toString());
+    const itemFields = childItem.createDiv("nav-item-fields");
+    const titleInput = itemFields.createEl("input", {
+      type: "text",
+      cls: "nav-child-title",
+      attr: { placeholder: "Child title", draggable: "false" }
+    });
+    titleInput.value = child.title || "";
+    const urlInput = itemFields.createEl("input", {
+      type: "text",
+      cls: "nav-child-url",
+      attr: { placeholder: "/child-url", draggable: "false" }
+    });
+    urlInput.value = child.url || "";
+    const removeBtn = childItem.createEl("button", {
+      cls: "nav-child-remove mod-warning",
+      attr: {
+        "data-index": parentIndex.toString(),
+        "data-child-index": childIndex.toString(),
+        "data-icon": "trash",
+        title: "Remove",
+        "aria-label": "Remove"
+      }
+    });
+    (0, import_obsidian11.setIcon)(removeBtn, "trash");
+  }
+  renderSocialItem(container, social, index) {
+    const navItem = container.createDiv("nav-item");
+    navItem.setAttribute("data-index", index.toString());
+    navItem.setAttribute("draggable", "true");
+    const itemContent = navItem.createDiv("nav-item-content");
+    const itemFields = itemContent.createDiv("nav-item-fields");
+    const titleInput = itemFields.createEl("input", {
+      type: "text",
+      cls: "nav-title",
+      attr: { placeholder: "Social title", draggable: "false" }
+    });
+    titleInput.value = social.title || "";
+    const urlInput = itemFields.createEl("input", {
+      type: "text",
+      cls: "nav-url",
+      attr: { placeholder: "https://example.com", draggable: "false" }
+    });
+    urlInput.value = social.url || "";
+    const removeBtn = itemContent.createEl("button", {
+      cls: "nav-remove mod-warning",
+      attr: { "data-index": index.toString(), "data-icon": "trash", title: "Remove", "aria-label": "Remove" }
+    });
+    (0, import_obsidian11.setIcon)(removeBtn, "trash");
+    const iconRow = navItem.createDiv("nav-icon-row");
+    const iconInput = iconRow.createEl("input", {
+      type: "text",
+      cls: "nav-icon",
+      attr: { placeholder: "Icon name", draggable: "false" }
+    });
+    iconInput.value = social.icon || "";
+    const iconHelp = iconRow.createDiv("nav-icon-help");
+    iconHelp.createEl("small", { text: "Icon names from FontAwesome Brands" });
+  }
+};
+
+// src/ui/tabs/ConfigTab.ts
+var import_obsidian13 = require("obsidian");
+init_types();
+
+// src/ui/PresetWarningModal.ts
+var import_obsidian12 = require("obsidian");
+var PresetWarningModal = class extends import_obsidian12.Modal {
+  constructor(app, changes, onConfirm, onCancel) {
+    super(app);
+    this.changes = changes;
+    this.onConfirm = onConfirm;
+    this.onCancel = onCancel;
+  }
+  onOpen() {
+    const { contentEl } = this;
+    contentEl.empty();
+    const header = contentEl.createEl("h2", { text: "Apply template preset" });
+    header.addClass("preset-warning-modal-header");
+    const warning = contentEl.createEl("p", {
+      text: "Applying this template will change the following settings:"
+    });
+    warning.addClass("preset-warning-message");
+    const changesList = contentEl.createEl("ul");
+    changesList.addClass("preset-warning-changes-list");
+    this.changes.forEach((change) => {
+      const listItem = changesList.createEl("li", { text: change });
+      listItem.addClass("preset-warning-list-item");
+    });
+    const question = contentEl.createEl("p", {
+      text: "Do you want to apply this template?"
+    });
+    question.addClass("preset-warning-question");
+    const buttonContainer = contentEl.createDiv("modal-button-container");
+    const cancelButton = buttonContainer.createEl("button", { text: "Cancel" });
+    cancelButton.className = "mod-cta";
+    cancelButton.addEventListener("click", () => {
+      this.onCancel();
+      this.close();
+    });
+    const confirmButton = buttonContainer.createEl("button", { text: "Continue" });
+    confirmButton.className = "mod-warning";
+    confirmButton.addEventListener("click", () => {
+      this.onConfirm();
+      this.close();
+    });
+    confirmButton.focus();
+  }
+  onClose() {
+    const { contentEl } = this;
+    contentEl.empty();
+  }
+};
+
+// src/ui/tabs/ConfigTab.ts
+var ConfigTab = class extends TabRenderer {
+  render(container) {
+    container.empty();
+    const settings = this.getSettings();
+    const configGroup = new import_obsidian13.SettingGroup(container);
+    configGroup.addSetting((setting) => {
+      setting.setName("Template").setDesc("Choose your content template").addDropdown((dropdown) => {
+        TEMPLATE_OPTIONS.forEach((template) => {
+          dropdown.addOption(template.id, template.name);
+        });
+        dropdown.setValue(settings.currentTemplate);
+        dropdown.onChange((value) => {
+          const changes = this.getTemplateChanges(value);
+          const modal = new PresetWarningModal(
+            this.app,
+            changes,
+            () => {
+              void (async () => {
+                try {
+                  await this.updatePluginSettingsWithTemplate(value);
+                  const plugin = this.plugin;
+                  await plugin.loadSettings();
+                  const freshSettings = plugin.settings;
+                  const presetSuccess = plugin.configManager.applyPreset({
+                    name: freshSettings.currentTemplate,
+                    description: "",
+                    features: freshSettings.features,
+                    theme: freshSettings.currentTheme,
+                    contentOrganization: freshSettings.contentOrganization,
+                    config: freshSettings
+                  });
+                  if (presetSuccess) {
+                    new import_obsidian13.Notice(`Template changed to ${value} and applied to config.ts`);
+                  } else {
+                    new import_obsidian13.Notice("Failed to apply template to config.ts");
+                  }
+                } catch (error) {
+                  new import_obsidian13.Notice(`Failed to apply template change: ${error instanceof Error ? error.message : String(error)}`);
+                  dropdown.setValue(settings.currentTemplate);
+                }
+              })();
+            },
+            () => {
+              dropdown.setValue(settings.currentTemplate);
+            }
+          );
+          modal.open();
+        });
+      });
+    });
+    configGroup.addSetting((setting) => {
+      setting.setName("Deployment").setDesc("Choose your deployment platform").addDropdown((dropdown) => {
+        dropdown.addOption("netlify", "Netlify");
+        dropdown.addOption("vercel", "Vercel");
+        dropdown.addOption("github-pages", "GitHub pages");
+        dropdown.addOption("cloudflare-workers", "Cloudflare Workers");
+        dropdown.setValue(settings.deployment.platform);
+        dropdown.onChange(async (value) => {
+          settings.deployment.platform = value;
+          await this.plugin.saveData(settings);
+          await this.plugin.loadSettings();
+          try {
+            await this.applyCurrentConfiguration();
+            new import_obsidian13.Notice(`Deployment platform changed to ${value} and applied to config.ts`);
+          } catch (error) {
+            new import_obsidian13.Notice(`Failed to apply deployment platform change: ${error instanceof Error ? error.message : String(error)}`);
+          }
+        });
+      });
+    });
+    configGroup.addSetting((setting) => {
+      setting.setName("Content organization").setDesc("Choose how to organize your content and assets").addDropdown((dropdown) => {
+        dropdown.addOption("file-based", "File-based");
+        dropdown.addOption("folder-based", "Folder-based");
+        dropdown.setValue(settings.contentOrganization);
+        dropdown.onChange(async (value) => {
+          settings.contentOrganization = value;
+          await this.plugin.saveData(settings);
+          await this.plugin.loadSettings();
+          const contentOrg = value;
+          const config4 = {
+            obsidianSettings: {
+              // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+              attachmentLocation: contentOrg === "file-based" ? "subfolder" : "same-folder",
+              subfolderName: "attachments"
+            },
+            astroComposerSettings: {
+              // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+              creationMode: contentOrg === "file-based" ? "file" : "folder",
+              indexFileName: "index"
+            },
+            imageManagerSettings: {
+              customPropertyLinkFormat: contentOrg === "file-based" ? "[[attachments/{image-url}]]" : "[[{image-url}]]"
+            }
+          };
+          try {
+            await this.plugin.pluginManager.configurePlugins(config4);
+            const attachmentLocation = contentOrg === "file-based" ? "subfolder (attachments/)" : "same folder";
+            const creationMode = contentOrg === "file-based" ? "file" : "folder";
+            new import_obsidian13.Notice(`Content organization changed to ${value}
+
+\u2022 Obsidian: Attachments \u2192 ${attachmentLocation}
+\u2022 Astro Composer: Creation mode \u2192 ${creationMode}
+\u2022 Image Manager: Format updated`, 8e3);
+          } catch (error) {
+            new import_obsidian13.Notice(`Failed to configure plugins for content organization: ${error instanceof Error ? error.message : String(error)}`);
+          }
+        });
+      });
+      setting.settingEl.setCssStyles({
+        marginBottom: "var(--size-4-6)"
+      });
+    });
+    const pluginConfigHeading = new import_obsidian13.Setting(container).setHeading().setName("Plugin configuration");
+    pluginConfigHeading.settingEl.setCssStyles({
+      marginTop: "0",
+      marginBottom: "var(--size-4-2)"
+    });
+    this.renderPluginStatus(container, settings);
+    const pluginActionsHeading = new import_obsidian13.Setting(container).setHeading().setName("Plugin actions");
+    pluginActionsHeading.settingEl.setCssStyles({ marginTop: "var(--size-4-4)", marginBottom: "var(--size-4-2)" });
+    this.renderPluginActions(container, settings);
+  }
+  // Public so the declarative Config sub-page (SettingsTab.getSettingDefinitions)
+  // can reuse the status cards. The pre-1.13 tabbed fallback calls this and
+  // renderPluginActions separately (see render()).
+  renderPluginStatus(container, settings) {
+    const contentOrg = settings.contentOrganization;
+    const pluginStatus = this.plugin.pluginManager.getPluginStatus(contentOrg);
+    const statusContainer = container.createDiv("plugin-status-container");
+    const pluginStatusDiv = statusContainer.createDiv("plugin-status");
+    for (const plugin of pluginStatus) {
+      const isSettingsCheck = plugin.name === "Attachment settings";
+      const isConfigured = plugin.installed;
+      const hasSyncIssues = plugin.outOfSyncContentTypes && plugin.outOfSyncContentTypes.length > 0;
+      const allOutOfSync = hasSyncIssues && plugin.outOfSyncContentTypes && plugin.outOfSyncContentTypes.length === 4;
+      const isPartiallyConfigured = hasSyncIssues && !allOutOfSync && plugin.installed && plugin.enabled;
+      const allMismatched = allOutOfSync && plugin.installed && plugin.enabled;
+      const isImageManager = plugin.name === "Image Manager";
+      const imageManagerMismatch = isImageManager && plugin.installed && plugin.enabled && plugin.settingsMatch === false;
+      let itemClass = "plugin-item";
+      if (isSettingsCheck) {
+        itemClass += isConfigured ? " installed" : " missing";
+      } else if (imageManagerMismatch || allMismatched) {
+        itemClass += " missing";
+      } else if (isPartiallyConfigured) {
+        itemClass += " partially-configured";
+      } else {
+        itemClass += plugin.installed && plugin.enabled ? " installed" : " missing";
+      }
+      const pluginItem = pluginStatusDiv.createDiv(itemClass);
+      const icon = pluginItem.createDiv("plugin-icon");
+      if (isSettingsCheck) {
+        (0, import_obsidian13.setIcon)(icon, isConfigured ? "check" : "x");
+      } else if (imageManagerMismatch || allMismatched) {
+        (0, import_obsidian13.setIcon)(icon, "x");
+      } else if (isPartiallyConfigured) {
+        (0, import_obsidian13.setIcon)(icon, "alert-triangle");
+      } else {
+        (0, import_obsidian13.setIcon)(icon, plugin.installed && plugin.enabled ? "check" : "x");
+      }
+      const info = pluginItem.createDiv("plugin-info");
+      info.createEl("h3", { text: plugin.name });
+      let statusText;
+      if (isSettingsCheck) {
+        statusText = isConfigured ? "Configured" : "Doesn't match";
+      } else if (!plugin.installed) {
+        statusText = "Not installed";
+      } else if (!plugin.enabled) {
+        statusText = "Disabled";
+      } else if (imageManagerMismatch || allMismatched) {
+        statusText = "Doesn't match";
+      } else if (isPartiallyConfigured) {
+        statusText = "Partially configured";
+      } else {
+        statusText = "Configured";
+      }
+      info.createEl("p", { text: statusText });
+      if (hasSyncIssues && plugin.outOfSyncContentTypes) {
+        const detailsP = info.createEl("p", {
+          text: `Out of sync: ${plugin.outOfSyncContentTypes.join(", ")}`,
+          cls: "sync-details"
+        });
+        detailsP.setCssStyles({
+          fontSize: "0.9em",
+          opacity: "0.8",
+          marginTop: "4px"
+        });
+      }
+    }
+  }
+  // Renders the re-apply / manual-instructions actions. Split out of
+  // renderPluginStatus so the declarative Config sub-page can give it its own
+  // "Plugin actions" group heading rather than nesting it under the status
+  // group (where it visually merged on Obsidian 1.13+).
+  renderPluginActions(container, settings) {
+    const pluginActionsGroup = new import_obsidian13.SettingGroup(container);
+    pluginActionsGroup.addSetting((setting) => {
+      setting.setName("Re-apply configuration").setDesc("Re-apply plugin settings based on your content organization choice (useful if settings were changed manually or configuration failed)").addButton((button) => button.setButtonText("Re-apply configuration").setCta().onClick(async () => {
+        const contentOrg = settings.contentOrganization;
+        const config4 = {
+          obsidianSettings: {
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+            attachmentLocation: contentOrg === "file-based" ? "subfolder" : "same-folder",
+            subfolderName: "attachments"
+          },
+          astroComposerSettings: {
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+            creationMode: contentOrg === "file-based" ? "file" : "folder",
+            indexFileName: "index"
+          },
+          imageManagerSettings: {
+            customPropertyLinkFormat: contentOrg === "file-based" ? "[[attachments/{image-url}]]" : "[[{image-url}]]"
+          }
+        };
+        const success = await this.plugin.pluginManager.configurePlugins(config4);
+        if (success) {
+          const contentOrg2 = settings.contentOrganization;
+          const attachmentLocation = contentOrg2 === "file-based" ? "subfolder (attachments/)" : "same folder";
+          const creationMode = contentOrg2 === "file-based" ? "file" : "folder";
+          new import_obsidian13.Notice(`Configuration re-applied successfully!
+
+\u2022 Obsidian: Attachments \u2192 ${attachmentLocation}
+\u2022 Astro Composer: Creation mode \u2192 ${creationMode}
+\u2022 Image Manager: Format updated for ${contentOrg2}`, 8e3);
+          const statusContainerEl = container.ownerDocument.querySelector(".plugin-status-container");
+          if (statusContainerEl == null ? void 0 : statusContainerEl.parentElement) {
+            const statusParent = statusContainerEl.parentElement;
+            statusContainerEl.remove();
+            this.renderPluginStatus(statusParent, settings);
+          }
+        } else {
+          new import_obsidian13.Notice("\u26A0\uFE0F Some plugins could not be configured automatically. Check console for details.", 5e3);
+        }
+      }));
+    });
+    pluginActionsGroup.addSetting((setting) => {
+      setting.setName("Show manual instructions").setDesc("Get step-by-step instructions for manual configuration").addButton((button) => button.setButtonText("Show manual instructions").onClick(() => {
+        const contentOrg = settings.contentOrganization;
+        const config4 = {
+          obsidianSettings: {
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+            attachmentLocation: contentOrg === "file-based" ? "subfolder" : "same-folder",
+            subfolderName: "attachments"
+          },
+          astroComposerSettings: {
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+            creationMode: contentOrg === "file-based" ? "file" : "folder",
+            indexFileName: "index"
+          },
+          imageManagerSettings: {
+            customPropertyLinkFormat: contentOrg === "file-based" ? "[[attachments/{image-url}]]" : "[[{image-url}]]"
+          }
+        };
+        const instructions = this.plugin.pluginManager.getManualConfigurationInstructions(config4);
+        const instructionModal = new import_obsidian13.Modal(this.app);
+        instructionModal.titleEl.setText("Manual configuration instructions");
+        const contentDiv = instructionModal.contentEl.createDiv();
+        contentDiv.setCssStyles({
+          padding: "20px",
+          lineHeight: "1.6"
+        });
+        const lines = instructions.split("\n");
+        let currentList = null;
+        lines.forEach((line) => {
+          const trimmedLine = line.trim();
+          if (trimmedLine === "") {
+            contentDiv.createEl("br");
+          } else if (trimmedLine.startsWith("## ")) {
+            if (currentList) {
+              currentList = null;
+            }
+            const h2 = contentDiv.createEl("h2");
+            h2.setText(trimmedLine.substring(3));
+            h2.setCssStyles({
+              marginTop: "20px",
+              marginBottom: "10px",
+              fontSize: "1.2em",
+              fontWeight: "bold"
+            });
+          } else if (trimmedLine.match(/^\d+\.\s/)) {
+            if (!currentList) {
+              currentList = contentDiv.createEl("ol");
+              currentList.setCssStyles({
+                marginLeft: "20px",
+                marginBottom: "15px"
+              });
+            }
+            const li = currentList.createEl("li");
+            li.setCssStyles({
+              marginBottom: "5px"
+            });
+            this.parseBoldText(li, trimmedLine.replace(/^\d+\.\s/, ""));
+          } else if (trimmedLine.startsWith("- ") || trimmedLine.startsWith("* ")) {
+            if (!currentList) {
+              currentList = contentDiv.createEl("ul");
+              currentList.setCssStyles({
+                marginLeft: "20px",
+                marginBottom: "15px"
+              });
+            }
+            const li = currentList.createEl("li");
+            li.setCssStyles({
+              marginBottom: "5px"
+            });
+            this.parseBoldText(li, trimmedLine.substring(2));
+          } else {
+            if (currentList) {
+              currentList = null;
+            }
+            const p = contentDiv.createEl("p");
+            p.setCssStyles({
+              marginBottom: "10px"
+            });
+            this.parseBoldText(p, trimmedLine);
+          }
+        });
+        instructionModal.open();
+      }));
+    });
+  }
+  parseBoldText(container, text) {
+    const parts = text.split(/(\*\*.*?\*\*)/g);
+    parts.forEach((part) => {
+      if (part.startsWith("**") && part.endsWith("**")) {
+        const strong = container.createEl("strong");
+        strong.setText(part.substring(2, part.length - 2));
+      } else if (part.trim() !== "") {
+        container.appendText(part);
+      }
+    });
+  }
+  // Public so the declarative Config sub-page can reuse the template-apply
+  // flow without duplicating it. Unchanged for the tabbed fallback.
+  async updatePluginSettingsWithTemplate(template) {
+    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _A, _B, _C, _D, _E, _F, _G;
+    const plugin = this.plugin;
+    const settings = plugin.settings;
+    const templatePreset = plugin.configManager.getTemplatePreset(template);
+    if (!templatePreset || !templatePreset.config) {
+      new import_obsidian13.Notice("Template preset not found");
+      return;
+    }
+    const templateConfig = plugin.configManager.getTemplateConfig(template, settings);
+    settings.currentTemplate = template;
+    if (templatePreset.config.features) {
+      const currentComments = settings.features.comments;
+      const currentProfilePicture = settings.features.profilePicture;
+      settings.features = { ...settings.features, ...templatePreset.config.features };
+      settings.features.comments = currentComments;
+      settings.features.profilePicture = currentProfilePicture;
+      if ((_a = settings.postOptions) == null ? void 0 : _a.graphView) {
+        settings.postOptions.graphView.enabled = (_b = templatePreset.config.features.graphView) != null ? _b : false;
+        settings.features.graphView = settings.postOptions.graphView.enabled;
+      }
+      if ((_c = settings.postOptions) == null ? void 0 : _c.linkedMentions) {
+        settings.postOptions.linkedMentions.enabled = (_d = templatePreset.config.features.linkedMentions) != null ? _d : false;
+        settings.postOptions.linkedMentions.linkedMentionsCompact = (_e = templatePreset.config.features.linkedMentionsCompact) != null ? _e : false;
+      }
+      if (((_f = settings.commandPalette) == null ? void 0 : _f.quickActions) && templatePreset.config.features.quickActions) {
+        settings.commandPalette.quickActions = { ...settings.commandPalette.quickActions, ...templatePreset.config.features.quickActions };
+      }
+    }
+    const commandPalette = templateConfig.commandPalette;
+    if (commandPalette) {
+      settings.commandPalette = {
+        ...settings.commandPalette,
+        enabled: (_g = commandPalette.enabled) != null ? _g : settings.commandPalette.enabled,
+        placeholder: (_h = commandPalette.placeholder) != null ? _h : settings.commandPalette.placeholder,
+        shortcut: (_i = commandPalette.shortcut) != null ? _i : settings.commandPalette.shortcut,
+        search: {
+          ...settings.commandPalette.search,
+          ...commandPalette.search || {}
+        },
+        sections: {
+          ...settings.commandPalette.sections,
+          ...commandPalette.sections || {}
+        },
+        quickActions: {
+          ...settings.commandPalette.quickActions,
+          ...((_j = templatePreset.config.features) == null ? void 0 : _j.quickActions) || {}
+        }
+      };
+      if ((_k = templatePreset.config.features) == null ? void 0 : _k.quickActions) {
+        settings.features.quickActions = {
+          ...settings.features.quickActions,
+          ...templatePreset.config.features.quickActions
+        };
+      }
+    }
+    const homeOptions = templateConfig.homeOptions;
+    if (homeOptions) {
+      settings.homeOptions = {
+        ...settings.homeOptions,
+        featuredPost: {
+          ...settings.homeOptions.featuredPost,
+          ...homeOptions.featuredPost || {}
+        },
+        recentPosts: {
+          ...settings.homeOptions.recentPosts,
+          ...homeOptions.recentPosts || {}
+        },
+        projects: {
+          ...settings.homeOptions.projects,
+          ...homeOptions.projects || {}
+        },
+        docs: {
+          ...settings.homeOptions.docs,
+          ...homeOptions.docs || {}
+        },
+        blurb: {
+          ...settings.homeOptions.blurb,
+          ...homeOptions.blurb || {}
+        }
+      };
+    }
+    const postOptions = templateConfig.postOptions;
+    if (postOptions) {
+      settings.postOptions = {
+        ...settings.postOptions,
+        postsPerPage: (_l = postOptions.postsPerPage) != null ? _l : settings.postOptions.postsPerPage,
+        readingTime: (_m = postOptions.readingTime) != null ? _m : settings.postOptions.readingTime,
+        wordCount: (_n = postOptions.wordCount) != null ? _n : settings.postOptions.wordCount,
+        tags: (_o = postOptions.tags) != null ? _o : settings.postOptions.tags,
+        postNavigation: (_p = postOptions.postNavigation) != null ? _p : settings.postOptions.postNavigation,
+        showPostCardCoverImages: (_q = postOptions.showPostCardCoverImages) != null ? _q : settings.postOptions.showPostCardCoverImages,
+        postCardAspectRatio: (_r = postOptions.postCardAspectRatio) != null ? _r : settings.postOptions.postCardAspectRatio,
+        linkedMentions: {
+          ...settings.postOptions.linkedMentions,
+          ...postOptions.linkedMentions || {}
+        },
+        graphView: {
+          ...settings.postOptions.graphView,
+          enabled: (_t = (_s = postOptions.graphView) == null ? void 0 : _s.enabled) != null ? _t : settings.postOptions.graphView.enabled,
+          showInSidebar: (_v = (_u = postOptions.graphView) == null ? void 0 : _u.showInSidebar) != null ? _v : settings.postOptions.graphView.showInSidebar,
+          maxNodes: (_x = (_w = postOptions.graphView) == null ? void 0 : _w.maxNodes) != null ? _x : settings.postOptions.graphView.maxNodes,
+          showOrphanedPosts: (_z = (_y = postOptions.graphView) == null ? void 0 : _y.showOrphanedPosts) != null ? _z : settings.postOptions.graphView.showOrphanedPosts
+        },
+        comments: settings.postOptions.comments
+        // Preserve comments
+      };
+    }
+    const navigation = templateConfig.navigation;
+    if (navigation) {
+      settings.navigation = {
+        ...settings.navigation,
+        showNavigation: (_A = navigation.showNavigation) != null ? _A : settings.navigation.showNavigation,
+        showMobileMenu: (_B = navigation.showMobileMenu) != null ? _B : settings.navigation.showMobileMenu,
+        style: (_C = navigation.style) != null ? _C : settings.navigation.style
+        // Preserve pages and social arrays from user settings
+      };
+    }
+    if (templatePreset.config.tableOfContents) {
+      settings.tableOfContents = { ...settings.tableOfContents, ...templatePreset.config.tableOfContents };
+    }
+    const optionalContentTypes = templateConfig.optionalContentTypes;
+    if (optionalContentTypes) {
+      settings.optionalContentTypes = {
+        projects: (_D = optionalContentTypes.projects) != null ? _D : false,
+        docs: (_E = optionalContentTypes.docs) != null ? _E : false
+      };
+    }
+    const footer = templateConfig.footer;
+    if (footer) {
+      settings.footer = {
+        ...settings.footer,
+        showSocialIconsInFooter: (_F = footer.showSocialIconsInFooter) != null ? _F : settings.footer.showSocialIconsInFooter
+      };
+      settings.features.showSocialIconsInFooter = (_G = footer.showSocialIconsInFooter) != null ? _G : settings.features.showSocialIconsInFooter;
+    }
+    await this.plugin.saveData(settings);
+  }
+  // Public so the declarative Config sub-page can reuse the change summary
+  // shown in the preset warning modal. Unchanged for the tabbed fallback.
+  getTemplateChanges(templateId) {
+    var _a, _b, _c, _d;
+    const changes = [];
+    const settings = this.getSettings();
+    const templatePreset = this.plugin.configManager.getTemplatePreset(templateId);
+    if (!templatePreset || !templatePreset.config) {
+      changes.push("This will apply the template settings to your configuration.");
+      return changes;
+    }
+    const newConfig = templatePreset.config;
+    const featureChanges = [];
+    if (newConfig.features) {
+      const keyFeatures = [
+        { key: "graphView", label: "Graph view" },
+        { key: "tableOfContents", label: "Table of contents" },
+        { key: "readingTime", label: "Reading time" },
+        { key: "linkedMentions", label: "Linked mentions" },
+        { key: "linkedMentionsCompact", label: "Compact linked mentions" },
+        { key: "postNavigation", label: "Post navigation" },
+        { key: "showSocialIconsInFooter", label: "Social icons in footer" },
+        { key: "featureButton", label: "Feature button" }
+      ];
+      keyFeatures.forEach(({ key, label }) => {
+        const oldFeature = settings.features[key];
+        const newFeature = newConfig.features[key];
+        if (newFeature !== void 0 && oldFeature !== newFeature) {
+          const oldVal = typeof oldFeature === "boolean" ? oldFeature ? "ON" : "OFF" : oldFeature === null || oldFeature === void 0 ? "" : typeof oldFeature === "string" || typeof oldFeature === "number" ? String(oldFeature) : JSON.stringify(oldFeature);
+          const newVal = typeof newFeature === "boolean" ? newFeature ? "ON" : "OFF" : newFeature === null || newFeature === void 0 ? "" : typeof newFeature === "string" || typeof newFeature === "number" ? String(newFeature) : JSON.stringify(newFeature);
+          featureChanges.push(`${label}: ${oldVal} \u2192 ${newVal}`);
+        }
+      });
+      if (newConfig.features.quickActions && settings.features.quickActions) {
+        if (newConfig.features.quickActions.enabled !== settings.features.quickActions.enabled) {
+          featureChanges.push(`Quick actions: ${settings.features.quickActions.enabled ? "ON" : "OFF"} \u2192 ${newConfig.features.quickActions.enabled ? "ON" : "OFF"}`);
+        }
+      }
+    }
+    const isStandard = templateId === "standard";
+    if (((_a = settings.optionalContentTypes) == null ? void 0 : _a.projects) !== isStandard) {
+      featureChanges.push(`Projects content type: ${((_b = settings.optionalContentTypes) == null ? void 0 : _b.projects) ? "enabled" : "disabled"} \u2192 ${isStandard ? "enabled" : "disabled"}`);
+    }
+    if (((_c = settings.optionalContentTypes) == null ? void 0 : _c.docs) !== isStandard) {
+      featureChanges.push(`Docs content type: ${((_d = settings.optionalContentTypes) == null ? void 0 : _d.docs) ? "enabled" : "disabled"} \u2192 ${isStandard ? "enabled" : "disabled"}`);
+    }
+    if (featureChanges.length > 0) {
+      changes.push(...featureChanges);
+    } else {
+      changes.push("No changes needed - your settings already match this template.");
+    }
+    return changes;
+  }
+};
+
 // src/ui/tabs/StyleTab.ts
+var import_obsidian14 = require("obsidian");
+init_types();
 var StyleTab = class extends TabRenderer {
   constructor() {
     super(...arguments);
@@ -4961,17 +5016,17 @@ var StyleTab = class extends TabRenderer {
         const nameEl = setting.settingEl.querySelector(".setting-item-name");
         const descEl = setting.settingEl.querySelector(".setting-item-description");
         const controlEl = setting.settingEl.querySelector(".setting-item-control");
-        if (nameEl) nameEl.setCssProps({ display: "none" });
-        if (descEl) descEl.setCssProps({ display: "none" });
-        if (controlEl) controlEl.setCssProps({ display: "none" });
-        setting.settingEl.setCssProps({
+        if (nameEl) nameEl.setCssStyles({ display: "none" });
+        if (descEl) descEl.setCssStyles({ display: "none" });
+        if (controlEl) controlEl.setCssStyles({ display: "none" });
+        setting.settingEl.setCssStyles({
           display: "block",
           borderTop: "none",
           paddingTop: "0",
           paddingBottom: "0"
         });
         const themePillsContainer = setting.settingEl.createDiv("theme-pills-container");
-        themePillsContainer.setCssProps({
+        themePillsContainer.setCssStyles({
           marginTop: "10px",
           marginBottom: "32px"
         });
@@ -4979,7 +5034,7 @@ var StyleTab = class extends TabRenderer {
           text: "Available themes (click to toggle selection):",
           cls: "theme-pills-header"
         });
-        pillsHeader.setCssProps({
+        pillsHeader.setCssStyles({
           fontSize: "14px",
           marginBottom: "8px",
           color: "var(--text-muted)"
@@ -4993,15 +5048,25 @@ var StyleTab = class extends TabRenderer {
         allThemes.forEach((theme) => {
           const isSelected = settings.availableThemes.includes(theme.id);
           const pill = pillsWrapper.createDiv("theme-pill");
-          pill.addClass("theme-pill");
+          pill.setCssStyles({
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "4px",
+            padding: "4px 10px",
+            borderRadius: "14px",
+            fontSize: "12px",
+            cursor: "pointer",
+            transition: "all 0.15s ease",
+            userSelect: "none"
+          });
           if (isSelected) {
-            pill.setCssProps({
+            pill.setCssStyles({
               backgroundColor: "var(--interactive-accent)",
               color: "var(--text-on-accent)",
               border: "1px solid var(--interactive-accent)"
             });
           } else {
-            pill.setCssProps({
+            pill.setCssStyles({
               backgroundColor: "var(--background-secondary)",
               color: "var(--text-muted)",
               border: "1px solid var(--background-modifier-border)"
@@ -5009,7 +5074,7 @@ var StyleTab = class extends TabRenderer {
           }
           pill.createSpan({ text: theme.name });
           const indicator = pill.createSpan({ text: isSelected ? "\u2713" : "\u25CB" });
-          indicator.setCssProps({
+          indicator.setCssStyles({
             fontSize: "10px",
             opacity: "0.8"
           });
@@ -5038,7 +5103,7 @@ var StyleTab = class extends TabRenderer {
           });
         });
         const customThemesSection = themePillsContainer.createDiv("custom-themes-section");
-        customThemesSection.setCssProps({
+        customThemesSection.setCssStyles({
           marginTop: "32px",
           padding: "10px",
           backgroundColor: "var(--background-secondary)",
@@ -5049,14 +5114,14 @@ var StyleTab = class extends TabRenderer {
           text: "Custom themes (comma-separated):",
           cls: "custom-themes-label"
         });
-        customThemesLabel.setCssProps({
+        customThemesLabel.setCssStyles({
           display: "block",
           fontSize: "12px",
           color: "var(--text-muted)",
           marginBottom: "6px"
         });
         const inputContainer = customThemesSection.createDiv("custom-themes-input-container");
-        inputContainer.setCssProps({
+        inputContainer.setCssStyles({
           display: "flex",
           gap: "6px",
           alignItems: "center"
@@ -5069,7 +5134,7 @@ var StyleTab = class extends TabRenderer {
             spellcheck: "false"
           }
         });
-        customThemesInput.setCssProps({
+        customThemesInput.setCssStyles({
           flex: "1",
           padding: "6px 8px",
           border: "1px solid var(--background-modifier-border)",
@@ -5084,7 +5149,7 @@ var StyleTab = class extends TabRenderer {
             "aria-label": "Open themes folder"
           }
         });
-        folderButton.setCssProps({
+        folderButton.setCssStyles({
           padding: "4px",
           border: "none",
           backgroundColor: "transparent",
@@ -5221,10 +5286,10 @@ var StyleTab = class extends TabRenderer {
           const nameEl = setting.settingEl.querySelector(".setting-item-name");
           const descEl = setting.settingEl.querySelector(".setting-item-description");
           const controlEl = setting.settingEl.querySelector(".setting-item-control");
-          if (nameEl) nameEl.setCssProps({ display: "none" });
-          if (descEl) descEl.setCssProps({ display: "none" });
-          if (controlEl) controlEl.setCssProps({ display: "none" });
-          setting.settingEl.setCssProps({
+          if (nameEl) nameEl.setCssStyles({ display: "none" });
+          if (descEl) descEl.setCssStyles({ display: "none" });
+          if (controlEl) controlEl.setCssStyles({ display: "none" });
+          setting.settingEl.setCssStyles({
             borderTop: "none",
             paddingTop: "0",
             paddingBottom: "0"
@@ -5233,7 +5298,7 @@ var StyleTab = class extends TabRenderer {
             text: `Last extracted: ${lastExtracted}`,
             cls: "theme-extraction-timestamp"
           });
-          timestampEl.setCssProps({ color: "var(--text-muted)" });
+          timestampEl.setCssStyles({ color: "var(--text-muted)" });
         });
       }
       customThemeGroup.addSetting((setting) => {
@@ -5256,10 +5321,10 @@ var StyleTab = class extends TabRenderer {
           const nameEl = setting.settingEl.querySelector(".setting-item-name");
           const descEl = setting.settingEl.querySelector(".setting-item-description");
           const controlEl = setting.settingEl.querySelector(".setting-item-control");
-          if (nameEl) nameEl.setCssProps({ display: "none" });
-          if (descEl) descEl.setCssProps({ display: "none" });
-          if (controlEl) controlEl.setCssProps({ display: "none" });
-          setting.settingEl.setCssProps({
+          if (nameEl) nameEl.setCssStyles({ display: "none" });
+          if (descEl) descEl.setCssStyles({ display: "none" });
+          if (controlEl) controlEl.setCssStyles({ display: "none" });
+          setting.settingEl.setCssStyles({
             borderTop: "none",
             paddingTop: "0",
             paddingBottom: "0"
@@ -5274,10 +5339,10 @@ var StyleTab = class extends TabRenderer {
           const nameEl = setting.settingEl.querySelector(".setting-item-name");
           const descEl = setting.settingEl.querySelector(".setting-item-description");
           const controlEl = setting.settingEl.querySelector(".setting-item-control");
-          if (nameEl) nameEl.setCssProps({ display: "none" });
-          if (descEl) descEl.setCssProps({ display: "none" });
-          if (controlEl) controlEl.setCssProps({ display: "none" });
-          setting.settingEl.setCssProps({
+          if (nameEl) nameEl.setCssStyles({ display: "none" });
+          if (descEl) descEl.setCssStyles({ display: "none" });
+          if (controlEl) controlEl.setCssStyles({ display: "none" });
+          setting.settingEl.setCssStyles({
             borderTop: "none",
             paddingTop: "0",
             paddingBottom: "0"
@@ -5576,13 +5641,21 @@ var StyleTab = class extends TabRenderer {
     }
   }
   /**
-   * Render color preview
+   * Public wrapper so the declarative Style page (SettingsTab.getSettingDefinitions)
+   * can reuse the same config-write flow the imperative custom sections used.
+   */
+  applyConfiguration() {
+    return this.applyCurrentConfiguration();
+  }
+  /**
+   * Render color preview. Public so the declarative Style page can reuse it
+   * inside a named render def (the color preview is genuinely custom UI).
    */
   renderColorPreview(container, colors) {
     const previewSection = container.createDiv("color-preview-section");
     previewSection.createEl("h4", { text: "Color preview" });
     const previewContainer = previewSection.createDiv("color-preview-container");
-    previewContainer.setCssProps({
+    previewContainer.setCssStyles({
       display: "flex",
       gap: "10px",
       marginTop: "10px"
@@ -5592,7 +5665,7 @@ var StyleTab = class extends TabRenderer {
       const colorValue = colors.primary[shade];
       if (colorValue) {
         const colorBox = previewContainer.createDiv("color-box");
-        colorBox.setCssProps({
+        colorBox.setCssStyles({
           width: "20px",
           height: "20px",
           backgroundColor: colorValue,
@@ -5607,7 +5680,7 @@ var StyleTab = class extends TabRenderer {
       const colorValue = colors.highlight[shade];
       if (colorValue) {
         const colorBox = previewContainer.createDiv("color-box");
-        colorBox.setCssProps({
+        colorBox.setCssStyles({
           width: "20px",
           height: "20px",
           backgroundColor: colorValue,
@@ -5619,12 +5692,13 @@ var StyleTab = class extends TabRenderer {
     });
   }
   /**
-   * Render simple color editor (accent + background)
+   * Render simple color editor (accent + background). Public so the declarative
+   * Style page can reuse it inside a named render def (custom color widgets).
    */
   renderSimpleColorEditor(container, settings) {
     var _a, _b, _c, _d;
     const simpleSection = container.createDiv("simple-color-inputs");
-    simpleSection.setCssProps({ marginBottom: "20px" });
+    simpleSection.setCssStyles({ marginBottom: "20px" });
     simpleSection.createEl("h4", { text: "Simple color editor" });
     const accentColor = ((_b = (_a = settings.themeColors.extractedColors) == null ? void 0 : _a.highlight) == null ? void 0 : _b[500]) || "#5865f2";
     const backgroundColor = ((_d = (_c = settings.themeColors.extractedColors) == null ? void 0 : _c.primary) == null ? void 0 : _d[800]) || "#1e1e1e";
@@ -5638,7 +5712,7 @@ var StyleTab = class extends TabRenderer {
       type: "text",
       value: settings.themeColors.simpleColors.accent
     });
-    accentTextInput.setCssProps({ fontFamily: "var(--font-monospace)" });
+    accentTextInput.setCssStyles({ fontFamily: "var(--font-monospace)" });
     const accentColorPicker = accentDiv.createEl("input", { type: "color" });
     accentColorPicker.value = settings.themeColors.simpleColors.accent;
     accentColorPicker.className = "color-picker";
@@ -5662,7 +5736,7 @@ var StyleTab = class extends TabRenderer {
       type: "text",
       value: settings.themeColors.simpleColors.background
     });
-    backgroundTextInput.setCssProps({ fontFamily: "var(--font-monospace)" });
+    backgroundTextInput.setCssStyles({ fontFamily: "var(--font-monospace)" });
     const backgroundColorPicker = backgroundDiv.createEl("input", { type: "color" });
     backgroundColorPicker.value = settings.themeColors.simpleColors.background;
     backgroundColorPicker.className = "color-picker";
@@ -5682,7 +5756,8 @@ var StyleTab = class extends TabRenderer {
     };
   }
   /**
-   * Render advanced color editor (individual shades)
+   * Render advanced color editor (individual shades). Public so the declarative
+   * Style page can reuse it inside a named render def (custom color widgets).
    */
   renderAdvancedColorEditor(container, settings) {
     const advancedSection = container.createDiv("advanced-mode-section");
@@ -5695,7 +5770,7 @@ var StyleTab = class extends TabRenderer {
       const colorValue = (_b = (_a = settings.themeColors.extractedColors) == null ? void 0 : _a.primary) == null ? void 0 : _b[shade];
       if (colorValue) {
         const settingItem = primarySection.createDiv("setting-item");
-        settingItem.setCssProps({
+        settingItem.setCssStyles({
           display: "flex",
           alignItems: "center",
           gap: "10px",
@@ -5703,19 +5778,19 @@ var StyleTab = class extends TabRenderer {
         });
         const label = settingItem.createDiv("setting-item-name");
         label.textContent = `${shade}:`;
-        label.setCssProps({
+        label.setCssStyles({
           minWidth: "40px",
           fontSize: "12px",
           color: "var(--text-muted)"
         });
         const control = settingItem.createDiv("setting-item-control");
-        control.setCssProps({
+        control.setCssStyles({
           display: "flex",
           gap: "8px",
           alignItems: "center"
         });
         const textInput = control.createEl("input", { type: "text", value: colorValue });
-        textInput.setCssProps({
+        textInput.setCssStyles({
           width: "100px",
           fontFamily: "var(--font-monospace)",
           fontSize: "12px"
@@ -5749,7 +5824,7 @@ var StyleTab = class extends TabRenderer {
       const colorValue = (_b = (_a = settings.themeColors.extractedColors) == null ? void 0 : _a.highlight) == null ? void 0 : _b[shade];
       if (colorValue) {
         const settingItem = highlightSection.createDiv("setting-item");
-        settingItem.setCssProps({
+        settingItem.setCssStyles({
           display: "flex",
           alignItems: "center",
           gap: "10px",
@@ -5757,19 +5832,19 @@ var StyleTab = class extends TabRenderer {
         });
         const label = settingItem.createDiv("setting-item-name");
         label.textContent = `${shade}:`;
-        label.setCssProps({
+        label.setCssStyles({
           minWidth: "40px",
           fontSize: "12px",
           color: "var(--text-muted)"
         });
         const control = settingItem.createDiv("setting-item-control");
-        control.setCssProps({
+        control.setCssStyles({
           display: "flex",
           gap: "8px",
           alignItems: "center"
         });
         const textInput = control.createEl("input", { type: "text", value: colorValue });
-        textInput.setCssProps({
+        textInput.setCssStyles({
           width: "100px",
           fontFamily: "var(--font-monospace)",
           fontSize: "12px"
@@ -5846,7 +5921,7 @@ var FeaturesTab = class extends TabRenderer {
             await this.plugin.loadSettings();
             const tocDepthSetting = container.querySelector(".toc-depth-setting");
             if (tocDepthSetting) {
-              tocDepthSetting.setCssProps({ display: value ? "block" : "none" });
+              tocDepthSetting.setCssStyles({ display: value ? "block" : "none" });
             }
             await this.applyCurrentConfiguration();
             new import_obsidian15.Notice(`Table of contents ${value ? "enabled" : "disabled"} and applied to config.ts`);
@@ -5856,7 +5931,7 @@ var FeaturesTab = class extends TabRenderer {
       globalGroup.addSetting((setting2) => {
         var _a, _b;
         setting2.settingEl.classList.add("toc-depth-setting");
-        setting2.settingEl.setCssProps({
+        setting2.settingEl.setCssStyles({
           display: ((_b = (_a = settings.tableOfContents) == null ? void 0 : _a.enabled) != null ? _b : true) ? "block" : "none"
         });
         setting2.setName("Table of contents depth").setDesc("Maximum heading depth to include in ToC (2=H2, 3=H3, 4=H4, 5=H5, 6=H6)").addText((text) => {
@@ -5889,10 +5964,10 @@ var FeaturesTab = class extends TabRenderer {
             const footerContentSetting = container.querySelector(".footer-content-setting");
             const footerSocialSetting = container.querySelector(".footer-social-setting");
             if (footerContentSetting) {
-              footerContentSetting.setCssProps({ display: value ? "block" : "none" });
+              footerContentSetting.setCssStyles({ display: value ? "block" : "none" });
             }
             if (footerSocialSetting) {
-              footerSocialSetting.setCssProps({ display: value ? "block" : "none" });
+              footerSocialSetting.setCssStyles({ display: value ? "block" : "none" });
             }
             await this.applyCurrentConfiguration();
             new import_obsidian15.Notice(`Footer ${value ? "enabled" : "disabled"} and applied to config.ts`);
@@ -5902,13 +5977,13 @@ var FeaturesTab = class extends TabRenderer {
       globalGroup.addSetting((setting2) => {
         var _a, _b, _c;
         setting2.settingEl.classList.add("footer-content-setting");
-        setting2.settingEl.setCssProps({
+        setting2.settingEl.setCssStyles({
           display: ((_b = (_a = settings.footer) == null ? void 0 : _a.enabled) != null ? _b : true) ? "block" : "none"
         });
         setting2.setName("Footer content").setDesc("Text to display in footer. Use {author} for site author and {title} for site title");
         const descEl = setting2.settingEl.querySelector(".setting-item-description");
         if (descEl) {
-          descEl.setCssProps({
+          descEl.setCssStyles({
             marginBottom: "var(--size-4-3)"
           });
         }
@@ -5919,7 +5994,7 @@ var FeaturesTab = class extends TabRenderer {
           }
         });
         textarea.value = ((_c = settings.footer) == null ? void 0 : _c.content) || '\xA9 2025 {author}. Built with the <a href="https://github.com/davidvkimball/astro-modular" target="_blank">Astro Modular</a> theme.';
-        textarea.setCssProps({
+        textarea.setCssStyles({
           width: "100%",
           minHeight: "80px",
           resize: "vertical",
@@ -5931,7 +6006,7 @@ var FeaturesTab = class extends TabRenderer {
           background: "var(--background-primary)",
           color: "var(--text-normal)"
         });
-        setting2.controlEl.setCssProps({
+        setting2.controlEl.setCssStyles({
           width: "100%",
           display: "block"
         });
@@ -5965,7 +6040,7 @@ var FeaturesTab = class extends TabRenderer {
       globalGroup.addSetting((setting2) => {
         var _a, _b;
         setting2.settingEl.classList.add("footer-social-setting");
-        setting2.settingEl.setCssProps({
+        setting2.settingEl.setCssStyles({
           display: ((_b = (_a = settings.footer) == null ? void 0 : _a.enabled) != null ? _b : true) ? "block" : "none"
         });
         setting2.setName("Show social icons in footer").setDesc("Display social media icons in the footer").addToggle((toggle) => {
@@ -6039,7 +6114,7 @@ var FeaturesTab = class extends TabRenderer {
             await this.plugin.loadSettings();
             const cpSettings = container.querySelectorAll(".cp-option-setting");
             cpSettings.forEach((el) => {
-              el.setCssProps({ display: value ? "block" : "none" });
+              el.setCssStyles({ display: value ? "block" : "none" });
             });
             await this.applyCurrentConfiguration();
             new import_obsidian15.Notice(`Command palette ${value ? "enabled" : "disabled"} and applied to config.ts`);
@@ -6049,7 +6124,7 @@ var FeaturesTab = class extends TabRenderer {
       commandPaletteGroup.addSetting((setting2) => {
         var _a, _b;
         setting2.settingEl.classList.add("cp-option-setting");
-        setting2.settingEl.setCssProps({
+        setting2.settingEl.setCssStyles({
           display: ((_b = (_a = settings.commandPalette) == null ? void 0 : _a.enabled) != null ? _b : true) ? "block" : "none"
         });
         setting2.setName("Shortcut").setDesc("Keyboard shortcut to open command palette (Ctrl = Cmd on Mac)").addText((text) => {
@@ -6080,7 +6155,7 @@ var FeaturesTab = class extends TabRenderer {
       commandPaletteGroup.addSetting((setting2) => {
         var _a, _b;
         setting2.settingEl.classList.add("cp-option-setting");
-        setting2.settingEl.setCssProps({
+        setting2.settingEl.setCssStyles({
           display: ((_b = (_a = settings.commandPalette) == null ? void 0 : _a.enabled) != null ? _b : true) ? "block" : "none"
         });
         setting2.setName("Placeholder").setDesc("Placeholder text in command palette search box").addText((text) => {
@@ -6111,7 +6186,7 @@ var FeaturesTab = class extends TabRenderer {
       commandPaletteGroup.addSetting((setting2) => {
         var _a, _b;
         setting2.settingEl.classList.add("cp-option-setting");
-        setting2.settingEl.setCssProps({
+        setting2.settingEl.setCssStyles({
           display: ((_b = (_a = settings.commandPalette) == null ? void 0 : _a.enabled) != null ? _b : true) ? "block" : "none"
         });
         setting2.setName("Search posts").setDesc("Include posts in search results").addToggle((toggle) => {
@@ -6133,7 +6208,7 @@ var FeaturesTab = class extends TabRenderer {
       commandPaletteGroup.addSetting((setting2) => {
         var _a, _b;
         setting2.settingEl.classList.add("cp-option-setting");
-        setting2.settingEl.setCssProps({
+        setting2.settingEl.setCssStyles({
           display: ((_b = (_a = settings.commandPalette) == null ? void 0 : _a.enabled) != null ? _b : true) ? "block" : "none"
         });
         setting2.setName("Search pages").setDesc("Include pages in search results").addToggle((toggle) => {
@@ -6153,7 +6228,7 @@ var FeaturesTab = class extends TabRenderer {
       commandPaletteGroup.addSetting((setting2) => {
         var _a, _b;
         setting2.settingEl.classList.add("cp-option-setting");
-        setting2.settingEl.setCssProps({
+        setting2.settingEl.setCssStyles({
           display: ((_b = (_a = settings.commandPalette) == null ? void 0 : _a.enabled) != null ? _b : true) ? "block" : "none"
         });
         setting2.setName("Search projects").setDesc("Include projects in search results").addToggle((toggle) => {
@@ -6173,7 +6248,7 @@ var FeaturesTab = class extends TabRenderer {
       commandPaletteGroup.addSetting((setting2) => {
         var _a, _b;
         setting2.settingEl.classList.add("cp-option-setting");
-        setting2.settingEl.setCssProps({
+        setting2.settingEl.setCssStyles({
           display: ((_b = (_a = settings.commandPalette) == null ? void 0 : _a.enabled) != null ? _b : true) ? "block" : "none"
         });
         setting2.setName("Search docs").setDesc("Include docs in search results").addToggle((toggle) => {
@@ -6193,7 +6268,7 @@ var FeaturesTab = class extends TabRenderer {
       commandPaletteGroup.addSetting((setting2) => {
         var _a, _b;
         setting2.settingEl.classList.add("cp-option-setting");
-        setting2.settingEl.setCssProps({
+        setting2.settingEl.setCssStyles({
           display: ((_b = (_a = settings.commandPalette) == null ? void 0 : _a.enabled) != null ? _b : true) ? "block" : "none"
         });
         setting2.setName("Show quick actions section").setDesc("Display quick actions in command palette").addToggle((toggle) => {
@@ -6207,7 +6282,7 @@ var FeaturesTab = class extends TabRenderer {
             await this.plugin.saveData(settings);
             const qaSettings = container.querySelectorAll(".qa-option-setting");
             qaSettings.forEach((el) => {
-              el.setCssProps({ display: value ? "block" : "none" });
+              el.setCssStyles({ display: value ? "block" : "none" });
             });
             await this.applyCurrentConfiguration();
           });
@@ -6216,7 +6291,7 @@ var FeaturesTab = class extends TabRenderer {
       commandPaletteGroup.addSetting((setting2) => {
         var _a, _b, _c, _d, _e;
         setting2.settingEl.classList.add("cp-option-setting", "qa-option-setting");
-        setting2.settingEl.setCssProps({
+        setting2.settingEl.setCssStyles({
           display: ((_b = (_a = settings.commandPalette) == null ? void 0 : _a.enabled) != null ? _b : true) && ((_e = (_d = (_c = settings.commandPalette) == null ? void 0 : _c.sections) == null ? void 0 : _d.quickActions) != null ? _e : true) ? "block" : "none"
         });
         setting2.setName("Toggle dark/light mode").setDesc("Show mode toggle button in command palette").addToggle((toggle) => {
@@ -6237,7 +6312,7 @@ var FeaturesTab = class extends TabRenderer {
       commandPaletteGroup.addSetting((setting2) => {
         var _a, _b, _c, _d, _e;
         setting2.settingEl.classList.add("cp-option-setting", "qa-option-setting");
-        setting2.settingEl.setCssProps({
+        setting2.settingEl.setCssStyles({
           display: ((_b = (_a = settings.commandPalette) == null ? void 0 : _a.enabled) != null ? _b : true) && ((_e = (_d = (_c = settings.commandPalette) == null ? void 0 : _c.sections) == null ? void 0 : _d.quickActions) != null ? _e : true) ? "block" : "none"
         });
         setting2.setName("View graph").setDesc("Show graph view button in command palette").addToggle((toggle) => {
@@ -6258,7 +6333,7 @@ var FeaturesTab = class extends TabRenderer {
       commandPaletteGroup.addSetting((setting2) => {
         var _a, _b, _c, _d, _e;
         setting2.settingEl.classList.add("cp-option-setting", "qa-option-setting");
-        setting2.settingEl.setCssProps({
+        setting2.settingEl.setCssStyles({
           display: ((_b = (_a = settings.commandPalette) == null ? void 0 : _a.enabled) != null ? _b : true) && ((_e = (_d = (_c = settings.commandPalette) == null ? void 0 : _c.sections) == null ? void 0 : _d.quickActions) != null ? _e : true) ? "block" : "none"
         });
         setting2.setName("Change theme").setDesc("Show theme selector button in command palette").addToggle((toggle) => {
@@ -6279,7 +6354,7 @@ var FeaturesTab = class extends TabRenderer {
       commandPaletteGroup.addSetting((setting2) => {
         var _a, _b;
         setting2.settingEl.classList.add("cp-option-setting");
-        setting2.settingEl.setCssProps({
+        setting2.settingEl.setCssStyles({
           display: ((_b = (_a = settings.commandPalette) == null ? void 0 : _a.enabled) != null ? _b : true) ? "block" : "none"
         });
         setting2.setName("Show pages section").setDesc("Display navigation pages in command palette").addToggle((toggle) => {
@@ -6299,7 +6374,7 @@ var FeaturesTab = class extends TabRenderer {
       commandPaletteGroup.addSetting((setting2) => {
         var _a, _b;
         setting2.settingEl.classList.add("cp-option-setting");
-        setting2.settingEl.setCssProps({
+        setting2.settingEl.setCssStyles({
           display: ((_b = (_a = settings.commandPalette) == null ? void 0 : _a.enabled) != null ? _b : true) ? "block" : "none"
         });
         setting2.setName("Show social section").setDesc("Display social links in command palette").addToggle((toggle) => {
@@ -6338,7 +6413,7 @@ var FeaturesTab = class extends TabRenderer {
             await this.plugin.loadSettings();
             const fpSettings = container.querySelectorAll(".fp-option-setting");
             fpSettings.forEach((el) => {
-              el.setCssProps({ display: value ? "block" : "none" });
+              el.setCssStyles({ display: value ? "block" : "none" });
             });
             await this.applyCurrentConfiguration();
             new import_obsidian15.Notice(`Featured post ${value ? "enabled" : "disabled"} and applied to config.ts`);
@@ -6348,7 +6423,7 @@ var FeaturesTab = class extends TabRenderer {
       homeOptionsGroup.addSetting((setting2) => {
         var _a, _b, _c;
         setting2.settingEl.classList.add("fp-option-setting");
-        setting2.settingEl.setCssProps({
+        setting2.settingEl.setCssStyles({
           display: ((_c = (_b = (_a = settings.homeOptions) == null ? void 0 : _a.featuredPost) == null ? void 0 : _b.enabled) != null ? _c : true) ? "block" : "none"
         });
         setting2.setName("Featured post type").setDesc("Show latest post or a specific featured post").addDropdown((dropdown) => {
@@ -6362,14 +6437,14 @@ var FeaturesTab = class extends TabRenderer {
             await this.plugin.saveData(settings);
             const fpSlugSetting = container.querySelector(".fp-slug-setting");
             if (fpSlugSetting) {
-              fpSlugSetting.setCssProps({ display: value === "featured" ? "block" : "none" });
+              fpSlugSetting.setCssStyles({ display: value === "featured" ? "block" : "none" });
             }
             await this.applyCurrentConfiguration();
           });
           setTimeout(() => {
             const selectEl = setting2.controlEl.querySelector("select");
             if (selectEl) {
-              selectEl.setCssProps({
+              selectEl.setCssStyles({
                 width: "200px",
                 minWidth: "200px",
                 maxWidth: "200px"
@@ -6381,7 +6456,7 @@ var FeaturesTab = class extends TabRenderer {
       homeOptionsGroup.addSetting((setting2) => {
         var _a, _b, _c, _d, _e;
         setting2.settingEl.classList.add("fp-option-setting", "fp-slug-setting");
-        setting2.settingEl.setCssProps({
+        setting2.settingEl.setCssStyles({
           display: ((_c = (_b = (_a = settings.homeOptions) == null ? void 0 : _a.featuredPost) == null ? void 0 : _b.enabled) != null ? _c : true) && ((_e = (_d = settings.homeOptions) == null ? void 0 : _d.featuredPost) == null ? void 0 : _e.type) === "featured" ? "block" : "none"
         });
         setting2.setName("Featured post slug").setDesc('Slug of the post to feature (like "getting-started" for /posts/getting-started)').addText((text) => {
@@ -6430,7 +6505,7 @@ var FeaturesTab = class extends TabRenderer {
             await this.plugin.loadSettings();
             const rpCountSetting = container.querySelector(".rp-count-setting");
             if (rpCountSetting) {
-              rpCountSetting.setCssProps({ display: value ? "block" : "none" });
+              rpCountSetting.setCssStyles({ display: value ? "block" : "none" });
             }
             await this.applyCurrentConfiguration();
           });
@@ -6439,7 +6514,7 @@ var FeaturesTab = class extends TabRenderer {
       homeOptionsGroup.addSetting((setting2) => {
         var _a, _b, _c;
         setting2.settingEl.classList.add("rp-count-setting");
-        setting2.settingEl.setCssProps({
+        setting2.settingEl.setCssStyles({
           display: ((_c = (_b = (_a = settings.homeOptions) == null ? void 0 : _a.recentPosts) == null ? void 0 : _b.enabled) != null ? _c : true) ? "block" : "none"
         });
         setting2.setName("Recent posts count").setDesc("Number of recent posts to show").addText((text) => {
@@ -6488,7 +6563,7 @@ var FeaturesTab = class extends TabRenderer {
             await this.plugin.saveData(settings);
             const pCountSetting = container.querySelector(".p-count-setting");
             if (pCountSetting) {
-              pCountSetting.setCssProps({ display: value ? "block" : "none" });
+              pCountSetting.setCssStyles({ display: value ? "block" : "none" });
             }
             await this.applyCurrentConfiguration();
           });
@@ -6497,7 +6572,7 @@ var FeaturesTab = class extends TabRenderer {
       homeOptionsGroup.addSetting((setting2) => {
         var _a, _b, _c;
         setting2.settingEl.classList.add("p-count-setting");
-        setting2.settingEl.setCssProps({
+        setting2.settingEl.setCssStyles({
           display: ((_c = (_b = (_a = settings.homeOptions) == null ? void 0 : _a.projects) == null ? void 0 : _b.enabled) != null ? _c : true) ? "block" : "none"
         });
         setting2.setName("Projects count").setDesc("Number of projects to show").addText((text) => {
@@ -6544,7 +6619,7 @@ var FeaturesTab = class extends TabRenderer {
             await this.plugin.saveData(settings);
             const dCountSetting = container.querySelector(".d-count-setting");
             if (dCountSetting) {
-              dCountSetting.setCssProps({ display: value ? "block" : "none" });
+              dCountSetting.setCssStyles({ display: value ? "block" : "none" });
             }
             await this.applyCurrentConfiguration();
           });
@@ -6553,7 +6628,7 @@ var FeaturesTab = class extends TabRenderer {
       homeOptionsGroup.addSetting((setting2) => {
         var _a, _b, _c;
         setting2.settingEl.classList.add("d-count-setting");
-        setting2.settingEl.setCssProps({
+        setting2.settingEl.setCssStyles({
           display: ((_c = (_b = (_a = settings.homeOptions) == null ? void 0 : _a.docs) == null ? void 0 : _b.enabled) != null ? _c : true) ? "block" : "none"
         });
         setting2.setName("Docs count").setDesc("Number of docs to show").addText((text) => {
@@ -6603,7 +6678,7 @@ var FeaturesTab = class extends TabRenderer {
           setTimeout(() => {
             const selectEl = setting2.controlEl.querySelector("select");
             if (selectEl) {
-              selectEl.setCssProps({
+              selectEl.setCssStyles({
                 width: "200px",
                 minWidth: "200px",
                 maxWidth: "200px"
@@ -6699,7 +6774,7 @@ var FeaturesTab = class extends TabRenderer {
               await this.plugin.loadSettings();
               const lmCompactSetting = container.querySelector(".lm-compact-setting");
               if (lmCompactSetting) {
-                lmCompactSetting.setCssProps({ display: value ? "block" : "none" });
+                lmCompactSetting.setCssStyles({ display: value ? "block" : "none" });
               }
               await this.applyCurrentConfiguration();
             });
@@ -6708,7 +6783,7 @@ var FeaturesTab = class extends TabRenderer {
         postOptionsGroup.addSetting((setting3) => {
           var _a, _b, _c;
           setting3.settingEl.classList.add("lm-compact-setting");
-          setting3.settingEl.setCssProps({
+          setting3.settingEl.setCssStyles({
             display: ((_c = (_b = (_a = settings.postOptions) == null ? void 0 : _a.linkedMentions) == null ? void 0 : _b.enabled) != null ? _c : true) ? "block" : "none"
           });
           setting3.setName("Compact view").setDesc("Use compact view for linked mentions").addToggle((toggle) => {
@@ -6739,7 +6814,7 @@ var FeaturesTab = class extends TabRenderer {
               await this.plugin.loadSettings();
               const gvSettings = container.querySelectorAll(".gv-option-setting");
               gvSettings.forEach((el) => {
-                el.setCssProps({ display: value ? "block" : "none" });
+                el.setCssStyles({ display: value ? "block" : "none" });
               });
               await this.applyCurrentConfiguration();
             });
@@ -6748,7 +6823,7 @@ var FeaturesTab = class extends TabRenderer {
         postOptionsGroup.addSetting((setting3) => {
           var _a, _b, _c;
           setting3.settingEl.classList.add("gv-option-setting");
-          setting3.settingEl.setCssProps({
+          setting3.settingEl.setCssStyles({
             display: ((_c = (_b = (_a = settings.postOptions) == null ? void 0 : _a.graphView) == null ? void 0 : _b.enabled) != null ? _c : true) ? "block" : "none"
           });
           setting3.setName("Show in sidebar").setDesc("Display graph view in post sidebar").addToggle((toggle) => {
@@ -6767,7 +6842,7 @@ var FeaturesTab = class extends TabRenderer {
         postOptionsGroup.addSetting((setting3) => {
           var _a, _b, _c;
           setting3.settingEl.classList.add("gv-option-setting");
-          setting3.settingEl.setCssProps({
+          setting3.settingEl.setCssStyles({
             display: ((_c = (_b = (_a = settings.postOptions) == null ? void 0 : _a.graphView) == null ? void 0 : _b.enabled) != null ? _c : true) ? "block" : "none"
           });
           setting3.setName("Maximum nodes").setDesc("Maximum number of nodes to show in graph").addText((text) => {
@@ -6787,7 +6862,7 @@ var FeaturesTab = class extends TabRenderer {
         postOptionsGroup.addSetting((setting3) => {
           var _a, _b, _c;
           setting3.settingEl.classList.add("gv-option-setting");
-          setting3.settingEl.setCssProps({
+          setting3.settingEl.setCssStyles({
             display: ((_c = (_b = (_a = settings.postOptions) == null ? void 0 : _a.graphView) == null ? void 0 : _b.enabled) != null ? _c : true) ? "block" : "none"
           });
           setting3.setName("Show orphaned posts").setDesc("Include posts with no connections in graph view").addToggle((toggle) => {
@@ -6836,7 +6911,7 @@ var FeaturesTab = class extends TabRenderer {
             setTimeout(() => {
               const selectEl = setting3.controlEl.querySelector("select");
               if (selectEl) {
-                selectEl.setCssProps({
+                selectEl.setCssStyles({
                   width: "200px",
                   minWidth: "200px",
                   maxWidth: "200px"
@@ -6859,14 +6934,14 @@ var FeaturesTab = class extends TabRenderer {
               await this.plugin.loadSettings();
               const customARSetting = container.querySelector(".custom-ar-setting");
               if (customARSetting) {
-                customARSetting.setCssProps({ display: value === "custom" ? "block" : "none" });
+                customARSetting.setCssStyles({ display: value === "custom" ? "block" : "none" });
               }
               await this.applyCurrentConfiguration();
             });
             setTimeout(() => {
               const selectEl = setting3.controlEl.querySelector("select");
               if (selectEl) {
-                selectEl.setCssProps({
+                selectEl.setCssStyles({
                   width: "200px",
                   minWidth: "200px",
                   maxWidth: "200px"
@@ -6878,7 +6953,7 @@ var FeaturesTab = class extends TabRenderer {
         postOptionsGroup.addSetting((setting3) => {
           var _a;
           setting3.settingEl.classList.add("custom-ar-setting");
-          setting3.settingEl.setCssProps({
+          setting3.settingEl.setCssStyles({
             display: ((_a = settings.postOptions) == null ? void 0 : _a.postCardAspectRatio) === "custom" ? "block" : "none"
           });
           setting3.setName("Custom aspect ratio").setDesc('Custom aspect ratio in format "width/height" (like "2.5/1")').addText((text) => {
@@ -6945,7 +7020,7 @@ var FeaturesTab = class extends TabRenderer {
         const ppSettings = (_b2 = setting.settingEl.parentElement) == null ? void 0 : _b2.querySelectorAll(".pp-option-setting");
         if (ppSettings) {
           ppSettings.forEach((el) => {
-            el.setCssProps({ display: value ? "block" : "none" });
+            el.setCssStyles({ display: value ? "block" : "none" });
           });
         }
         try {
@@ -6958,24 +7033,24 @@ var FeaturesTab = class extends TabRenderer {
     });
     group.addSetting((setting) => {
       setting.settingEl.classList.add("pp-option-setting");
-      setting.settingEl.setCssProps({
+      setting.settingEl.setCssStyles({
         display: isEnabled ? "block" : "none",
         marginTop: "10px"
       });
       const nameEl = setting.settingEl.querySelector(".setting-item-name");
       const descEl = setting.settingEl.querySelector(".setting-item-description");
       const controlEl = setting.settingEl.querySelector(".setting-item-control");
-      if (nameEl) nameEl.setCssProps({ display: "none" });
-      if (descEl) descEl.setCssProps({ display: "none" });
-      if (controlEl) controlEl.setCssProps({ display: "none" });
-      setting.settingEl.setCssProps({
+      if (nameEl) nameEl.setCssStyles({ display: "none" });
+      if (descEl) descEl.setCssStyles({ display: "none" });
+      if (controlEl) controlEl.setCssStyles({ display: "none" });
+      setting.settingEl.setCssStyles({
         borderTop: "none",
         paddingTop: "0",
         paddingBottom: "0"
       });
       const optionsContainer = setting.settingEl.createDiv("profile-picture-options");
       const optionsGrid = optionsContainer.createDiv("options-grid");
-      optionsGrid.setCssProps({
+      optionsGrid.setCssStyles({
         display: "grid",
         gridTemplateColumns: "1fr 1fr",
         gap: "10px",
@@ -7085,7 +7160,7 @@ var FeaturesTab = class extends TabRenderer {
         const commentsSettings2 = commentsSettingsEls;
         if (commentsSettings2) {
           commentsSettings2.forEach((el) => {
-            el.setCssProps({ display: value ? "block" : "none" });
+            el.setCssStyles({ display: value ? "block" : "none" });
           });
         }
         try {
@@ -7099,34 +7174,34 @@ var FeaturesTab = class extends TabRenderer {
     group.addSetting((setting) => {
       var _a2, _b2, _c2, _d2;
       setting.settingEl.classList.add("comments-option-setting");
-      setting.settingEl.setCssProps({
+      setting.settingEl.setCssStyles({
         display: isEnabled ? "block" : "none",
         marginTop: "10px"
       });
       const nameEl = setting.settingEl.querySelector(".setting-item-name");
       const descEl = setting.settingEl.querySelector(".setting-item-description");
       const controlEl = setting.settingEl.querySelector(".setting-item-control");
-      if (nameEl) nameEl.setCssProps({ display: "none" });
-      if (descEl) descEl.setCssProps({ display: "none" });
-      if (controlEl) controlEl.setCssProps({ display: "none" });
-      setting.settingEl.setCssProps({
+      if (nameEl) nameEl.setCssStyles({ display: "none" });
+      if (descEl) descEl.setCssStyles({ display: "none" });
+      if (controlEl) controlEl.setCssStyles({ display: "none" });
+      setting.settingEl.setCssStyles({
         borderTop: "none",
         paddingTop: "0",
         paddingBottom: "0"
       });
       const optionsContainer = setting.settingEl.createDiv("comments-options");
       const instructionsDiv = optionsContainer.createDiv("comments-instructions");
-      instructionsDiv.setCssProps({
+      instructionsDiv.setCssStyles({
         marginBottom: "15px",
         padding: "10px",
         background: "var(--background-modifier-border)"
       });
-      instructionsDiv.setCssProps({
+      instructionsDiv.setCssStyles({
         borderRadius: "4px",
         borderLeft: "3px solid var(--interactive-accent)"
       });
       const instructionsText = instructionsDiv.createEl("p");
-      instructionsText.setCssProps({
+      instructionsText.setCssStyles({
         margin: "0",
         fontSize: "13px",
         color: "var(--text-muted)",
@@ -7143,16 +7218,16 @@ var FeaturesTab = class extends TabRenderer {
           rel: "noopener noreferrer"
         }
       });
-      giscusLink.setCssProps({
+      giscusLink.setCssStyles({
         color: "var(--interactive-accent)",
         textDecoration: "none"
       });
       instructionsText.appendText(" and configure your comments\n2. Copy the generated script\n3. Paste it below");
       giscusLink.addEventListener("mouseenter", () => {
-        giscusLink.setCssProps({ textDecoration: "underline" });
+        giscusLink.setCssStyles({ textDecoration: "underline" });
       });
       giscusLink.addEventListener("mouseleave", () => {
-        giscusLink.setCssProps({ textDecoration: "none" });
+        giscusLink.setCssStyles({ textDecoration: "none" });
       });
       const scriptSetting = new import_obsidian15.Setting(optionsContainer).setName("Giscus Script").setDesc("Paste your Giscus script here (the plugin will automatically parse all settings)");
       const textarea = scriptSetting.controlEl.createEl("textarea", {
@@ -7176,7 +7251,7 @@ var FeaturesTab = class extends TabRenderer {
           rows: "8"
         }
       });
-      textarea.setCssProps({
+      textarea.setCssStyles({
         width: "100%",
         fontFamily: "var(--font-monospace)",
         fontSize: "12px",
@@ -7189,7 +7264,7 @@ var FeaturesTab = class extends TabRenderer {
       });
       textarea.value = ((_b2 = (_a2 = settings.optionalFeatures) == null ? void 0 : _a2.comments) == null ? void 0 : _b2.rawScript) || ((_d2 = (_c2 = settings.postOptions) == null ? void 0 : _c2.comments) == null ? void 0 : _d2.rawScript) || "";
       const validationDiv = optionsContainer.createDiv("script-validation");
-      validationDiv.setCssProps({
+      validationDiv.setCssStyles({
         marginTop: "8px",
         fontSize: "12px"
       });
@@ -7265,7 +7340,7 @@ var FeaturesTab = class extends TabRenderer {
         if (validation.valid) {
           validationDiv.empty();
           const successSpan = validationDiv.createEl("span", { text: "\u2713 Valid Giscus script detected" });
-          successSpan.setCssProps({ color: "var(--text-success)" });
+          successSpan.setCssStyles({ color: "var(--text-success)" });
           const parsed = GiscusScriptParser2.parseScript(scriptContent);
           if (parsed) {
             const currentEnabled = (_p = (_o = (_l = (_j2 = (_i2 = settings.optionalFeatures) == null ? void 0 : _i2.comments) == null ? void 0 : _j2.enabled) != null ? _l : (_k = settings.features) == null ? void 0 : _k.comments) != null ? _o : (_n = (_m = settings.postOptions) == null ? void 0 : _m.comments) == null ? void 0 : _n.enabled) != null ? _p : false;
@@ -7331,7 +7406,7 @@ var FeaturesTab = class extends TabRenderer {
         } else {
           validationDiv.empty();
           const errorSpan = validationDiv.createEl("span", { text: `\u2717 ${validation.error}` });
-          errorSpan.setCssProps({ color: "var(--text-error)" });
+          errorSpan.setCssStyles({ color: "var(--text-error)" });
         }
       };
       textarea.addEventListener("input", () => {
@@ -7361,291 +7436,305 @@ init_types();
 var AdvancedTab = class extends TabRenderer {
   render(container) {
     container.empty();
-    const settings = this.getSettings();
     const advancedGroup = new import_obsidian16.SettingGroup(container);
-    advancedGroup.addSetting((setting) => {
-      setting.setName("Apply all settings").setDesc("Write all current settings to your Astro config.ts file").addButton((button) => button.setButtonText("Apply to config.ts").setCta().onClick(async () => {
-        try {
+    advancedGroup.addSetting((setting) => this.buildApplyAllSetting(setting));
+    advancedGroup.addSetting((setting) => this.buildEditConfigSetting(setting));
+    advancedGroup.addSetting((setting) => this.buildSyncFromConfigSetting(setting));
+    advancedGroup.addSetting((setting) => this.buildResetToTemplateSetting(setting));
+    advancedGroup.addSetting((setting) => this.buildResetToDefaultsSetting(setting));
+    advancedGroup.addSetting((setting) => this.buildExportConfigurationSetting(setting));
+    advancedGroup.addSetting((setting) => this.buildImportConfigurationSetting(setting));
+  }
+  // Apply all settings button
+  buildApplyAllSetting(setting) {
+    setting.setName("Apply all settings").setDesc("Write all current settings to your Astro config.ts file").addButton((button) => button.setButtonText("Apply to config.ts").setCta().onClick(async () => {
+      try {
+        await this.applyCurrentConfiguration(true);
+      } catch (error) {
+        new import_obsidian16.Notice(`Failed to apply settings: ${error instanceof Error ? error.message : String(error)}`);
+      }
+    }));
+  }
+  // Edit config.ts directly button
+  buildEditConfigSetting(setting) {
+    setting.setName("Edit config.ts directly").setDesc("Open your Astro configuration file in the editor").addButton((button) => button.setButtonText("Open config.ts").onClick(() => {
+      this.openConfigFile();
+    }));
+  }
+  // Sync from config.ts button
+  buildSyncFromConfigSetting(setting) {
+    setting.setName("Sync from config.ts").setDesc("Read current config.ts file and update plugin settings to match").addButton((button) => button.setButtonText("Sync from config.ts").setCta().onClick(async () => {
+      var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y;
+      try {
+        const plugin = this.plugin;
+        const configContent = plugin.configManager.fileManager.readConfig();
+        if (!configContent) {
+          new import_obsidian16.Notice("Could not read config.ts file");
+          return;
+        }
+        const currentConfig = plugin.configManager.fileManager.parseConfigFile(configContent);
+        if (!currentConfig) {
+          new import_obsidian16.Notice("Could not parse config.ts file");
+          return;
+        }
+        const settings = this.getSettings();
+        if (currentConfig.siteInfo && typeof currentConfig.siteInfo === "object") {
+          const siteInfo = currentConfig.siteInfo;
+          settings.siteInfo.site = (_a = siteInfo.site) != null ? _a : settings.siteInfo.site;
+          settings.siteInfo.title = (_b = siteInfo.title) != null ? _b : settings.siteInfo.title;
+          settings.siteInfo.homepageTitle = (_c = siteInfo.homepageTitle) != null ? _c : settings.siteInfo.homepageTitle;
+          settings.siteInfo.description = (_d = siteInfo.description) != null ? _d : settings.siteInfo.description;
+          settings.siteInfo.author = (_e = siteInfo.author) != null ? _e : settings.siteInfo.author;
+          settings.siteInfo.language = (_f = siteInfo.language) != null ? _f : settings.siteInfo.language;
+        }
+        if (currentConfig.faviconThemeAdaptive !== void 0) {
+          settings.siteInfo.faviconThemeAdaptive = currentConfig.faviconThemeAdaptive;
+        }
+        if (currentConfig.defaultOgImageAlt) {
+          settings.siteInfo.defaultOgImageAlt = currentConfig.defaultOgImageAlt;
+          if (!settings.seo) {
+            settings.seo = { defaultOgImageAlt: "" };
+          }
+          settings.seo.defaultOgImageAlt = currentConfig.defaultOgImageAlt;
+        }
+        if (currentConfig.navigation && typeof currentConfig.navigation === "object") {
+          const navigation = currentConfig.navigation;
+          if (navigation.pages) {
+            settings.navigation.pages = navigation.pages;
+          }
+          if (navigation.social) {
+            settings.navigation.social = navigation.social;
+          }
+        }
+        if (currentConfig.currentTheme) {
+          settings.currentTheme = currentConfig.currentTheme;
+        }
+        if (currentConfig.typography && typeof currentConfig.typography === "object") {
+          const typography = currentConfig.typography;
+          const fontSource = (_g = typography.fontSource) != null ? _g : settings.typography.fontSource;
+          settings.typography.fontSource = fontSource === "local" || fontSource === "cdn" ? fontSource : settings.typography.fontSource;
+          settings.typography.proseFont = (_h = typography.proseFont) != null ? _h : settings.typography.proseFont;
+          settings.typography.headingFont = (_i = typography.headingFont) != null ? _i : settings.typography.headingFont;
+          settings.typography.monoFont = (_j = typography.monoFont) != null ? _j : settings.typography.monoFont;
+        }
+        if (currentConfig.tableOfContents && typeof currentConfig.tableOfContents === "object") {
+          const toc = currentConfig.tableOfContents;
+          if (!settings.tableOfContents) {
+            settings.tableOfContents = { enabled: true, depth: 4 };
+          }
+          settings.tableOfContents.enabled = (_k = toc.enabled) != null ? _k : settings.tableOfContents.enabled;
+          settings.tableOfContents.depth = (_l = toc.depth) != null ? _l : settings.tableOfContents.depth;
+        }
+        if (currentConfig.postOptions && typeof currentConfig.postOptions === "object") {
+          const postOptions = currentConfig.postOptions;
+          settings.features.readingTime = (_m = postOptions.readingTime) != null ? _m : settings.features.readingTime;
+          if (postOptions.linkedMentions && typeof postOptions.linkedMentions === "object") {
+            const linkedMentions = postOptions.linkedMentions;
+            settings.features.linkedMentions = (_n = linkedMentions.enabled) != null ? _n : settings.features.linkedMentions;
+            settings.features.linkedMentionsCompact = (_o = linkedMentions.linkedMentionsCompact) != null ? _o : settings.features.linkedMentionsCompact;
+          }
+          if (postOptions.graphView && typeof postOptions.graphView === "object") {
+            const graphView = postOptions.graphView;
+            settings.features.graphView = (_p = graphView.enabled) != null ? _p : settings.features.graphView;
+          }
+          settings.features.postNavigation = (_q = postOptions.postNavigation) != null ? _q : settings.features.postNavigation;
+          if (postOptions.comments && typeof postOptions.comments === "object") {
+            const comments = postOptions.comments;
+            settings.features.comments = (_r = comments.enabled) != null ? _r : settings.features.comments;
+          }
+        }
+        if (currentConfig.optionalContentTypes && typeof currentConfig.optionalContentTypes === "object") {
+          const optionalContentTypes = currentConfig.optionalContentTypes;
+          settings.optionalContentTypes.projects = (_s = optionalContentTypes.projects) != null ? _s : settings.optionalContentTypes.projects;
+          settings.optionalContentTypes.docs = (_t = optionalContentTypes.docs) != null ? _t : settings.optionalContentTypes.docs;
+        }
+        if (currentConfig.footer && typeof currentConfig.footer === "object") {
+          const footer = currentConfig.footer;
+          settings.features.showSocialIconsInFooter = (_u = footer.showSocialIconsInFooter) != null ? _u : false;
+        }
+        if (currentConfig.commandPalette && typeof currentConfig.commandPalette === "object") {
+          const commandPalette = currentConfig.commandPalette;
+          settings.features.commandPalette = (_v = commandPalette.enabled) != null ? _v : false;
+          if (!settings.commandPalette) {
+            settings.commandPalette = {
+              enabled: true,
+              shortcut: "ctrl+K",
+              placeholder: "Search posts",
+              search: { posts: true, pages: false, projects: false, docs: false },
+              sections: { quickActions: true, pages: true, social: true },
+              quickActions: { enabled: true, toggleMode: true, graphView: true, changeTheme: true }
+            };
+          }
+          settings.commandPalette.enabled = (_w = commandPalette.enabled) != null ? _w : settings.commandPalette.enabled;
+          settings.commandPalette.placeholder = (_x = commandPalette.placeholder) != null ? _x : settings.commandPalette.placeholder;
+          settings.commandPalette.shortcut = (_y = commandPalette.shortcut) != null ? _y : settings.commandPalette.shortcut;
+          if (commandPalette.search && typeof commandPalette.search === "object") {
+            settings.commandPalette.search = {
+              ...settings.commandPalette.search,
+              ...commandPalette.search
+            };
+          }
+          if (commandPalette.sections && typeof commandPalette.sections === "object") {
+            settings.commandPalette.sections = {
+              ...settings.commandPalette.sections,
+              ...commandPalette.sections
+            };
+          }
+          if (commandPalette.quickActions && typeof commandPalette.quickActions === "object") {
+            settings.commandPalette.quickActions = {
+              ...settings.commandPalette.quickActions,
+              ...commandPalette.quickActions
+            };
+            settings.features.quickActions = {
+              ...settings.features.quickActions,
+              ...commandPalette.quickActions
+            };
+          }
+        }
+        if (currentConfig.theme) {
+          settings.currentTheme = currentConfig.theme;
+        }
+        if (currentConfig.site) {
+          settings.siteInfo.site = currentConfig.site;
+        }
+        if (currentConfig.title) {
+          settings.siteInfo.title = currentConfig.title;
+        }
+        if (currentConfig.description) {
+          settings.siteInfo.description = currentConfig.description;
+        }
+        if (currentConfig.author) {
+          settings.siteInfo.author = currentConfig.author;
+        }
+        if (currentConfig.language) {
+          settings.siteInfo.language = currentConfig.language;
+        }
+        settings.currentTemplate = "standard";
+        await this.plugin.saveData(settings);
+        await this.plugin.triggerSettingsRefresh();
+        new import_obsidian16.Notice("Settings synced from config.ts successfully");
+      } catch (error) {
+        new import_obsidian16.Notice(`Failed to sync from config.ts: ${error instanceof Error ? error.message : String(error)}`);
+      }
+    }));
+  }
+  // Reset to Template button
+  buildResetToTemplateSetting(setting) {
+    var _a;
+    const settings = this.getSettings();
+    setting.setName("Reset to template").setDesc(`Reset all settings to the current template (${(_a = TEMPLATE_OPTIONS.find((t) => t.id === settings.currentTemplate)) == null ? void 0 : _a.name})`).addButton((button) => button.setButtonText("Reset to template").setWarning().onClick(async () => {
+      var _a2, _b, _c, _d, _e, _f;
+      try {
+        const templatePreset = this.plugin.configManager.getTemplatePreset(settings.currentTemplate);
+        if (templatePreset && templatePreset.config) {
+          const preservedSiteInfo = settings.siteInfo;
+          const preservedNavigation = settings.navigation;
+          const preservedTheme = settings.currentTheme;
+          const preservedContentOrg = settings.contentOrganization;
+          const preservedTypography = settings.typography;
+          const preservedOptionalFeatures = settings.optionalFeatures;
+          const preservedRunWizardOnStartup = settings.runWizardOnStartup;
+          if (templatePreset.config.features) {
+            settings.features = { ...settings.features, ...templatePreset.config.features };
+            if ((_a2 = settings.postOptions) == null ? void 0 : _a2.graphView) {
+              settings.postOptions.graphView.enabled = (_b = templatePreset.config.features.graphView) != null ? _b : false;
+              settings.features.graphView = settings.postOptions.graphView.enabled;
+            }
+            if ((_c = settings.postOptions) == null ? void 0 : _c.linkedMentions) {
+              const features2 = templatePreset.config.features;
+              settings.postOptions.linkedMentions.enabled = (_d = features2.linkedMentions) != null ? _d : false;
+              settings.postOptions.linkedMentions.linkedMentionsCompact = (_e = features2.linkedMentionsCompact) != null ? _e : false;
+            }
+            const features = templatePreset.config.features;
+            if (((_f = settings.commandPalette) == null ? void 0 : _f.quickActions) && features.quickActions) {
+              settings.commandPalette.quickActions = { ...settings.commandPalette.quickActions, ...features.quickActions };
+            }
+          }
+          if (templatePreset.config.tableOfContents) {
+            settings.tableOfContents = { ...settings.tableOfContents, ...templatePreset.config.tableOfContents };
+          }
+          settings.currentTemplate = templatePreset.config.currentTemplate || settings.currentTemplate;
+          settings.siteInfo = preservedSiteInfo;
+          settings.navigation = preservedNavigation;
+          settings.currentTheme = preservedTheme;
+          settings.contentOrganization = preservedContentOrg;
+          settings.typography = preservedTypography;
+          settings.optionalFeatures = preservedOptionalFeatures;
+          settings.runWizardOnStartup = preservedRunWizardOnStartup;
+          await this.plugin.saveData(settings);
+          await this.plugin.loadSettings();
           await this.applyCurrentConfiguration(true);
-        } catch (error) {
-          new import_obsidian16.Notice(`Failed to apply settings: ${error instanceof Error ? error.message : String(error)}`);
+          new import_obsidian16.Notice(`Reset to ${settings.currentTemplate} template and applied to config.ts`);
+        } else {
+          new import_obsidian16.Notice("Template not found");
         }
-      }));
-    });
-    advancedGroup.addSetting((setting) => {
-      setting.setName("Edit config.ts directly").setDesc("Open your Astro configuration file in the editor").addButton((button) => button.setButtonText("Open config.ts").onClick(() => {
-        this.openConfigFile();
-      }));
-    });
-    advancedGroup.addSetting((setting) => {
-      setting.setName("Sync from config.ts").setDesc("Read current config.ts file and update plugin settings to match").addButton((button) => button.setButtonText("Sync from config.ts").setCta().onClick(async () => {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y;
-        try {
-          const plugin = this.plugin;
-          const configContent = plugin.configManager.fileManager.readConfig();
-          if (!configContent) {
-            new import_obsidian16.Notice("Could not read config.ts file");
-            return;
-          }
-          const currentConfig = plugin.configManager.fileManager.parseConfigFile(configContent);
-          if (!currentConfig) {
-            new import_obsidian16.Notice("Could not parse config.ts file");
-            return;
-          }
-          const settings2 = this.getSettings();
-          if (currentConfig.siteInfo && typeof currentConfig.siteInfo === "object") {
-            const siteInfo = currentConfig.siteInfo;
-            settings2.siteInfo.site = (_a = siteInfo.site) != null ? _a : settings2.siteInfo.site;
-            settings2.siteInfo.title = (_b = siteInfo.title) != null ? _b : settings2.siteInfo.title;
-            settings2.siteInfo.homepageTitle = (_c = siteInfo.homepageTitle) != null ? _c : settings2.siteInfo.homepageTitle;
-            settings2.siteInfo.description = (_d = siteInfo.description) != null ? _d : settings2.siteInfo.description;
-            settings2.siteInfo.author = (_e = siteInfo.author) != null ? _e : settings2.siteInfo.author;
-            settings2.siteInfo.language = (_f = siteInfo.language) != null ? _f : settings2.siteInfo.language;
-          }
-          if (currentConfig.faviconThemeAdaptive !== void 0) {
-            settings2.siteInfo.faviconThemeAdaptive = currentConfig.faviconThemeAdaptive;
-          }
-          if (currentConfig.defaultOgImageAlt) {
-            settings2.siteInfo.defaultOgImageAlt = currentConfig.defaultOgImageAlt;
-            if (!settings2.seo) {
-              settings2.seo = { defaultOgImageAlt: "" };
-            }
-            settings2.seo.defaultOgImageAlt = currentConfig.defaultOgImageAlt;
-          }
-          if (currentConfig.navigation && typeof currentConfig.navigation === "object") {
-            const navigation = currentConfig.navigation;
-            if (navigation.pages) {
-              settings2.navigation.pages = navigation.pages;
-            }
-            if (navigation.social) {
-              settings2.navigation.social = navigation.social;
-            }
-          }
-          if (currentConfig.currentTheme) {
-            settings2.currentTheme = currentConfig.currentTheme;
-          }
-          if (currentConfig.typography && typeof currentConfig.typography === "object") {
-            const typography = currentConfig.typography;
-            const fontSource = (_g = typography.fontSource) != null ? _g : settings2.typography.fontSource;
-            settings2.typography.fontSource = fontSource === "local" || fontSource === "cdn" ? fontSource : settings2.typography.fontSource;
-            settings2.typography.proseFont = (_h = typography.proseFont) != null ? _h : settings2.typography.proseFont;
-            settings2.typography.headingFont = (_i = typography.headingFont) != null ? _i : settings2.typography.headingFont;
-            settings2.typography.monoFont = (_j = typography.monoFont) != null ? _j : settings2.typography.monoFont;
-          }
-          if (currentConfig.tableOfContents && typeof currentConfig.tableOfContents === "object") {
-            const toc = currentConfig.tableOfContents;
-            if (!settings2.tableOfContents) {
-              settings2.tableOfContents = { enabled: true, depth: 4 };
-            }
-            settings2.tableOfContents.enabled = (_k = toc.enabled) != null ? _k : settings2.tableOfContents.enabled;
-            settings2.tableOfContents.depth = (_l = toc.depth) != null ? _l : settings2.tableOfContents.depth;
-          }
-          if (currentConfig.postOptions && typeof currentConfig.postOptions === "object") {
-            const postOptions = currentConfig.postOptions;
-            settings2.features.readingTime = (_m = postOptions.readingTime) != null ? _m : settings2.features.readingTime;
-            if (postOptions.linkedMentions && typeof postOptions.linkedMentions === "object") {
-              const linkedMentions = postOptions.linkedMentions;
-              settings2.features.linkedMentions = (_n = linkedMentions.enabled) != null ? _n : settings2.features.linkedMentions;
-              settings2.features.linkedMentionsCompact = (_o = linkedMentions.linkedMentionsCompact) != null ? _o : settings2.features.linkedMentionsCompact;
-            }
-            if (postOptions.graphView && typeof postOptions.graphView === "object") {
-              const graphView = postOptions.graphView;
-              settings2.features.graphView = (_p = graphView.enabled) != null ? _p : settings2.features.graphView;
-            }
-            settings2.features.postNavigation = (_q = postOptions.postNavigation) != null ? _q : settings2.features.postNavigation;
-            if (postOptions.comments && typeof postOptions.comments === "object") {
-              const comments = postOptions.comments;
-              settings2.features.comments = (_r = comments.enabled) != null ? _r : settings2.features.comments;
-            }
-          }
-          if (currentConfig.optionalContentTypes && typeof currentConfig.optionalContentTypes === "object") {
-            const optionalContentTypes = currentConfig.optionalContentTypes;
-            settings2.optionalContentTypes.projects = (_s = optionalContentTypes.projects) != null ? _s : settings2.optionalContentTypes.projects;
-            settings2.optionalContentTypes.docs = (_t = optionalContentTypes.docs) != null ? _t : settings2.optionalContentTypes.docs;
-          }
-          if (currentConfig.footer && typeof currentConfig.footer === "object") {
-            const footer = currentConfig.footer;
-            settings2.features.showSocialIconsInFooter = (_u = footer.showSocialIconsInFooter) != null ? _u : false;
-          }
-          if (currentConfig.commandPalette && typeof currentConfig.commandPalette === "object") {
-            const commandPalette = currentConfig.commandPalette;
-            settings2.features.commandPalette = (_v = commandPalette.enabled) != null ? _v : false;
-            if (!settings2.commandPalette) {
-              settings2.commandPalette = {
-                enabled: true,
-                shortcut: "ctrl+K",
-                placeholder: "Search posts",
-                search: { posts: true, pages: false, projects: false, docs: false },
-                sections: { quickActions: true, pages: true, social: true },
-                quickActions: { enabled: true, toggleMode: true, graphView: true, changeTheme: true }
-              };
-            }
-            settings2.commandPalette.enabled = (_w = commandPalette.enabled) != null ? _w : settings2.commandPalette.enabled;
-            settings2.commandPalette.placeholder = (_x = commandPalette.placeholder) != null ? _x : settings2.commandPalette.placeholder;
-            settings2.commandPalette.shortcut = (_y = commandPalette.shortcut) != null ? _y : settings2.commandPalette.shortcut;
-            if (commandPalette.search && typeof commandPalette.search === "object") {
-              settings2.commandPalette.search = {
-                ...settings2.commandPalette.search,
-                ...commandPalette.search
-              };
-            }
-            if (commandPalette.sections && typeof commandPalette.sections === "object") {
-              settings2.commandPalette.sections = {
-                ...settings2.commandPalette.sections,
-                ...commandPalette.sections
-              };
-            }
-            if (commandPalette.quickActions && typeof commandPalette.quickActions === "object") {
-              settings2.commandPalette.quickActions = {
-                ...settings2.commandPalette.quickActions,
-                ...commandPalette.quickActions
-              };
-              settings2.features.quickActions = {
-                ...settings2.features.quickActions,
-                ...commandPalette.quickActions
-              };
-            }
-          }
-          if (currentConfig.theme) {
-            settings2.currentTheme = currentConfig.theme;
-          }
-          if (currentConfig.site) {
-            settings2.siteInfo.site = currentConfig.site;
-          }
-          if (currentConfig.title) {
-            settings2.siteInfo.title = currentConfig.title;
-          }
-          if (currentConfig.description) {
-            settings2.siteInfo.description = currentConfig.description;
-          }
-          if (currentConfig.author) {
-            settings2.siteInfo.author = currentConfig.author;
-          }
-          if (currentConfig.language) {
-            settings2.siteInfo.language = currentConfig.language;
-          }
-          settings2.currentTemplate = "standard";
-          await this.plugin.saveData(settings2);
-          await this.plugin.triggerSettingsRefresh();
-          new import_obsidian16.Notice("Settings synced from config.ts successfully");
-        } catch (error) {
-          new import_obsidian16.Notice(`Failed to sync from config.ts: ${error instanceof Error ? error.message : String(error)}`);
-        }
-      }));
-    });
-    advancedGroup.addSetting((setting) => {
-      var _a;
-      setting.setName("Reset to template").setDesc(`Reset all settings to the current template (${(_a = TEMPLATE_OPTIONS.find((t) => t.id === settings.currentTemplate)) == null ? void 0 : _a.name})`).addButton((button) => button.setButtonText("Reset to template").setWarning().onClick(async () => {
-        var _a2, _b, _c, _d, _e, _f;
-        try {
-          const templatePreset = this.plugin.configManager.getTemplatePreset(settings.currentTemplate);
-          if (templatePreset && templatePreset.config) {
-            const preservedSiteInfo = settings.siteInfo;
-            const preservedNavigation = settings.navigation;
-            const preservedTheme = settings.currentTheme;
-            const preservedContentOrg = settings.contentOrganization;
-            const preservedTypography = settings.typography;
-            const preservedOptionalFeatures = settings.optionalFeatures;
-            const preservedRunWizardOnStartup = settings.runWizardOnStartup;
-            if (templatePreset.config.features) {
-              settings.features = { ...settings.features, ...templatePreset.config.features };
-              if ((_a2 = settings.postOptions) == null ? void 0 : _a2.graphView) {
-                settings.postOptions.graphView.enabled = (_b = templatePreset.config.features.graphView) != null ? _b : false;
-                settings.features.graphView = settings.postOptions.graphView.enabled;
-              }
-              if ((_c = settings.postOptions) == null ? void 0 : _c.linkedMentions) {
-                const features2 = templatePreset.config.features;
-                settings.postOptions.linkedMentions.enabled = (_d = features2.linkedMentions) != null ? _d : false;
-                settings.postOptions.linkedMentions.linkedMentionsCompact = (_e = features2.linkedMentionsCompact) != null ? _e : false;
-              }
-              const features = templatePreset.config.features;
-              if (((_f = settings.commandPalette) == null ? void 0 : _f.quickActions) && features.quickActions) {
-                settings.commandPalette.quickActions = { ...settings.commandPalette.quickActions, ...features.quickActions };
-              }
-            }
-            if (templatePreset.config.tableOfContents) {
-              settings.tableOfContents = { ...settings.tableOfContents, ...templatePreset.config.tableOfContents };
-            }
-            settings.currentTemplate = templatePreset.config.currentTemplate || settings.currentTemplate;
-            settings.siteInfo = preservedSiteInfo;
-            settings.navigation = preservedNavigation;
-            settings.currentTheme = preservedTheme;
-            settings.contentOrganization = preservedContentOrg;
-            settings.typography = preservedTypography;
-            settings.optionalFeatures = preservedOptionalFeatures;
-            settings.runWizardOnStartup = preservedRunWizardOnStartup;
-            await this.plugin.saveData(settings);
-            await this.plugin.loadSettings();
-            await this.applyCurrentConfiguration(true);
-            new import_obsidian16.Notice(`Reset to ${settings.currentTemplate} template and applied to config.ts`);
-          } else {
-            new import_obsidian16.Notice("Template not found");
-          }
-        } catch (error) {
-          new import_obsidian16.Notice(`Failed to reset to template: ${error instanceof Error ? error.message : String(error)}`);
-        }
-      }));
-    });
-    advancedGroup.addSetting((setting) => {
-      setting.setName("Reset to defaults").setDesc("Reset all settings to their default values").addButton((button) => button.setButtonText("Reset to defaults").setWarning().onClick(() => {
-        (() => {
-          const confirmModal = new import_obsidian16.Modal(this.app);
-          confirmModal.titleEl.setText("Reset to defaults");
-          const contentDiv = confirmModal.contentEl.createDiv();
-          contentDiv.createEl("p", { text: "Are you sure you want to reset all configuration settings to defaults?" });
-          contentDiv.createEl("p", { text: "This will preserve your site info and navigation pages/links." });
-          const buttonContainer = contentDiv.createDiv();
-          buttonContainer.setCssProps({
-            marginTop: "20px",
-            display: "flex",
-            gap: "10px",
-            justifyContent: "flex-end"
-          });
-          const cancelButton = buttonContainer.createEl("button", { text: "Cancel" });
-          cancelButton.className = "mod-button";
-          cancelButton.addEventListener("click", () => {
+      } catch (error) {
+        new import_obsidian16.Notice(`Failed to reset to template: ${error instanceof Error ? error.message : String(error)}`);
+      }
+    }));
+  }
+  // Reset to defaults
+  buildResetToDefaultsSetting(setting) {
+    setting.setName("Reset to defaults").setDesc("Reset all settings to their default values").addButton((button) => button.setButtonText("Reset to defaults").setWarning().onClick(() => {
+      (() => {
+        const confirmModal = new import_obsidian16.Modal(this.app);
+        confirmModal.titleEl.setText("Reset to defaults");
+        const contentDiv = confirmModal.contentEl.createDiv();
+        contentDiv.createEl("p", { text: "Are you sure you want to reset all configuration settings to defaults?" });
+        contentDiv.createEl("p", { text: "This will preserve your site info and navigation pages/links." });
+        const buttonContainer = contentDiv.createDiv();
+        buttonContainer.setCssStyles({
+          marginTop: "20px",
+          display: "flex",
+          gap: "10px",
+          justifyContent: "flex-end"
+        });
+        const cancelButton = buttonContainer.createEl("button", { text: "Cancel" });
+        cancelButton.className = "mod-button";
+        cancelButton.addEventListener("click", () => {
+          confirmModal.close();
+        });
+        const confirmButton = buttonContainer.createEl("button", { text: "Reset to defaults" });
+        confirmButton.className = "mod-warning";
+        confirmButton.addEventListener("click", () => {
+          void (async () => {
             confirmModal.close();
-          });
-          const confirmButton = buttonContainer.createEl("button", { text: "Reset to defaults" });
-          confirmButton.className = "mod-warning";
-          confirmButton.addEventListener("click", () => {
-            void (async () => {
-              confirmModal.close();
-              const settings2 = this.getSettings();
-              const preservedSiteInfo = settings2.siteInfo;
-              const preservedNavigationPages = settings2.navigation.pages;
-              const preservedNavigationSocial = settings2.navigation.social;
-              const resetSettings = { ...DEFAULT_SETTINGS };
-              resetSettings.siteInfo = preservedSiteInfo;
-              resetSettings.navigation.pages = preservedNavigationPages;
-              resetSettings.navigation.social = preservedNavigationSocial;
-              this.plugin.settings = resetSettings;
-              await this.plugin.saveData(resetSettings);
-              await this.plugin.loadSettings();
-              try {
-                await this.applyCurrentConfiguration();
-                new import_obsidian16.Notice("Configuration reset to defaults and applied to config.ts (site info and navigation pages/links preserved)");
-              } catch (error) {
-                new import_obsidian16.Notice(`Configuration reset but failed to apply to config.ts: ${error instanceof Error ? error.message : String(error)}`);
-              }
-              await this.plugin.triggerSettingsRefresh();
-            })();
-          });
-          confirmButton.focus();
-          confirmModal.open();
-        })();
-      }));
-    });
-    advancedGroup.addSetting((setting) => {
-      setting.setName("Export configuration").setDesc("Export your current configuration as JSON").addButton((button) => button.setButtonText("Export JSON").onClick(() => {
-        this.exportConfiguration();
-      }));
-    });
-    advancedGroup.addSetting((setting) => {
-      setting.setName("Import configuration").setDesc("Import configuration from JSON file").addButton((button) => button.setButtonText("Import JSON").onClick(() => {
-        this.importConfiguration();
-      }));
-    });
+            const settings = this.getSettings();
+            const preservedSiteInfo = settings.siteInfo;
+            const preservedNavigationPages = settings.navigation.pages;
+            const preservedNavigationSocial = settings.navigation.social;
+            const resetSettings = { ...DEFAULT_SETTINGS };
+            resetSettings.siteInfo = preservedSiteInfo;
+            resetSettings.navigation.pages = preservedNavigationPages;
+            resetSettings.navigation.social = preservedNavigationSocial;
+            this.plugin.settings = resetSettings;
+            await this.plugin.saveData(resetSettings);
+            await this.plugin.loadSettings();
+            try {
+              await this.applyCurrentConfiguration();
+              new import_obsidian16.Notice("Configuration reset to defaults and applied to config.ts (site info and navigation pages/links preserved)");
+            } catch (error) {
+              new import_obsidian16.Notice(`Configuration reset but failed to apply to config.ts: ${error instanceof Error ? error.message : String(error)}`);
+            }
+            await this.plugin.triggerSettingsRefresh();
+          })();
+        });
+        confirmButton.focus();
+        confirmModal.open();
+      })();
+    }));
+  }
+  // Export configuration button
+  buildExportConfigurationSetting(setting) {
+    setting.setName("Export configuration").setDesc("Export your current configuration as JSON").addButton((button) => button.setButtonText("Export JSON").onClick(() => {
+      this.exportConfiguration();
+    }));
+  }
+  // Import configuration button
+  buildImportConfigurationSetting(setting) {
+    setting.setName("Import configuration").setDesc("Import configuration from JSON file").addButton((button) => button.setButtonText("Import JSON").onClick(() => {
+      this.importConfiguration();
+    }));
   }
   exportConfiguration() {
     const configJson = JSON.stringify(this.getSettings(), null, 2);
@@ -7708,6 +7797,7 @@ var AdvancedTab = class extends TabRenderer {
 };
 
 // src/ui/SettingsTab.ts
+var Buffer3 = require("buffer").Buffer;
 var AstroModularSettingsTab = class extends import_obsidian17.PluginSettingTab {
   constructor(app, plugin) {
     super(app, plugin);
@@ -7716,7 +7806,1765 @@ var AstroModularSettingsTab = class extends import_obsidian17.PluginSettingTab {
     this.tabContentMap = /* @__PURE__ */ new Map();
     this.tabButtons = /* @__PURE__ */ new Map();
     this.activeTabId = null;
+    this.configWriteTimer = null;
     this.plugin = plugin;
+  }
+  // 1.13.0+: framework calls this and renders each tab as a navigable
+  // sub-page, which also surfaces the settings in the built-in settings
+  // search. Pre-1.13.0: this is ignored and display() runs the tabbed UI.
+  getSettingDefinitions() {
+    return [
+      {
+        type: "page",
+        name: "General",
+        items: [
+          {
+            type: "group",
+            heading: "Current configuration",
+            items: [
+              {
+                // Read-only configuration summary. Carries a name so the
+                // search indexer never reads an undefined name; the name
+                // element is hidden in the render to keep the block clean.
+                name: "Current configuration",
+                render: (setting) => {
+                  var _a, _b, _c;
+                  const s = this.plugin.settings;
+                  const nameEl = setting.settingEl.querySelector(".setting-item-name");
+                  const descEl = setting.settingEl.querySelector(".setting-item-description");
+                  const controlEl = setting.settingEl.querySelector(".setting-item-control");
+                  if (nameEl) nameEl.setCssStyles({ display: "none" });
+                  if (descEl) descEl.setCssStyles({ display: "none" });
+                  if (controlEl) controlEl.setCssStyles({ display: "none" });
+                  setting.settingEl.setCssStyles({ display: "block" });
+                  const configItems = setting.settingEl.createDiv("config-items");
+                  configItems.setCssStyles({ width: "100%", marginBottom: "0" });
+                  const row = (label, value) => {
+                    const item = configItems.createDiv("config-item");
+                    item.createEl("strong", { text: label });
+                    item.createSpan({ text: value });
+                  };
+                  const deployNames = { netlify: "Netlify", vercel: "Vercel", "github-pages": "GitHub Pages", "cloudflare-workers": "Cloudflare Workers" };
+                  row("Template: ", ((_a = TEMPLATE_OPTIONS.find((t) => t.id === s.currentTemplate)) == null ? void 0 : _a.name) || "Unknown");
+                  row("Theme: ", ((_b = THEME_OPTIONS.find((t) => t.id === s.currentTheme)) == null ? void 0 : _b.name) || "Unknown");
+                  row("Organization: ", s.contentOrganization === "file-based" ? "File-based" : "Folder-based");
+                  row("Deployment: ", (_c = deployNames[s.deployment.platform]) != null ? _c : s.deployment.platform);
+                  row("Site title: ", s.siteInfo.title);
+                  row("Site URL: ", s.siteInfo.site);
+                }
+              }
+            ]
+          },
+          {
+            type: "group",
+            heading: "Wizard",
+            items: [
+              {
+                name: "Setup wizard",
+                desc: "Run the setup wizard to reconfigure your theme",
+                render: (setting) => {
+                  setting.addButton((button) => button.setButtonText("Run setup wizard").setCta().onClick(async () => {
+                    const plugin = this.plugin;
+                    const data = await this.plugin.loadData();
+                    if (data) Object.assign(plugin.settings, data);
+                    const { SetupWizardModal: SetupWizardModal2 } = await Promise.resolve().then(() => (init_SetupWizardModal(), SetupWizardModal_exports));
+                    new SetupWizardModal2(this.app, plugin).open();
+                  }));
+                }
+              },
+              {
+                name: "Run wizard on startup",
+                desc: "Show the setup wizard when Obsidian starts (if not disabled)",
+                control: { type: "toggle", key: "runWizardOnStartup" }
+              },
+              {
+                name: "Remove ribbon icon",
+                desc: "Remove the wizard icon from the left ribbon",
+                control: { type: "toggle", key: "removeRibbonIcon", defaultValue: false }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        type: "page",
+        name: "Site Info",
+        items: [
+          {
+            type: "group",
+            heading: "Site information",
+            items: [
+              {
+                name: "Site URL",
+                desc: "Your site's base URL (like https://yoursite.com)",
+                control: { type: "text", key: "siteInfo.site" }
+              },
+              {
+                name: "Site title",
+                desc: "Your site's title",
+                control: { type: "text", key: "siteInfo.title" }
+              },
+              {
+                name: "Homepage title",
+                desc: "Custom meta title for the homepage only. If empty, uses the site title.",
+                control: { type: "text", key: "siteInfo.homepageTitle" }
+              },
+              {
+                name: "Site description",
+                desc: "A brief description of your site",
+                control: { type: "text", key: "siteInfo.description" }
+              },
+              {
+                name: "Author name",
+                desc: "Your name or the site author's name",
+                control: { type: "text", key: "siteInfo.author" }
+              },
+              {
+                name: "Language code",
+                // eslint-disable-next-line obsidianmd/ui/sentence-case
+                desc: "Your site's primary language (ISO 639-1 code)",
+                control: { type: "text", key: "siteInfo.language" }
+              }
+            ]
+          },
+          {
+            type: "group",
+            heading: "Assets & metadata",
+            items: [
+              {
+                // Floating folder affordance that opens the public folder.
+                // Custom DOM, so it is a named render and not indexed.
+                name: "Open public folder",
+                render: (setting) => {
+                  const nameEl = setting.settingEl.querySelector(".setting-item-name");
+                  const descEl = setting.settingEl.querySelector(".setting-item-description");
+                  if (nameEl) nameEl.setCssStyles({ display: "none" });
+                  if (descEl) descEl.setCssStyles({ display: "none" });
+                  setting.settingEl.setCssStyles({ borderTop: "none" });
+                  const folderButton = setting.controlEl.createEl("button", {
+                    cls: "clickable-icon",
+                    attr: { "aria-label": "Open public folder" }
+                  });
+                  (0, import_obsidian17.setIcon)(folderButton, "folder");
+                  folderButton.addEventListener("click", () => {
+                    var _a, _b, _c;
+                    const publicPath = "../../public";
+                    void ((_c = (_b = (_a = this.app).openWithDefaultApp) == null ? void 0 : _b.call(_a, publicPath)) != null ? _c : Promise.resolve()).catch((error) => {
+                      new import_obsidian17.Notice(`Failed to open public folder: ${error instanceof Error ? error.message : String(error)}`);
+                    });
+                  });
+                }
+              },
+              {
+                // File-picker affordance: custom DOM, not a bindable setting.
+                name: "Open graph image",
+                // False positive: "PNG" is an acronym and should be uppercase
+                // eslint-disable-next-line obsidianmd/ui/sentence-case
+                desc: "Select a PNG image to replace open-graph.png in the public folder (recommended: 1200 x 630 pixels)",
+                render: (setting) => {
+                  const button = setting.controlEl.createEl("button", { text: "Select PNG file", cls: "mod-cta" });
+                  button.addEventListener("click", () => {
+                    void this.showSiteInfoFilePicker("open-graph.png");
+                  });
+                }
+              },
+              {
+                // Custom render: writes to two keys (siteInfo + seo) and shows a
+                // notice, so a single bindable control cannot reproduce it.
+                // False positive: "Open Graph" is a proper noun (OG format standard)
+                // eslint-disable-next-line obsidianmd/ui/sentence-case
+                name: "Open Graph image alt text",
+                // False positive: "Open Graph" is a technical term (OG image standard) and should be capitalized
+                // eslint-disable-next-line obsidianmd/ui/sentence-case
+                desc: "Alternative text for the Open Graph image",
+                render: (setting) => {
+                  const plugin = this.plugin;
+                  setting.addText((text) => {
+                    var _a;
+                    text.setValue(plugin.settings.siteInfo.defaultOgImageAlt || ((_a = plugin.settings.seo) == null ? void 0 : _a.defaultOgImageAlt) || "Astro Modular logo.");
+                    let timeoutId = null;
+                    const apply = () => {
+                      try {
+                        if (plugin.configManager.updateIndividualFeatures(plugin.settings)) {
+                          void plugin.configManager.triggerRebuild().then(() => {
+                            new import_obsidian17.Notice("Open Graph image alt text updated and applied to config.ts");
+                          });
+                        }
+                      } catch (e) {
+                      }
+                    };
+                    text.onChange((value) => {
+                      if (timeoutId) clearTimeout(timeoutId);
+                      plugin.settings.siteInfo.defaultOgImageAlt = value;
+                      if (!plugin.settings.seo) plugin.settings.seo = { defaultOgImageAlt: "" };
+                      plugin.settings.seo.defaultOgImageAlt = value;
+                      void plugin.saveData(plugin.settings);
+                      timeoutId = window.setTimeout(apply, 1e3);
+                    });
+                    text.inputEl.addEventListener("blur", () => {
+                      if (timeoutId) {
+                        clearTimeout(timeoutId);
+                        apply();
+                      }
+                    });
+                  });
+                }
+              },
+              {
+                // File-picker affordance: custom DOM, not a bindable setting.
+                name: "Favicon",
+                // False positive: "PNG" is an acronym and should be uppercase
+                // eslint-disable-next-line obsidianmd/ui/sentence-case
+                desc: "Select a PNG image to replace favicon.png in the public folder (recommended: 256 x 256 pixels). Standard favicon is used when browser preference cannot be determined.",
+                render: (setting) => {
+                  const button = setting.controlEl.createEl("button", { text: "Select PNG file", cls: "mod-cta" });
+                  button.addEventListener("click", () => {
+                    void this.showSiteInfoFilePicker("favicon.png");
+                  });
+                }
+              },
+              {
+                name: "Theme-adaptive favicon",
+                desc: "If enabled, favicon switches between light and dark variants based on browser theme preference. Standard favicon is used when browser's preference cannot be determined.",
+                control: { type: "toggle", key: "siteInfo.faviconThemeAdaptive", defaultValue: true }
+              },
+              {
+                // File-picker affordance: custom DOM, not a bindable setting.
+                name: "Light theme favicon",
+                // False positive: "PNG" is an acronym and should be uppercase
+                // eslint-disable-next-line obsidianmd/ui/sentence-case
+                desc: "Select a PNG image to replace favicon-light.png in the public folder (recommended: 256 x 256 pixels)",
+                visible: () => {
+                  var _a;
+                  return (_a = this.plugin.settings.siteInfo.faviconThemeAdaptive) != null ? _a : true;
+                },
+                render: (setting) => {
+                  const button = setting.controlEl.createEl("button", { text: "Select PNG file", cls: "mod-cta" });
+                  button.addEventListener("click", () => {
+                    void this.showSiteInfoFilePicker("favicon-light.png");
+                  });
+                }
+              },
+              {
+                // File-picker affordance: custom DOM, not a bindable setting.
+                name: "Dark theme favicon",
+                // False positive: "PNG" is an acronym and should be uppercase
+                // eslint-disable-next-line obsidianmd/ui/sentence-case
+                desc: "Select a PNG image to replace favicon-dark.png in the public folder (recommended: 256 x 256 pixels)",
+                visible: () => {
+                  var _a;
+                  return (_a = this.plugin.settings.siteInfo.faviconThemeAdaptive) != null ? _a : true;
+                },
+                render: (setting) => {
+                  const button = setting.controlEl.createEl("button", { text: "Select PNG file", cls: "mod-cta" });
+                  button.addEventListener("click", () => {
+                    void this.showSiteInfoFilePicker("favicon-dark.png");
+                  });
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        type: "page",
+        name: "Navigation",
+        items: [
+          {
+            type: "group",
+            heading: "Navigation pages",
+            items: [
+              {
+                // Custom UI: drag-reorderable list of pages with title/url
+                // fields, nested child pages, add/remove buttons and event
+                // delegation. Not reproducible as bindable controls, so it is a
+                // named render and is not surfaced in settings search.
+                name: "Navigation pages",
+                desc: "Add or remove pages from your main navigation menu.",
+                render: (setting) => {
+                  this.renderNavigationCustomSection(setting, "pages");
+                }
+              }
+            ]
+          },
+          {
+            type: "group",
+            heading: "Social links",
+            items: [
+              {
+                // Custom UI: drag-reorderable list of social links with
+                // title/url/icon fields, add/remove buttons and event
+                // delegation. Named render; not indexed for search.
+                name: "Social links",
+                desc: "Add or remove social media links.",
+                render: (setting) => {
+                  this.renderNavigationCustomSection(setting, "social");
+                }
+              }
+            ]
+          },
+          {
+            type: "group",
+            heading: "Navigation options",
+            items: [
+              {
+                name: "Show navigation",
+                desc: "Display navigation menu on your site",
+                control: { type: "toggle", key: "navigation.showNavigation", defaultValue: true }
+              },
+              {
+                name: "Navigation style",
+                desc: "Choose between minimal or traditional navigation style",
+                control: {
+                  type: "dropdown",
+                  key: "navigation.style",
+                  options: { traditional: "Traditional", minimal: "Minimal" }
+                }
+              },
+              {
+                name: "Show mobile menu",
+                desc: "Display mobile navigation menu on smaller screens",
+                control: { type: "toggle", key: "navigation.showMobileMenu", defaultValue: true }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        type: "page",
+        name: "Config",
+        items: [
+          {
+            // Template selection gates behind a PresetWarningModal that
+            // applies a multi-key preset on confirm and reverts on
+            // cancel/error, so it is not a plain value bind. Reproduced as a
+            // named render reusing ConfigTab's template-apply flow; not
+            // surfaced in settings search.
+            name: "Template",
+            desc: "Choose your content template",
+            render: (setting) => {
+              const plugin = this.plugin;
+              const configTab = new ConfigTab(this.app, this.plugin);
+              setting.addDropdown((dropdown) => {
+                TEMPLATE_OPTIONS.forEach((template) => {
+                  dropdown.addOption(template.id, template.name);
+                });
+                dropdown.setValue(plugin.settings.currentTemplate);
+                dropdown.onChange((value) => {
+                  const changes = configTab.getTemplateChanges(value);
+                  const modal = new PresetWarningModal(
+                    this.app,
+                    changes,
+                    () => {
+                      void (async () => {
+                        try {
+                          await configTab.updatePluginSettingsWithTemplate(value);
+                          await plugin.loadSettings();
+                          const freshSettings = plugin.settings;
+                          const presetSuccess = plugin.configManager.applyPreset({
+                            name: freshSettings.currentTemplate,
+                            description: "",
+                            features: freshSettings.features,
+                            theme: freshSettings.currentTheme,
+                            contentOrganization: freshSettings.contentOrganization,
+                            config: freshSettings
+                          });
+                          if (presetSuccess) {
+                            new import_obsidian17.Notice(`Template changed to ${value} and applied to config.ts`);
+                          } else {
+                            new import_obsidian17.Notice("Failed to apply template to config.ts");
+                          }
+                        } catch (error) {
+                          new import_obsidian17.Notice(`Failed to apply template change: ${error instanceof Error ? error.message : String(error)}`);
+                          dropdown.setValue(plugin.settings.currentTemplate);
+                        }
+                      })();
+                    },
+                    () => {
+                      dropdown.setValue(plugin.settings.currentTemplate);
+                    }
+                  );
+                  modal.open();
+                });
+              });
+            }
+          },
+          {
+            name: "Deployment",
+            desc: "Choose your deployment platform",
+            control: {
+              type: "dropdown",
+              key: "deployment.platform",
+              options: {
+                netlify: "Netlify",
+                vercel: "Vercel",
+                "github-pages": "GitHub pages",
+                // False positive: "Cloudflare Workers" is a proper noun (product name) and should be capitalized
+                // eslint-disable-next-line obsidianmd/ui/sentence-case
+                "cloudflare-workers": "Cloudflare Workers"
+              }
+            }
+          },
+          {
+            name: "Content organization",
+            desc: "Choose how to organize your content and assets",
+            control: {
+              type: "dropdown",
+              key: "contentOrganization",
+              options: { "file-based": "File-based", "folder-based": "Folder-based" }
+            }
+          },
+          {
+            type: "group",
+            heading: "Plugin configuration",
+            items: [
+              {
+                // Read-only plugin-status cards. Custom DOM that re-renders
+                // itself, reproduced by reusing ConfigTab.renderPluginStatus.
+                // Named render; not indexed.
+                name: "Plugin configuration status",
+                render: (setting) => {
+                  const nameEl = setting.settingEl.querySelector(".setting-item-name");
+                  const descEl = setting.settingEl.querySelector(".setting-item-description");
+                  const controlEl = setting.settingEl.querySelector(".setting-item-control");
+                  if (nameEl) nameEl.setCssStyles({ display: "none" });
+                  if (descEl) descEl.setCssStyles({ display: "none" });
+                  if (controlEl) controlEl.setCssStyles({ display: "none" });
+                  setting.settingEl.setCssStyles({ display: "block" });
+                  const sectionEl = setting.settingEl.createDiv("settings-section");
+                  const configTab = new ConfigTab(this.app, this.plugin);
+                  configTab.renderPluginStatus(sectionEl, this.plugin.settings);
+                }
+              }
+            ]
+          },
+          {
+            // "Plugin actions" gets its own group heading rather than being
+            // nested inside the status render (where it merged visually).
+            type: "group",
+            heading: "Plugin actions",
+            items: [
+              {
+                name: "Plugin actions",
+                render: (setting) => {
+                  const nameEl = setting.settingEl.querySelector(".setting-item-name");
+                  const descEl = setting.settingEl.querySelector(".setting-item-description");
+                  const controlEl = setting.settingEl.querySelector(".setting-item-control");
+                  if (nameEl) nameEl.setCssStyles({ display: "none" });
+                  if (descEl) descEl.setCssStyles({ display: "none" });
+                  if (controlEl) controlEl.setCssStyles({ display: "none" });
+                  setting.settingEl.setCssStyles({ display: "block" });
+                  const sectionEl = setting.settingEl.createDiv("settings-section");
+                  const configTab = new ConfigTab(this.app, this.plugin);
+                  configTab.renderPluginActions(sectionEl, this.plugin.settings);
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        type: "page",
+        name: "Style",
+        items: [
+          {
+            type: "group",
+            heading: "Colors",
+            items: [
+              {
+                // Theme dropdown. The imperative tab applied ONLY the theme to
+                // config via configManager.updateThemeOnly(value) (a surgical
+                // write distinct from updateIndividualFeatures). Kept as a
+                // control for searchability; see the override note in the report.
+                name: "Theme",
+                desc: "Choose your color theme",
+                control: {
+                  type: "dropdown",
+                  key: "currentTheme",
+                  options: Object.fromEntries(THEME_OPTIONS.map((theme) => [theme.id, theme.name]))
+                }
+              },
+              {
+                // "Customize available themes" toggle whose value is NOT a plain
+                // boolean (it transforms availableThemes to an array or 'default')
+                // and which reveals a custom pills/custom-themes editor below it.
+                // Reproduced verbatim as a self-re-rendering named render, mirroring
+                // the Navigation custom sections. Not surfaced in settings search.
+                name: "Customize available themes",
+                desc: "Control which themes are shown to users in the theme selector",
+                render: (setting) => {
+                  this.renderStyleAvailableThemes(setting);
+                }
+              }
+            ]
+          },
+          {
+            type: "group",
+            heading: "Custom theme generation",
+            items: [
+              {
+                // Plain boolean toggle that gates the rest of this group. Driving
+                // the visible: predicates below requires it to be a control so the
+                // framework auto-refreshes on change. UI-only: the imperative tab
+                // only re-rendered (no config write), so it joins uiOnlyKeys.
+                name: "Generate custom theme",
+                desc: "Enable to extract colors from your Obsidian theme and generate custom theme files",
+                control: { type: "toggle", key: "customThemeGenerationEnabled", defaultValue: false }
+              },
+              {
+                name: "Custom theme file name",
+                desc: "Filename for the generated theme file (without .ts extension)",
+                visible: () => Boolean(this.plugin.settings.customThemeGenerationEnabled),
+                control: { type: "text", key: "customThemeFile" }
+              },
+              {
+                // Extract-colors button: custom side effect (reads the active
+                // Obsidian theme, mutates themeColors, persists, refreshes). Named
+                // render; not searchable.
+                name: "Extract from Obsidian theme",
+                desc: "Extract colors from your currently active Obsidian theme",
+                visible: () => Boolean(this.plugin.settings.customThemeGenerationEnabled),
+                render: (setting) => {
+                  this.renderStyleExtractButton(setting);
+                }
+              },
+              {
+                // Read-only "last extracted" timestamp. Custom DOM; named render.
+                name: "Last extracted timestamp",
+                visible: () => {
+                  var _a;
+                  const s = this.plugin.settings;
+                  return Boolean(s.customThemeGenerationEnabled) && Boolean((_a = s.themeColors) == null ? void 0 : _a.lastExtracted);
+                },
+                render: (setting) => {
+                  this.renderStyleLastExtracted(setting);
+                }
+              },
+              {
+                // Color editing mode selector. A control so the framework
+                // auto-refreshes and the color editor render below picks
+                // simple/advanced. UI-only (imperative tab only re-rendered).
+                name: "Color editing mode",
+                desc: "Choose how to edit your theme colors",
+                visible: () => Boolean(this.plugin.settings.customThemeGenerationEnabled),
+                control: {
+                  type: "dropdown",
+                  key: "themeColors.mode",
+                  options: {
+                    simple: "Simple (accent + background)",
+                    advanced: "Advanced (individual shades)"
+                  }
+                }
+              },
+              {
+                // Color swatch preview. Custom DOM; named render.
+                name: "Color preview",
+                visible: () => {
+                  var _a;
+                  const s = this.plugin.settings;
+                  return Boolean(s.customThemeGenerationEnabled) && Boolean((_a = s.themeColors) == null ? void 0 : _a.extractedColors);
+                },
+                render: (setting) => {
+                  this.renderStyleColorPreview(setting);
+                }
+              },
+              {
+                // Simple/advanced color editor (text + native color pickers per
+                // shade). Genuinely custom widgets; named render. Picks the editor
+                // based on themeColors.mode, which the dropdown above drives.
+                name: "Color editor",
+                visible: () => {
+                  var _a;
+                  const s = this.plugin.settings;
+                  return Boolean(s.customThemeGenerationEnabled) && Boolean((_a = s.themeColors) == null ? void 0 : _a.extractedColors);
+                },
+                render: (setting) => {
+                  this.renderStyleColorEditor(setting);
+                }
+              },
+              {
+                // Save-to-file button: writes a generated theme file and applies
+                // it to config. Custom side effect; named render.
+                name: "Save to custom theme file",
+                desc: "Generate a custom theme file from your extracted colors",
+                visible: () => Boolean(this.plugin.settings.customThemeGenerationEnabled),
+                render: (setting) => {
+                  this.renderStyleSaveThemeButton(setting);
+                }
+              }
+            ]
+          },
+          {
+            type: "group",
+            heading: "Typography",
+            items: [
+              {
+                // Heading font. Imperative tab applied ONLY this font via
+                // configManager.updateFontOnly('heading', value). Kept as a control
+                // for searchability; see the override note in the report.
+                name: "Heading font",
+                desc: "Font for headings and titles",
+                control: {
+                  type: "dropdown",
+                  key: "typography.headingFont",
+                  options: Object.fromEntries(FONT_OPTIONS.map((font) => [font, font]))
+                }
+              },
+              {
+                // Prose font. Imperative tab applied ONLY this font via
+                // configManager.updateFontOnly('prose', value).
+                name: "Prose font",
+                desc: "Font for body text and content",
+                control: {
+                  type: "dropdown",
+                  key: "typography.proseFont",
+                  options: Object.fromEntries(FONT_OPTIONS.map((font) => [font, font]))
+                }
+              },
+              {
+                // Monospace font. Imperative tab applied ONLY this font via
+                // configManager.updateFontOnly('mono', value).
+                name: "Monospace font",
+                desc: "Font for code blocks and technical content",
+                control: {
+                  type: "dropdown",
+                  key: "typography.monoFont",
+                  options: Object.fromEntries(FONT_OPTIONS.map((font) => [font, font]))
+                }
+              },
+              {
+                // Font source. Standard config write; drives the visible:
+                // predicates of the custom font fields below.
+                name: "Font source",
+                desc: "How fonts are loaded",
+                control: {
+                  type: "dropdown",
+                  key: "typography.fontSource",
+                  options: {
+                    // False positive: "Google Fonts" is a proper noun (product name) and should be capitalized
+                    // eslint-disable-next-line obsidianmd/ui/sentence-case
+                    local: "Local (Google Fonts)",
+                    // False positive: "CDN" is an acronym and should be capitalized
+                    // eslint-disable-next-line obsidianmd/ui/sentence-case
+                    cdn: "CDN (Custom)"
+                  }
+                }
+              },
+              {
+                name: "Font display",
+                desc: "Font display strategy",
+                control: {
+                  type: "dropdown",
+                  key: "typography.fontDisplay",
+                  options: {
+                    swap: "Swap (recommended)",
+                    fallback: "Fallback",
+                    optional: "Optional"
+                  }
+                }
+              },
+              {
+                name: "Content width",
+                desc: "Maximum width for content (like 45rem)",
+                control: { type: "text", key: "layout.contentWidth" }
+              },
+              {
+                // False positive: "URLs" is an acronym and should be capitalized
+                // eslint-disable-next-line obsidianmd/ui/sentence-case
+                name: "Custom font URLs",
+                // False positive: "Google Fonts" is a proper noun (product name) and should be capitalized
+                // eslint-disable-next-line obsidianmd/ui/sentence-case
+                desc: "Comma-separated URLs for custom fonts (like a Google Fonts URL)",
+                visible: () => this.plugin.settings.typography.fontSource === "cdn",
+                control: { type: "text", key: "typography.customFonts.urls" }
+              },
+              {
+                name: "Custom heading font name",
+                desc: "Font family name for headings",
+                visible: () => this.plugin.settings.typography.fontSource === "cdn",
+                control: { type: "text", key: "typography.customFonts.heading" }
+              },
+              {
+                name: "Custom body font name",
+                desc: "Font family name for body text",
+                visible: () => this.plugin.settings.typography.fontSource === "cdn",
+                control: { type: "text", key: "typography.customFonts.prose" }
+              },
+              {
+                name: "Custom monospace font name",
+                desc: "Font family name for code",
+                visible: () => this.plugin.settings.typography.fontSource === "cdn",
+                control: { type: "text", key: "typography.customFonts.mono" }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        type: "page",
+        name: "Features",
+        items: [
+          {
+            type: "group",
+            heading: "Global options",
+            items: [
+              {
+                name: "Enable projects",
+                desc: "Enable projects as a unique content type for showcasing work and portfolios",
+                control: { type: "toggle", key: "optionalContentTypes.projects", defaultValue: true }
+              },
+              {
+                name: "Enable docs",
+                desc: "Enable docs as a unique content type for documentation and knowledge base",
+                control: { type: "toggle", key: "optionalContentTypes.docs", defaultValue: true }
+              },
+              {
+                name: "Table of contents",
+                desc: "Show table of contents on content pages",
+                control: { type: "toggle", key: "tableOfContents.enabled", defaultValue: true }
+              },
+              {
+                name: "Table of contents depth",
+                // False positive: "ToC" is an acronym and should remain capitalized
+                // eslint-disable-next-line obsidianmd/ui/sentence-case
+                desc: "Maximum heading depth to include in ToC (2=H2, 3=H3, 4=H4, 5=H5, 6=H6)",
+                visible: () => {
+                  var _a, _b;
+                  return (_b = (_a = this.plugin.settings.tableOfContents) == null ? void 0 : _a.enabled) != null ? _b : true;
+                },
+                control: { type: "number", key: "tableOfContents.depth", min: 2, max: 6 }
+              },
+              {
+                name: "Footer",
+                desc: "Enable footer on your site",
+                control: { type: "toggle", key: "footer.enabled", defaultValue: true }
+              },
+              {
+                // Multi-line footer content textarea with debounced config write.
+                // Custom DOM (full-width textarea), so it is a named render and
+                // not indexed for search.
+                name: "Footer content",
+                desc: "Text to display in footer. Use {author} for site author and {title} for site title",
+                visible: () => {
+                  var _a, _b;
+                  return (_b = (_a = this.plugin.settings.footer) == null ? void 0 : _a.enabled) != null ? _b : true;
+                },
+                render: (setting) => {
+                  this.renderFeaturesFooterContent(setting);
+                }
+              },
+              {
+                name: "Show social icons in footer",
+                desc: "Display social media icons in the footer",
+                visible: () => {
+                  var _a, _b;
+                  return (_b = (_a = this.plugin.settings.footer) == null ? void 0 : _a.enabled) != null ? _b : true;
+                },
+                control: { type: "toggle", key: "footer.showSocialIconsInFooter", defaultValue: true }
+              },
+              {
+                name: "Hide scroll bar",
+                desc: "Hide the browser scroll bar for a cleaner look",
+                control: { type: "toggle", key: "features.hideScrollBar", defaultValue: false }
+              },
+              {
+                name: "Scroll to top",
+                desc: "Show scroll to top button",
+                control: { type: "toggle", key: "features.scrollToTop", defaultValue: true }
+              },
+              {
+                name: "Feature button",
+                desc: "Choose which feature button appears in the header",
+                control: {
+                  type: "dropdown",
+                  key: "features.featureButton",
+                  options: {
+                    mode: "Dark/light mode toggle",
+                    graph: "View graph",
+                    theme: "Change theme",
+                    none: "None"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            type: "group",
+            heading: "Command palette",
+            items: [
+              {
+                name: "Enable command palette",
+                desc: "Add a command palette to your site",
+                control: { type: "toggle", key: "commandPalette.enabled", defaultValue: true }
+              },
+              {
+                name: "Shortcut",
+                // False positive: "Ctrl"/"Cmd" are proper key names
+                // eslint-disable-next-line obsidianmd/ui/sentence-case
+                desc: "Keyboard shortcut to open command palette (Ctrl = Cmd on Mac)",
+                visible: () => {
+                  var _a, _b;
+                  return (_b = (_a = this.plugin.settings.commandPalette) == null ? void 0 : _a.enabled) != null ? _b : true;
+                },
+                control: { type: "text", key: "commandPalette.shortcut" }
+              },
+              {
+                name: "Placeholder",
+                desc: "Placeholder text in command palette search box",
+                visible: () => {
+                  var _a, _b;
+                  return (_b = (_a = this.plugin.settings.commandPalette) == null ? void 0 : _a.enabled) != null ? _b : true;
+                },
+                control: { type: "text", key: "commandPalette.placeholder" }
+              },
+              {
+                name: "Search posts",
+                desc: "Include posts in search results",
+                visible: () => {
+                  var _a, _b;
+                  return (_b = (_a = this.plugin.settings.commandPalette) == null ? void 0 : _a.enabled) != null ? _b : true;
+                },
+                control: { type: "toggle", key: "commandPalette.search.posts", defaultValue: true }
+              },
+              {
+                name: "Search pages",
+                desc: "Include pages in search results",
+                visible: () => {
+                  var _a, _b;
+                  return (_b = (_a = this.plugin.settings.commandPalette) == null ? void 0 : _a.enabled) != null ? _b : true;
+                },
+                control: { type: "toggle", key: "commandPalette.search.pages", defaultValue: false }
+              },
+              {
+                name: "Search projects",
+                desc: "Include projects in search results",
+                visible: () => {
+                  var _a, _b;
+                  return (_b = (_a = this.plugin.settings.commandPalette) == null ? void 0 : _a.enabled) != null ? _b : true;
+                },
+                control: { type: "toggle", key: "commandPalette.search.projects", defaultValue: false }
+              },
+              {
+                name: "Search docs",
+                desc: "Include docs in search results",
+                visible: () => {
+                  var _a, _b;
+                  return (_b = (_a = this.plugin.settings.commandPalette) == null ? void 0 : _a.enabled) != null ? _b : true;
+                },
+                control: { type: "toggle", key: "commandPalette.search.docs", defaultValue: false }
+              },
+              {
+                name: "Show quick actions section",
+                desc: "Display quick actions in command palette",
+                visible: () => {
+                  var _a, _b;
+                  return (_b = (_a = this.plugin.settings.commandPalette) == null ? void 0 : _a.enabled) != null ? _b : true;
+                },
+                control: { type: "toggle", key: "commandPalette.sections.quickActions", defaultValue: true }
+              },
+              {
+                name: "Toggle dark/light mode",
+                desc: "Show mode toggle button in command palette",
+                visible: () => {
+                  var _a, _b, _c;
+                  const cp = this.plugin.settings.commandPalette;
+                  return ((_a = cp == null ? void 0 : cp.enabled) != null ? _a : true) && ((_c = (_b = cp == null ? void 0 : cp.sections) == null ? void 0 : _b.quickActions) != null ? _c : true);
+                },
+                control: { type: "toggle", key: "commandPalette.quickActions.toggleMode", defaultValue: true }
+              },
+              {
+                name: "View graph",
+                desc: "Show graph view button in command palette",
+                visible: () => {
+                  var _a, _b, _c;
+                  const cp = this.plugin.settings.commandPalette;
+                  return ((_a = cp == null ? void 0 : cp.enabled) != null ? _a : true) && ((_c = (_b = cp == null ? void 0 : cp.sections) == null ? void 0 : _b.quickActions) != null ? _c : true);
+                },
+                control: { type: "toggle", key: "commandPalette.quickActions.graphView", defaultValue: true }
+              },
+              {
+                name: "Change theme",
+                desc: "Show theme selector button in command palette",
+                visible: () => {
+                  var _a, _b, _c;
+                  const cp = this.plugin.settings.commandPalette;
+                  return ((_a = cp == null ? void 0 : cp.enabled) != null ? _a : true) && ((_c = (_b = cp == null ? void 0 : cp.sections) == null ? void 0 : _b.quickActions) != null ? _c : true);
+                },
+                control: { type: "toggle", key: "commandPalette.quickActions.changeTheme", defaultValue: true }
+              },
+              {
+                name: "Show pages section",
+                desc: "Display navigation pages in command palette",
+                visible: () => {
+                  var _a, _b;
+                  return (_b = (_a = this.plugin.settings.commandPalette) == null ? void 0 : _a.enabled) != null ? _b : true;
+                },
+                control: { type: "toggle", key: "commandPalette.sections.pages", defaultValue: true }
+              },
+              {
+                name: "Show social section",
+                desc: "Display social links in command palette",
+                visible: () => {
+                  var _a, _b;
+                  return (_b = (_a = this.plugin.settings.commandPalette) == null ? void 0 : _a.enabled) != null ? _b : true;
+                },
+                control: { type: "toggle", key: "commandPalette.sections.social", defaultValue: true }
+              }
+            ]
+          },
+          {
+            type: "group",
+            heading: "Home options",
+            items: [
+              {
+                name: "Featured post",
+                desc: "Show featured post on homepage",
+                control: { type: "toggle", key: "homeOptions.featuredPost.enabled", defaultValue: true }
+              },
+              {
+                name: "Featured post type",
+                desc: "Show latest post or a specific featured post",
+                visible: () => {
+                  var _a, _b, _c;
+                  return (_c = (_b = (_a = this.plugin.settings.homeOptions) == null ? void 0 : _a.featuredPost) == null ? void 0 : _b.enabled) != null ? _c : true;
+                },
+                control: {
+                  type: "dropdown",
+                  key: "homeOptions.featuredPost.type",
+                  options: { latest: "Latest", featured: "Featured" }
+                }
+              },
+              {
+                name: "Featured post slug",
+                desc: 'Slug of the post to feature (like "getting-started" for /posts/getting-started)',
+                visible: () => {
+                  var _a, _b;
+                  const fp = (_a = this.plugin.settings.homeOptions) == null ? void 0 : _a.featuredPost;
+                  return ((_b = fp == null ? void 0 : fp.enabled) != null ? _b : true) && (fp == null ? void 0 : fp.type) === "featured";
+                },
+                control: { type: "text", key: "homeOptions.featuredPost.slug" }
+              },
+              {
+                name: "Recent posts",
+                desc: "Show recent posts on homepage",
+                control: { type: "toggle", key: "homeOptions.recentPosts.enabled", defaultValue: true }
+              },
+              {
+                name: "Recent posts count",
+                desc: "Number of recent posts to show",
+                visible: () => {
+                  var _a, _b, _c;
+                  return (_c = (_b = (_a = this.plugin.settings.homeOptions) == null ? void 0 : _a.recentPosts) == null ? void 0 : _b.enabled) != null ? _c : true;
+                },
+                control: { type: "number", key: "homeOptions.recentPosts.count" }
+              },
+              {
+                name: "Projects on homepage",
+                desc: "Show featured projects on homepage",
+                control: { type: "toggle", key: "homeOptions.projects.enabled", defaultValue: true }
+              },
+              {
+                name: "Projects count",
+                desc: "Number of projects to show",
+                visible: () => {
+                  var _a, _b, _c;
+                  return (_c = (_b = (_a = this.plugin.settings.homeOptions) == null ? void 0 : _a.projects) == null ? void 0 : _b.enabled) != null ? _c : true;
+                },
+                control: { type: "number", key: "homeOptions.projects.count" }
+              },
+              {
+                name: "Docs on homepage",
+                desc: "Show featured docs on homepage",
+                control: { type: "toggle", key: "homeOptions.docs.enabled", defaultValue: true }
+              },
+              {
+                name: "Docs count",
+                desc: "Number of docs to show",
+                visible: () => {
+                  var _a, _b, _c;
+                  return (_c = (_b = (_a = this.plugin.settings.homeOptions) == null ? void 0 : _a.docs) == null ? void 0 : _b.enabled) != null ? _c : true;
+                },
+                control: { type: "number", key: "homeOptions.docs.count" }
+              },
+              {
+                name: "Blurb placement",
+                desc: "Where to place the blurb text on homepage",
+                control: {
+                  type: "dropdown",
+                  key: "homeOptions.blurb.placement",
+                  options: { above: "Above", below: "Below", none: "None" }
+                }
+              }
+            ]
+          },
+          {
+            type: "group",
+            heading: "Post options",
+            items: [
+              {
+                name: "Posts per page",
+                desc: "Number of posts to show per page",
+                control: { type: "number", key: "postOptions.postsPerPage" }
+              },
+              {
+                // Config reads features.readingTime as source of truth; the
+                // override mirrors postOptions.readingTime to features.readingTime.
+                name: "Reading time",
+                desc: "Display estimated reading time on posts",
+                control: { type: "toggle", key: "postOptions.readingTime", defaultValue: true }
+              },
+              {
+                name: "Word count",
+                desc: "Display word count on posts",
+                control: { type: "toggle", key: "postOptions.wordCount", defaultValue: true }
+              },
+              {
+                name: "Tags",
+                desc: "Show tags on posts",
+                control: { type: "toggle", key: "postOptions.tags", defaultValue: true }
+              },
+              {
+                // Config reads features.linkedMentions; override mirrors it.
+                name: "Linked mentions",
+                desc: "Show linked mentions and backlinks on posts",
+                control: { type: "toggle", key: "postOptions.linkedMentions.enabled", defaultValue: true }
+              },
+              {
+                // Config reads features.linkedMentionsCompact; override mirrors it.
+                name: "Compact view",
+                desc: "Use compact view for linked mentions",
+                visible: () => {
+                  var _a, _b, _c;
+                  return (_c = (_b = (_a = this.plugin.settings.postOptions) == null ? void 0 : _a.linkedMentions) == null ? void 0 : _b.enabled) != null ? _c : true;
+                },
+                control: { type: "toggle", key: "postOptions.linkedMentions.linkedMentionsCompact", defaultValue: false }
+              },
+              {
+                // Config reads postOptions.graphView.enabled (source of truth);
+                // override mirrors it to features.graphView for UI sync.
+                name: "Graph view",
+                desc: "Show graph view of post connections",
+                control: { type: "toggle", key: "postOptions.graphView.enabled", defaultValue: true }
+              },
+              {
+                name: "Show in sidebar",
+                desc: "Display graph view in post sidebar",
+                visible: () => {
+                  var _a, _b, _c;
+                  return (_c = (_b = (_a = this.plugin.settings.postOptions) == null ? void 0 : _a.graphView) == null ? void 0 : _b.enabled) != null ? _c : true;
+                },
+                control: { type: "toggle", key: "postOptions.graphView.showInSidebar", defaultValue: true }
+              },
+              {
+                name: "Maximum nodes",
+                desc: "Maximum number of nodes to show in graph",
+                visible: () => {
+                  var _a, _b, _c;
+                  return (_c = (_b = (_a = this.plugin.settings.postOptions) == null ? void 0 : _a.graphView) == null ? void 0 : _b.enabled) != null ? _c : true;
+                },
+                control: { type: "number", key: "postOptions.graphView.maxNodes" }
+              },
+              {
+                name: "Show orphaned posts",
+                desc: "Include posts with no connections in graph view",
+                visible: () => {
+                  var _a, _b, _c;
+                  return (_c = (_b = (_a = this.plugin.settings.postOptions) == null ? void 0 : _a.graphView) == null ? void 0 : _b.enabled) != null ? _c : true;
+                },
+                control: { type: "toggle", key: "postOptions.graphView.showOrphanedPosts", defaultValue: true }
+              },
+              {
+                // Config reads features.postNavigation; override mirrors it.
+                name: "Post navigation",
+                desc: "Show next/previous post navigation",
+                control: { type: "toggle", key: "postOptions.postNavigation", defaultValue: true }
+              },
+              {
+                name: "Show post card cover images",
+                desc: "Where to display cover images on post cards",
+                control: {
+                  type: "dropdown",
+                  key: "postOptions.showPostCardCoverImages",
+                  options: {
+                    all: "All",
+                    featured: "Featured",
+                    home: "Home",
+                    posts: "Posts",
+                    "featured-and-posts": "Featured and posts",
+                    none: "None"
+                  }
+                }
+              },
+              {
+                name: "Post card aspect ratio",
+                desc: "Aspect ratio for post card cover images",
+                control: {
+                  type: "dropdown",
+                  key: "postOptions.postCardAspectRatio",
+                  options: {
+                    "16:9": "16:9",
+                    "4:3": "4:3",
+                    "3:2": "3:2",
+                    // False positive: "Open Graph" is a proper noun (OG format standard)
+                    // eslint-disable-next-line obsidianmd/ui/sentence-case
+                    og: "Open Graph",
+                    square: "Square",
+                    golden: "Golden",
+                    custom: "Custom"
+                  }
+                }
+              },
+              {
+                name: "Custom aspect ratio",
+                desc: 'Custom aspect ratio in format "width/height" (like "2.5/1")',
+                visible: () => {
+                  var _a;
+                  return ((_a = this.plugin.settings.postOptions) == null ? void 0 : _a.postCardAspectRatio) === "custom";
+                },
+                control: { type: "text", key: "postOptions.customPostCardAspectRatio" }
+              }
+            ]
+          },
+          {
+            type: "group",
+            heading: "Optional features",
+            items: [
+              {
+                // Profile picture toggle plus a multi-field options grid (image,
+                // alt, size, url, placement, style). The grid is custom DOM that
+                // also gates on the toggle, so the whole block is reproduced as a
+                // self-contained named render reusing FeaturesTab's renderer.
+                name: "Profile picture",
+                desc: "Show profile picture in header or footer",
+                render: (setting) => {
+                  this.renderFeaturesOptionalSection(setting, "profilePicture");
+                }
+              },
+              {
+                // Post comments toggle plus the Giscus script editor (instructions,
+                // textarea, live validation/parsing). Custom DOM and a dynamic
+                // parser side effect, so it is a named render reusing FeaturesTab.
+                name: "Post comments",
+                // False positive: "Giscus" is a proper noun (product name) and should be capitalized
+                // eslint-disable-next-line obsidianmd/ui/sentence-case
+                desc: "Enable Giscus comment system for posts",
+                render: (setting) => {
+                  this.renderFeaturesOptionalSection(setting, "comments");
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        type: "page",
+        name: "Advanced",
+        items: [
+          {
+            // Action button (CTA) that writes all current settings to config.ts.
+            // Reproduced as a named render reusing AdvancedTab's builder so the
+            // styled CTA button and its side effect are preserved verbatim.
+            name: "Apply all settings",
+            desc: "Write all current settings to your Astro config.ts file",
+            render: (setting) => {
+              new AdvancedTab(this.app, this.plugin).buildApplyAllSetting(setting);
+            }
+          },
+          {
+            // Action button that opens config.ts in the default editor.
+            name: "Edit config.ts directly",
+            // False positive: Text is already in sentence case; "Astro" is a proper noun
+            // eslint-disable-next-line obsidianmd/ui/sentence-case
+            desc: "Open your Astro configuration file in the editor",
+            render: (setting) => {
+              new AdvancedTab(this.app, this.plugin).buildEditConfigSetting(setting);
+            }
+          },
+          {
+            // Action button (CTA) that parses config.ts and syncs plugin
+            // settings to match, then triggers a settings refresh. Custom
+            // multi-key side effect; reproduced via AdvancedTab's builder.
+            name: "Sync from config.ts",
+            desc: "Read current config.ts file and update plugin settings to match",
+            render: (setting) => {
+              new AdvancedTab(this.app, this.plugin).buildSyncFromConfigSetting(setting);
+            }
+          },
+          {
+            // Action button (warning) that resets settings to the current
+            // template preset while preserving user-specific settings.
+            name: "Reset to template",
+            desc: "Reset all settings to the current template",
+            render: (setting) => {
+              new AdvancedTab(this.app, this.plugin).buildResetToTemplateSetting(setting);
+            }
+          },
+          {
+            // Action button (warning) that opens a confirmation modal and
+            // resets settings to defaults, preserving site info and navigation.
+            name: "Reset to defaults",
+            desc: "Reset all settings to their default values",
+            render: (setting) => {
+              new AdvancedTab(this.app, this.plugin).buildResetToDefaultsSetting(setting);
+            }
+          },
+          {
+            // Action button that exports the current configuration as JSON.
+            // False positive: "JSON" is an acronym and should be uppercase
+            // eslint-disable-next-line obsidianmd/ui/sentence-case
+            name: "Export configuration",
+            // False positive: "JSON" is an acronym and should be uppercase
+            // eslint-disable-next-line obsidianmd/ui/sentence-case
+            desc: "Export your current configuration as JSON",
+            render: (setting) => {
+              new AdvancedTab(this.app, this.plugin).buildExportConfigurationSetting(setting);
+            }
+          },
+          {
+            // Action button that imports configuration from a JSON file.
+            // False positive: "JSON" is an acronym and should be uppercase
+            // eslint-disable-next-line obsidianmd/ui/sentence-case
+            name: "Import configuration",
+            // False positive: "JSON" is an acronym and should be uppercase
+            // eslint-disable-next-line obsidianmd/ui/sentence-case
+            desc: "Import configuration from JSON file",
+            render: (setting) => {
+              new AdvancedTab(this.app, this.plugin).buildImportConfigurationSetting(setting);
+            }
+          }
+        ]
+      }
+    ];
+  }
+  // Render one of the Navigation tab's custom list sections (pages or social)
+  // inside a declarative render def. The list is genuinely custom UI (drag
+  // reorder, multi-field rows, nested children), so it is reproduced verbatim
+  // by reusing NavigationTab's section renderers. The setting's own name/desc
+  // row is hidden so the group heading and list stand alone, matching the
+  // original section layout. onReRender re-renders only the list container.
+  renderNavigationCustomSection(setting, section) {
+    const nameEl = setting.settingEl.querySelector(".setting-item-name");
+    const descEl = setting.settingEl.querySelector(".setting-item-description");
+    const controlEl = setting.settingEl.querySelector(".setting-item-control");
+    if (nameEl) nameEl.setCssStyles({ display: "none" });
+    if (descEl) descEl.setCssStyles({ display: "none" });
+    if (controlEl) controlEl.setCssStyles({ display: "none" });
+    setting.settingEl.setCssStyles({ display: "block" });
+    const sectionEl = setting.settingEl.createDiv("settings-section");
+    const navTab = new NavigationTab(this.app, this.plugin);
+    const renderInto = () => {
+      sectionEl.empty();
+      if (section === "pages") {
+        navTab.renderPagesSection(sectionEl, renderInto);
+      } else {
+        navTab.renderSocialSection(sectionEl, renderInto);
+      }
+    };
+    renderInto();
+  }
+  // Hide a render def's default name/desc/control row so the custom DOM below
+  // stands alone, matching the imperative tab's hidden-setting blocks.
+  hideSettingChrome(setting) {
+    const nameEl = setting.settingEl.querySelector(".setting-item-name");
+    const descEl = setting.settingEl.querySelector(".setting-item-description");
+    const controlEl = setting.settingEl.querySelector(".setting-item-control");
+    if (nameEl) nameEl.setCssStyles({ display: "none" });
+    if (descEl) descEl.setCssStyles({ display: "none" });
+    if (controlEl) controlEl.setCssStyles({ display: "none" });
+    setting.settingEl.setCssStyles({ display: "block" });
+  }
+  // "Customize available themes": the toggle's value is not a plain boolean (it
+  // transforms availableThemes to an array or 'default') and toggling it reveals
+  // the theme-pills / custom-themes editor, so the whole block self-re-renders.
+  // Reproduces StyleTab's imperative behaviour verbatim.
+  renderStyleAvailableThemes(setting) {
+    const plugin = this.plugin;
+    const settings = plugin.settings;
+    setting.addToggle((toggle) => {
+      const isCustomized = Array.isArray(settings.availableThemes);
+      toggle.setValue(isCustomized);
+      toggle.onChange((value) => {
+        void (async () => {
+          if (value) {
+            settings.availableThemes = THEME_OPTIONS.filter((theme) => theme.id !== "custom").map((theme) => theme.id);
+          } else {
+            settings.availableThemes = "default";
+          }
+          await this.plugin.saveData(settings);
+          await plugin.loadSettings();
+          renderPills();
+          try {
+            await new StyleTab(this.app, this.plugin).applyConfiguration();
+            new import_obsidian17.Notice(`Available themes ${value ? "customized" : "set to default"} and applied to config.ts`);
+          } catch (error) {
+            new import_obsidian17.Notice(`Failed to apply available themes change: ${error instanceof Error ? error.message : String(error)}`);
+          }
+        })();
+      });
+    });
+    setting.settingEl.setCssStyles({ flexWrap: "wrap" });
+    const sectionEl = setting.settingEl.createDiv("settings-section");
+    sectionEl.setCssStyles({ flexBasis: "100%", width: "100%" });
+    const renderPills = () => {
+      sectionEl.empty();
+      if (!Array.isArray(settings.availableThemes)) return;
+      const themePillsContainer = sectionEl.createDiv("theme-pills-container");
+      themePillsContainer.setCssStyles({ marginTop: "10px", marginBottom: "32px" });
+      const pillsHeader = themePillsContainer.createEl("p", {
+        text: "Available themes (click to toggle selection):",
+        cls: "theme-pills-header"
+      });
+      pillsHeader.setCssStyles({ fontSize: "14px", marginBottom: "8px", color: "var(--text-muted)" });
+      const pillsWrapper = themePillsContainer.createDiv("theme-pills-wrapper");
+      pillsWrapper.setCssStyles({ display: "flex", flexWrap: "wrap", gap: "8px", paddingBottom: "20px" });
+      const allThemes = THEME_OPTIONS.filter((theme) => theme.id !== "custom");
+      allThemes.forEach((theme) => {
+        const isSelected = settings.availableThemes.includes(theme.id);
+        const pill = pillsWrapper.createDiv("theme-pill");
+        pill.setCssStyles({
+          display: "inline-flex",
+          alignItems: "center",
+          gap: "4px",
+          padding: "4px 10px",
+          borderRadius: "14px",
+          fontSize: "12px",
+          cursor: "pointer",
+          transition: "all 0.15s ease",
+          userSelect: "none"
+        });
+        if (isSelected) {
+          pill.setCssStyles({ backgroundColor: "var(--interactive-accent)", color: "var(--text-on-accent)", border: "1px solid var(--interactive-accent)" });
+        } else {
+          pill.setCssStyles({ backgroundColor: "var(--background-secondary)", color: "var(--text-muted)", border: "1px solid var(--background-modifier-border)" });
+        }
+        pill.createSpan({ text: theme.name });
+        const indicator = pill.createSpan({ text: isSelected ? " \u2713" : "" });
+        indicator.setCssStyles({ fontSize: "10px", opacity: "0.8" });
+        pill.addEventListener("click", () => {
+          void (async () => {
+            const currentThemes = settings.availableThemes;
+            const newThemes = isSelected ? currentThemes.filter((id) => id !== theme.id) : [...currentThemes, theme.id];
+            settings.availableThemes = newThemes;
+            await this.plugin.saveData(settings);
+            await plugin.loadSettings();
+            renderPills();
+            try {
+              await new StyleTab(this.app, this.plugin).applyConfiguration();
+              new import_obsidian17.Notice(`Theme "${theme.name}" ${isSelected ? "removed from" : "added to"} available themes`);
+            } catch (error) {
+              new import_obsidian17.Notice(`Failed to apply theme change: ${error instanceof Error ? error.message : String(error)}`);
+            }
+          })();
+        });
+      });
+      const customThemesSection = themePillsContainer.createDiv("custom-themes-section");
+      customThemesSection.setCssStyles({ marginTop: "32px", padding: "10px", backgroundColor: "var(--background-secondary)", borderRadius: "6px", border: "1px solid var(--background-modifier-border)" });
+      const customThemesLabel = customThemesSection.createEl("label", { text: "Custom themes (comma-separated):", cls: "custom-themes-label" });
+      customThemesLabel.setCssStyles({ display: "block", fontSize: "12px", color: "var(--text-muted)", marginBottom: "6px" });
+      const inputContainer = customThemesSection.createDiv("custom-themes-input-container");
+      inputContainer.setCssStyles({ display: "flex", gap: "6px", alignItems: "center" });
+      const customThemesInput = inputContainer.createEl("input", {
+        type: "text",
+        placeholder: "custom,obsidinite",
+        value: settings.customThemes || "",
+        attr: { spellcheck: "false" }
+      });
+      customThemesInput.setCssStyles({ flex: "1", padding: "6px 8px", border: "1px solid var(--background-modifier-border)", borderRadius: "4px", backgroundColor: "var(--background-primary)", color: "var(--text-normal)", fontSize: "12px" });
+      const folderButton = inputContainer.createEl("button", { cls: "clickable-icon", attr: { "aria-label": "Open themes folder" } });
+      folderButton.setCssStyles({ padding: "4px", border: "none", backgroundColor: "transparent", color: "var(--text-normal)", display: "flex", alignItems: "center", justifyContent: "center", marginTop: "2px" });
+      const folderIcon = folderButton.createDiv();
+      (0, import_obsidian17.setIcon)(folderIcon, "folder");
+      folderButton.addEventListener("click", () => {
+        void (async () => {
+          try {
+            const path = require("path");
+            const fs = require("fs");
+            const { shell } = require("electron");
+            const adapter = this.app.vault.adapter;
+            const vaultPath = String(adapter.basePath || adapter.path || "");
+            const themesDir = path.resolve(vaultPath, "..", "..", "src", "themes", "custom");
+            if (!fs.existsSync(themesDir)) {
+              fs.mkdirSync(themesDir, { recursive: true });
+            }
+            await shell.openPath(themesDir);
+          } catch (error) {
+            new import_obsidian17.Notice(`Failed to open themes folder: ${error instanceof Error ? error.message : String(error)}`);
+          }
+        })();
+      });
+      let timeoutId = null;
+      customThemesInput.addEventListener("input", () => {
+        settings.customThemes = customThemesInput.value.trim();
+        void this.plugin.saveData(settings).then(() => plugin.loadSettings());
+        if (timeoutId) clearTimeout(timeoutId);
+        timeoutId = window.setTimeout(() => {
+          void new StyleTab(this.app, this.plugin).applyConfiguration().then(() => {
+            new import_obsidian17.Notice("Custom themes updated and applied to config.ts");
+          }).catch((error) => {
+            new import_obsidian17.Notice(`Failed to apply custom themes: ${error instanceof Error ? error.message : String(error)}`);
+          });
+        }, 1e3);
+      });
+    };
+    renderPills();
+  }
+  // Extract-colors button. Reproduces StyleTab's extraction side effect and
+  // refreshes the page so the dependent visible: blocks re-evaluate.
+  renderStyleExtractButton(setting) {
+    const plugin = this.plugin;
+    const settings = plugin.settings;
+    setting.addButton((button) => button.setButtonText("Extract colors").setCta().onClick(() => {
+      void (async () => {
+        var _a, _b;
+        try {
+          const extractedColors = ThemeColorExtractor.extractObsidianThemeColors();
+          settings.themeColors.extractedColors = extractedColors;
+          settings.themeColors.lastExtracted = (/* @__PURE__ */ new Date()).toISOString();
+          if (settings.themeColors.simpleColors) {
+            if ((_a = extractedColors.highlight) == null ? void 0 : _a[500]) settings.themeColors.simpleColors.accent = extractedColors.highlight[500];
+            if ((_b = extractedColors.primary) == null ? void 0 : _b[700]) settings.themeColors.simpleColors.background = extractedColors.primary[700];
+          }
+          await this.plugin.saveData(settings);
+          await plugin.loadSettings();
+          this.display();
+          new import_obsidian17.Notice("Colors extracted successfully from Obsidian theme!");
+        } catch (error) {
+          new import_obsidian17.Notice(`Failed to extract colors: ${error instanceof Error ? error.message : String(error)}`);
+        }
+      })();
+    }));
+  }
+  // Read-only "last extracted" timestamp block.
+  renderStyleLastExtracted(setting) {
+    const settings = this.plugin.settings;
+    this.hideSettingChrome(setting);
+    const lastExtracted = new Date(settings.themeColors.lastExtracted).toLocaleString();
+    const timestampEl = setting.settingEl.createEl("p", { text: `Last extracted: ${lastExtracted}`, cls: "theme-extraction-timestamp" });
+    timestampEl.setCssStyles({ color: "var(--text-muted)" });
+  }
+  // Color swatch preview, reusing StyleTab's renderer.
+  renderStyleColorPreview(setting) {
+    const settings = this.plugin.settings;
+    this.hideSettingChrome(setting);
+    if (settings.themeColors.extractedColors) {
+      new StyleTab(this.app, this.plugin).renderColorPreview(setting.settingEl, settings.themeColors.extractedColors);
+    }
+  }
+  // Simple or advanced color editor, reusing StyleTab's renderers. The active
+  // editor follows themeColors.mode, which the dropdown control drives.
+  renderStyleColorEditor(setting) {
+    const settings = this.plugin.settings;
+    this.hideSettingChrome(setting);
+    const styleTab = new StyleTab(this.app, this.plugin);
+    if (settings.themeColors.mode === "simple") {
+      styleTab.renderSimpleColorEditor(setting.settingEl, settings);
+    } else {
+      styleTab.renderAdvancedColorEditor(setting.settingEl, settings);
+    }
+  }
+  // Save-to-file button. Writes a generated theme file and applies it to config.
+  renderStyleSaveThemeButton(setting) {
+    const plugin = this.plugin;
+    const settings = plugin.settings;
+    setting.addButton((button) => button.setButtonText("Save theme file").setCta().onClick(() => {
+      void (async () => {
+        try {
+          if (!settings.themeColors.extractedColors) {
+            new import_obsidian17.Notice("No colors available to save. Please extract colors first.");
+            return;
+          }
+          const themeFileName = settings.customThemeFile || "custom";
+          const themeContent = ThemeColorExtractor.generateThemeFileContent(settings.themeColors.extractedColors, themeFileName);
+          const filePath = `../../src/themes/custom/${themeFileName}.ts`;
+          await this.app.vault.adapter.write(filePath, themeContent);
+          settings.customThemeFile = themeFileName;
+          await this.plugin.saveData(settings);
+          try {
+            const success = plugin.configManager.updateIndividualFeatures(settings);
+            if (success) {
+              new import_obsidian17.Notice(`${themeFileName}.ts saved successfully! Use the main theme dropdown to switch to "custom" if you want to use this theme.`);
+            } else {
+              new import_obsidian17.Notice("Theme file saved but failed to apply to config.ts");
+            }
+          } catch (error) {
+            new import_obsidian17.Notice(`Theme file saved but failed to apply: ${error instanceof Error ? error.message : String(error)}`);
+          }
+        } catch (error) {
+          new import_obsidian17.Notice(`Failed to save theme file: ${error instanceof Error ? error.message : String(error)}`);
+        }
+      })();
+    }));
+  }
+  // Footer content multi-line textarea with debounced config write. The footer
+  // content was a manually created full-width textarea in the imperative tab
+  // (not a bindable single-line control), so it is reproduced verbatim here.
+  renderFeaturesFooterContent(setting) {
+    var _a;
+    const plugin = this.plugin;
+    const settings = plugin.settings;
+    const defaultContent = '\xA9 2025 {author}. Built with the <a href="https://github.com/davidvkimball/astro-modular" target="_blank">Astro Modular</a> theme.';
+    const descEl = setting.settingEl.querySelector(".setting-item-description");
+    if (descEl) {
+      descEl.setCssStyles({ marginBottom: "var(--size-4-3)" });
+    }
+    const textarea = setting.controlEl.createEl("textarea", {
+      attr: {
+        placeholder: "\xA9 2025 {author}. Built with the Astro Modular theme.",
+        rows: "3"
+      }
+    });
+    textarea.value = ((_a = settings.footer) == null ? void 0 : _a.content) || defaultContent;
+    textarea.setCssStyles({
+      width: "100%",
+      minHeight: "80px",
+      resize: "vertical",
+      fontFamily: "var(--font-text)",
+      fontSize: "var(--font-ui-small)",
+      padding: "var(--size-4-2) var(--size-4-3)",
+      border: "1px solid var(--background-modifier-border)",
+      borderRadius: "var(--radius-s)",
+      background: "var(--background-primary)",
+      color: "var(--text-normal)"
+    });
+    setting.controlEl.setCssStyles({ width: "100%", display: "block" });
+    const apply = () => {
+      try {
+        if (plugin.configManager.updateIndividualFeatures(plugin.settings)) {
+          void plugin.configManager.triggerRebuild();
+        }
+      } catch (e) {
+      }
+    };
+    let timeoutId = null;
+    textarea.addEventListener("input", () => {
+      if (timeoutId) clearTimeout(timeoutId);
+      if (!settings.footer) {
+        settings.footer = { enabled: true, content: "", showSocialIconsInFooter: true };
+      }
+      settings.footer.content = textarea.value;
+      void plugin.saveData(settings);
+      timeoutId = window.setTimeout(apply, 1e3);
+    });
+    textarea.addEventListener("blur", () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+        apply();
+      }
+    });
+  }
+  // Reproduce one of the Features tab's optional-feature sections (profile
+  // picture or comments). Both are a toggle plus a custom multi-field editor
+  // that gates on the toggle, so they are reproduced verbatim by reusing
+  // FeaturesTab's section renderers. The render def's own name/desc/control row
+  // is hidden so the reused section stands alone, matching the original layout.
+  renderFeaturesOptionalSection(setting, section) {
+    this.hideSettingChrome(setting);
+    const sectionEl = setting.settingEl.createDiv("settings-section");
+    const featuresTab = new FeaturesTab(this.app, this.plugin);
+    const group = { addSetting: (cb) => {
+      cb(new import_obsidian17.Setting(sectionEl));
+    } };
+    const settings = this.plugin.settings;
+    if (section === "profilePicture") {
+      featuresTab.renderProfilePictureSetting(group, settings);
+    } else {
+      featuresTab.renderCommentsSetting(group, settings);
+    }
+  }
+  // Read a control's value, resolving dot-path keys for nested settings
+  // (e.g. 'siteInfo.title'). Used by the declarative control bindings above.
+  getControlValue(key) {
+    let obj = this.plugin.settings;
+    for (const part of key.split(".")) {
+      if (obj == null) return void 0;
+      obj = obj[part];
+    }
+    return obj;
+  }
+  // Write a control change (dot-path aware), persist, and fire the per-key
+  // side effects the imperative display() handlers performed.
+  async setControlValue(key, value) {
+    const plugin = this.plugin;
+    const parts = key.split(".");
+    let obj = plugin.settings;
+    for (let i = 0; i < parts.length - 1; i++) {
+      obj = obj[parts[i]];
+    }
+    obj[parts[parts.length - 1]] = value;
+    await plugin.saveData(plugin.settings);
+    if (key === "removeRibbonIcon" && plugin.updateRibbonIcon) {
+      await plugin.updateRibbonIcon();
+    }
+    if (key === "deployment.platform") {
+      await plugin.loadSettings();
+    }
+    if (key === "contentOrganization") {
+      await plugin.loadSettings();
+      const contentOrg = value;
+      const config4 = {
+        obsidianSettings: {
+          attachmentLocation: contentOrg === "file-based" ? "subfolder" : "same-folder",
+          subfolderName: "attachments"
+        },
+        astroComposerSettings: {
+          creationMode: contentOrg === "file-based" ? "file" : "folder",
+          indexFileName: "index"
+        },
+        imageManagerSettings: {
+          customPropertyLinkFormat: contentOrg === "file-based" ? "[[attachments/{image-url}]]" : "[[{image-url}]]"
+        }
+      };
+      try {
+        await plugin.pluginManager.configurePlugins(config4);
+        const attachmentLocation = contentOrg === "file-based" ? "subfolder (attachments/)" : "same folder";
+        const creationMode = contentOrg === "file-based" ? "file" : "folder";
+        new import_obsidian17.Notice(`Content organization changed to ${value}
+
+\u2022 Obsidian: Attachments \u2192 ${attachmentLocation}
+\u2022 Astro Composer: Creation mode \u2192 ${creationMode}
+\u2022 Image Manager: Format updated`, 8e3);
+      } catch (error) {
+        new import_obsidian17.Notice(`Failed to configure plugins for content organization: ${error instanceof Error ? error.message : String(error)}`);
+      }
+      return;
+    }
+    if (key === "currentTheme") {
+      try {
+        plugin.configManager.updateThemeOnly(value);
+        await plugin.loadSettings();
+      } catch (e) {
+      }
+      return;
+    }
+    const fontKeyMap = {
+      "typography.headingFont": "heading",
+      "typography.proseFont": "prose",
+      "typography.monoFont": "mono"
+    };
+    const fontType = fontKeyMap[key];
+    if (fontType) {
+      try {
+        plugin.configManager.updateFontOnly(fontType, value);
+        await plugin.loadSettings();
+      } catch (e) {
+      }
+      return;
+    }
+    const featureMirrors = {
+      "commandPalette.enabled": "commandPalette",
+      "postOptions.readingTime": "readingTime",
+      "postOptions.linkedMentions.enabled": "linkedMentions",
+      "postOptions.linkedMentions.linkedMentionsCompact": "linkedMentionsCompact",
+      "postOptions.graphView.enabled": "graphView",
+      "postOptions.postNavigation": "postNavigation",
+      "commandPalette.quickActions.toggleMode": "quickActions.toggleMode",
+      "commandPalette.quickActions.graphView": "quickActions.graphView",
+      "commandPalette.quickActions.changeTheme": "quickActions.changeTheme"
+    };
+    const mirrorTarget = featureMirrors[key];
+    if (mirrorTarget) {
+      const featureParts = mirrorTarget.split(".");
+      let featureObj = plugin.settings.features;
+      for (let i = 0; i < featureParts.length - 1; i++) {
+        featureObj = featureObj[featureParts[i]];
+      }
+      featureObj[featureParts[featureParts.length - 1]] = value;
+      await plugin.saveData(plugin.settings);
+    }
+    const uiOnlyKeys = /* @__PURE__ */ new Set(["runWizardOnStartup", "removeRibbonIcon", "customThemeGenerationEnabled", "themeColors.mode"]);
+    if (!uiOnlyKeys.has(key)) {
+      if (this.configWriteTimer) clearTimeout(this.configWriteTimer);
+      this.configWriteTimer = setTimeout(() => {
+        this.configWriteTimer = null;
+        try {
+          if (plugin.configManager.updateIndividualFeatures(plugin.settings)) {
+            void plugin.configManager.triggerRebuild();
+          }
+        } catch (e) {
+        }
+      }, 1e3);
+    }
+  }
+  // Copy a chosen PNG into the Astro project's public folder, replacing the
+  // named asset. Reproduces the imperative SiteInfoTab file-picker behaviour.
+  copySiteInfoImageToPublic(sourcePath, targetFileName) {
+    const fs = require("fs");
+    const path = require("path");
+    const vaultAdapter = this.app.vault.adapter;
+    const vaultPath = vaultAdapter.basePath || vaultAdapter.path;
+    const vaultPathString = typeof vaultPath === "string" ? vaultPath : String(vaultPath != null ? vaultPath : "");
+    const publicFolderPath = path.join(vaultPathString, "..", "..", "public");
+    const targetPath = path.join(publicFolderPath, targetFileName);
+    if (!fs.existsSync(publicFolderPath)) {
+      fs.mkdirSync(publicFolderPath, { recursive: true });
+    }
+    fs.copyFileSync(sourcePath, targetPath);
+    new import_obsidian17.Notice(`Successfully copied ${targetFileName} to public folder`);
+  }
+  showSiteInfoFilePicker(targetFileName) {
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = ".png";
+    let selectedFile = null;
+    fileInput.onchange = (e) => {
+      var _a;
+      const file = (_a = e.target.files) == null ? void 0 : _a[0];
+      if (!file) return;
+      if (!file.name.toLowerCase().endsWith(".png")) {
+        new import_obsidian17.Notice("Please select a PNG file");
+        return;
+      }
+      selectedFile = file;
+      setTimeout(() => {
+        const confirmModal = new import_obsidian17.Modal(this.app);
+        confirmModal.titleEl.setText("Replace image");
+        const contentDiv = confirmModal.contentEl.createDiv();
+        contentDiv.createEl("p", {
+          text: `Are you sure you want to replace ${targetFileName} in the public folder with the new image?`
+        });
+        const buttonContainer = contentDiv.createDiv();
+        buttonContainer.setCssStyles({ marginTop: "20px", display: "flex", gap: "10px", justifyContent: "flex-end" });
+        const cancelButton = buttonContainer.createEl("button", { text: "Cancel" });
+        cancelButton.className = "mod-button";
+        cancelButton.addEventListener("click", () => confirmModal.close());
+        const confirmButton = buttonContainer.createEl("button", { text: "Replace" });
+        confirmButton.className = "mod-warning";
+        confirmButton.addEventListener("click", () => {
+          confirmModal.close();
+          if (!selectedFile) {
+            new import_obsidian17.Notice("File selection was lost. Please try again.");
+            return;
+          }
+          void (async () => {
+            try {
+              const filePath = selectedFile.path;
+              if (filePath) {
+                this.copySiteInfoImageToPublic(filePath, targetFileName);
+              } else {
+                const fs = require("fs");
+                const path = require("path");
+                const arrayBuffer = await selectedFile.arrayBuffer();
+                const buffer = Buffer3.from(arrayBuffer);
+                const vaultAdapter = this.app.vault.adapter;
+                const vaultPath = vaultAdapter.basePath || vaultAdapter.path;
+                const vaultPathString = typeof vaultPath === "string" ? vaultPath : String(vaultPath != null ? vaultPath : "");
+                const publicFolderPath = path.join(vaultPathString, "..", "..", "public");
+                const targetPath = path.join(publicFolderPath, targetFileName);
+                if (!fs.existsSync(publicFolderPath)) {
+                  fs.mkdirSync(publicFolderPath, { recursive: true });
+                }
+                fs.writeFileSync(targetPath, buffer);
+                new import_obsidian17.Notice(`Successfully copied ${targetFileName} to public folder`);
+              }
+            } catch (err) {
+              new import_obsidian17.Notice(`Failed to copy file: ${err instanceof Error ? err.message : String(err)}`);
+            }
+          })();
+        });
+        confirmModal.open();
+      }, 100);
+    };
+    fileInput.click();
   }
   display() {
     const { containerEl } = this;

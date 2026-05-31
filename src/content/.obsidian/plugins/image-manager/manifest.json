@@ -1,1 +1,11 @@
-{"id":"image-manager","name":"Image Manager","version":"0.3.6","minAppVersion":"1.11.0","description":"Insert, rename, and sort images within your notes.","author":"David V. Kimball","authorUrl":"https://davidvkimball.com","fundingUrl":"https://patreon.com/davidvkimball","isDesktopOnly":false}
+{
+	"id": "image-manager",
+	"name": "Image Manager",
+	"version": "0.3.8",
+	"minAppVersion": "1.11.0",
+	"description": "Insert, rename, and sort images within your notes.",
+	"author": "David V. Kimball",
+	"authorUrl": "https://davidvkimball.com",
+	"fundingUrl": "https://patreon.com/davidvkimball",
+	"isDesktopOnly": false
+}

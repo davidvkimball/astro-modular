@@ -159,6 +159,13 @@ var _UIManager = class _UIManager {
     this.plugin = plugin;
     this.settings = settings;
   }
+  // The main app window's document. Obsidian 1.13 opens Settings in a separate
+  // window, so `this.doc` (the focused window) points at the Settings
+  // window while a setting is being changed — which would apply our classes to
+  // the wrong document. The workspace container always lives in the main window.
+  get doc() {
+    return this.plugin.app.workspace.containerEl.ownerDocument;
+  }
   updateSettings(settings) {
     this.settings = settings;
     this.applyStyles();
@@ -174,7 +181,7 @@ var _UIManager = class _UIManager {
   }
   applyStyles() {
     var _a;
-    const body = activeDocument.body;
+    const body = this.doc.body;
     this.applyVisibilityState(body, "auto-hide-title-bar", this.settings.titleBar, true);
     this.applyVisibilityState(body, "auto-hide-file-explorer-nav-header", this.settings.fileExplorerNavHeader);
     this.applyVisibilityState(body, "auto-hide-other-nav-headers", this.settings.otherNavHeaders);
@@ -300,7 +307,7 @@ var _UIManager = class _UIManager {
       });
       hoveredElements.clear();
       let element = target;
-      while (element && element !== activeDocument.body && element !== activeDocument.documentElement) {
+      while (element && element !== this.doc.body && element !== this.doc.documentElement) {
         if (isScrollable(element)) {
           const rect = element.getBoundingClientRect();
           const scrollbarArea = 25;
@@ -320,11 +327,11 @@ var _UIManager = class _UIManager {
       });
       hoveredElements.clear();
     };
-    activeDocument.addEventListener("mousemove", handleMouseMove, true);
-    activeDocument.addEventListener("mouseleave", handleMouseLeave, true);
+    this.doc.addEventListener("mousemove", handleMouseMove, true);
+    this.doc.addEventListener("mouseleave", handleMouseLeave, true);
     this.revealListeners.set("scrollbar-reveal", () => {
-      activeDocument.removeEventListener("mousemove", handleMouseMove, true);
-      activeDocument.removeEventListener("mouseleave", handleMouseLeave, true);
+      this.doc.removeEventListener("mousemove", handleMouseMove, true);
+      this.doc.removeEventListener("mouseleave", handleMouseLeave, true);
       hoveredElements.forEach((el) => {
         el.classList.remove("ui-tweaker-scrollbar-hover");
       });
@@ -351,8 +358,8 @@ var _UIManager = class _UIManager {
       const workspace2 = this.plugin.app.workspace;
       const rightSidebarCollapsed = ((_a = workspace2.rightSplit) == null ? void 0 : _a.collapsed) !== false;
       const leftSidebarCollapsed = ((_b = workspace2.leftSplit) == null ? void 0 : _b.collapsed) !== false;
-      activeDocument.body.classList.toggle("is-right-sidebar-collapsed", rightSidebarCollapsed);
-      activeDocument.body.classList.toggle("is-left-sidebar-collapsed", leftSidebarCollapsed);
+      this.doc.body.classList.toggle("is-right-sidebar-collapsed", rightSidebarCollapsed);
+      this.doc.body.classList.toggle("is-left-sidebar-collapsed", leftSidebarCollapsed);
       this.applyDynamicMarkers();
     };
     let checkTimeout = null;
@@ -369,7 +376,7 @@ var _UIManager = class _UIManager {
     this.tabObserver = new MutationObserver(() => {
       debouncedCheck();
     });
-    const workspace = activeDocument.querySelector(".workspace");
+    const workspace = this.doc.querySelector(".workspace");
     if (workspace) {
       this.tabObserver.observe(workspace, {
         childList: true,
@@ -386,7 +393,7 @@ var _UIManager = class _UIManager {
         debouncedCheck();
       })
     );
-    const workspaceEl = activeDocument.querySelector(".workspace");
+    const workspaceEl = this.doc.querySelector(".workspace");
     if (workspaceEl) {
       this.sidebarObserver = new MutationObserver((mutations) => {
         let shouldCheck = false;
@@ -443,7 +450,7 @@ var _UIManager = class _UIManager {
    * auto-hide-tab-bar feature can target them with a simple class selector.
    */
   markSingleTabContainers() {
-    const containers = activeDocument.querySelectorAll(
+    const containers = this.doc.querySelectorAll(
       ".workspace-tabs:not(.mod-stacked)"
     );
     containers.forEach((container) => {
@@ -455,12 +462,12 @@ var _UIManager = class _UIManager {
     });
   }
   applyIconButtonHides() {
-    const tagged = activeDocument.querySelectorAll(".ui-tweaker-hidden-button");
+    const tagged = this.doc.querySelectorAll(".ui-tweaker-hidden-button");
     tagged.forEach((el) => el.classList.remove("ui-tweaker-hidden-button"));
     for (const rule of _UIManager.ICON_BUTTON_HIDES) {
       const enabled = Boolean(this.settings[rule.settingKey]);
       if (!enabled) continue;
-      const candidates = activeDocument.querySelectorAll(rule.containerSelector);
+      const candidates = this.doc.querySelectorAll(rule.containerSelector);
       candidates.forEach((candidate) => {
         const matches = rule.icons.some(
           (icon) => candidate.querySelector(`.svg-icon.${icon}`) !== null
@@ -478,10 +485,10 @@ var _UIManager = class _UIManager {
    * .clickable-icon:has(svg.help)` rule.
    */
   markHelpButton() {
-    const stale = activeDocument.querySelectorAll(".ui-tweaker-hidden-help-button");
+    const stale = this.doc.querySelectorAll(".ui-tweaker-hidden-help-button");
     stale.forEach((el) => el.classList.remove("ui-tweaker-hidden-help-button"));
-    if (!activeDocument.body.classList.contains("ui-tweaker-hide-help-button")) return;
-    const candidateSvgs = activeDocument.querySelectorAll(
+    if (!this.doc.body.classList.contains("ui-tweaker-hide-help-button")) return;
+    const candidateSvgs = this.doc.querySelectorAll(
       ".workspace-drawer-vault-actions .clickable-icon svg.help"
     );
     candidateSvgs.forEach((svg) => {
@@ -503,14 +510,14 @@ var _UIManager = class _UIManager {
       this.sidebarObserver.disconnect();
       this.sidebarObserver = null;
     }
-    activeDocument.body.classList.remove("is-right-sidebar-collapsed", "is-left-sidebar-collapsed");
-    activeDocument.body.classList.remove("auto-hide-tab-bar-windows", "auto-hide-tab-bar-macos", "auto-hide-tab-bar-neutral");
+    this.doc.body.classList.remove("is-right-sidebar-collapsed", "is-left-sidebar-collapsed");
+    this.doc.body.classList.remove("auto-hide-tab-bar-windows", "auto-hide-tab-bar-macos", "auto-hide-tab-bar-neutral");
   }
   cleanup() {
     this.cleanupTabObserver();
     this.revealListeners.forEach((cleanup) => cleanup());
     this.revealListeners.clear();
-    const body = activeDocument.body;
+    const body = this.doc.body;
     const classesToRemove = [];
     body.classList.forEach((className) => {
       if (className.startsWith("ui-tweaker-") || className.startsWith("auto-hide-") || className.startsWith("hider-") || className.startsWith("hide-") || className.startsWith("metadata-") || className.startsWith("order-navbar-button-") || className.startsWith("enable-window-dragging-") || className === "auto-collapse-ribbon" || className === "swap-mobile-new-tab-icon" || className === "always-show-title-bar") {
@@ -778,82 +785,9 @@ function toggleVisibilityState(currentState) {
 // src/ui/SettingsTab.ts
 var import_obsidian12 = require("obsidian");
 
-// src/ui/tabs/HiderTab.ts
-var import_obsidian5 = require("obsidian");
-
-// src/ui/common/TabRenderer.ts
-var import_obsidian2 = require("obsidian");
-var TabRenderer = class {
-  constructor(app, plugin) {
-    this.app = app;
-    this.plugin = plugin;
-  }
-  getSettings() {
-    return this.plugin.settings;
-  }
-  async saveSettings() {
-    await this.plugin.saveSettings();
-    this.plugin.refresh();
-  }
-  createDropdownSetting(container, name, description, value, options, onChange) {
-    return new import_obsidian2.Setting(container).setName(name).setDesc(description).addDropdown((dropdown) => {
-      Object.entries(options).forEach(([key, label]) => {
-        dropdown.addOption(key, label);
-      });
-      dropdown.setValue(value);
-      dropdown.onChange(async (value2) => {
-        onChange(value2);
-        await this.saveSettings();
-      });
-      return dropdown;
-    });
-  }
-  createToggleSetting(container, name, description, value, onChange) {
-    return new import_obsidian2.Setting(container).setName(name).setDesc(description).addToggle((toggle) => {
-      toggle.setValue(value);
-      toggle.onChange(async (value2) => {
-        onChange(value2);
-        await this.saveSettings();
-      });
-      return toggle;
-    });
-  }
-  createSliderSetting(container, name, description, value, min, max, step, onChange) {
-    return new import_obsidian2.Setting(container).setName(name).setDesc(description).addSlider((slider) => {
-      slider.setLimits(min, max, step).setValue(value).setDynamicTooltip().onChange(async (value2) => {
-        onChange(value2);
-        await this.saveSettings();
-      });
-      return slider;
-    });
-  }
-  /**
-   * Renders a "Reset to defaults" button at the top of the tab
-   */
-  renderResetButton(container, keys, onReset) {
-    const resetContainer = container.createDiv("ui-tweaker-reset-container");
-    const setting = new import_obsidian2.Setting(resetContainer);
-    setting.setClass("ui-tweaker-reset-setting");
-    setting.setName("Reset to default");
-    setting.addExtraButton((button) => {
-      button.setIcon("rotate-ccw").setTooltip("Reset tab to defaults").onClick(async () => {
-        const settingsBag = this.plugin.settings;
-        keys.forEach((key) => {
-          settingsBag[key] = JSON.parse(JSON.stringify(DEFAULT_SETTINGS[key]));
-        });
-        if (onReset) {
-          await onReset();
-        }
-        await this.saveSettings();
-        await this.render(container);
-      });
-    });
-  }
-};
-
 // src/modals/CommandPickerModal.ts
-var import_obsidian3 = require("obsidian");
-var CommandPickerModal = class extends import_obsidian3.FuzzySuggestModal {
+var import_obsidian2 = require("obsidian");
+var CommandPickerModal = class extends import_obsidian2.FuzzySuggestModal {
   constructor(app, onSelect) {
     super(app);
     this.onSelect = onSelect;
@@ -886,11 +820,11 @@ var CommandPickerModal = class extends import_obsidian3.FuzzySuggestModal {
 };
 
 // src/modals/IconPickerModal.ts
-var import_obsidian4 = require("obsidian");
+var import_obsidian3 = require("obsidian");
 var getIconList = () => {
-  if (import_obsidian4.requireApiVersion && (0, import_obsidian4.requireApiVersion)("1.7.3") && import_obsidian4.getIconIds) {
+  if (import_obsidian3.requireApiVersion && (0, import_obsidian3.requireApiVersion)("1.7.3") && import_obsidian3.getIconIds) {
     try {
-      return (0, import_obsidian4.getIconIds)();
+      return (0, import_obsidian3.getIconIds)();
     } catch (e) {
     }
   }
@@ -1055,7 +989,7 @@ var LUCIDE_ICONS = getIconList().map((id) => ({
   id,
   name: id.replace(/^lucide-/, "").replace(/-/g, " ").replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase())
 })).sort((a, b) => a.name.localeCompare(b.name));
-var IconPickerModal = class extends import_obsidian4.FuzzySuggestModal {
+var IconPickerModal = class extends import_obsidian3.FuzzySuggestModal {
   constructor(app, onSelect) {
     super(app);
     this.onSelect = onSelect;
@@ -1078,7 +1012,112 @@ var IconPickerModal = class extends import_obsidian4.FuzzySuggestModal {
     content.createDiv({ cls: "suggestion-title", text: item.name });
     const aux = el.createDiv({ cls: "suggestion-aux" });
     const iconSpan = aux.createSpan({ cls: "suggestion-flair ui-tweaker-icon-no-bg" });
-    (0, import_obsidian4.setIcon)(iconSpan, item.id);
+    (0, import_obsidian3.setIcon)(iconSpan, item.id);
+  }
+};
+
+// src/ui/tabs/HiderTab.ts
+var import_obsidian5 = require("obsidian");
+
+// src/ui/common/TabRenderer.ts
+var import_obsidian4 = require("obsidian");
+var TabRenderer = class {
+  constructor(app, plugin) {
+    // Whether render() draws its own reset button. False in declarative sub-page
+    // mode, where the reset is a separate page item. Persists across the tab's
+    // internal re-renders so row edits don't re-introduce an inline reset.
+    this.includeResetButton = true;
+    this.app = app;
+    this.plugin = plugin;
+  }
+  /**
+   * Renders the "Reset to default" affordance into its own host (used by the
+   * declarative sub-pages so the reset is a distinct page item rather than
+   * embedded at the top of the list). On click it restores the given keys to
+   * their defaults, runs the optional side effect, persists, and re-renders the
+   * list host — which, in this mode, no longer draws its own reset button.
+   */
+  renderResetButtonSeparate(resetHost, keys, onReset) {
+    const resetContainer = resetHost.createDiv("ui-tweaker-reset-container");
+    const setting = new import_obsidian4.Setting(resetContainer);
+    setting.setClass("ui-tweaker-reset-setting");
+    setting.setName("Reset to default");
+    setting.addExtraButton((button) => {
+      button.setIcon("rotate-ccw").setTooltip("Reset tab to defaults").onClick(async () => {
+        const settingsBag = this.plugin.settings;
+        keys.forEach((key) => {
+          settingsBag[key] = JSON.parse(JSON.stringify(DEFAULT_SETTINGS[key]));
+        });
+        if (onReset) {
+          await onReset();
+        }
+        await this.saveSettings();
+        if (this.listContainer) {
+          await this.render(this.listContainer);
+        }
+      });
+    });
+  }
+  getSettings() {
+    return this.plugin.settings;
+  }
+  async saveSettings() {
+    await this.plugin.saveSettings();
+    this.plugin.refresh();
+  }
+  createDropdownSetting(container, name, description, value, options, onChange) {
+    return new import_obsidian4.Setting(container).setName(name).setDesc(description).addDropdown((dropdown) => {
+      Object.entries(options).forEach(([key, label]) => {
+        dropdown.addOption(key, label);
+      });
+      dropdown.setValue(value);
+      dropdown.onChange(async (value2) => {
+        onChange(value2);
+        await this.saveSettings();
+      });
+      return dropdown;
+    });
+  }
+  createToggleSetting(container, name, description, value, onChange) {
+    return new import_obsidian4.Setting(container).setName(name).setDesc(description).addToggle((toggle) => {
+      toggle.setValue(value);
+      toggle.onChange(async (value2) => {
+        onChange(value2);
+        await this.saveSettings();
+      });
+      return toggle;
+    });
+  }
+  createSliderSetting(container, name, description, value, min, max, step, onChange) {
+    return new import_obsidian4.Setting(container).setName(name).setDesc(description).addSlider((slider) => {
+      slider.setLimits(min, max, step).setValue(value).setDynamicTooltip().onChange(async (value2) => {
+        onChange(value2);
+        await this.saveSettings();
+      });
+      return slider;
+    });
+  }
+  /**
+   * Renders a "Reset to defaults" button at the top of the tab
+   */
+  renderResetButton(container, keys, onReset) {
+    const resetContainer = container.createDiv("ui-tweaker-reset-container");
+    const setting = new import_obsidian4.Setting(resetContainer);
+    setting.setClass("ui-tweaker-reset-setting");
+    setting.setName("Reset to default");
+    setting.addExtraButton((button) => {
+      button.setIcon("rotate-ccw").setTooltip("Reset tab to defaults").onClick(async () => {
+        const settingsBag = this.plugin.settings;
+        keys.forEach((key) => {
+          settingsBag[key] = JSON.parse(JSON.stringify(DEFAULT_SETTINGS[key]));
+        });
+        if (onReset) {
+          await onReset();
+        }
+        await this.saveSettings();
+        await this.render(container);
+      });
+    });
   }
 };
 
@@ -1460,13 +1499,17 @@ var TabBarTab = class extends TabRenderer {
     super(...arguments);
     this.expandedStates = /* @__PURE__ */ new Map();
   }
-  render(container) {
+  render(container, includeReset) {
+    if (includeReset !== void 0) this.includeResetButton = includeReset;
     container.empty();
-    this.renderResetButton(container, ["tabBarCommands"], () => {
-      if (this.plugin.tabBarManager) {
-        this.plugin.tabBarManager.reorder();
-      }
-    });
+    this.listContainer = container;
+    if (this.includeResetButton) {
+      this.renderResetButton(container, ["tabBarCommands"], () => {
+        if (this.plugin.tabBarManager) {
+          this.plugin.tabBarManager.reorder();
+        }
+      });
+    }
     const settings = this.getSettings();
     if (!settings.tabBarCommands) {
       settings.tabBarCommands = [];
@@ -1917,14 +1960,18 @@ function arrayMoveMutable2(array, from, to) {
 }
 var dragging = false;
 var StatusBarTab = class extends TabRenderer {
-  render(container) {
+  render(container, includeReset) {
+    if (includeReset !== void 0) this.includeResetButton = includeReset;
     container.empty();
-    this.renderResetButton(container, ["statusBarItems"], () => {
-      if (this.plugin.statusBarManager) {
-        this.plugin.statusBarManager.cleanup();
-        this.plugin.statusBarManager.reorder();
-      }
-    });
+    this.listContainer = container;
+    if (this.includeResetButton) {
+      this.renderResetButton(container, ["statusBarItems"], () => {
+        if (this.plugin.statusBarManager) {
+          this.plugin.statusBarManager.cleanup();
+          this.plugin.statusBarManager.reorder();
+        }
+      });
+    }
     const settings = this.getSettings();
     this.container = container;
     if (!settings.statusBarItems) {
@@ -2392,34 +2439,38 @@ var ExplorerTab = class extends TabRenderer {
       });
     })();
   }
-  render(container) {
+  render(container, includeReset) {
+    if (includeReset !== void 0) this.includeResetButton = includeReset;
     container.empty();
-    this.renderResetButton(container, [
-      "newNoteButton",
-      "newFolderButton",
-      "sortOrderButton",
-      "autoRevealButton",
-      "collapseAllButton",
-      "explorerCommands",
-      "explorerButtonItems",
-      "nativeExplorerButtonColors",
-      "nativeExplorerButtonIcons"
-    ], () => {
-      if (this.plugin.explorerManager) {
-        this.plugin.explorerManager.cleanup();
-        const explorers = this.app.workspace.getLeavesOfType("file-explorer");
-        explorers.forEach((leaf) => {
-          var _a, _b;
-          const navButtonsContainer = (_b = (_a = leaf.view) == null ? void 0 : _a.containerEl) == null ? void 0 : _b.querySelector("div.nav-buttons-container");
-          if (navButtonsContainer) {
-            const buttons = navButtonsContainer.querySelectorAll(".nav-action-button");
-            buttons.forEach((btn) => btn.classList.remove("ui-tweaker-explorer-button-hidden"));
-          }
-        });
-        this.plugin.explorerManager.consolidateSettingsAndElements();
-        this.plugin.explorerManager.reorder();
-      }
-    });
+    this.listContainer = container;
+    if (this.includeResetButton) {
+      this.renderResetButton(container, [
+        "newNoteButton",
+        "newFolderButton",
+        "sortOrderButton",
+        "autoRevealButton",
+        "collapseAllButton",
+        "explorerCommands",
+        "explorerButtonItems",
+        "nativeExplorerButtonColors",
+        "nativeExplorerButtonIcons"
+      ], () => {
+        if (this.plugin.explorerManager) {
+          this.plugin.explorerManager.cleanup();
+          const explorers = this.app.workspace.getLeavesOfType("file-explorer");
+          explorers.forEach((leaf) => {
+            var _a, _b;
+            const navButtonsContainer = (_b = (_a = leaf.view) == null ? void 0 : _a.containerEl) == null ? void 0 : _b.querySelector("div.nav-buttons-container");
+            if (navButtonsContainer) {
+              const buttons = navButtonsContainer.querySelectorAll(".nav-action-button");
+              buttons.forEach((btn) => btn.classList.remove("ui-tweaker-explorer-button-hidden"));
+            }
+          });
+          this.plugin.explorerManager.consolidateSettingsAndElements();
+          this.plugin.explorerManager.reorder();
+        }
+      });
+    }
     const settings = this.getSettings();
     if (!settings.explorerCommands) {
       settings.explorerCommands = [];
@@ -3806,9 +3857,20 @@ var MobileTab = class extends TabRenderer {
 // src/ui/tabs/PropertiesTab.ts
 var import_obsidian11 = require("obsidian");
 var PropertiesTab = class extends TabRenderer {
+  constructor() {
+    super(...arguments);
+    // Re-render hook used after a property icon/color/reset change. The tabbed
+    // path re-renders the whole tab; the declarative settings page overrides
+    // this to re-render only the "Property Icons" section host in place.
+    this.reRender = () => {
+      if (this.container) this.render(this.container);
+    };
+  }
   render(container) {
-    var _a, _b;
     this.container = container;
+    this.reRender = () => {
+      if (this.container) this.render(this.container);
+    };
     container.empty();
     const settings = this.getSettings();
     this.renderResetButton(container, ["propertyIconItems", "minimalPropertyIcons", "showPropertyMenuActions"]);
@@ -3819,10 +3881,10 @@ var PropertiesTab = class extends TabRenderer {
     topGroup.addSetting((setting) => {
       setting.setName("Minimal property icons").setDesc("Hide the default property type icon and only show your custom icon.").addToggle((toggle) => {
         toggle.setValue(settings.minimalPropertyIcons).onChange(async (value) => {
-          var _a2;
+          var _a;
           settings.minimalPropertyIcons = value;
           await this.saveSettings();
-          (_a2 = this.plugin.propertiesManager) == null ? void 0 : _a2.refresh();
+          (_a = this.plugin.propertiesManager) == null ? void 0 : _a.refresh();
         });
       });
     });
@@ -3834,7 +3896,52 @@ var PropertiesTab = class extends TabRenderer {
         });
       });
     });
-    const propGroup = new import_obsidian11.SettingGroup(container).setHeading("Property Icons");
+    this.renderPropertyIconsSection(container);
+  }
+  /**
+   * Renders just the "Reset to default" button for the property settings keys
+   * into the given container, reproducing TabRenderer.renderResetButton's
+   * behaviour (reset the three keys to defaults, persist, re-apply UI). Public
+   * so the declarative settings page can reuse the exact same affordance. The
+   * optional onAfterReset runs after persisting so the caller can re-render the
+   * relevant region (the tabbed path re-renders the whole tab via render()).
+   */
+  renderPropertyResetButton(container, onAfterReset) {
+    const resetContainer = container.createDiv("ui-tweaker-reset-container");
+    const setting = new import_obsidian11.Setting(resetContainer);
+    setting.setClass("ui-tweaker-reset-setting");
+    setting.setName("Reset to default");
+    const keys = ["propertyIconItems", "minimalPropertyIcons", "showPropertyMenuActions"];
+    setting.addExtraButton((button) => {
+      button.setIcon("rotate-ccw").setTooltip("Reset tab to defaults").onClick(async () => {
+        var _a;
+        const settingsBag = this.plugin.settings;
+        keys.forEach((key) => {
+          settingsBag[key] = JSON.parse(JSON.stringify(DEFAULT_SETTINGS[key]));
+        });
+        await this.saveSettings();
+        (_a = this.plugin.propertiesManager) == null ? void 0 : _a.refresh();
+        if (onAfterReset) onAfterReset();
+      });
+    });
+  }
+  /**
+   * Renders the "Property Icons" section (heading + per-property icon/color
+   * rows, or an empty state). Public so the declarative settings page can
+   * reuse the exact same custom UI inside a render definition. The provided
+   * container is the section host; this re-renders the section in place.
+   */
+  renderPropertyIconsSection(container, includeHeading = true) {
+    var _a, _b;
+    const settings = this.getSettings();
+    if (!settings.propertyIconItems) {
+      settings.propertyIconItems = [];
+    }
+    this.reRender = () => {
+      container.empty();
+      this.renderPropertyIconsSection(container, includeHeading);
+    };
+    const propGroup = includeHeading ? new import_obsidian11.SettingGroup(container).setHeading("Property Icons") : new import_obsidian11.SettingGroup(container);
     const metadataProps = Object.keys(
       (_b = (_a = this.app.metadataTypeManager) == null ? void 0 : _a.properties) != null ? _b : {}
     );
@@ -3863,7 +3970,7 @@ var PropertiesTab = class extends TabRenderer {
             var _a;
             settings.propertyIconItems = settings.propertyIconItems.filter((i) => i.id.toLowerCase() !== normalizedPropName);
             await this.saveSettings();
-            if (this.container) this.render(this.container);
+            this.reRender();
             (_a = this.plugin.propertiesManager) == null ? void 0 : _a.refresh();
           });
         });
@@ -3899,7 +4006,7 @@ var PropertiesTab = class extends TabRenderer {
                 settings.propertyIconItems = settings.propertyIconItems.filter((i) => i.id.toLowerCase() !== normalizedPropName);
               }
               await this.saveSettings();
-              if (this.container) this.render(this.container);
+              this.reRender();
               (_a = this.plugin.propertiesManager) == null ? void 0 : _a.refresh();
             })();
           });
@@ -3931,7 +4038,7 @@ var PropertiesTab = class extends TabRenderer {
 };
 
 // src/ui/SettingsTab.ts
-var UITweakerSettingTab = class extends import_obsidian12.PluginSettingTab {
+var _UITweakerSettingTab = class _UITweakerSettingTab extends import_obsidian12.PluginSettingTab {
   constructor(app, plugin) {
     super(app, plugin);
     this.icon = "lucide-wrench";
@@ -3939,7 +4046,871 @@ var UITweakerSettingTab = class extends import_obsidian12.PluginSettingTab {
     this.tabContentMap = /* @__PURE__ */ new Map();
     this.tabButtons = /* @__PURE__ */ new Map();
     this.activeTabId = null;
+    // Shared state for the declarative "Properties" page: one PropertiesTab
+    // instance backs both the reset button and the dynamic icons section, and
+    // the section host is retained so a reset can re-render the list in place.
+    this.propertiesTabInstance = null;
+    this.propertiesIconsSectionHost = null;
+    // Shared StatusBarTab instance backing the declarative "Status bar" page's
+    // managed item list, mirroring the propertiesTabInstance precedent.
+    this.statusBarTabInstance = null;
+    // Shared TabBarTab instance backing the declarative "Tab bar" page's managed
+    // command list, mirroring the statusBarTabInstance precedent.
+    this.tabBarTabInstance = null;
+    // Shared ExplorerTab instance backing the declarative "Explorer" page's
+    // managed button list, mirroring the tabBarTabInstance precedent.
+    this.explorerTabInstance = null;
     this.plugin = plugin;
+  }
+  // 1.13.0+: framework calls this and renders each tab as a navigable
+  // sub-page, surfacing the settings in the built-in search. Pre-1.13.0: this
+  // is ignored and display() runs the tabbed UI.
+  getSettingDefinitions() {
+    return [
+      {
+        type: "page",
+        name: "Hider",
+        items: [
+          {
+            // "Reset to default" affordance reproduced from the imperative
+            // HiderTab: restores every Hider key to its default, persists,
+            // then re-applies the UI tweaks. Custom DOM (named render), so it
+            // is not surfaced in search. The framework owns re-rendering the
+            // control rows, matching the Properties/Mobile page precedent.
+            name: "Reset to default",
+            render: (setting) => {
+              this.hidePropertiesSettingChrome(setting);
+              const host = setting.settingEl.createDiv();
+              this.renderHiderResetButton(host);
+            }
+          },
+          {
+            type: "group",
+            heading: "Auto-hide elements",
+            items: [
+              {
+                name: "Title bar",
+                desc: "Hide title bar until hover. Turn off to always show.",
+                control: { type: "dropdown", key: "titleBar", options: this.visibilityOptions() }
+              },
+              {
+                name: "File explorer nav header",
+                desc: "Hide file explorer navigation header until hover. Elegantly reveals on hover.",
+                control: { type: "dropdown", key: "fileExplorerNavHeader", options: this.visibilityOptions() }
+              },
+              {
+                name: "Other nav headers",
+                desc: "Hide navigation headers for tag, backlinks, outgoing links, outline, and bookmarks panes until hover.",
+                control: { type: "dropdown", key: "otherNavHeaders", options: this.visibilityOptions() }
+              },
+              {
+                name: "Left tab headers",
+                desc: "Hide left panel tab headers until hover. Elegantly reveals on hover.",
+                control: { type: "dropdown", key: "leftTabHeaders", options: this.visibilityOptions() }
+              },
+              {
+                name: "Right tab headers",
+                desc: "Hide right panel tab headers until hover. Elegantly reveals on hover.",
+                control: { type: "dropdown", key: "rightTabHeaders", options: this.visibilityOptions() }
+              },
+              {
+                name: "Collapse ribbon",
+                desc: "Collapse the left ribbon to a thin strip until hover. Elegantly expands on hover.",
+                control: { type: "toggle", key: "ribbonRevealOnHover" }
+              }
+            ]
+          },
+          {
+            type: "group",
+            heading: "Navigation",
+            items: [
+              {
+                name: "Hide tab bar",
+                desc: "Hides the tab container at the top of the window.",
+                control: { type: "toggle", key: "tabBar" }
+              },
+              {
+                name: "Make top of window draggable without tab bar",
+                desc: 'Enables window dragging from the top of the window when the tab bar is hidden. Only works when "Hide tab bar" is enabled.',
+                control: { type: "toggle", key: "enableWindowDragging" }
+              },
+              {
+                name: "Hide tab header when only one tab",
+                desc: "Hide the tab bar automatically when only 1 tab is open.",
+                control: { type: "toggle", key: "tabBarHideWhenSingle" }
+              },
+              {
+                name: 'Hide "Reading mode" button',
+                desc: 'Hide "Reading mode" button in view headers.',
+                control: { type: "toggle", key: "readingModeButton" }
+              },
+              {
+                name: 'Hide "Bookmarked" button',
+                desc: 'Hide "Bookmarked" button in view headers.',
+                control: { type: "toggle", key: "bookmarkedButton" }
+              },
+              {
+                name: 'Hide "Search settings" button',
+                desc: 'Hide "Search settings" button in search pane.',
+                control: { type: "toggle", key: "searchSettingsButton" }
+              }
+            ]
+          },
+          {
+            type: "group",
+            heading: "Vault profile area",
+            items: [
+              {
+                name: "Vault switcher",
+                desc: "Hide vault switcher until hover. Does not work when vault name is hidden.",
+                control: { type: "dropdown", key: "vaultSwitcher", options: this.visibilityOptions() }
+              },
+              {
+                name: "Help button",
+                desc: "Hide help button until hover. Elegantly reveals on hover.",
+                control: { type: "dropdown", key: "helpButton", options: this.visibilityOptions() }
+              },
+              {
+                name: "Replace help button with custom action",
+                desc: "Replace the help button with a custom icon and command. This will hide the original help button and show your custom button instead.",
+                control: { type: "toggle", key: "helpButtonReplacement.enabled" }
+              },
+              {
+                // Command picker (modal) shown only while the replacement
+                // is enabled. Custom UI (named render); not searchable. The
+                // visible predicate replaces the imperative tab's instant
+                // show/hide of this dependent row.
+                name: "Command",
+                desc: "Select the command to execute when the button is clicked",
+                visible: () => {
+                  var _a;
+                  return Boolean((_a = this.plugin.settings.helpButtonReplacement) == null ? void 0 : _a.enabled);
+                },
+                render: (setting) => {
+                  this.renderHelpButtonCommandControl(setting);
+                }
+              },
+              {
+                // Icon picker (modal) shown only while the replacement is
+                // enabled. Custom UI (named render); not searchable.
+                name: "Icon",
+                desc: "Select the icon to display on the button",
+                visible: () => {
+                  var _a;
+                  return Boolean((_a = this.plugin.settings.helpButtonReplacement) == null ? void 0 : _a.enabled);
+                },
+                render: (setting) => {
+                  this.renderHelpButtonIconControl(setting);
+                }
+              },
+              {
+                name: "Settings button",
+                desc: "Hide settings button until hover. Elegantly reveals on hover.",
+                control: { type: "dropdown", key: "settingsButton", options: this.visibilityOptions() }
+              },
+              {
+                name: "Vault switcher background transparency",
+                desc: "Adjust the transparency of the vault switcher background when hidden. Range: 0 (fully transparent) to 1 (fully opaque).",
+                control: { type: "slider", key: "vaultSwitcherBackgroundTransparency", min: 0, max: 1, step: 0.01 }
+              }
+            ]
+          },
+          {
+            type: "group",
+            heading: "Tab icons",
+            items: [
+              {
+                name: "Hide tab list icon",
+                desc: "Hides the tab list icon. You can still access tabs via other methods.",
+                control: { type: "dropdown", key: "tabListIcon", options: this.visibilityOptions() }
+              },
+              {
+                name: "Hide new tab icon",
+                desc: "Hides the new tab icon. You can still create new tabs with Ctrl+T (Cmd+T on Mac).",
+                control: { type: "dropdown", key: "newTabIcon", options: this.visibilityOptions() }
+              },
+              {
+                name: "Hide tab close button",
+                desc: "Hides the close button on tabs. You can still close tabs with middle click or other methods.",
+                control: { type: "dropdown", key: "tabCloseButton", options: this.visibilityOptions() }
+              }
+            ]
+          },
+          {
+            type: "group",
+            heading: "Status & UI elements",
+            items: [
+              {
+                name: "Hide status bar",
+                desc: "Hides word count, character count and backlink count.",
+                control: { type: "toggle", key: "statusBar" }
+              },
+              {
+                name: "Scroll bars",
+                desc: "Control scrollbar visibility. Reveal option hides scrollbars until hover.",
+                control: { type: "dropdown", key: "scrollBars", options: this.visibilityOptions() }
+              },
+              {
+                name: "Hide left sidebar toggle button",
+                desc: "Hides the left sidebar toggle button.",
+                control: { type: "dropdown", key: "leftSidebarToggleButton", options: this.visibilityOptions() }
+              },
+              {
+                name: "Hide right sidebar toggle button",
+                desc: "Hides the right sidebar toggle button.",
+                control: { type: "dropdown", key: "rightSidebarToggleButton", options: this.visibilityOptions() }
+              },
+              {
+                name: "Hide tooltips",
+                desc: "Hides all tooltips.",
+                control: { type: "toggle", key: "tooltips" }
+              },
+              {
+                name: "Hide instructions",
+                desc: "Hides instructional tips in modals.",
+                control: { type: "toggle", key: "instructions" }
+              }
+            ]
+          },
+          {
+            type: "group",
+            heading: "Search",
+            items: [
+              {
+                name: "Hide search suggestions",
+                desc: "Hides suggestions in search pane.",
+                control: { type: "toggle", key: "searchSuggestions" }
+              },
+              {
+                name: "Hide count of search term matches",
+                desc: "Hides the number of matches within each search result.",
+                control: { type: "toggle", key: "searchTermCounts" }
+              }
+            ]
+          },
+          {
+            type: "group",
+            heading: "Properties",
+            items: [
+              {
+                name: "Hide properties in Reading view",
+                desc: "Hides the properties section in Reading view.",
+                control: { type: "toggle", key: "propertiesInReadingView" }
+              },
+              {
+                name: "Deemphasize properties",
+                desc: "Softens visual prominence of file properties. They become more visible on hover.",
+                control: { type: "toggle", key: "deemphasizeProperties" }
+              },
+              {
+                name: "Hide properties heading",
+                desc: 'Hide "Properties" heading above properties.',
+                control: { type: "toggle", key: "propertiesInHeading" }
+              },
+              {
+                name: 'Hide "Add property" button',
+                desc: 'Hide "Add property" button below properties.',
+                control: { type: "toggle", key: "addPropertyButton" }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        type: "page",
+        name: "Status bar",
+        items: [
+          {
+            // Reset split out as its own page item (matching the Hider page),
+            // rather than embedded at the top of the list render.
+            name: "Reset to default",
+            render: (setting) => {
+              this.hidePropertiesSettingChrome(setting);
+              const host = setting.settingEl.createDiv();
+              this.statusBarPageTab().renderResetButtonSeparate(host, ["statusBarItems"], () => {
+                if (this.plugin.statusBarManager) {
+                  this.plugin.statusBarManager.cleanup();
+                  this.plugin.statusBarManager.reorder();
+                }
+              });
+            }
+          },
+          {
+            // The entire Status bar page is a single managed, reorderable
+            // list of status-bar items (existing + custom): per-row
+            // show/hide, lock/pin, color picker, Markdown-only toggle,
+            // inline rename, delete, drag-to-reorder, plus a top "Reset to
+            // default" button and a bottom "Add command" button. None of it
+            // maps to a simple settings key — every interaction mutates the
+            // statusBarItems array and drives plugin.statusBarManager
+            // (cleanup/reorder/addCustomCommand/removeItem/updateButtonNames),
+            // which the control override does not handle. So it is reproduced
+            // verbatim by delegating to the imperative StatusBarTab.render,
+            // which renders the reset button, list, and add button together.
+            // Genuinely custom UI (named render); not surfaced in search.
+            name: "Status bar items",
+            render: (setting) => {
+              this.hidePropertiesSettingChrome(setting);
+              const host = setting.settingEl.createDiv("ui-tweaker-subpage-list");
+              void this.statusBarPageTab().render(host, false);
+            }
+          }
+        ]
+      },
+      {
+        type: "page",
+        name: "Tab bar",
+        items: [
+          {
+            // Reset split out as its own page item (matching the Hider page),
+            // rather than embedded at the top of the list render.
+            name: "Reset to default",
+            render: (setting) => {
+              this.hidePropertiesSettingChrome(setting);
+              const host = setting.settingEl.createDiv();
+              this.tabBarPageTab().renderResetButtonSeparate(host, ["tabBarCommands"], () => {
+                if (this.plugin.tabBarManager) {
+                  this.plugin.tabBarManager.reorder();
+                }
+              });
+            }
+          },
+          {
+            // The entire Tab bar page is a single managed, reorderable list
+            // of tab-bar command buttons: a top "Reset to default" button,
+            // per-row inline rename, icon picker (modal), device-mode
+            // dropdown, custom color picker with reset, toggle-icon picker
+            // with reset, show/hide file-type text fields, move up/down,
+            // delete, collapsible rows, plus a bottom "Add command" button.
+            // None of it maps to a simple settings key — every interaction
+            // mutates the tabBarCommands array and drives
+            // plugin.tabBarManager (reorder/addCommand/removeCommand/
+            // updateButtonNames), which the control override does not
+            // handle. So it is reproduced verbatim by delegating to the
+            // imperative TabBarTab.render, mirroring the Status bar page
+            // precedent. Genuinely custom UI (named render); not surfaced
+            // in search.
+            name: "Tab bar commands",
+            render: (setting) => {
+              this.hidePropertiesSettingChrome(setting);
+              const host = setting.settingEl.createDiv("ui-tweaker-subpage-list");
+              void this.tabBarPageTab().render(host, false);
+            }
+          }
+        ]
+      },
+      {
+        type: "page",
+        name: "Explorer",
+        items: [
+          {
+            // Reset split out as its own page item (matching the Hider page),
+            // rather than embedded at the top of the list render.
+            name: "Reset to default",
+            render: (setting) => {
+              this.hidePropertiesSettingChrome(setting);
+              const host = setting.settingEl.createDiv();
+              this.explorerPageTab().renderResetButtonSeparate(host, [
+                "newNoteButton",
+                "newFolderButton",
+                "sortOrderButton",
+                "autoRevealButton",
+                "collapseAllButton",
+                "explorerCommands",
+                "explorerButtonItems",
+                "nativeExplorerButtonColors",
+                "nativeExplorerButtonIcons"
+              ], () => {
+                if (this.plugin.explorerManager) {
+                  this.plugin.explorerManager.cleanup();
+                  const explorers = this.app.workspace.getLeavesOfType("file-explorer");
+                  explorers.forEach((leaf) => {
+                    var _a, _b;
+                    const navButtonsContainer = (_b = (_a = leaf.view) == null ? void 0 : _a.containerEl) == null ? void 0 : _b.querySelector("div.nav-buttons-container");
+                    if (navButtonsContainer) {
+                      const buttons = navButtonsContainer.querySelectorAll(".nav-action-button");
+                      buttons.forEach((btn) => btn.classList.remove("ui-tweaker-explorer-button-hidden"));
+                    }
+                  });
+                  this.plugin.explorerManager.consolidateSettingsAndElements();
+                  this.plugin.explorerManager.reorder();
+                }
+              });
+            }
+          },
+          {
+            // The entire Explorer page is a single managed, reorderable list
+            // of explorer navigation buttons (native + external + custom): a
+            // top "Reset to default" button (which also cleans up, restores
+            // native buttons, consolidates, and reorders via
+            // plugin.explorerManager), per-row eyeball show/hide, inline
+            // rename, icon picker (modal), per-row collapsible settings
+            // (device-mode dropdown, custom color picker with reset, icon
+            // override with reset, toggle-icon picker with reset, use-active-
+            // class toggle), move up/down, delete, plus a bottom "Add command"
+            // button and a usage warning callout. None of it maps to a simple
+            // settings key: the show/hide state, color, icon, mode, toggle
+            // icon, and active-class are all bound to elements of the
+            // explorerButtonItems / explorerCommands arrays (or the
+            // native*Button keys read/written only in the context of a
+            // specific reorderable row), and every interaction drives
+            // plugin.explorerManager (reorder/updateButtonNames/
+            // applyNativeIconOverrides/consolidateSettingsAndElements/cleanup),
+            // which the control override does not handle. So it is reproduced
+            // verbatim by delegating to the imperative ExplorerTab.render,
+            // mirroring the Status bar and Tab bar page precedents. Genuinely
+            // custom UI (named render); not surfaced in search.
+            name: "Explorer buttons",
+            render: (setting) => {
+              this.hidePropertiesSettingChrome(setting);
+              const host = setting.settingEl.createDiv("ui-tweaker-subpage-list");
+              void this.explorerPageTab().render(host, false);
+            }
+          }
+        ]
+      },
+      {
+        type: "page",
+        name: "Properties",
+        items: [
+          {
+            // "Reset to default" affordance reproduced verbatim from the
+            // imperative tab via PropertiesTab.renderPropertyResetButton,
+            // which clears the three property keys, persists, refreshes the
+            // properties manager, then re-renders the icons section host.
+            // Custom DOM (named render), so it is not surfaced in search.
+            name: "Reset to default",
+            render: (setting) => {
+              this.hidePropertiesSettingChrome(setting);
+              const host = setting.settingEl.createDiv();
+              this.propertiesPageTab().renderPropertyResetButton(host, () => {
+                this.rerenderPropertiesIconsSection();
+              });
+            }
+          },
+          {
+            // These two toggles share a group so they keep their 1.13 card,
+            // while the reset above sits alone in its own (stripped) card.
+            type: "group",
+            items: [
+              {
+                // NOTE: this toggle's original onChange did save + refresh AND
+                // this.plugin.propertiesManager?.refresh() (toggles the
+                // `ui-tweaker-property-minimal` class on rendered properties).
+                // plugin.refresh() does NOT call propertiesManager.refresh(), so
+                // the override needs to additionally call
+                // this.plugin.propertiesManager?.refresh() for this key. Flagged
+                // in the report. Kept as a control so it stays searchable.
+                name: "Minimal property icons",
+                desc: "Hide the default property type icon and only show your custom icon.",
+                control: { type: "toggle", key: "minimalPropertyIcons" }
+              },
+              {
+                name: "Right-click menu",
+                desc: 'Add "Change icon" and "Remove icon" to the property context menu.',
+                control: { type: "toggle", key: "showPropertyMenuActions" }
+              }
+            ]
+          },
+          {
+            // "Property icons" gets its own declarative group heading so it
+            // reads as a distinct section (matching the other pages' group
+            // headings) instead of a heading sandwiched inside custom DOM.
+            type: "group",
+            heading: "Property icons",
+            items: [
+              {
+                // Dynamic per-property icon/color list: icon picker modal,
+                // native color picker, per-row reset, and an empty state.
+                // Genuinely custom UI, reproduced via
+                // PropertiesTab.renderPropertyIconsSection (heading supplied
+                // by this group). Named render; not surfaced in search.
+                name: "Property icons",
+                render: (setting) => {
+                  this.hidePropertiesSettingChrome(setting);
+                  this.propertiesIconsSectionHost = setting.settingEl.createDiv();
+                  this.propertiesPageTab().renderPropertyIconsSection(this.propertiesIconsSectionHost, false);
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        type: "page",
+        name: "Mobile",
+        items: [
+          {
+            // "Reset to default" affordance reproduced from the imperative
+            // tab: clears every mobile key back to its default, persists,
+            // and re-applies the UI tweaks. Custom DOM (named render), so it
+            // is not surfaced in search. The framework owns re-rendering the
+            // control rows, matching the Properties page precedent.
+            name: "Reset to default",
+            render: (setting) => {
+              this.hidePropertiesSettingChrome(setting);
+              const host = setting.settingEl.createDiv();
+              this.renderMobileResetButton(host);
+            }
+          },
+          {
+            // No heading here — the sub-page is already named "Mobile", so a
+            // "Mobile" group heading would be redundant.
+            type: "group",
+            items: [
+              {
+                name: 'Hide "Mobile chevrons" icon',
+                desc: 'Hide "Mobile chevrons" icon (long-press flair) in mobile navbar.',
+                control: { type: "toggle", key: "mobileChevronsIcon" }
+              },
+              {
+                name: 'Hide "Navigate back" button',
+                desc: 'Hide "Navigate back" button in mobile navbar.',
+                control: { type: "toggle", key: "navigateBackButton" }
+              },
+              {
+                name: 'Hide "Navigate forward" button',
+                desc: 'Hide "Navigate forward" button in mobile navbar.',
+                control: { type: "toggle", key: "navigateForwardButton" }
+              },
+              {
+                name: 'Hide "Quick switcher" button',
+                desc: 'Hide "Quick switcher" button in mobile navbar.',
+                control: { type: "toggle", key: "quickSwitcherButton" }
+              },
+              {
+                name: 'Hide "New tab" button',
+                desc: 'Hide "New tab" button in mobile navbar.',
+                control: { type: "toggle", key: "mobileNewTabButton" }
+              },
+              {
+                name: 'Hide "Open tabs" button',
+                desc: 'Hide "Open tabs" button in mobile navbar.',
+                control: { type: "toggle", key: "openTabButton" }
+              },
+              {
+                name: 'Hide "Ribbon menu" button',
+                desc: 'Hide "Ribbon menu" button in mobile navbar.',
+                control: { type: "toggle", key: "ribbonMenuButton" }
+              },
+              {
+                name: "Swap mobile new tab icon",
+                desc: "Replace the new tab plus icon with a home button icon in mobile navbar.",
+                control: { type: "toggle", key: "swapMobileNewTabIcon" }
+              },
+              {
+                name: "Hide title",
+                desc: "Hide the title in mobile view headers.",
+                control: { type: "toggle", key: "hideMobileTitle" }
+              },
+              {
+                name: "Hide sync icon",
+                desc: "Hide sync status icons in mobile interface.",
+                control: { type: "toggle", key: "hideMobileSyncIcon" }
+              },
+              {
+                name: "Hide status bar",
+                desc: "Hide the status bar on mobile devices.",
+                control: { type: "toggle", key: "hideStatusBarMobile" }
+              },
+              {
+                name: "Replace sync button with custom action",
+                desc: "Replace the sync button in the mobile sidebar with a custom icon and command. This will hide the original sync button and show your custom button instead.",
+                control: { type: "toggle", key: "syncButtonReplacement.enabled" }
+              },
+              {
+                // Command picker (modal) shown only while the replacement
+                // is enabled. Custom UI (named render); not searchable. The
+                // visible predicate replaces the imperative tab's instant
+                // show/hide of this dependent row.
+                name: "Command",
+                desc: "Select the command to execute when the button is clicked",
+                visible: () => {
+                  var _a;
+                  return Boolean((_a = this.plugin.settings.syncButtonReplacement) == null ? void 0 : _a.enabled);
+                },
+                render: (setting) => {
+                  this.renderSyncButtonCommandControl(setting);
+                }
+              },
+              {
+                // Icon picker (modal) shown only while the replacement is
+                // enabled. Custom UI (named render); not searchable.
+                name: "Icon",
+                desc: "Select the icon to display on the button",
+                visible: () => {
+                  var _a;
+                  return Boolean((_a = this.plugin.settings.syncButtonReplacement) == null ? void 0 : _a.enabled);
+                },
+                render: (setting) => {
+                  this.renderSyncButtonIconControl(setting);
+                }
+              }
+            ]
+          },
+          {
+            type: "group",
+            heading: "Mobile navigation menu",
+            items: [
+              {
+                name: '"Navigate back" button position',
+                desc: 'Select the position for the "Navigate back" button (default 1).',
+                control: { type: "dropdown", key: "navigateButtonPosition", options: this.mobilePositionOptions() }
+              },
+              {
+                name: '"Navigate forward" button position',
+                desc: 'Select the position for the "Navigate forward" button (default 2).',
+                control: { type: "dropdown", key: "navigationButtonPosition", options: this.mobilePositionOptions() }
+              },
+              {
+                name: '"Quick switcher" button position',
+                desc: 'Select the position for the "Quick switcher" button (default 3).',
+                control: { type: "dropdown", key: "quickSwitcherPosition", options: this.mobilePositionOptions() }
+              },
+              {
+                name: '"New tab" button position',
+                desc: 'Select the position for the "New tab" button (default 4).',
+                control: { type: "dropdown", key: "newTabPosition", options: this.mobilePositionOptions() }
+              },
+              {
+                name: '"Open tabs" button position',
+                desc: 'Select the position for the "Open tabs" button (default 5).',
+                control: { type: "dropdown", key: "openTabsPosition", options: this.mobilePositionOptions() }
+              },
+              {
+                name: '"Ribbon menu" button position',
+                desc: 'Select the position for the "Ribbon menu" button (default 6).',
+                control: { type: "dropdown", key: "ribbonMenuPosition", options: this.mobilePositionOptions() }
+              }
+            ]
+          }
+        ]
+      }
+    ];
+  }
+  // Read a control's value, resolving dot-path keys for nested settings.
+  getControlValue(key) {
+    let obj = this.plugin.settings;
+    for (const part of key.split(".")) {
+      if (obj == null) return void 0;
+      obj = obj[part];
+    }
+    return obj;
+  }
+  // Write a control change (dot-path aware), persist, and re-apply the UI
+  // tweaks — mirroring TabRenderer.saveSettings (saveSettings + refresh).
+  async setControlValue(key, value) {
+    var _a;
+    const parts = key.split(".");
+    let obj = this.plugin.settings;
+    for (let i = 0; i < parts.length - 1; i++) {
+      obj = obj[parts[i]];
+    }
+    obj[parts[parts.length - 1]] = value;
+    await this.plugin.saveSettings();
+    this.plugin.refresh();
+    if (key === "minimalPropertyIcons") {
+      (_a = this.plugin.propertiesManager) == null ? void 0 : _a.refresh();
+    }
+  }
+  // Lazily-created PropertiesTab backing the declarative "Properties" page.
+  // Shared so the reset button and the icons section operate on one instance.
+  propertiesPageTab() {
+    if (!this.propertiesTabInstance) {
+      this.propertiesTabInstance = new PropertiesTab(this.app, this.plugin);
+    }
+    return this.propertiesTabInstance;
+  }
+  // Lazily-created StatusBarTab backing the declarative "Status bar" page. The
+  // tab re-renders its own host on every list mutation, so one shared instance
+  // is enough.
+  statusBarPageTab() {
+    if (!this.statusBarTabInstance) {
+      this.statusBarTabInstance = new StatusBarTab(this.app, this.plugin);
+    }
+    return this.statusBarTabInstance;
+  }
+  // Lazily-created TabBarTab backing the declarative "Tab bar" page. The tab
+  // re-renders its own host on every list mutation, so one shared instance is
+  // enough.
+  tabBarPageTab() {
+    if (!this.tabBarTabInstance) {
+      this.tabBarTabInstance = new TabBarTab(this.app, this.plugin);
+    }
+    return this.tabBarTabInstance;
+  }
+  // Lazily-created ExplorerTab backing the declarative "Explorer" page. The tab
+  // re-renders its own host on every list mutation, so one shared instance is
+  // enough.
+  explorerPageTab() {
+    if (!this.explorerTabInstance) {
+      this.explorerTabInstance = new ExplorerTab(this.app, this.plugin);
+    }
+    return this.explorerTabInstance;
+  }
+  // Re-render the dynamic "Property Icons" section in place (used after a
+  // reset clears the saved property icons).
+  rerenderPropertiesIconsSection() {
+    if (!this.propertiesIconsSectionHost) return;
+    this.propertiesIconsSectionHost.empty();
+    this.propertiesPageTab().renderPropertyIconsSection(this.propertiesIconsSectionHost, false);
+  }
+  // Hide a render def's default name/desc/control row so the custom DOM below
+  // stands alone, matching the imperative tab's hidden-setting blocks.
+  hidePropertiesSettingChrome(setting) {
+    const nameEl = setting.settingEl.querySelector(".setting-item-name");
+    const descEl = setting.settingEl.querySelector(".setting-item-description");
+    const controlEl = setting.settingEl.querySelector(".setting-item-control");
+    if (nameEl) setCssProps(nameEl, { display: "none" });
+    if (descEl) setCssProps(descEl, { display: "none" });
+    if (controlEl) setCssProps(controlEl, { display: "none" });
+    setCssProps(setting.settingEl, { "border-top": "none", "padding-top": "0", "padding-bottom": "0", display: "block" });
+  }
+  // Show/Hide/Reveal visibility states presented as a dropdown, matching the
+  // imperative HiderTab's addVisibilitySetting options.
+  visibilityOptions() {
+    return { show: "Show", hide: "Hide", reveal: "Reveal" };
+  }
+  // The six mobile navigation positions are presented as a 1-6 dropdown.
+  mobilePositionOptions() {
+    const options = {};
+    for (let i = 1; i <= 6; i++) {
+      options[String(i)] = String(i);
+    }
+    return options;
+  }
+  // Reproduce the imperative reset button: restore each mobile key to its
+  // default, persist, then re-apply the UI tweaks (matching TabRenderer's
+  // saveSettings = saveSettings + refresh).
+  renderMobileResetButton(container) {
+    const resetContainer = container.createDiv("ui-tweaker-reset-container");
+    const setting = new import_obsidian12.Setting(resetContainer);
+    setting.setClass("ui-tweaker-reset-setting");
+    setting.setName("Reset to default");
+    setting.addExtraButton((button) => {
+      button.setIcon("rotate-ccw").setTooltip("Reset tab to defaults").onClick(async () => {
+        const settingsBag = this.plugin.settings;
+        _UITweakerSettingTab.MOBILE_RESET_KEYS.forEach((key) => {
+          settingsBag[key] = JSON.parse(JSON.stringify(DEFAULT_SETTINGS[key]));
+        });
+        await this.plugin.saveSettings();
+        this.plugin.refresh();
+      });
+    });
+  }
+  // Reproduce the imperative reset button: restore each Hider key to its
+  // default, persist, then re-apply the UI tweaks (matching TabRenderer's
+  // saveSettings = saveSettings + refresh).
+  renderHiderResetButton(container) {
+    const resetContainer = container.createDiv("ui-tweaker-reset-container");
+    const setting = new import_obsidian12.Setting(resetContainer);
+    setting.setClass("ui-tweaker-reset-setting");
+    setting.setName("Reset to default");
+    setting.addExtraButton((button) => {
+      button.setIcon("rotate-ccw").setTooltip("Reset tab to defaults").onClick(async () => {
+        const settingsBag = this.plugin.settings;
+        _UITweakerSettingTab.HIDER_RESET_KEYS.forEach((key) => {
+          settingsBag[key] = JSON.parse(JSON.stringify(DEFAULT_SETTINGS[key]));
+        });
+        await this.plugin.saveSettings();
+        this.plugin.refresh();
+      });
+    });
+  }
+  // Custom command picker for the help-button replacement. The modal callback
+  // persists the chosen command then re-applies the UI tweaks (save + refresh).
+  renderHelpButtonCommandControl(setting) {
+    const replacement = this.plugin.settings.helpButtonReplacement;
+    setting.addButton(
+      (button) => button.setButtonText(this.syncButtonCommandName(replacement.commandId)).onClick(() => {
+        const modal = new CommandPickerModal(this.app, (commandId) => {
+          void (async () => {
+            replacement.commandId = commandId;
+            button.setButtonText(this.syncButtonCommandName(commandId));
+            await this.plugin.saveSettings();
+            this.plugin.refresh();
+          })();
+        });
+        modal.open();
+      })
+    );
+  }
+  // Custom icon picker for the help-button replacement. The modal callback
+  // persists the chosen icon then re-applies the UI tweaks (save + refresh).
+  renderHelpButtonIconControl(setting) {
+    const replacement = this.plugin.settings.helpButtonReplacement;
+    setting.addButton(
+      (button) => button.setButtonText(this.syncButtonIconName(replacement.iconId) || "Select icon...").onClick(() => {
+        const modal = new IconPickerModal(this.app, (iconId) => {
+          void (async () => {
+            replacement.iconId = iconId;
+            button.setButtonText(this.syncButtonIconName(iconId));
+            await this.plugin.saveSettings();
+            this.plugin.refresh();
+          })();
+        });
+        modal.open();
+      })
+    );
+  }
+  // Resolve the display name of the command bound to the sync-button
+  // replacement, mirroring renderSyncButtonReplacement's getCommandName.
+  syncButtonCommandName(commandId) {
+    if (!commandId) return "Select command...";
+    try {
+      const commandRegistry = this.app.commands;
+      if (commandRegistry && typeof commandRegistry.listCommands === "function") {
+        const commands = commandRegistry.listCommands();
+        const command = commands.find((cmd) => cmd && cmd.id === commandId);
+        if (command == null ? void 0 : command.name) {
+          return command.name;
+        }
+      }
+    } catch (e) {
+    }
+    return "Select command...";
+  }
+  // Humanize an icon id for display, mirroring renderSyncButtonReplacement's
+  // getIconName.
+  syncButtonIconName(iconId) {
+    if (!iconId) return "";
+    return iconId.replace(/^lucide-/, "").split("-").map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
+  }
+  // Custom command picker for the sync-button replacement. The modal callback
+  // persists the chosen command then re-applies the UI tweaks (save + refresh).
+  renderSyncButtonCommandControl(setting) {
+    const replacement = this.plugin.settings.syncButtonReplacement;
+    setting.addButton(
+      (button) => button.setButtonText(this.syncButtonCommandName(replacement.commandId)).onClick(() => {
+        const modal = new CommandPickerModal(this.app, (commandId) => {
+          void (async () => {
+            replacement.commandId = commandId;
+            button.setButtonText(this.syncButtonCommandName(commandId));
+            await this.plugin.saveSettings();
+            this.plugin.refresh();
+          })();
+        });
+        modal.open();
+      })
+    );
+  }
+  // Custom icon picker for the sync-button replacement. The modal callback
+  // persists the chosen icon then re-applies the UI tweaks (save + refresh).
+  renderSyncButtonIconControl(setting) {
+    const replacement = this.plugin.settings.syncButtonReplacement;
+    setting.addButton(
+      (button) => button.setButtonText(this.syncButtonIconName(replacement.iconId) || "Select icon...").onClick(() => {
+        const modal = new IconPickerModal(this.app, (iconId) => {
+          void (async () => {
+            replacement.iconId = iconId;
+            button.setButtonText(this.syncButtonIconName(iconId));
+            await this.plugin.saveSettings();
+            this.plugin.refresh();
+          })();
+        });
+        modal.open();
+      })
+    );
   }
   display() {
     const { containerEl } = this;
@@ -4005,6 +4976,65 @@ var UITweakerSettingTab = class extends import_obsidian12.PluginSettingTab {
     contentWrapper.scrollTop = 0;
   }
 };
+// All keys the Mobile tab's "Reset to default" button restores, reproduced
+// from MobileTab.render's renderResetButton call.
+_UITweakerSettingTab.MOBILE_RESET_KEYS = [
+  "mobileChevronsIcon",
+  "navigateBackButton",
+  "navigateForwardButton",
+  "quickSwitcherButton",
+  "mobileNewTabButton",
+  "openTabButton",
+  "ribbonMenuButton",
+  "swapMobileNewTabIcon",
+  "hideMobileTitle",
+  "hideMobileSyncIcon",
+  "hideStatusBarMobile",
+  "syncButtonReplacement",
+  "navigateButtonPosition",
+  "navigationButtonPosition",
+  "quickSwitcherPosition",
+  "newTabPosition",
+  "openTabsPosition",
+  "ribbonMenuPosition"
+];
+// All keys the Hider tab's "Reset to default" button restores, reproduced
+// from HiderTab.render's renderResetButton call.
+_UITweakerSettingTab.HIDER_RESET_KEYS = [
+  "titleBar",
+  "fileExplorerNavHeader",
+  "otherNavHeaders",
+  "leftTabHeaders",
+  "rightTabHeaders",
+  "ribbonRevealOnHover",
+  "tabBar",
+  "enableWindowDragging",
+  "tabBarHideWhenSingle",
+  "readingModeButton",
+  "bookmarkedButton",
+  "searchSettingsButton",
+  "vaultSwitcher",
+  "helpButton",
+  "helpButtonReplacement",
+  "settingsButton",
+  "vaultSwitcherBackgroundTransparency",
+  "tabListIcon",
+  "newTabIcon",
+  "tabCloseButton",
+  "statusBar",
+  "scrollBars",
+  "leftSidebarToggleButton",
+  "rightSidebarToggleButton",
+  "tooltips",
+  "instructions",
+  "searchSuggestions",
+  "searchTermCounts",
+  "propertiesInReadingView",
+  "deemphasizeProperties",
+  "propertiesInHeading",
+  "addPropertyButton"
+];
+var UITweakerSettingTab = _UITweakerSettingTab;
 
 // src/manager/TabBarManager.ts
 var import_obsidian14 = require("obsidian");
@@ -5417,6 +6447,10 @@ var ButtonReplacer = class {
     this.observer = null;
     this.installTimeout = null;
   }
+  get doc() {
+    var _a, _b, _c;
+    return (_c = (_b = (_a = this.options).getDoc) == null ? void 0 : _b.call(_a)) != null ? _c : activeDocument;
+  }
   install() {
     this.tryInstall();
     this.installTimeout = window.setTimeout(() => this.tryInstall(), 500);
@@ -5426,7 +6460,7 @@ var ButtonReplacer = class {
   }
   tryInstall() {
     var _a, _b, _c, _d;
-    const parent = this.options.parentSelector ? activeDocument.querySelector(this.options.parentSelector) : activeDocument.body;
+    const parent = this.options.parentSelector ? this.doc.querySelector(this.options.parentSelector) : this.doc.body;
     if (!parent) return;
     let originalBtn = null;
     if (this.options.findButton) {
@@ -5440,7 +6474,7 @@ var ButtonReplacer = class {
       }
       return;
     }
-    if (this.customButton && this.customButton.parentElement && activeDocument.body.contains(this.customButton)) {
+    if (this.customButton && this.customButton.parentElement && this.doc.body.contains(this.customButton)) {
       return;
     }
     this.removeCustomButton();
@@ -5484,10 +6518,10 @@ var ButtonReplacer = class {
   }
   tryFallbackInstall() {
     var _a, _b;
-    const fallbackParent = activeDocument.querySelector(this.options.fallbackParentSelector);
+    const fallbackParent = this.doc.querySelector(this.options.fallbackParentSelector);
     if (!fallbackParent) return;
     if (fallbackParent.querySelector(`[data-${this.options.uniqueId}]`)) return;
-    const customButton = activeDocument.createElement("div");
+    const customButton = this.doc.createElement("div");
     customButton.className = `clickable-icon ${this.options.cssClass}`;
     customButton.setAttribute(`data-${this.options.uniqueId}`, "true");
     try {
@@ -5537,7 +6571,7 @@ var ButtonReplacer = class {
       }
       this.customButton = null;
     }
-    const strays = activeDocument.querySelectorAll(`.${this.options.cssClass}`);
+    const strays = this.doc.querySelectorAll(`.${this.options.cssClass}`);
     strays.forEach((el) => el.remove());
   }
   setupObserver() {
@@ -5554,7 +6588,7 @@ var ButtonReplacer = class {
         timer = window.setTimeout(() => this.tryInstall(), delay);
       }
     });
-    this.observer.observe(activeDocument.body, {
+    this.observer.observe(this.doc.body, {
       childList: true,
       subtree: true,
       attributes: true,
@@ -5961,8 +6995,16 @@ var UITweakerPlugin = class extends import_obsidian20.Plugin {
     // Track wrapped commands to avoid double-wrapping and allow cleanup
     this.wrappedCommands = /* @__PURE__ */ new Map();
   }
+  // The main app window's document. Obsidian 1.13 opens Settings in a separate
+  // window, so `activeDocument` (the focused window) points at the Settings
+  // window while a setting is being changed — which would apply our body
+  // classes and button swaps to the wrong document. The workspace container
+  // always lives in the main window.
+  get doc() {
+    return this.app.workspace.containerEl.ownerDocument;
+  }
   get isMobile() {
-    return import_obsidian20.Platform.isMobile || activeDocument.body.classList.contains("is-mobile") || activeDocument.body.classList.contains("emulate-mobile");
+    return import_obsidian20.Platform.isMobile || this.doc.body.classList.contains("is-mobile") || this.doc.body.classList.contains("emulate-mobile");
   }
   async onload() {
     await this.loadSettings();
@@ -5997,7 +7039,7 @@ var UITweakerPlugin = class extends import_obsidian20.Plugin {
     if (this.isMobile) {
       this.setupSyncButtonReplacement();
     } else {
-      activeDocument.body.classList.remove("ui-tweaker-hide-sync-button");
+      this.doc.body.classList.remove("ui-tweaker-hide-sync-button");
     }
   }
   onunload() {
@@ -6020,8 +7062,8 @@ var UITweakerPlugin = class extends import_obsidian20.Plugin {
       wrapper.restore();
     }
     this.wrappedCommands.clear();
-    activeDocument.body.classList.remove("ui-tweaker-hide-help-button");
-    activeDocument.body.classList.remove("ui-tweaker-hide-sync-button");
+    this.doc.body.classList.remove("ui-tweaker-hide-help-button");
+    this.doc.body.classList.remove("ui-tweaker-hide-sync-button");
   }
   async loadSettings() {
     try {
@@ -6114,6 +7156,15 @@ var UITweakerPlugin = class extends import_obsidian20.Plugin {
   async saveSettings() {
     await this.saveData(this.settings);
   }
+  // Re-apply UI tweaks on every settings save so changes take effect live.
+  // Obsidian 1.13's declarative settings API persists sub-page control changes
+  // through saveData() directly, bypassing the settings tab's setControlValue
+  // override (where refresh() was called). Hooking saveData guarantees
+  // real-time application regardless of which path triggered the save.
+  async saveData(data) {
+    await super.saveData(data);
+    this.refresh();
+  }
   refresh() {
     var _a, _b;
     if (this.uiManager) {
@@ -6125,7 +7176,7 @@ var UITweakerPlugin = class extends import_obsidian20.Plugin {
     if (this.isMobile) {
       this.setupSyncButtonReplacement();
     } else {
-      activeDocument.body.classList.remove("ui-tweaker-hide-sync-button");
+      this.doc.body.classList.remove("ui-tweaker-hide-sync-button");
       (_b = this.syncButtonReplacer) == null ? void 0 : _b.uninstall();
     }
   }
@@ -6161,6 +7212,7 @@ var UITweakerPlugin = class extends import_obsidian20.Plugin {
         },
         {
           survivalObserver: true,
+          getDoc: () => this.doc,
           parentSelector: ".workspace-drawer-vault-actions",
           uniqueId: "ui-tweaker-help-replacement",
           cssClass: "ui-tweaker-help-replacement",
@@ -6172,7 +7224,7 @@ var UITweakerPlugin = class extends import_obsidian20.Plugin {
               ".clickable-icon svg.help"
             ];
             for (const selector of selectors) {
-              const svg = activeDocument.querySelector(selector);
+              const svg = this.doc.querySelector(selector);
               if (svg && svg.parentElement) return svg.parentElement;
             }
             return null;
@@ -6189,7 +7241,7 @@ var UITweakerPlugin = class extends import_obsidian20.Plugin {
   updateHelpButtonCSS() {
     var _a;
     const shouldHideHelpButton = this.settings.helpButton === "hide" || ((_a = this.settings.helpButtonReplacement) == null ? void 0 : _a.enabled);
-    activeDocument.body.classList.toggle("ui-tweaker-hide-help-button", shouldHideHelpButton);
+    this.doc.body.classList.toggle("ui-tweaker-hide-help-button", shouldHideHelpButton);
   }
   setupSyncButtonReplacement() {
     var _a, _b;
@@ -6225,6 +7277,7 @@ var UITweakerPlugin = class extends import_obsidian20.Plugin {
         },
         {
           survivalObserver: true,
+          getDoc: () => this.doc,
           parentSelector: ".workspace-drawer.mod-right",
           uniqueId: "ui-tweaker-sync-replacement",
           cssClass: "ui-tweaker-sync-replacement workspace-drawer-header-icon mod-raised",
@@ -6239,7 +7292,7 @@ var UITweakerPlugin = class extends import_obsidian20.Plugin {
             }
           },
           onBeforeUninstall: (custom) => {
-            const originals = activeDocument.querySelectorAll("[data-ui-tweaker-original-sync-hidden]");
+            const originals = this.doc.querySelectorAll("[data-ui-tweaker-original-sync-hidden]");
             originals.forEach((el) => {
               el.style.removeProperty("display");
               el.removeAttribute("data-ui-tweaker-original-sync-hidden");
@@ -6269,7 +7322,7 @@ var UITweakerPlugin = class extends import_obsidian20.Plugin {
   updateSyncButtonCSS() {
     var _a, _b;
     const shouldHide = ((_b = (_a = this.settings.syncButtonReplacement) == null ? void 0 : _a.enabled) != null ? _b : false) && this.isMobile;
-    activeDocument.body.classList.toggle("ui-tweaker-hide-sync-button", shouldHide);
+    this.doc.body.classList.toggle("ui-tweaker-hide-sync-button", shouldHide);
   }
   /**
    * Set up event-driven observers for toggle state changes
@@ -6285,14 +7338,14 @@ var UITweakerPlugin = class extends import_obsidian20.Plugin {
       }
     };
     const bodyObserver = new MutationObserver(refreshToggleStates);
-    bodyObserver.observe(activeDocument.body, {
+    bodyObserver.observe(this.doc.body, {
       attributes: true,
       attributeFilter: ["class"]
     });
     this.registerEvent(
       this.app.workspace.on("layout-change", refreshToggleStates)
     );
-    const workspaceEl = activeDocument.querySelector(".workspace");
+    const workspaceEl = this.doc.querySelector(".workspace");
     if (workspaceEl) {
       const workspaceObserver = new MutationObserver(refreshToggleStates);
       workspaceObserver.observe(workspaceEl, {

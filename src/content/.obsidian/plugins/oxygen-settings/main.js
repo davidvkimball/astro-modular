@@ -1801,6 +1801,557 @@ var MinimalSettingsTab = class extends import_obsidian10.PluginSettingTab {
     this.icon = "lucide-swatch-book";
     this.plugin = plugin;
   }
+  // 1.13.0+: framework calls this and skips display().
+  // Pre-1.13.0: this method is not invoked; display() below runs as before.
+  // See https://docs.obsidian.md/plugins/guides/migrate-declarative-settings
+  getSettingDefinitions() {
+    return [
+      // Color scheme group
+      {
+        type: "group",
+        heading: "Color scheme",
+        items: [
+          {
+            // False positive: "Style Settings" and "Documentation" are proper nouns
+            name: "Light mode color scheme",
+            // False positive: "Style Settings" and "Documentation" are proper nouns
+            desc: "Preset color options for light mode. To create a custom color scheme use the Style Settings plugin. See Documentation for details.",
+            // Render: options are dynamic (built-in plus custom presets appended at
+            // runtime) and onChange regenerates all CSS including custom presets.
+            render: (setting) => {
+              setting.addDropdown((dropdown) => {
+                dropdown.addOption("oxygen-oxygen-light", "Oxygen").addOption("oxygen-minimal-light", "Minimal").addOption("oxygen-atom-light", "Atom").addOption("oxygen-ayu-light", "Ayu").addOption("oxygen-catppuccin-light", "Catppuccin").addOption("oxygen-eink-light", "E-ink (beta)").addOption("oxygen-everforest-light", "Everforest").addOption("oxygen-flexoki-light", "Flexoki").addOption("oxygen-gruvbox-light", "Gruvbox").addOption("oxygen-macos-light", "macOS").addOption("oxygen-nord-light", "Nord").addOption("oxygen-rose-pine-light", "Ros\xE9 Pine").addOption("oxygen-notion-light", "Sky").addOption("oxygen-solarized-light", "Solarized").addOption("oxygen-things-light", "Things");
+                if (this.plugin.settings.enableCustomPresets && this.plugin.settings.customPresets.length > 0) {
+                  this.plugin.settings.customPresets.sort((a, b) => a.name.localeCompare(b.name)).forEach((preset) => {
+                    dropdown.addOption(`oxygen-custom-${preset.id}`, preset.name);
+                  });
+                }
+                dropdown.setValue(this.plugin.settings.lightScheme).onChange((value) => {
+                  this.plugin.settings.lightScheme = value;
+                  void this.plugin.saveData(this.plugin.settings);
+                  this.plugin.updateStyle();
+                  this.plugin.updateCustomPresetCSS();
+                });
+              });
+            }
+          },
+          {
+            name: "Light mode background contrast",
+            desc: "Level of contrast between sidebar and main content.",
+            control: {
+              type: "dropdown",
+              key: "lightStyle",
+              options: {
+                "oxygen-light": "Default",
+                "oxygen-light-white": "All white",
+                "oxygen-light-tonal": "Low contrast",
+                "oxygen-light-contrast": "High contrast"
+              }
+            }
+          },
+          {
+            name: "Dark mode color scheme",
+            desc: "Preset colors options for dark mode.",
+            // Render: options are dynamic (built-in plus custom presets appended at
+            // runtime) and onChange regenerates all CSS including custom presets.
+            render: (setting) => {
+              setting.addDropdown((dropdown) => {
+                dropdown.addOption("oxygen-oxygen-dark", "Oxygen").addOption("oxygen-minimal-dark", "Minimal").addOption("oxygen-atom-dark", "Atom").addOption("oxygen-ayu-dark", "Ayu").addOption("oxygen-catppuccin-dark", "Catppuccin").addOption("oxygen-dracula-dark", "Dracula").addOption("oxygen-eink-dark", "E-ink (beta)").addOption("oxygen-everforest-dark", "Everforest").addOption("oxygen-flexoki-dark", "Flexoki").addOption("oxygen-gruvbox-dark", "Gruvbox").addOption("oxygen-macos-dark", "macOS").addOption("oxygen-nord-dark", "Nord").addOption("oxygen-rose-pine-dark", "Ros\xE9 Pine").addOption("oxygen-notion-dark", "Sky").addOption("oxygen-solarized-dark", "Solarized").addOption("oxygen-things-dark", "Things");
+                if (this.plugin.settings.enableCustomPresets && this.plugin.settings.customPresets.length > 0) {
+                  this.plugin.settings.customPresets.sort((a, b) => a.name.localeCompare(b.name)).forEach((preset) => {
+                    dropdown.addOption(`oxygen-custom-${preset.id}`, preset.name);
+                  });
+                }
+                dropdown.setValue(this.plugin.settings.darkScheme).onChange((value) => {
+                  this.plugin.settings.darkScheme = value;
+                  void this.plugin.saveData(this.plugin.settings);
+                  this.plugin.updateStyle();
+                  this.plugin.updateCustomPresetCSS();
+                });
+              });
+            }
+          },
+          {
+            name: "Dark mode background contrast",
+            desc: "Level of contrast between sidebar and main content.",
+            control: {
+              type: "dropdown",
+              key: "darkStyle",
+              options: {
+                "oxygen-dark": "Default",
+                "oxygen-dark-tonal": "Low contrast",
+                "oxygen-dark-black": "True black"
+              }
+            }
+          }
+        ]
+      },
+      // Features group
+      {
+        type: "group",
+        heading: "Features",
+        items: [
+          {
+            name: "Text labels for primary navigation",
+            // False positive: "Documentation" is a proper noun (section name)
+            desc: "Navigation items in the left sidebar uses text labels. See Documentation for details.",
+            control: { type: "toggle", key: "labeledNav" }
+          },
+          {
+            name: "Colorful window frame",
+            desc: "The top area of the app uses your accent color.",
+            control: { type: "toggle", key: "colorfulFrame" }
+          },
+          {
+            name: "Colorful active states",
+            desc: "Active file and menu items use your accent color.",
+            control: { type: "toggle", key: "colorfulActiveStates" }
+          },
+          {
+            name: "Colorful headings",
+            desc: "Headings use a different color for each size.",
+            control: { type: "toggle", key: "colorfulHeadings" }
+          },
+          {
+            name: "Minimal status bar",
+            desc: "Turn off to use full-width status bar.",
+            control: { type: "toggle", key: "minimalStatus" }
+          },
+          {
+            name: "Trim file names in sidebars",
+            desc: "Use ellipses to fit file names on a single line.",
+            control: { type: "toggle", key: "trimNames" }
+          },
+          {
+            name: "Borders",
+            desc: "Border style for workspace elements.",
+            control: {
+              type: "dropdown",
+              key: "workspaceBorders",
+              options: { enhanced: "Enhanced", default: "Default", none: "None" }
+            }
+          },
+          {
+            name: "Indentation guides thickness",
+            desc: "Thickness of indentation guides in the sidebar file explorer.",
+            control: {
+              type: "dropdown",
+              key: "navIndentationGuideWidth",
+              options: { "0px": "None", "1px": "Thin", "2px": "Medium", "3px": "Thick" }
+            }
+          },
+          {
+            name: "Indentation guides color",
+            desc: "Color of indentation guides in the sidebar.",
+            control: {
+              type: "dropdown",
+              key: "navIndentationGuideColor",
+              options: {
+                "rgba(var(--mono-rgb-100), 0.12)": "Subtle",
+                "var(--text-faint)": "Strong",
+                "var(--color-accent)": "Accent color"
+              }
+            }
+          },
+          {
+            name: "Underline internal links",
+            desc: "Show underlines on internal links.",
+            control: { type: "toggle", key: "underlineInternal" }
+          },
+          {
+            name: "Underline external links",
+            desc: "Show underlines on external links.",
+            control: { type: "toggle", key: "underlineExternal" }
+          },
+          {
+            name: "Maximize media",
+            desc: "Images and videos fill the width of the line.",
+            control: { type: "toggle", key: "fullWidthMedia" }
+          },
+          {
+            name: "Enable background blur",
+            desc: "Adds background blur to modal dialogs. Disable if scrolling becomes laggy. Not available on mobile devices.",
+            control: { type: "toggle", key: "enableBlur" }
+          },
+          {
+            name: "Use default Obsidian folder icon",
+            desc: "Toggle to use Obsidian's default file explorer icon instead of the folder-closed icon.",
+            control: { type: "toggle", key: "useDefaultFolderIcon" }
+          }
+        ]
+      },
+      // Animations group
+      {
+        type: "group",
+        heading: "Animations",
+        items: [
+          {
+            name: "Animation personality",
+            desc: "Choose the animation style: Default (smooth), Playful (bouncy), or off (disabled).",
+            control: {
+              type: "dropdown",
+              key: "animationPersonality",
+              options: { default: "Default", playful: "Playful", off: "Off" }
+            }
+          },
+          {
+            name: "Animation speed",
+            desc: "Control the speed of animations. Range: 0 (disabled) to 2 (half speed / slower). Default: 1 (normal speed). Lower values = faster animations, higher values = slower animations.",
+            // Driver (animationPersonality) is a control, so the framework re-evaluates
+            // this predicate automatically when it changes.
+            visible: () => this.plugin.settings.animationPersonality !== "off",
+            control: { type: "slider", key: "animationSpeed", min: 0, max: 2, step: 0.1 }
+          }
+        ]
+      },
+      // Layout group
+      {
+        type: "group",
+        heading: "Layout",
+        items: [
+          {
+            name: "Image grids",
+            // False positive: "Documentation" is a proper noun (section name)
+            desc: "Turn consecutive images into columns. To make a new row, add an extra line break between images. These options can also be defined on a per-file basis, see Documentation for details.",
+            control: { type: "toggle", key: "imgGrid" }
+          },
+          {
+            name: "Chart width",
+            desc: "Default width for chart blocks.",
+            control: {
+              type: "dropdown",
+              key: "chartWidth",
+              options: {
+                "chart-default-width": "Default",
+                "chart-wide": "Wide line width",
+                "chart-max": "Maximum line width",
+                "chart-100": "100% pane width"
+              }
+            }
+          },
+          {
+            name: "Iframe width",
+            desc: "Default width for iframe blocks.",
+            control: {
+              type: "dropdown",
+              key: "iframeWidth",
+              options: {
+                "iframe-default-width": "Default",
+                "iframe-wide": "Wide line width",
+                "iframe-max": "Maximum line width",
+                "iframe-100": "100% pane width"
+              }
+            }
+          },
+          {
+            name: "Image width",
+            desc: "Default width for image blocks.",
+            control: {
+              type: "dropdown",
+              key: "imgWidth",
+              options: {
+                "img-default-width": "Default",
+                "img-wide": "Wide line width",
+                "img-max": "Maximum line width",
+                "img-100": "100% pane width"
+              }
+            }
+          },
+          {
+            name: "Map width",
+            desc: "Default width for map blocks.",
+            control: {
+              type: "dropdown",
+              key: "mapWidth",
+              options: {
+                "map-default-width": "Default",
+                "map-wide": "Wide line width",
+                "map-max": "Maximum line width",
+                "map-100": "100% pane width"
+              }
+            }
+          },
+          {
+            name: "Table width",
+            // False positive: "Dataview" is a proper noun (plugin name)
+            desc: "Default width for table and Dataview blocks.",
+            control: {
+              type: "dropdown",
+              key: "tableWidth",
+              options: {
+                "table-default-width": "Default",
+                "table-wide": "Wide line width",
+                "table-max": "Maximum line width",
+                "table-100": "100% pane width"
+              }
+            }
+          }
+        ]
+      },
+      // Typography group
+      {
+        type: "group",
+        heading: "Typography",
+        items: [
+          {
+            name: "Text font size",
+            desc: "Used for the main text (default 16).",
+            control: { type: "number", key: "textNormal", placeholder: "16" }
+          },
+          {
+            name: "Small font size",
+            desc: "Used for text in the sidebars and tabs (default 13).",
+            control: { type: "number", key: "textSmall", placeholder: "13" }
+          },
+          {
+            name: "Line height",
+            desc: "Line height of text (default 1.5).",
+            control: { type: "number", key: "lineHeight", placeholder: "1.5" }
+          },
+          {
+            name: "Normal line width",
+            desc: "Number of characters per line (default 40).",
+            control: { type: "number", key: "lineWidth", placeholder: "40" }
+          },
+          {
+            name: "Wide line width",
+            desc: "Number of characters per line for wide elements (default 50).",
+            control: { type: "number", key: "lineWidthWide", placeholder: "50" }
+          },
+          {
+            name: "Maximum line width %",
+            desc: "Percentage of space inside a pane that a line can fill (default 88).",
+            control: { type: "number", key: "maxWidth", placeholder: "88" }
+          },
+          {
+            name: "Editor font",
+            desc: "Overrides the text font defined in Obsidian appearance settings when in edit mode.",
+            control: { type: "text", key: "editorFont", placeholder: "" }
+          }
+        ]
+      },
+      // Custom color schemes group
+      {
+        type: "group",
+        heading: "Custom color schemes",
+        items: [
+          {
+            name: "Enable custom presets",
+            desc: "Allow creation and use of custom color presets",
+            // Render: non-trivial onChange that may reset active custom schemes and
+            // re-renders the tab so the management section appears/disappears.
+            render: (setting) => {
+              setting.addToggle((toggle) => {
+                toggle.setValue(this.plugin.settings.enableCustomPresets).onChange((value) => {
+                  this.plugin.settings.enableCustomPresets = value;
+                  if (!value) {
+                    let needsUpdate = false;
+                    if (this.plugin.settings.lightScheme.startsWith("oxygen-custom-")) {
+                      this.plugin.settings.lightScheme = "oxygen-oxygen-light";
+                      needsUpdate = true;
+                    }
+                    if (this.plugin.settings.darkScheme.startsWith("oxygen-custom-")) {
+                      this.plugin.settings.darkScheme = "oxygen-oxygen-dark";
+                      needsUpdate = true;
+                    }
+                    if (needsUpdate) {
+                      this.plugin.updateStyle();
+                      this.plugin.updateCustomPresetCSS();
+                    }
+                  }
+                  void this.plugin.saveData(this.plugin.settings);
+                  this.rerender();
+                });
+              });
+            }
+          },
+          {
+            name: "Custom presets management",
+            desc: "Create, import, and manage custom color presets.",
+            // Render: reproduces buildCustomPresetSettings (action buttons, preset
+            // list with edit/export/delete, modals). Hidden unless presets enabled.
+            visible: () => this.plugin.settings.enableCustomPresets,
+            render: (setting) => {
+              this.renderCustomPresetManagement(setting);
+            }
+          }
+        ]
+      }
+    ];
+  }
+  // Re-render helper that prefers the framework's update() on 1.13.0+,
+  // falling back to display() on older versions.
+  rerender() {
+    if (typeof this.update === "function") {
+      this.update();
+    } else {
+      this.display();
+    }
+  }
+  // Reproduces the create/import buttons and preset list of
+  // buildCustomPresetSettings as a render def. The hosting Setting's name/desc
+  // already provide a searchable label; here we build the interactive controls.
+  renderCustomPresetManagement(setting) {
+    var _a;
+    const refreshCallback = () => this.rerender();
+    setting.addExtraButton((button) => button.setIcon("plus").setTooltip("Create new preset").onClick(() => this.openPresetEditor(null, refreshCallback))).addExtraButton((button) => button.setIcon("download").setTooltip("Import preset").onClick(() => this.openPresetImporter(refreshCallback)));
+    const container = (_a = setting.settingEl.parentElement) != null ? _a : setting.settingEl;
+    container.createEl("br");
+    if (this.plugin.settings.customPresets.length > 0) {
+      const presetsList = container.createEl("div", { cls: "custom-presets-list" });
+      this.plugin.settings.customPresets.sort((a, b) => a.name.localeCompare(b.name)).forEach((preset) => {
+        this.addPresetListItem(presetsList, preset, refreshCallback);
+      });
+    } else {
+      const emptyState = container.createEl("div", { cls: "custom-presets-empty" });
+      emptyState.createEl("p", {
+        text: "No custom presets yet. Create your first preset to get started!",
+        cls: "empty-message"
+      });
+    }
+    container.createEl("br");
+  }
+  addPresetListItem(container, preset, refreshCallback) {
+    const presetItem = container.createEl("div", { cls: "custom-preset-item" });
+    const presetInfo = presetItem.createEl("div", { cls: "preset-info" });
+    const swatch = generateColorSwatch(preset);
+    presetInfo.appendChild(swatch);
+    const details = presetInfo.createEl("div", { cls: "preset-details" });
+    details.createEl("div", { text: preset.name, cls: "preset-name" });
+    if (preset.author) {
+      details.createEl("div", { text: `by ${preset.author}`, cls: "preset-author" });
+    }
+    details.createEl("div", { text: preset.id, cls: "preset-id preset-id-display" });
+    new import_obsidian10.Setting(presetItem).setName("").setDesc("").addExtraButton((button) => button.setIcon("edit").setTooltip("Edit preset").onClick(() => this.openPresetEditor(preset, refreshCallback))).addExtraButton((button) => button.setIcon("download").setTooltip("Export preset").onClick(() => this.exportPreset(preset))).addExtraButton((button) => button.setIcon("trash").setTooltip("Delete preset").onClick(async () => await this.deletePreset(preset, refreshCallback)));
+  }
+  openPresetEditor(preset, refreshCallback) {
+    const modal = new PresetEditorModal(this.app, this.plugin, preset, (updatedPreset) => {
+      if (preset) {
+        const index = this.plugin.settings.customPresets.findIndex((p) => p.id === preset.id);
+        if (index !== -1) {
+          this.plugin.settings.customPresets[index] = updatedPreset;
+        }
+      } else {
+        this.plugin.settings.customPresets.push(updatedPreset);
+      }
+      void this.plugin.saveData(this.plugin.settings);
+      const presetSchemeId = `oxygen-custom-${updatedPreset.id}`;
+      const isActiveLight = this.plugin.settings.lightScheme === presetSchemeId;
+      const isActiveDark = this.plugin.settings.darkScheme === presetSchemeId;
+      if (isActiveLight || isActiveDark) {
+        const isLightMode = activeDocument.body.classList.contains("theme-light");
+        if (isLightMode && isActiveLight) {
+          updateObsidianAccentColor(this.plugin.app, updatedPreset.light.accent);
+        } else if (!isLightMode && isActiveDark) {
+          updateObsidianAccentColor(this.plugin.app, updatedPreset.dark.accent);
+        }
+        this.plugin.updateStyle();
+        this.plugin.updateCustomPresetCSS();
+      }
+      refreshCallback();
+    });
+    modal.open();
+  }
+  openPresetImporter(refreshCallback) {
+    const modal = new PresetImportModal(this.app, this.plugin, (importedPreset) => {
+      this.plugin.settings.customPresets.push(importedPreset);
+      void this.plugin.saveData(this.plugin.settings);
+      refreshCallback();
+    });
+    modal.open();
+  }
+  exportPreset(preset) {
+    const json = PresetManager.exportPresetAsJSON(preset);
+    const blob = new Blob([json], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = activeDocument.createElement("a");
+    a.href = url;
+    a.download = `${preset.id}.json`;
+    activeDocument.body.appendChild(a);
+    a.click();
+    activeDocument.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+  async deletePreset(preset, refreshCallback) {
+    const isActive = PresetManager.isPresetActive(
+      preset.id,
+      this.plugin.settings.lightScheme,
+      this.plugin.settings.darkScheme
+    );
+    if (isActive) {
+      const confirmed = await ConfirmationModal.show(
+        this.app,
+        "Delete active preset",
+        "This preset is currently active. Deleting it will switch to the default scheme. Continue?",
+        "Delete"
+      );
+      if (!confirmed) {
+        return;
+      }
+      if (this.plugin.settings.lightScheme === `oxygen-custom-${preset.id}`) {
+        this.plugin.settings.lightScheme = "oxygen-oxygen-light";
+      }
+      if (this.plugin.settings.darkScheme === `oxygen-custom-${preset.id}`) {
+        this.plugin.settings.darkScheme = "oxygen-oxygen-dark";
+      }
+    }
+    this.plugin.settings.customPresets = this.plugin.settings.customPresets.filter((p) => p.id !== preset.id);
+    await this.plugin.saveData(this.plugin.settings);
+    this.plugin.updateStyle();
+    this.plugin.updateCustomPresetCSS();
+    refreshCallback();
+  }
+  // Read a setting value by key (dot-path aware) for the declarative framework.
+  getControlValue(key) {
+    const settings = this.plugin.settings;
+    if (!key.includes(".")) {
+      return settings[key];
+    }
+    let current = settings;
+    for (const part of key.split(".")) {
+      if (current == null || typeof current !== "object") {
+        return void 0;
+      }
+      current = current[part];
+    }
+    return current;
+  }
+  // Write a setting value by key (dot-path aware), persist it, then run the
+  // per-key side effect. Mirrors the onChange handlers in the builder functions.
+  async setControlValue(key, value) {
+    const settings = this.plugin.settings;
+    if (!key.includes(".")) {
+      settings[key] = value;
+    } else {
+      const parts = key.split(".");
+      let current = settings;
+      for (let i = 0; i < parts.length - 1; i++) {
+        const next = current[parts[i]];
+        if (next == null || typeof next !== "object") {
+          return;
+        }
+        current = next;
+      }
+      current[parts[parts.length - 1]] = value;
+    }
+    await this.plugin.saveData(this.plugin.settings);
+    switch (key) {
+      // Color-scheme contrast: regenerate styles.
+      case "lightStyle":
+      case "darkStyle":
+        this.plugin.updateStyle();
+        break;
+      // Text font size: dedicated font-size update path.
+      case "textNormal":
+        this.plugin.setFontSize();
+        break;
+      // All other control keys (typography, features, layout, animations):
+      // refresh the rendered styles.
+      default:
+        this.plugin.refresh();
+        break;
+    }
+  }
   display() {
     const { containerEl } = this;
     containerEl.empty();
@@ -2174,6 +2725,14 @@ var CustomPresetCSS = class {
     this.styleEl = null;
     this.plugin = plugin;
   }
+  // The main app window's document. Obsidian 1.13.0+ opens Settings in a
+  // separate window, so `activeDocument` points at the Settings window while a
+  // setting is being changed — injecting the accent <style> into its <head> or
+  // toggling preset classes there would affect the wrong window. The workspace
+  // container always lives in the main window.
+  get doc() {
+    return this.plugin.app.workspace.containerEl.ownerDocument;
+  }
   /**
    * Initialize custom preset CSS
    */
@@ -2204,7 +2763,7 @@ var CustomPresetCSS = class {
     const userHSL = this.getUserAccentHSL();
     if (userHSL) {
       const textOnAccent = this.calculateTextOnAccent(userHSL.h, userHSL.s, userHSL.l);
-      setCssProps(activeDocument.body, {
+      setCssProps(this.doc.body, {
         "--accent-h": `${userHSL.h}`,
         "--accent-s": `${userHSL.s}%`,
         "--accent-l": `${userHSL.l}%`,
@@ -2261,10 +2820,10 @@ var CustomPresetCSS = class {
     }
     this.isUpdating = true;
     const hasUserAccent = this.getUserAccentHSL() !== null;
-    const allPresetClasses = Array.from(activeDocument.body.classList).filter(
+    const allPresetClasses = Array.from(this.doc.body.classList).filter(
       (cls) => cls.startsWith("oxygen-custom-")
     );
-    allPresetClasses.forEach((cls) => activeDocument.body.classList.remove(cls));
+    allPresetClasses.forEach((cls) => this.doc.body.classList.remove(cls));
     const presetProperties = [
       "--base-h",
       "--base-s",
@@ -2298,7 +2857,7 @@ var CustomPresetCSS = class {
       "--frame-background-l"
     ];
     presetProperties.forEach((prop) => {
-      activeDocument.body.style.removeProperty(prop);
+      this.doc.body.style.removeProperty(prop);
     });
     this.removeAccentStyleElement();
     const activeLightPreset = this.plugin.settings.customPresets.find(
@@ -2307,11 +2866,11 @@ var CustomPresetCSS = class {
     const activeDarkPreset = this.plugin.settings.customPresets.find(
       (p) => this.plugin.settings.darkScheme === `oxygen-custom-${p.id}`
     );
-    const isLightMode = activeDocument.body.classList.contains("theme-light");
+    const isLightMode = this.doc.body.classList.contains("theme-light");
     const activePreset = isLightMode ? activeLightPreset : activeDarkPreset;
     if (activePreset) {
       const presetClass = `oxygen-custom-${activePreset.id}`;
-      activeDocument.body.classList.add(presetClass);
+      this.doc.body.classList.add(presetClass);
       const mode = isLightMode ? "light" : "dark";
       const properties = PresetCSSGenerator.generateProperties(activePreset, mode);
       const inlineProps = {};
@@ -2323,7 +2882,7 @@ var CustomPresetCSS = class {
           inlineProps[key] = value;
         }
       }
-      setCssProps(activeDocument.body, inlineProps);
+      setCssProps(this.doc.body, inlineProps);
       if (Object.keys(accentProps).length > 0) {
         const themeClass = isLightMode ? "theme-light" : "theme-dark";
         let cssText = `body.${themeClass}.${presetClass} {
@@ -2348,10 +2907,10 @@ var CustomPresetCSS = class {
    */
   createAccentStyleElement(cssText) {
     this.removeAccentStyleElement();
-    this.styleEl = activeDocument.createElement("style");
+    this.styleEl = this.doc.createElement("style");
     this.styleEl.id = STYLE_ELEMENT_ID;
     this.styleEl.textContent = cssText;
-    activeDocument.head.appendChild(this.styleEl);
+    this.doc.head.appendChild(this.styleEl);
   }
   /**
    * Remove the accent style element
@@ -2361,7 +2920,7 @@ var CustomPresetCSS = class {
       this.styleEl.remove();
       this.styleEl = null;
     }
-    const existing = activeDocument.getElementById(STYLE_ELEMENT_ID);
+    const existing = this.doc.getElementById(STYLE_ELEMENT_ID);
     if (existing) {
       existing.remove();
     }
@@ -2370,10 +2929,10 @@ var CustomPresetCSS = class {
    * Cleanup - remove all custom preset classes, CSS properties, and style element
    */
   cleanup() {
-    const allPresetClasses = Array.from(activeDocument.body.classList).filter(
+    const allPresetClasses = Array.from(this.doc.body.classList).filter(
       (cls) => cls.startsWith("oxygen-custom-")
     );
-    allPresetClasses.forEach((cls) => activeDocument.body.classList.remove(cls));
+    allPresetClasses.forEach((cls) => this.doc.body.classList.remove(cls));
     const presetProperties = [
       "--base-h",
       "--base-s",
@@ -2407,7 +2966,7 @@ var CustomPresetCSS = class {
       "--frame-background-l"
     ];
     presetProperties.forEach((prop) => {
-      activeDocument.body.style.removeProperty(prop);
+      this.doc.body.style.removeProperty(prop);
     });
     this.removeAccentStyleElement();
   }
@@ -2420,6 +2979,14 @@ var StyleManagerImpl = class {
     this.cssObserver = null;
     this.plugin = plugin;
     this.customPresetCSS = new CustomPresetCSS(plugin);
+  }
+  // The main app window's document. Obsidian 1.13.0+ opens Settings in a
+  // separate window, so `activeDocument` (the focused window) points at the
+  // Settings window while a setting is being changed — applying theme classes
+  // and CSS variables there would style the wrong window. The workspace
+  // container always lives in the main window.
+  get doc() {
+    return this.plugin.app.workspace.containerEl.ownerDocument;
   }
   /**
    * Detect OS for OS-specific styling
@@ -2485,18 +3052,18 @@ var StyleManagerImpl = class {
     this.removeStyle();
     this.removeSettings();
     if (this.plugin.settings.lightStyle && this.plugin.settings.lightStyle.trim()) {
-      activeDocument.body.addClass(this.plugin.settings.lightStyle);
+      this.doc.body.addClass(this.plugin.settings.lightStyle);
     }
     if (this.plugin.settings.darkStyle && this.plugin.settings.darkStyle.trim()) {
-      activeDocument.body.addClass(this.plugin.settings.darkStyle);
+      this.doc.body.addClass(this.plugin.settings.darkStyle);
     }
     try {
-      if (activeDocument.body.classList.contains("theme-light")) {
+      if (this.doc.body.classList.contains("theme-light")) {
         this.updateLightScheme();
-      } else if (activeDocument.body.classList.contains("theme-dark")) {
+      } else if (this.doc.body.classList.contains("theme-dark")) {
         this.updateDarkScheme();
       } else {
-        activeDocument.body.addClass("theme-light");
+        this.doc.body.addClass("theme-light");
         this.updateLightScheme();
       }
     } catch (error) {
@@ -2504,29 +3071,29 @@ var StyleManagerImpl = class {
     }
     const bordersValue = this.plugin.settings.workspaceBorders;
     if (bordersValue === "enhanced") {
-      activeDocument.body.classList.remove("borders-none", "borders-on");
+      this.doc.body.classList.remove("borders-none", "borders-on");
     } else if (bordersValue === "default") {
-      activeDocument.body.classList.remove("borders-none");
-      activeDocument.body.classList.add("borders-on");
+      this.doc.body.classList.remove("borders-none");
+      this.doc.body.classList.add("borders-on");
     } else if (bordersValue === "none") {
-      activeDocument.body.classList.remove("borders-on");
-      activeDocument.body.classList.add("borders-none");
+      this.doc.body.classList.remove("borders-on");
+      this.doc.body.classList.add("borders-none");
     }
-    activeDocument.body.classList.toggle("colorful-headings", this.plugin.settings.colorfulHeadings);
-    activeDocument.body.classList.toggle("colorful-frame", this.plugin.settings.colorfulFrame);
-    activeDocument.body.classList.toggle("colorful-active", this.plugin.settings.colorfulActiveStates);
-    activeDocument.body.classList.toggle("enable-blur", this.plugin.settings.enableBlur);
-    activeDocument.body.classList.toggle("links-int-on", this.plugin.settings.underlineInternal);
-    activeDocument.body.classList.toggle("links-ext-on", this.plugin.settings.underlineExternal);
-    activeDocument.body.classList.toggle("full-width-media", this.plugin.settings.fullWidthMedia);
-    activeDocument.body.classList.toggle("img-grid", this.plugin.settings.imgGrid);
-    activeDocument.body.classList.toggle("oxygen-dev-block-width", this.plugin.settings.devBlockWidth);
-    activeDocument.body.classList.toggle("oxygen-status-off", !this.plugin.settings.minimalStatus);
-    activeDocument.body.classList.toggle("full-file-names", !this.plugin.settings.trimNames);
-    activeDocument.body.classList.toggle("labeled-nav", this.plugin.settings.labeledNav);
-    activeDocument.body.classList.toggle("oxygen-folding", this.plugin.settings.folding);
-    activeDocument.body.classList.toggle("use-default-folder-icon", this.plugin.settings.useDefaultFolderIcon);
-    activeDocument.body.addClass(
+    this.doc.body.classList.toggle("colorful-headings", this.plugin.settings.colorfulHeadings);
+    this.doc.body.classList.toggle("colorful-frame", this.plugin.settings.colorfulFrame);
+    this.doc.body.classList.toggle("colorful-active", this.plugin.settings.colorfulActiveStates);
+    this.doc.body.classList.toggle("enable-blur", this.plugin.settings.enableBlur);
+    this.doc.body.classList.toggle("links-int-on", this.plugin.settings.underlineInternal);
+    this.doc.body.classList.toggle("links-ext-on", this.plugin.settings.underlineExternal);
+    this.doc.body.classList.toggle("full-width-media", this.plugin.settings.fullWidthMedia);
+    this.doc.body.classList.toggle("img-grid", this.plugin.settings.imgGrid);
+    this.doc.body.classList.toggle("oxygen-dev-block-width", this.plugin.settings.devBlockWidth);
+    this.doc.body.classList.toggle("oxygen-status-off", !this.plugin.settings.minimalStatus);
+    this.doc.body.classList.toggle("full-file-names", !this.plugin.settings.trimNames);
+    this.doc.body.classList.toggle("labeled-nav", this.plugin.settings.labeledNav);
+    this.doc.body.classList.toggle("oxygen-folding", this.plugin.settings.folding);
+    this.doc.body.classList.toggle("use-default-folder-icon", this.plugin.settings.useDefaultFolderIcon);
+    this.doc.body.addClass(
       this.plugin.settings.chartWidth,
       this.plugin.settings.tableWidth,
       this.plugin.settings.imgWidth,
@@ -2546,25 +3113,25 @@ var StyleManagerImpl = class {
     if (!isDefaultWidth) {
       cssProps["--nav-indentation-guide-width"] = this.plugin.settings.navIndentationGuideWidth;
     } else {
-      activeDocument.body.style.removeProperty("--nav-indentation-guide-width");
+      this.doc.body.style.removeProperty("--nav-indentation-guide-width");
     }
     if (!isDefaultColor) {
       cssProps["--nav-indentation-guide-color"] = this.plugin.settings.navIndentationGuideColor;
     } else {
-      activeDocument.body.style.removeProperty("--nav-indentation-guide-color");
+      this.doc.body.style.removeProperty("--nav-indentation-guide-color");
     }
-    setCssProps(activeDocument.body, cssProps);
-    activeDocument.body.classList.remove("animations-refined", "animations-default", "animations-playful", "animations-off");
+    setCssProps(this.doc.body, cssProps);
+    this.doc.body.classList.remove("animations-refined", "animations-default", "animations-playful", "animations-off");
     const animationPersonality = this.plugin.settings.animationPersonality || "default";
     if (animationPersonality === "off") {
-      activeDocument.body.classList.add("animations-off");
-      activeDocument.body.style.removeProperty("--anim-speed-modifier");
+      this.doc.body.classList.add("animations-off");
+      this.doc.body.style.removeProperty("--anim-speed-modifier");
     } else if (animationPersonality === "playful") {
-      activeDocument.body.classList.add("animations-playful");
-      activeDocument.body.style.setProperty("--anim-speed-modifier", this.plugin.settings.animationSpeed.toString());
+      this.doc.body.classList.add("animations-playful");
+      this.doc.body.style.setProperty("--anim-speed-modifier", this.plugin.settings.animationSpeed.toString());
     } else {
-      activeDocument.body.classList.add("animations-default");
-      activeDocument.body.style.setProperty("--anim-speed-modifier", this.plugin.settings.animationSpeed.toString());
+      this.doc.body.classList.add("animations-default");
+      this.doc.body.style.setProperty("--anim-speed-modifier", this.plugin.settings.animationSpeed.toString());
     }
     this.customPresetCSS.updateCSS();
     this.customPresetCSS.applyUserAccentInline();
@@ -2577,8 +3144,8 @@ var StyleManagerImpl = class {
       return;
     }
     this.removeStyle();
-    activeDocument.body.removeClass("theme-dark");
-    activeDocument.body.addClass("theme-light", this.plugin.settings.lightStyle);
+    this.doc.body.removeClass("theme-dark");
+    this.doc.body.addClass("theme-light", this.plugin.settings.lightStyle);
     const theme = getVaultConfig(this.plugin.app, "theme");
     if (theme !== "system") {
       setTheme(this.plugin.app, "moonstone");
@@ -2594,8 +3161,8 @@ var StyleManagerImpl = class {
       return;
     }
     this.removeStyle();
-    activeDocument.body.removeClass("theme-light");
-    activeDocument.body.addClass("theme-dark", this.plugin.settings.darkStyle);
+    this.doc.body.removeClass("theme-light");
+    this.doc.body.addClass("theme-dark", this.plugin.settings.darkStyle);
     const theme = getVaultConfig(this.plugin.app, "theme");
     if (theme !== "system") {
       setTheme(this.plugin.app, "obsidian");
@@ -2612,12 +3179,12 @@ var StyleManagerImpl = class {
     }
     this.removeLightScheme();
     this.removeDarkScheme();
-    if (!activeDocument.body.classList.contains("theme-light")) {
-      activeDocument.body.removeClass("theme-dark");
-      activeDocument.body.addClass("theme-light");
+    if (!this.doc.body.classList.contains("theme-light")) {
+      this.doc.body.removeClass("theme-dark");
+      this.doc.body.addClass("theme-light");
     }
     if (this.plugin.settings.lightScheme && this.plugin.settings.lightScheme.trim()) {
-      activeDocument.body.addClass(this.plugin.settings.lightScheme);
+      this.doc.body.addClass(this.plugin.settings.lightScheme);
     }
   }
   /**
@@ -2629,19 +3196,19 @@ var StyleManagerImpl = class {
     }
     this.removeDarkScheme();
     this.removeLightScheme();
-    if (!activeDocument.body.classList.contains("theme-dark")) {
-      activeDocument.body.removeClass("theme-light");
-      activeDocument.body.addClass("theme-dark");
+    if (!this.doc.body.classList.contains("theme-dark")) {
+      this.doc.body.removeClass("theme-light");
+      this.doc.body.addClass("theme-dark");
     }
     if (this.plugin.settings.darkScheme && this.plugin.settings.darkScheme.trim()) {
-      activeDocument.body.addClass(this.plugin.settings.darkScheme);
+      this.doc.body.addClass(this.plugin.settings.darkScheme);
     }
   }
   /**
    * Remove style classes
    */
   removeStyle() {
-    activeDocument.body.removeClass(
+    this.doc.body.removeClass(
       "oxygen-light",
       "oxygen-light-tonal",
       "oxygen-light-contrast",
@@ -2663,25 +3230,25 @@ var StyleManagerImpl = class {
    * Remove light scheme classes
    */
   removeLightScheme() {
-    activeDocument.body.removeClass(...LIGHT_SCHEMES);
+    this.doc.body.removeClass(...LIGHT_SCHEMES);
     this.plugin.settings.customPresets.forEach((preset) => {
-      activeDocument.body.removeClass(`oxygen-custom-${preset.id}`);
+      this.doc.body.removeClass(`oxygen-custom-${preset.id}`);
     });
   }
   /**
    * Remove dark scheme classes
    */
   removeDarkScheme() {
-    activeDocument.body.removeClass(...DARK_SCHEMES);
+    this.doc.body.removeClass(...DARK_SCHEMES);
     this.plugin.settings.customPresets.forEach((preset) => {
-      activeDocument.body.removeClass(`oxygen-custom-${preset.id}`);
+      this.doc.body.removeClass(`oxygen-custom-${preset.id}`);
     });
   }
   /**
    * Remove settings classes
    */
   removeSettings() {
-    activeDocument.body.removeClass(
+    this.doc.body.removeClass(
       "borders-none",
       "borders-on",
       "colorful-headings",
@@ -2732,23 +3299,23 @@ var StyleManagerImpl = class {
     if (!this.plugin.isOxygenThemeActive()) {
       return;
     }
-    activeDocument.body.classList.add(CSS_CLASSES.PLUGIN_THEME);
+    this.doc.body.classList.add(CSS_CLASSES.PLUGIN_THEME);
     this.updateStyle();
   }
   /**
    * Unload CSS rules
    */
   unloadRules() {
-    activeDocument.body.style.removeProperty("--font-ui-small");
-    activeDocument.body.style.removeProperty("--line-height");
-    activeDocument.body.style.removeProperty("--line-width");
-    activeDocument.body.style.removeProperty("--line-width-wide");
-    activeDocument.body.style.removeProperty("--max-width");
-    activeDocument.body.style.removeProperty("--font-editor-override");
-    activeDocument.body.style.removeProperty("--nav-indentation-guide-width");
-    activeDocument.body.style.removeProperty("--nav-indentation-guide-color");
-    activeDocument.body.style.removeProperty("--anim-speed-modifier");
-    activeDocument.body.classList.remove(CSS_CLASSES.PLUGIN_THEME);
+    this.doc.body.style.removeProperty("--font-ui-small");
+    this.doc.body.style.removeProperty("--line-height");
+    this.doc.body.style.removeProperty("--line-width");
+    this.doc.body.style.removeProperty("--line-width-wide");
+    this.doc.body.style.removeProperty("--max-width");
+    this.doc.body.style.removeProperty("--font-editor-override");
+    this.doc.body.style.removeProperty("--nav-indentation-guide-width");
+    this.doc.body.style.removeProperty("--nav-indentation-guide-color");
+    this.doc.body.style.removeProperty("--anim-speed-modifier");
+    this.doc.body.classList.remove(CSS_CLASSES.PLUGIN_THEME);
   }
   /**
    * Setup CSS watcher for re-applying custom presets
@@ -2762,26 +3329,33 @@ var ThemeManagerImpl = class {
   constructor(plugin) {
     this.plugin = plugin;
   }
+  // The main app window's document. Obsidian 1.13.0+ opens Settings in a
+  // separate window, so `activeDocument` points at the Settings window while a
+  // setting is being changed — toggling theme classes there would affect the
+  // wrong window. The workspace container always lives in the main window.
+  get doc() {
+    return this.plugin.app.workspace.containerEl.ownerDocument;
+  }
   /**
    * Toggle between light and dark themes
    */
   updateTheme() {
     const currentTheme = getVaultConfig(this.plugin.app, "theme");
     if (currentTheme === OBSIDIAN_THEMES.SYSTEM) {
-      if (activeDocument.body.classList.contains("theme-light")) {
-        activeDocument.body.removeClass("theme-light");
-        activeDocument.body.addClass("theme-dark");
+      if (this.doc.body.classList.contains("theme-light")) {
+        this.doc.body.removeClass("theme-light");
+        this.doc.body.addClass("theme-dark");
       } else {
-        activeDocument.body.removeClass("theme-dark");
-        activeDocument.body.addClass("theme-light");
+        this.doc.body.removeClass("theme-dark");
+        this.doc.body.addClass("theme-light");
       }
     } else {
-      if (activeDocument.body.classList.contains("theme-light")) {
-        activeDocument.body.removeClass("theme-light");
-        activeDocument.body.addClass("theme-dark");
+      if (this.doc.body.classList.contains("theme-light")) {
+        this.doc.body.removeClass("theme-light");
+        this.doc.body.addClass("theme-dark");
       } else {
-        activeDocument.body.removeClass("theme-dark");
-        activeDocument.body.addClass("theme-light");
+        this.doc.body.removeClass("theme-dark");
+        this.doc.body.addClass("theme-light");
       }
       const theme = getVaultConfig(this.plugin.app, "theme");
       const newTheme = theme === OBSIDIAN_THEMES.LIGHT ? OBSIDIAN_THEMES.DARK : OBSIDIAN_THEMES.LIGHT;
@@ -2794,8 +3368,8 @@ var ThemeManagerImpl = class {
    * Switch to light theme
    */
   switchToLight() {
-    activeDocument.body.removeClass("theme-dark");
-    activeDocument.body.addClass("theme-light");
+    this.doc.body.removeClass("theme-dark");
+    this.doc.body.addClass("theme-light");
     const theme = getVaultConfig(this.plugin.app, "theme");
     if (theme !== OBSIDIAN_THEMES.SYSTEM) {
       setTheme(this.plugin.app, OBSIDIAN_THEMES.LIGHT);
@@ -2807,8 +3381,8 @@ var ThemeManagerImpl = class {
    * Switch to dark theme
    */
   switchToDark() {
-    activeDocument.body.removeClass("theme-light");
-    activeDocument.body.addClass("theme-dark");
+    this.doc.body.removeClass("theme-light");
+    this.doc.body.addClass("theme-dark");
     const theme = getVaultConfig(this.plugin.app, "theme");
     if (theme !== OBSIDIAN_THEMES.SYSTEM) {
       setTheme(this.plugin.app, OBSIDIAN_THEMES.DARK);
@@ -2820,7 +3394,7 @@ var ThemeManagerImpl = class {
    * Get current theme mode
    */
   getCurrentMode() {
-    return activeDocument.body.classList.contains("theme-light") ? "light" : "dark";
+    return this.doc.body.classList.contains("theme-light") ? "light" : "dark";
   }
   /**
    * Update sidebar theme for high contrast light mode
@@ -2829,9 +3403,9 @@ var ThemeManagerImpl = class {
     if (!this.plugin.isOxygenThemeActive()) {
       return;
     }
-    const sidebarEl = activeDocument.getElementsByClassName("mod-left-split")[0];
-    const ribbonEl = activeDocument.getElementsByClassName("side-dock-ribbon")[0];
-    if (sidebarEl && ribbonEl && activeDocument.body.classList.contains("theme-light") && this.plugin.settings.lightStyle === "oxygen-light-contrast") {
+    const sidebarEl = this.doc.getElementsByClassName("mod-left-split")[0];
+    const ribbonEl = this.doc.getElementsByClassName("side-dock-ribbon")[0];
+    if (sidebarEl && ribbonEl && this.doc.body.classList.contains("theme-light") && this.plugin.settings.lightStyle === "oxygen-light-contrast") {
       sidebarEl.addClass("theme-dark");
       ribbonEl.addClass("theme-dark");
     } else if (sidebarEl && ribbonEl) {
@@ -2843,11 +3417,11 @@ var ThemeManagerImpl = class {
    * Cleanup sidebar theme on unload
    */
   cleanupSidebarTheme() {
-    const sidebarEl = activeDocument.getElementsByClassName("mod-left-split")[0];
+    const sidebarEl = this.doc.getElementsByClassName("mod-left-split")[0];
     if (sidebarEl) {
       sidebarEl.removeClass("theme-dark");
     }
-    const ribbonEl = activeDocument.getElementsByClassName("side-dock-ribbon")[0];
+    const ribbonEl = this.doc.getElementsByClassName("side-dock-ribbon")[0];
     if (ribbonEl) {
       ribbonEl.removeClass("theme-dark");
     }
@@ -2858,6 +3432,13 @@ var ThemeManagerImpl = class {
 var SettingsSyncManager = class {
   constructor(plugin) {
     this.plugin = plugin;
+  }
+  // The main app window's document. Obsidian 1.13.0+ opens Settings in a
+  // separate window, so `activeDocument` points at the Settings window while a
+  // setting is being changed — reading body classes from the wrong window can
+  // desync state. The workspace container always lives in the main window.
+  get doc() {
+    return this.plugin.app.workspace.containerEl.ownerDocument;
   }
   /**
    * Setup event watchers for vault config changes
@@ -2886,7 +3467,7 @@ var SettingsSyncManager = class {
     this.plugin.settings.folding = !!getVaultConfig(this.plugin.app, VAULT_CONFIG.FOLD_HEADING);
     this.plugin.settings.lineNumbers = !!getVaultConfig(this.plugin.app, VAULT_CONFIG.SHOW_LINE_NUMBER);
     this.plugin.settings.readableLineLength = !!getVaultConfig(this.plugin.app, VAULT_CONFIG.READABLE_LINE_LENGTH);
-    const bodyClassList = activeDocument.body.classList;
+    const bodyClassList = this.doc.body.classList;
     bodyClassList.toggle("oxygen-folding", this.plugin.settings.folding);
     bodyClassList.toggle("oxygen-line-nums", this.plugin.settings.lineNumbers);
     bodyClassList.toggle("oxygen-readable", this.plugin.settings.readableLineLength);
@@ -2906,9 +3487,9 @@ var SettingsSyncManager = class {
    * Update sidebar theme for high contrast mode
    */
   updateSidebarTheme() {
-    const sidebarEl = activeDocument.getElementsByClassName("mod-left-split")[0];
-    const ribbonEl = activeDocument.getElementsByClassName("side-dock-ribbon")[0];
-    if (sidebarEl && ribbonEl && activeDocument.body.classList.contains("theme-light") && this.plugin.settings.lightStyle === "oxygen-light-contrast") {
+    const sidebarEl = this.doc.getElementsByClassName("mod-left-split")[0];
+    const ribbonEl = this.doc.getElementsByClassName("side-dock-ribbon")[0];
+    if (sidebarEl && ribbonEl && this.doc.body.classList.contains("theme-light") && this.plugin.settings.lightStyle === "oxygen-light-contrast") {
       sidebarEl.addClass("theme-dark");
       ribbonEl.addClass("theme-dark");
     } else if (sidebarEl && ribbonEl) {

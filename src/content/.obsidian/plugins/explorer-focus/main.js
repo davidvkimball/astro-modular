@@ -276,6 +276,96 @@ var ExplorerFocusSettingTab = class extends import_obsidian4.PluginSettingTab {
     this.icon = "lucide-focus";
     this.plugin = plugin;
   }
+  // 1.13.0+: framework calls this and skips display().
+  // Pre-1.13.0: this method is not invoked; display() below runs as before.
+  // See https://docs.obsidian.md/plugins/guides/migrate-declarative-settings
+  getSettingDefinitions() {
+    return [
+      {
+        name: "Show right-click menu option",
+        control: { type: "toggle", key: "showRightClickMenu" }
+      },
+      {
+        name: "Show file explorer icon",
+        // Render: changing this value has a side effect (file explorer icon update).
+        render: (setting) => {
+          setting.addToggle((toggle) => toggle.setValue(this.plugin.settings.showFileExplorerIcon).onChange(async (value) => {
+            this.plugin.settings.showFileExplorerIcon = value;
+            await this.plugin.saveSettings();
+            this.plugin.updateFileExplorerIcon();
+          }));
+        }
+      },
+      {
+        name: "Command focus level",
+        desc: "Determines what to focus when using the toggle command or file explorer icon. Right-click menu always focuses the clicked file/folder.",
+        // Render: changing this value refreshes the file explorer and shows or hides
+        // the custom folder path row below, so refresh the DOM state to re-evaluate
+        // that row's visible predicate.
+        render: (setting) => {
+          setting.addDropdown((dropdown) => dropdown.addOption("file", "Current file only").addOption("parent", "Parent folder").addOption("grandparent", "Grandparent folder").addOption("greatgrandparent", "Great grandparent folder").addOption("custom", "Specific folder").setValue(this.plugin.settings.focusLevel).onChange(async (value) => {
+            this.plugin.settings.focusLevel = value;
+            await this.plugin.saveSettings();
+            if (this.plugin.isFocus) {
+              const fileExplorers = getAllFileExplorers(this.plugin);
+              fileExplorers.forEach((fileExplorer) => {
+                if (fileExplorer == null ? void 0 : fileExplorer.requestSort) {
+                  fileExplorer.requestSort();
+                }
+              });
+            }
+            const refresh = this.refreshDomState;
+            if (refresh) refresh.call(this);
+          }));
+        }
+      },
+      {
+        name: "Custom folder path",
+        desc: "Enter a folder path (folder/subfolder). This folder will be focused regardless of which file is open.",
+        // Shown only when the command focus level is set to a specific folder.
+        visible: () => this.plugin.settings.focusLevel === "custom",
+        // Render: uses a folder suggester custom control.
+        render: (setting) => {
+          setting.addText((text) => {
+            new FolderSuggest(this.app, text.inputEl);
+            text.setPlaceholder("Folder/subfolder").setValue(this.plugin.settings.customFolderPath).onChange(async (value) => {
+              this.plugin.settings.customFolderPath = value;
+              await this.plugin.saveSettings();
+            });
+          });
+        }
+      },
+      {
+        type: "group",
+        heading: "Auto-hide folders",
+        items: [
+          {
+            name: "Hidden folders",
+            // Render: builds a dynamic description listing the hidden folders and an
+            // action button that opens the manage modal.
+            render: (setting) => {
+              var _a;
+              const autoHidePaths = ((_a = this.plugin.settings.autoHidePaths) != null ? _a : []).filter((p) => p.trim().length > 0);
+              const descFragment = activeDocument.createDocumentFragment();
+              descFragment.appendText("These folders are always hidden from the file explorer.");
+              if (autoHidePaths.length > 0) {
+                const list = descFragment.createEl("ul");
+                autoHidePaths.forEach((p) => {
+                  list.createEl("li", { text: p });
+                });
+              }
+              setting.setDesc(descFragment).addButton((button) => button.setButtonText("Manage").onClick(() => {
+                new AutoHideModal(this.app, this.plugin, () => {
+                  const update = this.update;
+                  if (update) update.call(this);
+                }).open();
+              }));
+            }
+          }
+        ]
+      }
+    ];
+  }
   display() {
     const { containerEl } = this;
     containerEl.empty();

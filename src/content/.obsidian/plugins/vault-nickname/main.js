@@ -188,7 +188,7 @@ var VaultNicknamePlugin = class extends import_obsidian.Plugin {
       return;
     }
     event2.stopPropagation();
-    const vaults = electron.ipcRenderer.sendSync("vault-list");
+    const vaults = require("electron").ipcRenderer.sendSync("vault-list");
     const menu = new import_obsidian.Menu();
     for (let vaultKey in vaults) {
       const vault = vaults[vaultKey];
@@ -453,7 +453,8 @@ var VaultNicknamePlugin = class extends import_obsidian.Plugin {
     return this.app.vault.adapter.fs.existsSync(absoluteFilePath);
   }
   readUtf8FileSync(absoluteFilePath) {
-    return this.app.vault.adapter.fs.readFileSync(absoluteFilePath, "utf8");
+    const content = this.app.vault.adapter.fs.readFileSync(absoluteFilePath, "utf8");
+    return content.charCodeAt(0) === 65279 ? content.slice(1) : content;
   }
   writeUtf8FileSync(absoluteFilePath, content) {
     this.app.vault.adapter.fs.writeFileSync(absoluteFilePath, content, "utf8");

@@ -75,6 +75,25 @@ var DisableTabsSettingTab = class extends import_obsidian.PluginSettingTab {
     this.plugin = plugin;
     this.settings = plugin.settings;
   }
+  // 1.13.0+: framework calls this and skips display().
+  // Pre-1.13.0: this method is not invoked; display() below runs as before.
+  // See https://docs.obsidian.md/plugins/guides/migrate-declarative-settings
+  getSettingDefinitions() {
+    return [
+      {
+        name: "Hide mobile tabs icon",
+        desc: "Hide the tabs icon on mobile devices",
+        // Render: changing this value has a side effect (mobile tab icon CSS update).
+        render: (setting) => {
+          setting.addToggle((toggle) => toggle.setValue(this.settings.hideMobileNewTabIcon).onChange(async (value) => {
+            this.settings.hideMobileNewTabIcon = value;
+            await this.plugin.saveSettings();
+            this.plugin.updateMobileTabIconCSS();
+          }));
+        }
+      }
+    ];
+  }
   display() {
     const { containerEl } = this;
     containerEl.empty();
@@ -93,6 +112,14 @@ var DisableTabsSettingTab = class extends import_obsidian.PluginSettingTab {
 
 // src/main.ts
 var DisableTabsPlugin = class extends import_obsidian2.Plugin {
+  // The main app window's document. Obsidian 1.13.0+ opens Settings in a
+  // separate window, so `activeDocument` (the focused window) can point at the
+  // Settings window while a setting is being changed. This feature is mobile-
+  // only (where there is no separate Settings window), but using the main
+  // window's document keeps it correct under desktop "emulate mobile" too.
+  get doc() {
+    return this.app.workspace.containerEl.ownerDocument;
+  }
   async onload() {
     const loadedData = await this.loadData();
     this.settings = Object.assign({}, DEFAULT_SETTINGS, loadedData);
@@ -108,15 +135,15 @@ var DisableTabsPlugin = class extends import_obsidian2.Plugin {
   }
   updateMobileTabIconCSS() {
     if (this.settings.hideMobileNewTabIcon) {
-      activeDocument.body.classList.add("disable-tabs-hide-mobile-icon");
+      this.doc.body.classList.add("disable-tabs-hide-mobile-icon");
     } else {
-      activeDocument.body.classList.remove("disable-tabs-hide-mobile-icon");
+      this.doc.body.classList.remove("disable-tabs-hide-mobile-icon");
     }
   }
   async saveSettings() {
     await this.saveData(this.settings);
   }
   onunload() {
-    activeDocument.body.classList.remove("disable-tabs-hide-mobile-icon");
+    this.doc.body.classList.remove("disable-tabs-hide-mobile-icon");
   }
 };

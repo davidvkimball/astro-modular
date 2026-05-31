@@ -51,6 +51,117 @@ var FileNameHistorySettingTab = class extends import_obsidian.PluginSettingTab {
     this.icon = "lucide-forward";
     this.plugin = plugin;
   }
+  // 1.13.0+: framework calls this and skips display().
+  // Pre-1.13.0: this method is not invoked; display() below runs as before.
+  // See https://docs.obsidian.md/plugins/guides/migrate-declarative-settings
+  getSettingDefinitions() {
+    return [
+      {
+        // General behavior settings (grouped, no heading)
+        type: "group",
+        items: [
+          {
+            name: "History property name",
+            desc: "The list property to store file name history.",
+            // Render: empty input falls back to the default property name.
+            render: (setting) => {
+              setting.addText((text) => text.setPlaceholder("aliases").setValue(this.plugin.settings.historyPropertyName).onChange(async (value) => {
+                this.plugin.settings.historyPropertyName = value || "aliases";
+                await this.plugin.saveSettings();
+              }));
+            }
+          },
+          {
+            name: "Timeout seconds",
+            desc: "Time in seconds the name must be stable before adding to the configured property.",
+            control: { type: "slider", key: "timeoutSeconds", min: 1, max: 20, step: 1 }
+          },
+          {
+            name: "Case-sensitive uniqueness",
+            desc: "If enabled, treat case differences as unique values in the configured property.",
+            control: { type: "toggle", key: "caseSensitive" }
+          },
+          {
+            name: "Auto-create history property",
+            desc: "Automatically create the configured property if missing.",
+            control: { type: "toggle", key: "autoCreateFrontmatter" }
+          },
+          {
+            name: "File extensions",
+            desc: "Comma-separated list of file extensions to track.",
+            // Render: value is split into an array of trimmed, non-empty extensions.
+            render: (setting) => {
+              setting.addText((text) => text.setPlaceholder("Md, txt").setValue(this.plugin.settings.fileExtensions.join(",")).onChange(async (value) => {
+                this.plugin.settings.fileExtensions = value.split(",").map((s) => s.trim()).filter((s) => s);
+                await this.plugin.saveSettings();
+              }));
+            }
+          }
+        ]
+      },
+      {
+        type: "group",
+        heading: "Filtering",
+        items: [
+          {
+            name: "Ignore regex patterns",
+            desc: "Comma-separated regex patterns for file names or immediate parent folder names to ignore (e.g., ^_ for underscore prefixes, ^untitled$ for untitled). Leave empty to disable.",
+            // Render: value is split into an array of trimmed, non-empty patterns.
+            render: (setting) => {
+              setting.addText((text) => text.setPlaceholder("^_, ^untitled$, ^untitled \\d+$").setValue(this.plugin.settings.ignoreRegexes.join(",")).onChange(async (value) => {
+                this.plugin.settings.ignoreRegexes = value.split(",").map((s) => s.trim()).filter((s) => s);
+                await this.plugin.saveSettings();
+              }));
+            }
+          },
+          {
+            name: "Exclude property name",
+            desc: "Name of a boolean property to check in files. Files with this property set to true will be excluded from tracking. Takes priority over folder filtering.",
+            control: { type: "text", key: "excludePropertyName", placeholder: "Skip-rename-tracking" }
+          }
+        ]
+      },
+      {
+        type: "group",
+        heading: "Folders",
+        items: [
+          {
+            name: "Include folders",
+            desc: "Comma-separated list of folder paths to include. If empty, all folders are included. Use {vault} or {root} to include only files directly in the vault root (no subfolders).",
+            // Render: value is split into an array of trimmed, non-empty paths.
+            render: (setting) => {
+              setting.addText((text) => text.setValue(this.plugin.settings.includeFolders.join(",")).onChange(async (value) => {
+                this.plugin.settings.includeFolders = value.split(",").map((s) => s.trim()).filter((s) => s);
+                await this.plugin.saveSettings();
+              }));
+            }
+          },
+          {
+            name: "Exclude folders",
+            desc: 'Comma-separated list of folder paths to exclude. Supports wildcards: use "folder/*" to exclude direct children, "folder/**" to exclude all descendants. Use {vault} or {root} to exclude files directly in the vault root.',
+            // Render: value is split into an array of trimmed, non-empty paths.
+            render: (setting) => {
+              setting.addText((text) => text.setValue(this.plugin.settings.excludeFolders.join(",")).onChange(async (value) => {
+                this.plugin.settings.excludeFolders = value.split(",").map((s) => s.trim()).filter((s) => s);
+                await this.plugin.saveSettings();
+              }));
+            }
+          }
+        ]
+      },
+      {
+        type: "group",
+        heading: "Advanced",
+        items: [
+          {
+            name: "Track folder renames for specific file name",
+            desc: "If a Markdown file matches this file name, store old immediate parent folder names in the configured property when parent folders are renamed.",
+            control: { type: "text", key: "trackFolderRenames", placeholder: "Index" }
+          }
+        ]
+      }
+    ];
+  }
   display() {
     const { containerEl } = this;
     containerEl.empty();

@@ -10574,7 +10574,6 @@ var PluginManager = class {
       "homepage",
       "new-tab-default-page",
       "property-over-file-name",
-      "settings-search",
       "statusbar-organizer",
       "seo",
       "ui-tweaker",
@@ -10645,13 +10644,12 @@ var OptionalPluginsStep = class extends BaseWizardStep {
       { id: "home-base", name: "Home Base", category: "essential", source: "community" },
       { id: "image-manager", name: "Image Manager", category: "essential", source: "community" },
       { id: "property-over-file-name", name: "Property Over File Name", category: "essential", source: "community" },
-      { id: "seo", name: "SEO", category: "essential", source: "community" },
+      { id: "seo", name: "Search Engine Optimization", category: "essential", source: "community" },
       { id: "ui-tweaker", name: "UI Tweaker", category: "essential", source: "community" },
       // Nice to have: also all in the official community directory.
       { id: "omnisearch", name: "Omnisearch", category: "nice-to-have", source: "community" },
       { id: "file-name-history", name: "File Name History", category: "nice-to-have", source: "community" },
-      { id: "data-files-editor", name: "Data Files Editor", category: "nice-to-have", source: "community" },
-      { id: "settings-search", name: "Settings Search", category: "nice-to-have", source: "community" },
+      { id: "data-files-editor", name: "Data Files Editor", category: "nice-to-have", source: "brat", repo: "davidvkimball/obsidian-data-files-editor" },
       { id: "tag-wrangler", name: "Tag Wrangler", category: "nice-to-have", source: "community" },
       { id: "vault-nickname", name: "Vault Nickname", category: "nice-to-have", source: "community" },
       { id: "zenmode", name: "Zen Mode", category: "nice-to-have", source: "community" },
@@ -10713,8 +10711,8 @@ var OptionalPluginsStep = class extends BaseWizardStep {
               window.open(`obsidian://show-plugin?id=${plugin.id}`);
             }));
           } else if (plugin.source === "brat" && plugin.repo) {
-            setting.addButton((btn) => btn.setButtonText("GitHub").onClick(() => {
-              window.open(`https://github.com/${plugin.repo}`);
+            setting.addButton((btn) => btn.setButtonText("Install via BRAT").setCta().onClick(() => {
+              window.open(`obsidian://brat?plugin=${plugin.repo}`);
             }));
           }
         }
@@ -12014,24 +12012,29 @@ var DataFilesEditorConfigurator = class {
     settings.doCreateJson = enabled;
     settings.doLoadAstro = enabled;
     settings.doCreateAstro = enabled;
-    settings.doLoadTxt = false;
-    settings.doCreateTxt = false;
-    settings.doLoadXml = false;
-    settings.doCreateXml = false;
-    settings.doLoadYaml = false;
-    settings.doCreateYaml = false;
-    settings.doLoadTs = false;
-    settings.doCreateTs = false;
-    settings.doLoadCss = false;
-    settings.doCreateCss = false;
-    settings.doLoadHtml = false;
-    settings.doCreateHtml = false;
-    settings.doLoadJs = false;
-    settings.doCreateJs = false;
-    settings.doLoadMjs = false;
-    settings.doCreateMjs = false;
-    settings.doAutosaveFiles = true;
-    settings.lineWrapping = true;
+    const otherKeys = [
+      "doLoadTxt",
+      "doCreateTxt",
+      "doLoadXml",
+      "doCreateXml",
+      "doLoadYaml",
+      "doCreateYaml",
+      "doLoadTs",
+      "doCreateTs",
+      "doLoadCss",
+      "doCreateCss",
+      "doLoadHtml",
+      "doCreateHtml",
+      "doLoadJs",
+      "doCreateJs",
+      "doLoadMjs",
+      "doCreateMjs"
+    ];
+    for (const key of otherKeys) {
+      if (settings[key] === void 0) settings[key] = false;
+    }
+    if (settings.doAutosaveFiles === void 0) settings.doAutosaveFiles = true;
+    if (settings.lineWrapping === void 0) settings.lineWrapping = true;
   }
   async saveConfigFallback(enabled) {
     const pluginId = "data-files-editor";
@@ -14109,6 +14112,194 @@ var SettingsTab = class extends import_obsidian27.PluginSettingTab {
     super(app, plugin);
     this.icon = "lucide-vault";
     this.plugin = plugin;
+  }
+  // 1.13.0+: framework calls this and skips display().
+  // Pre-1.13.0: this method is not invoked; display() below runs as before.
+  // See https://docs.obsidian.md/plugins/guides/migrate-declarative-settings
+  //
+  // This must stay cheap and synchronous (no I/O) because the framework runs
+  // it on every update() and once at registration for search indexing. The
+  // Git status and project optimization rows depend on async disk reads, so
+  // they are produced inside render callbacks that kick off the work the same
+  // way display()/render() does, rather than being resolved here.
+  getSettingDefinitions() {
+    return [
+      {
+        // First group (no heading) - following UI Tweaker pattern
+        type: "group",
+        items: [
+          {
+            name: "Open setup wizard",
+            desc: "Launch the setup wizard",
+            // Render: this is an action (opens a modal), not a value bind.
+            render: (setting) => {
+              setting.addButton((button) => {
+                button.setButtonText("Open wizard").setCta().onClick(() => {
+                  new SetupWizardModal(this.app, this.plugin.settings, this.plugin).open();
+                });
+              });
+            }
+          },
+          {
+            name: "Run wizard on startup",
+            desc: "Automatically open the wizard when the plugin loads",
+            control: { type: "toggle", key: "runWizardOnStartup" }
+          },
+          {
+            name: "Health check",
+            desc: "Check plugin installation and configuration status",
+            // Render: this is an action (opens a modal), not a value bind.
+            render: (setting) => {
+              setting.addButton((button) => {
+                button.setButtonText("Run health check").onClick(() => {
+                  new HealthCheckModal(this.app, this.plugin).open();
+                });
+              });
+            }
+          }
+        ]
+      },
+      {
+        type: "group",
+        heading: "Preset configuration",
+        items: [
+          {
+            name: "Preset folder name",
+            desc: "Folder name in the repository",
+            control: { type: "text", key: "presetName", placeholder: "Example: starlight" }
+          },
+          {
+            name: "Presets repository",
+            desc: "GitHub repository containing the presets",
+            control: { type: "text", key: "presetsRepo", placeholder: "Example: owner/repo" }
+          },
+          {
+            name: "Download and apply preset",
+            desc: "Download the specified preset and apply it to your vault",
+            // Render: this is an action (runs the preset manager), not a value bind.
+            render: (setting) => {
+              setting.addButton((button) => {
+                button.setButtonText("Apply preset").onClick(async () => {
+                  const manager = new PresetManager(this.app);
+                  await manager.applyPreset(this.plugin.settings.presetsRepo, this.plugin.settings.presetName);
+                });
+              });
+            }
+          }
+        ]
+      },
+      {
+        type: "group",
+        heading: "Git configuration",
+        items: [
+          {
+            name: "Deployment and Git setup",
+            desc: "Choose a deployment platform and connect to GitHub.",
+            // Render: the status rows and setup button depend on async Git
+            // reads. This callback reproduces display()'s Git section by
+            // running the same checks and rebuilding its own setting.
+            render: (setting) => {
+              void this.renderGitConfiguration(setting);
+            }
+          }
+        ]
+      },
+      {
+        type: "group",
+        heading: "Project optimization (optional)",
+        items: [
+          {
+            name: "Project optimization",
+            desc: "Optional adjustments to ignore workspace files and neutralize blockers.",
+            // Render: optimization status depends on async disk reads. This
+            // callback reproduces display()'s optimization section by running
+            // the same checks and rebuilding its own setting(s).
+            render: (setting) => {
+              void this.renderProjectOptimization(setting);
+            }
+          }
+        ]
+      }
+    ];
+  }
+  // Async builder for the declarative Git configuration group. Mirrors the
+  // Git section of render(): reports local repository status, project root
+  // path, remote URL, and the "Setup..." button when not fully configured.
+  async renderGitConfiguration(setting) {
+    var _a;
+    const container = (_a = setting.settingEl.parentElement) != null ? _a : setting.settingEl;
+    setting.settingEl.remove();
+    let isFullyConfigured = false;
+    if (this.plugin.settings.projectRoot && this.plugin.settings.projectRoot.trim() !== "") {
+      try {
+        const { GitManager: GitManager2 } = await Promise.resolve().then(() => (init_GitManager(), GitManager_exports));
+        const { resolveProjectRoot: resolveProjectRoot3 } = await Promise.resolve().then(() => (init_ProjectRootResolver(), ProjectRootResolver_exports));
+        const projectRoot = resolveProjectRoot3(this.app, this.plugin.settings.projectRoot);
+        if (!projectRoot) throw new Error("Could not resolve project root");
+        const isRepo = await GitManager2.isRepo(projectRoot);
+        const remoteUrl = isRepo ? await GitManager2.getRemoteUrl(projectRoot) : null;
+        isFullyConfigured = isRepo && !!remoteUrl;
+        const statusSetting = new import_obsidian27.Setting(container).setName("Local repository status").setDesc(isRepo ? "Git is initialized at project root." : "Git is NOT initialized at project root.");
+        const statusIcon = statusSetting.controlEl.createSpan({
+          cls: isRepo ? "git-status-icon-ok" : "git-status-icon-warn",
+          attr: { style: `margin-left: 10px; color: ${isRepo ? "var(--text-success)" : "var(--text-warning)"};` }
+        });
+        statusIcon.setText(isRepo ? "\u2713 Detected" : "\u26A0 Missing");
+        new import_obsidian27.Setting(container).setName("Project root path").setDesc("Direct path being checked for Git").addText((text) => {
+          text.setValue(projectRoot).setDisabled(true);
+        });
+        if (remoteUrl) {
+          new import_obsidian27.Setting(container).setName("Remote URL").setDesc("Connected GitHub repository").addText((text) => {
+            text.setValue(remoteUrl).setDisabled(true);
+          });
+        }
+      } catch (error) {
+        console.warn("SettingsTab: Failed to check Git status:", error);
+      }
+    }
+    if (!isFullyConfigured) {
+      new import_obsidian27.Setting(container).setName("Deployment and Git setup").setDesc("Choose a deployment platform and connect to GitHub.").addButton((button) => {
+        button.setButtonText("Setup...").onClick(() => {
+          const modal = new SetupWizardModal(this.app, { currentStep: 7 }, this.plugin);
+          modal.open();
+        });
+      });
+    }
+  }
+  // Async builder for the declarative project optimization group. Mirrors the
+  // optimization section of render(): Git ignore, Vite ignore, optional git
+  // hooks neutralization, and optional GitHub automation removal.
+  async renderProjectOptimization(setting) {
+    var _a;
+    const container = (_a = setting.settingEl.parentElement) != null ? _a : setting.settingEl;
+    setting.settingEl.remove();
+    if (!this.plugin.settings.projectRoot) {
+      new import_obsidian27.Setting(container).setName("Project not detected").setDesc("Complete the setup wizard first to detect your Astro project before configuring optimizations.");
+      return;
+    }
+    const wizardState = {
+      ...this.plugin.settings,
+      currentStep: 0,
+      projectDetection: {
+        projectRoot: this.plugin.settings.projectRoot,
+        configFilePath: this.plugin.settings.configFilePath,
+        vaultLocation: "content"
+      }
+    };
+    this.optimizer = new ProjectOptimizer(this.app, wizardState);
+    const status = await this.optimizer.getStatus();
+    this.gitSetting = new import_obsidian27.Setting(container);
+    this.updateGitSetting(status.gitIgnoreStatus);
+    this.viteSetting = new import_obsidian27.Setting(container);
+    this.updateViteSetting(status.viteIgnoreStatus);
+    if (status.gitHooksStatus !== "none") {
+      this.hooksSetting = new import_obsidian27.Setting(container);
+      this.updateHooksSetting(status.gitHooksStatus);
+    }
+    if (status.githubAutomationStatus !== "none") {
+      this.workflowsSetting = new import_obsidian27.Setting(container);
+      this.updateWorkflowsSetting(status.githubAutomationStatus, status.githubAutomationFiles);
+    }
   }
   display() {
     const { containerEl } = this;

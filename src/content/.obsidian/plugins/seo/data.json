@@ -39,63 +39,26 @@
       "file": "posts/vault-cms-guide.md",
       "displayName": "Vault CMS Guide",
       "checks": {
-        "titleLength": [
-          {
-            "passed": true,
-            "message": "Good title length: 31 characters (Vault CMS Guide + \" - Astro Modular\")",
-            "severity": "info"
-          }
-        ],
+        "titleLength": [],
         "metaDescription": [
           {
             "passed": false,
-            "message": "Description too short: 62 characters",
-            "suggestion": "Aim for 120-160 characters",
+            "message": "No properties found",
+            "suggestion": "Add properties with description property",
             "severity": "warning"
           }
         ],
-        "titleH1Uniqueness": [
-          {
-            "passed": true,
-            "message": "Meta title and H1 are unique (prefix/suffix configured)",
-            "severity": "info"
-          }
-        ],
-        "keywordInTitle": [
-          {
-            "passed": true,
-            "message": "Keyword found in title",
-            "severity": "info"
-          }
-        ],
-        "keywordInDescription": [
-          {
-            "passed": false,
-            "message": "Keyword not found in description",
-            "suggestion": "Include your target keyword in the description",
-            "severity": "warning"
-          }
-        ],
-        "keywordInHeadings": [
-          {
-            "passed": true,
-            "message": "Keyword found in H1",
-            "severity": "info"
-          }
-        ],
-        "keywordInSlug": [
-          {
-            "passed": true,
-            "message": "Target keyword \"vault cms\" found in slug",
-            "severity": "info"
-          }
-        ],
+        "titleH1Uniqueness": [],
+        "keywordInTitle": [],
+        "keywordInDescription": [],
+        "keywordInHeadings": [],
+        "keywordInSlug": [],
         "slugFormat": [],
         "keywordDensity": [
           {
             "passed": false,
-            "message": "Keyword density too low: 0.1%",
-            "suggestion": "Aim for at least 1% density",
+            "message": "No properties found",
+            "suggestion": "Add properties with keyword property",
             "severity": "warning"
           }
         ],
@@ -109,7 +72,7 @@
         "contentLength": [
           {
             "passed": true,
-            "message": "Good content length: 2312 words",
+            "message": "Good content length: 2377 words",
             "severity": "info"
           }
         ],
@@ -161,7 +124,7 @@
             "position": {
               "line": 47,
               "searchText": "https://github.com/davidvkimball/obsidian-oxygen",
-              "context": "## Theme\n\nFor out-of-the-box customization, [Oxygen](https://github.com/davidvkimball/obsidian-oxygen) theme is used, based on the [Minimal theme system](https://minimal.guide/home). It uses a slick color scheme that's highly customizable. \n\nThe [Oxygen Theme Settings](https://github.com/davidvkimball/obsidian-oxygen-settings) plugin is also installed by default, giving you complete control over your experience. You can even define your own color scheme presets. More on that [below](vault-cms-guide.md#Oxygen%20Theme%20Settings%20and%20Zen%20Mode)."
+              "context": "## Theme\r\n\r\nFor out-of-the-box customization, [Oxygen](https://github.com/davidvkimball/obsidian-oxygen) theme is used, based on the [Minimal theme system](https://minimal.guide/home). It uses a slick color scheme that's highly customizable. \r\n\r\nThe [Oxygen Theme Settings](https://github.com/davidvkimball/obsidian-oxygen-settings) plugin is also installed by default, giving you complete control over your experience. You can even define your own color scheme presets. More on that [below](vault-cms-guide.md#Oxygen%20Theme%20Settings%20and%20Zen%20Mode).\r"
             }
           },
           {
@@ -172,7 +135,7 @@
             "position": {
               "line": 47,
               "searchText": "https://minimal.guide/home",
-              "context": "## Theme\n\nFor out-of-the-box customization, [Oxygen](https://github.com/davidvkimball/obsidian-oxygen) theme is used, based on the [Minimal theme system](https://minimal.guide/home). It uses a slick color scheme that's highly customizable. \n\nThe [Oxygen Theme Settings](https://github.com/davidvkimball/obsidian-oxygen-settings) plugin is also installed by default, giving you complete control over your experience. You can even define your own color scheme presets. More on that [below](vault-cms-guide.md#Oxygen%20Theme%20Settings%20and%20Zen%20Mode)."
+              "context": "## Theme\r\n\r\nFor out-of-the-box customization, [Oxygen](https://github.com/davidvkimball/obsidian-oxygen) theme is used, based on the [Minimal theme system](https://minimal.guide/home). It uses a slick color scheme that's highly customizable. \r\n\r\nThe [Oxygen Theme Settings](https://github.com/davidvkimball/obsidian-oxygen-settings) plugin is also installed by default, giving you complete control over your experience. You can even define your own color scheme presets. More on that [below](vault-cms-guide.md#Oxygen%20Theme%20Settings%20and%20Zen%20Mode).\r"
             }
           },
           {
@@ -183,7 +146,7 @@
             "position": {
               "line": 49,
               "searchText": "https://github.com/davidvkimball/obsidian-oxygen-settings",
-              "context": "For out-of-the-box customization, [Oxygen](https://github.com/davidvkimball/obsidian-oxygen) theme is used, based on the [Minimal theme system](https://minimal.guide/home). It uses a slick color scheme that's highly customizable. \n\nThe [Oxygen Theme Settings](https://github.com/davidvkimball/obsidian-oxygen-settings) plugin is also installed by default, giving you complete control over your experience. You can even define your own color scheme presets. More on that [below](vault-cms-guide.md#Oxygen%20Theme%20Settings%20and%20Zen%20Mode).\n\n## Important Hotkeys"
+              "context": "For out-of-the-box customization, [Oxygen](https://github.com/davidvkimball/obsidian-oxygen) theme is used, based on the [Minimal theme system](https://minimal.guide/home). It uses a slick color scheme that's highly customizable. \r\n\r\nThe [Oxygen Theme Settings](https://github.com/davidvkimball/obsidian-oxygen-settings) plugin is also installed by default, giving you complete control over your experience. You can even define your own color scheme presets. More on that [below](vault-cms-guide.md#Oxygen%20Theme%20Settings%20and%20Zen%20Mode).\r\n\r\n## Important Hotkeys\r"
             }
           },
           {
@@ -194,7 +157,7 @@
             "position": {
               "line": 146,
               "searchText": "https://github.com/kepano/obsidian-minimal",
-              "context": "The Oxygen Theme Settings plugin helps you customize your experience if you use the provided Oxygen Obsidian theme and can help you focus on writing.\n\nYou'll notice a wide variety of color scheme options, most of which were included in the [Minimal](https://github.com/kepano/obsidian-minimal) theme upon which Oxygen is based.\n\nShould you desire to hide any of the panels, you can use `CTRL + ALT Z` for the left side panel, `CTRL + ALT + X` for the right side panel, or `CTRL + ALT + S` for the tab bar. Pressing it again will reveal it again. "
+              "context": "The Oxygen Theme Settings plugin helps you customize your experience if you use the provided Oxygen Obsidian theme and can help you focus on writing.\r\n\r\nYou'll notice a wide variety of color scheme options, most of which were included in the [Minimal](https://github.com/kepano/obsidian-minimal) theme upon which Oxygen is based.\r\n\r\nShould you desire to hide any of the panels, you can use `CTRL + ALT Z` for the left side panel, `CTRL + ALT + X` for the right side panel, or `CTRL + ALT + S` for the tab bar. Pressing it again will reveal it again. \r"
             }
           },
           {
@@ -205,7 +168,7 @@
             "position": {
               "line": 156,
               "searchText": "https://github.com/mgmeyers/obsidian-style-settings",
-              "context": "Zen Mode offers another quick option to focus on your writing. Pressing `CTRL + SHIFT + Z` will enter Zen mode. When activated, all elements removed except for your content. Use the keystroke again to exit. \n\nIf you like, you can install the [Style Settings](https://github.com/mgmeyers/obsidian-style-settings) plugin for even more control over your experience.\n\n### Git"
+              "context": "Zen Mode offers another quick option to focus on your writing. Pressing `CTRL + SHIFT + Z` will enter Zen mode. When activated, all elements removed except for your content. Use the keystroke again to exit. \r\n\r\nIf you like, you can install the [Style Settings](https://github.com/mgmeyers/obsidian-style-settings) plugin for even more control over your experience.\r\n\r\n### Git\r"
             }
           },
           {
@@ -216,7 +179,7 @@
             "position": {
               "line": 160,
               "searchText": "https://obsidian.md/plugins?id=obsidian-git",
-              "context": "### Git\n\nWith the [Git](https://obsidian.md/plugins?id=obsidian-git) plugin, you can easily publish to your Astro blog without leaving Obsidian. Simply configure with git to enable it. By default, you'll see your current git status and count of files changed (if any) in the status bar on the bottom right.\n\nTo publish, you can use `CTRL + SHIFT + S` or click the \"commit-and-sync\" button on the status bar. Your changes will be committed and pushed to your remote repository automatically. By default it's pinned to the far right of the status bar. You can also re-arrange status bar items to your liking using UI Tweaker."
+              "context": "### Git\r\n\r\nWith the [Git](https://obsidian.md/plugins?id=obsidian-git) plugin, you can easily publish to your Astro blog without leaving Obsidian. Simply configure with git to enable it. By default, you'll see your current git status and count of files changed (if any) in the status bar on the bottom right.\r\n\r\nTo publish, you can use `CTRL + SHIFT + S` or click the \"commit-and-sync\" button on the status bar. Your changes will be committed and pushed to your remote repository automatically. By default it's pinned to the far right of the status bar. You can also re-arrange status bar items to your liking using UI Tweaker.\r"
             }
           },
           {
@@ -227,7 +190,7 @@
             "position": {
               "line": 218,
               "searchText": "https://github.com/ViscousPot/GitSync",
-              "context": "### Disabling the Git Plugin\n\nIt's recommended to disable the Git plugin on mobile and use something like [Git Sync](https://github.com/ViscousPot/GitSync) for iOS and Android (or [MGit](https://github.com/maks/MGit) just for Android) instead. The Git plugin is notoriously buggy on mobile so it's better to use something else. \n\nHere's how to disable it: "
+              "context": "### Disabling the Git Plugin\r\n\r\nIt's recommended to disable the Git plugin on mobile and use something like [Git Sync](https://github.com/ViscousPot/GitSync) for iOS and Android (or [MGit](https://github.com/maks/MGit) just for Android) instead. The Git plugin is notoriously buggy on mobile so it's better to use something else. \r\n\r\nHere's how to disable it: \r"
             }
           },
           {
@@ -238,21 +201,21 @@
             "position": {
               "line": 218,
               "searchText": "https://github.com/maks/MGit",
-              "context": "### Disabling the Git Plugin\n\nIt's recommended to disable the Git plugin on mobile and use something like [Git Sync](https://github.com/ViscousPot/GitSync) for iOS and Android (or [MGit](https://github.com/maks/MGit) just for Android) instead. The Git plugin is notoriously buggy on mobile so it's better to use something else. \n\nHere's how to disable it: "
+              "context": "### Disabling the Git Plugin\r\n\r\nIt's recommended to disable the Git plugin on mobile and use something like [Git Sync](https://github.com/ViscousPot/GitSync) for iOS and Android (or [MGit](https://github.com/maks/MGit) just for Android) instead. The Git plugin is notoriously buggy on mobile so it's better to use something else. \r\n\r\nHere's how to disable it: \r"
             }
           }
         ],
         "readingLevel": [
           {
             "passed": true,
-            "message": "Good reading level: 8.7 (Easy to read)",
+            "message": "Good reading level: 8.8 (Easy to read)",
             "severity": "info"
           }
         ]
       },
-      "overallScore": 81,
+      "overallScore": 75,
       "issuesCount": 0,
-      "warningsCount": 3,
+      "warningsCount": 2,
       "noticesCount": 8
     },
     {
@@ -867,6 +830,6 @@
       "noticesCount": 9
     }
   ],
-  "lastScanTimestamp": 1778733113377,
+  "lastScanTimestamp": 1780008102575,
   "showNotices": true
 }

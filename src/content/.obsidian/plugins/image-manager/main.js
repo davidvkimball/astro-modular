@@ -260,6 +260,642 @@ var ImageManagerSettingTab = class extends import_obsidian.PluginSettingTab {
     this.icon = "lucide-image-down";
     this.plugin = plugin;
   }
+  // 1.13.0+: framework calls this and skips display().
+  // Pre-1.13.0: this method is not invoked; display() below runs as before.
+  // See https://docs.obsidian.md/plugins/guides/migrate-declarative-settings
+  getSettingDefinitions() {
+    const currentDevice = this.getCurrentDevice();
+    const defaultDeviceSettings = DEFAULT_BANNER_DEVICE_SETTINGS[currentDevice];
+    return [
+      // General settings without heading (first section doesn't need a heading)
+      {
+        type: "group",
+        items: [
+          {
+            name: "Image name template",
+            desc: "Template for generated image names. Variables: {{fileName}}, {{dirName}}, {{DATE:YYYY-MM-DD}}, {{TIME:HH-mm-ss}}",
+            control: { type: "text", key: "imageNameTemplate", placeholder: "{{fileName}}" }
+          },
+          {
+            name: "Attachment location",
+            desc: "Where to save inserted images",
+            control: {
+              type: "dropdown",
+              key: "attachmentLocation",
+              options: {
+                ["obsidian" /* ObsidianDefault */]: "Use Obsidian's settings",
+                ["same" /* SameFolder */]: "Same folder as note",
+                ["subfolder" /* Subfolder */]: "Subfolder (configure below)",
+                ["vault" /* VaultFolder */]: "Vault folder (configure below)"
+              }
+            }
+          },
+          {
+            name: "Custom attachment path",
+            desc: 'Path for attachments. Use "./" for relative to note, or "/" for vault root.',
+            // Shown only when not using the Obsidian default or same-folder location.
+            visible: () => this.plugin.settings.attachmentLocation !== "obsidian" /* ObsidianDefault */ && this.plugin.settings.attachmentLocation !== "same" /* SameFolder */,
+            control: { type: "text", key: "customAttachmentPath", placeholder: "./assets" }
+          }
+        ]
+      },
+      {
+        type: "group",
+        heading: "Image services",
+        items: [
+          {
+            name: "Default provider",
+            desc: "Default image provider for search",
+            control: {
+              type: "dropdown",
+              key: "defaultProvider",
+              options: {
+                ["unsplash" /* Unsplash */]: "Unsplash",
+                ["pexels" /* Pexels */]: "Pexels",
+                ["pixabay" /* Pixabay */]: "Pixabay",
+                ["local" /* Local */]: "Local files"
+              }
+            }
+          },
+          {
+            name: "Default orientation",
+            desc: "Filter images by orientation",
+            control: {
+              type: "dropdown",
+              key: "defaultOrientation",
+              options: {
+                ["any" /* Any */]: "Any",
+                ["landscape" /* Landscape */]: "Landscape",
+                ["portrait" /* Portrait */]: "Portrait",
+                ["square" /* Square */]: "Square"
+              }
+            }
+          },
+          {
+            name: "Default image size",
+            desc: "Preferred size when downloading images",
+            control: {
+              type: "dropdown",
+              key: "defaultImageSize",
+              options: {
+                ["original" /* Original */]: "Original",
+                ["large" /* Large */]: "Large",
+                ["medium" /* Medium */]: "Medium",
+                ["small" /* Small */]: "Small"
+              }
+            }
+          },
+          {
+            name: "Unsplash proxy server",
+            desc: "Optional proxy server (leave empty to use built-in)",
+            control: { type: "text", key: "unsplashProxyServer", placeholder: "https://your-proxy.com/" }
+          },
+          {
+            name: "Pexels API key",
+            // Version-conditional control: SecretComponent on 1.11.4+, plaintext text otherwise.
+            render: (setting) => {
+              if ((0, import_obsidian.requireApiVersion)("1.11.4")) {
+                setting.setDesc("Choose a secret that contains your Pexels API key.").addComponent((el) => {
+                  const obsidian = require("obsidian");
+                  const SecretComponent = obsidian.SecretComponent;
+                  const component = new SecretComponent(this.app, el);
+                  component.setValue(this.plugin.settings.pexelsApiKeySecretId);
+                  component.onChange((value) => {
+                    void (async () => {
+                      this.plugin.settings.pexelsApiKeySecretId = value;
+                      await this.plugin.saveSettings();
+                    })();
+                  });
+                  return component;
+                });
+              } else {
+                setting.setDesc("Get your API key from https://www.pexels.com/api/new/").addText((text) => {
+                  text.setPlaceholder("Pexels API key").setValue(this.plugin.settings.pexelsApiKey).onChange(async (value) => {
+                    this.plugin.settings.pexelsApiKey = value;
+                    await this.plugin.saveSettings();
+                  });
+                });
+              }
+            }
+          },
+          {
+            name: "Pixabay API key",
+            // Version-conditional control: SecretComponent on 1.11.4+, plaintext text otherwise.
+            render: (setting) => {
+              if ((0, import_obsidian.requireApiVersion)("1.11.4")) {
+                setting.setDesc("Choose a secret that contains your Pixabay API key.").addComponent((el) => {
+                  const obsidian = require("obsidian");
+                  const SecretComponent = obsidian.SecretComponent;
+                  const component = new SecretComponent(this.app, el);
+                  component.setValue(this.plugin.settings.pixabayApiKeySecretId);
+                  component.onChange((value) => {
+                    void (async () => {
+                      this.plugin.settings.pixabayApiKeySecretId = value;
+                      await this.plugin.saveSettings();
+                    })();
+                  });
+                  return component;
+                });
+              } else {
+                setting.setDesc("Get your API key from https://pixabay.com/api/docs/").addText((text) => {
+                  text.setPlaceholder("Pixabay API key").setValue(this.plugin.settings.pixabayApiKey).onChange(async (value) => {
+                    this.plugin.settings.pixabayApiKey = value;
+                    await this.plugin.saveSettings();
+                  });
+                });
+              }
+            }
+          },
+          {
+            name: "Insert size",
+            desc: 'Set the size of the image when inserting. Format could be only the width "200" or the width and height "200x100". Leave empty for no size.',
+            control: { type: "text", key: "insertSize", placeholder: "200 or 200x100" }
+          },
+          {
+            name: "Insert referral",
+            desc: "Insert the reference text",
+            control: { type: "toggle", key: "insertReferral" }
+          },
+          {
+            name: "Insert backlink",
+            desc: "Insert a backlink in front of the reference text",
+            control: { type: "toggle", key: "insertBackLink" }
+          }
+        ]
+      },
+      {
+        type: "group",
+        heading: "Property insertion",
+        items: [
+          {
+            name: "Enable paste into properties",
+            desc: "Allow pasting images directly into properties",
+            control: { type: "toggle", key: "enablePropertyPaste" }
+          },
+          {
+            name: "Property link format",
+            desc: "How to format the image link in properties",
+            control: {
+              type: "dropdown",
+              key: "propertyLinkFormat",
+              options: {
+                ["obsidian" /* ObsidianDefault */]: "Use Obsidian's settings",
+                ["path" /* Path */]: "Plain path (path/to/image.jpg)",
+                ["relative" /* RelativePath */]: "Relative path (./image.jpg)",
+                ["wikilink" /* Wikilink */]: "Wikilink ([[path/to/image.jpg]])",
+                ["markdown" /* Markdown */]: "Markdown (![](path/to/image.jpg))",
+                ["custom" /* Custom */]: "Custom format"
+              }
+            }
+          },
+          {
+            name: "Custom format template",
+            desc: "Use {image-url} as placeholder for the image path",
+            // Shown only when the custom property link format is selected.
+            visible: () => this.plugin.settings.propertyLinkFormat === "custom" /* Custom */,
+            control: { type: "text", key: "customPropertyLinkFormat", placeholder: "{image-url}" }
+          },
+          {
+            name: "Default property name",
+            desc: "Default property name when inserting to properties via command",
+            control: { type: "text", key: "defaultPropertyName", placeholder: "Banner" }
+          },
+          {
+            name: "Default icon property name",
+            desc: "Default property name when inserting to icon property via command",
+            control: { type: "text", key: "defaultIconPropertyName", placeholder: "Icon" }
+          },
+          {
+            name: "Alt text property name",
+            desc: 'Property name to use for image alt text (description) when inserting to properties. If "Descriptive images" is enabled, this will be filled with the description you provide. If disabled, it will be filled with the search term for external images.',
+            control: { type: "text", key: "altTextProperty", placeholder: "alt" }
+          }
+        ]
+      },
+      {
+        type: "group",
+        heading: "Remote image conversion",
+        items: [
+          {
+            name: "Auto-convert remote images",
+            desc: "Automatically download and replace remote image urls with local files",
+            control: { type: "toggle", key: "autoConvertRemoteImages" }
+          },
+          {
+            name: "Convert on note open",
+            desc: "Process remote images when opening a note",
+            // Shown only when auto-conversion is enabled.
+            visible: () => this.plugin.settings.autoConvertRemoteImages,
+            control: { type: "toggle", key: "convertOnNoteOpen" }
+          },
+          {
+            name: "Convert on note save",
+            desc: "Process remote images when saving a note",
+            // Shown only when auto-conversion is enabled.
+            visible: () => this.plugin.settings.autoConvertRemoteImages,
+            control: { type: "toggle", key: "convertOnNoteSave" }
+          }
+        ]
+      },
+      {
+        type: "group",
+        heading: "Rename options",
+        items: [
+          {
+            name: "Show image rename dialog automatically",
+            desc: "Handle and rename images when they are added to the vault via paste or drag and drop",
+            control: { type: "toggle", key: "showRenameDialog" }
+          },
+          {
+            name: "Rename on paste",
+            desc: "Handle and rename images when pasting into the editor",
+            // Shown only when the rename dialog is enabled.
+            visible: () => this.plugin.settings.showRenameDialog,
+            control: { type: "toggle", key: "enableRenameOnPaste" }
+          },
+          {
+            name: "Rename on drag and drop",
+            desc: "Handle and rename images when dropping into the editor",
+            // Shown only when the rename dialog is enabled.
+            visible: () => this.plugin.settings.showRenameDialog,
+            control: { type: "toggle", key: "enableRenameOnDrop" }
+          },
+          {
+            name: "Process background file changes",
+            desc: "Automatically convert and rename remote images when files are changed in the background (by Git or other plugins). Warning: Turning this on may cause the rename modal to appear for images you've already processed on other devices during a sync.",
+            control: { type: "toggle", key: "processBackgroundChanges" }
+          },
+          {
+            name: "Descriptive images",
+            desc: "Ask for image description, use as display text and kebab-case for file name (applies to note body insertions only, not properties)",
+            control: { type: "toggle", key: "enableDescriptiveImages" }
+          },
+          {
+            name: "Auto rename",
+            desc: "Automatically rename without showing dialog (uses template)",
+            control: { type: "toggle", key: "autoRename" }
+          },
+          {
+            name: "Duplicate number delimiter",
+            desc: 'Character(s) between name and number for duplicates (e.g., "-" gives "image-1")',
+            control: { type: "text", key: "dupNumberDelimiter", placeholder: "-" }
+          },
+          {
+            name: "Duplicate number at start",
+            desc: 'Put the duplicate number at the start ("1-image" instead of "image-1")',
+            control: { type: "toggle", key: "dupNumberAtStart" }
+          },
+          {
+            name: "Disable rename notice",
+            desc: "Do not show a notice after renaming an image",
+            control: { type: "toggle", key: "disableRenameNotice" }
+          }
+        ]
+      },
+      {
+        type: "group",
+        heading: "Banner images",
+        items: [
+          // Device-specific enable toggle. Banner settings are nested under
+          // settings.banner[device] / settings.banner.properties, so they bind
+          // imperatively via render rather than flat control keys. Toggling this
+          // shows or hides the rows below, so refresh the DOM state to re-evaluate
+          // their visible predicates.
+          {
+            name: "Show banner",
+            desc: `Enable or disable banners on your ${currentDevice} device`,
+            render: (setting) => {
+              setting.addToggle((toggle) => {
+                toggle.setValue(this.plugin.settings.banner[currentDevice].enabled).onChange(async (value) => {
+                  this.plugin.settings.banner[currentDevice].enabled = value;
+                  await this.plugin.saveSettings();
+                  this.refreshDomStateIfAvailable();
+                });
+              });
+            }
+          },
+          {
+            name: "Height",
+            desc: `Height of the banner on your ${currentDevice} device (in pixels)`,
+            visible: () => this.plugin.settings.banner[currentDevice].enabled,
+            render: (setting) => {
+              setting.addText((text) => {
+                text.setPlaceholder(String(defaultDeviceSettings.height)).setValue(String(this.plugin.settings.banner[currentDevice].height)).onChange(async (value) => {
+                  const num = parseInt(value, 10);
+                  if (!isNaN(num) && num > 0) {
+                    this.plugin.settings.banner[currentDevice].height = num;
+                    await this.plugin.saveSettings();
+                  }
+                });
+              });
+            }
+          },
+          {
+            name: "Padding",
+            desc: "Padding of the banner from the edges of the note (in pixels)",
+            visible: () => this.plugin.settings.banner[currentDevice].enabled,
+            render: (setting) => {
+              setting.addText((text) => {
+                text.setPlaceholder(String(defaultDeviceSettings.padding)).setValue(String(this.plugin.settings.banner[currentDevice].padding)).onChange(async (value) => {
+                  const num = parseInt(value, 10);
+                  if (!isNaN(num) && num >= 0) {
+                    this.plugin.settings.banner[currentDevice].padding = num;
+                    await this.plugin.saveSettings();
+                  }
+                });
+              });
+            }
+          },
+          {
+            name: "Note offset",
+            desc: "Move the position of the note content (in pixels)",
+            visible: () => this.plugin.settings.banner[currentDevice].enabled,
+            render: (setting) => {
+              setting.addText((text) => {
+                text.setPlaceholder(String(defaultDeviceSettings.noteOffset)).setValue(String(this.plugin.settings.banner[currentDevice].noteOffset)).onChange(async (value) => {
+                  const num = parseInt(value, 10);
+                  if (!isNaN(num)) {
+                    this.plugin.settings.banner[currentDevice].noteOffset = num;
+                    await this.plugin.saveSettings();
+                  }
+                });
+              });
+            }
+          },
+          {
+            name: "View offset",
+            desc: "Move the position of the view content (in pixels)",
+            visible: () => this.plugin.settings.banner[currentDevice].enabled,
+            render: (setting) => {
+              setting.addText((text) => {
+                text.setPlaceholder(String(defaultDeviceSettings.viewOffset)).setValue(String(this.plugin.settings.banner[currentDevice].viewOffset)).onChange(async (value) => {
+                  const num = parseInt(value, 10);
+                  if (!isNaN(num)) {
+                    this.plugin.settings.banner[currentDevice].viewOffset = num;
+                    await this.plugin.saveSettings();
+                  }
+                });
+              });
+            }
+          },
+          {
+            name: "Fade",
+            desc: "Fade the image out towards the content",
+            visible: () => this.plugin.settings.banner[currentDevice].enabled,
+            render: (setting) => {
+              setting.addToggle((toggle) => {
+                toggle.setValue(this.plugin.settings.banner[currentDevice].fade).onChange(async (value) => {
+                  this.plugin.settings.banner[currentDevice].fade = value;
+                  await this.plugin.saveSettings();
+                });
+              });
+            }
+          },
+          {
+            name: "Rounded corners",
+            desc: "Enable rounded corners for the banner",
+            visible: () => this.plugin.settings.banner[currentDevice].enabled,
+            render: (setting) => {
+              setting.addToggle((toggle) => {
+                toggle.setValue(this.plugin.settings.banner[currentDevice].bannerRadiusEnabled).onChange(async (value) => {
+                  this.plugin.settings.banner[currentDevice].bannerRadiusEnabled = value;
+                  await this.plugin.saveSettings();
+                });
+              });
+            }
+          },
+          {
+            name: "Animation",
+            desc: "Enable banner animation when opening files",
+            visible: () => this.plugin.settings.banner[currentDevice].enabled,
+            render: (setting) => {
+              setting.addToggle((toggle) => {
+                toggle.setValue(this.plugin.settings.banner[currentDevice].animation).onChange(async (value) => {
+                  this.plugin.settings.banner[currentDevice].animation = value;
+                  await this.plugin.saveSettings();
+                });
+              });
+            }
+          },
+          {
+            name: "Banner property",
+            desc: "Name of the banner property this plugin will look for in the properties",
+            visible: () => this.plugin.settings.banner[currentDevice].enabled,
+            render: (setting) => {
+              setting.addText((text) => {
+                text.setPlaceholder("Banner").setValue(this.plugin.settings.banner.properties.imageProperty).onChange(async (value) => {
+                  this.plugin.settings.banner.properties.imageProperty = value || "banner";
+                  await this.plugin.saveSettings();
+                });
+              });
+            }
+          },
+          {
+            name: "Icon property",
+            desc: "Name of the icon property this plugin will look for in the properties",
+            visible: () => this.plugin.settings.banner[currentDevice].enabled,
+            render: (setting) => {
+              setting.addText((text) => {
+                text.setPlaceholder("Icon").setValue(this.plugin.settings.banner.properties.iconProperty).onChange(async (value) => {
+                  this.plugin.settings.banner.properties.iconProperty = value || "icon";
+                  await this.plugin.saveSettings();
+                });
+              });
+            }
+          },
+          {
+            name: "Enable per-note banner hiding",
+            desc: "Allow disabling banners on a per-note basis using a properties field",
+            visible: () => this.plugin.settings.banner[currentDevice].enabled,
+            // Toggling this shows or hides the hide-property row below, so refresh
+            // the DOM state to re-evaluate its visible predicate.
+            render: (setting) => {
+              setting.addToggle((toggle) => {
+                toggle.setValue(this.plugin.settings.banner.properties.hidePropertyEnabled).onChange(async (value) => {
+                  this.plugin.settings.banner.properties.hidePropertyEnabled = value;
+                  await this.plugin.saveSettings();
+                  this.refreshDomStateIfAvailable();
+                });
+              });
+            }
+          },
+          {
+            name: "Hide banner property",
+            desc: "Name of the property that, when set to true, will hide the banner for that note",
+            visible: () => this.plugin.settings.banner[currentDevice].enabled && this.plugin.settings.banner.properties.hidePropertyEnabled,
+            render: (setting) => {
+              setting.addText((text) => {
+                text.setPlaceholder("hideBanner").setValue(this.plugin.settings.banner.properties.hideProperty).onChange(async (value) => {
+                  this.plugin.settings.banner.properties.hideProperty = value || "";
+                  await this.plugin.saveSettings();
+                });
+              });
+            }
+          },
+          {
+            name: "Show icon",
+            desc: "Enable or disable the icon",
+            visible: () => this.plugin.settings.banner[currentDevice].enabled,
+            // Toggling this shows or hides the icon rows below, so refresh the DOM
+            // state to re-evaluate their visible predicates.
+            render: (setting) => {
+              setting.addToggle((toggle) => {
+                toggle.setValue(this.plugin.settings.banner[currentDevice].iconEnabled).onChange(async (value) => {
+                  this.plugin.settings.banner[currentDevice].iconEnabled = value;
+                  await this.plugin.saveSettings();
+                  this.refreshDomStateIfAvailable();
+                });
+              });
+            }
+          },
+          {
+            name: "Icon size",
+            desc: "Size of the icon (in pixels)",
+            visible: () => this.plugin.settings.banner[currentDevice].enabled && this.plugin.settings.banner[currentDevice].iconEnabled,
+            render: (setting) => {
+              setting.addText((text) => {
+                text.setPlaceholder(String(defaultDeviceSettings.iconSize)).setValue(String(this.plugin.settings.banner[currentDevice].iconSize)).onChange(async (value) => {
+                  const num = parseInt(value, 10);
+                  if (!isNaN(num) && num > 0) {
+                    this.plugin.settings.banner[currentDevice].iconSize = num;
+                    await this.plugin.saveSettings();
+                  }
+                });
+              });
+            }
+          },
+          {
+            name: "Icon background",
+            desc: "Enable or disable the icon background",
+            visible: () => this.plugin.settings.banner[currentDevice].enabled && this.plugin.settings.banner[currentDevice].iconEnabled,
+            render: (setting) => {
+              setting.addToggle((toggle) => {
+                toggle.setValue(this.plugin.settings.banner[currentDevice].iconBackground).onChange(async (value) => {
+                  this.plugin.settings.banner[currentDevice].iconBackground = value;
+                  await this.plugin.saveSettings();
+                });
+              });
+            }
+          },
+          {
+            name: "Icon frame",
+            desc: "Show the border/background frame around the icon (disable to display just the icon graphic)",
+            visible: () => this.plugin.settings.banner[currentDevice].enabled && this.plugin.settings.banner[currentDevice].iconEnabled,
+            render: (setting) => {
+              setting.addToggle((toggle) => {
+                toggle.setValue(this.plugin.settings.banner[currentDevice].iconFrame).onChange(async (value) => {
+                  this.plugin.settings.banner[currentDevice].iconFrame = value;
+                  await this.plugin.saveSettings();
+                });
+              });
+            }
+          },
+          {
+            name: "Icon border size",
+            desc: "Size of the icon border (in pixels)",
+            visible: () => this.plugin.settings.banner[currentDevice].enabled && this.plugin.settings.banner[currentDevice].iconEnabled,
+            render: (setting) => {
+              setting.addText((text) => {
+                text.setPlaceholder(String(defaultDeviceSettings.iconBorder)).setValue(String(this.plugin.settings.banner[currentDevice].iconBorder)).onChange(async (value) => {
+                  const num = parseInt(value, 10);
+                  if (!isNaN(num) && num >= 0) {
+                    this.plugin.settings.banner[currentDevice].iconBorder = num;
+                    await this.plugin.saveSettings();
+                  }
+                });
+              });
+            }
+          },
+          {
+            name: "Icon border radius",
+            desc: "Size of the icon border radius (in pixels)",
+            visible: () => this.plugin.settings.banner[currentDevice].enabled && this.plugin.settings.banner[currentDevice].iconEnabled,
+            render: (setting) => {
+              setting.addText((text) => {
+                text.setPlaceholder(String(defaultDeviceSettings.iconRadius)).setValue(String(this.plugin.settings.banner[currentDevice].iconRadius)).onChange(async (value) => {
+                  const num = parseInt(value, 10);
+                  if (!isNaN(num) && num >= 0) {
+                    this.plugin.settings.banner[currentDevice].iconRadius = num;
+                    await this.plugin.saveSettings();
+                  }
+                });
+              });
+            }
+          },
+          {
+            name: "Icon alignment - horizontal",
+            desc: "Horizontal alignment of the icon",
+            visible: () => this.plugin.settings.banner[currentDevice].enabled && this.plugin.settings.banner[currentDevice].iconEnabled,
+            render: (setting) => {
+              setting.addDropdown((dropdown) => {
+                dropdown.addOption("flex-start", "Left").addOption("center", "Center").addOption("flex-end", "Right").setValue(this.plugin.settings.banner[currentDevice].iconAlignmentH).onChange(async (value) => {
+                  this.plugin.settings.banner[currentDevice].iconAlignmentH = value;
+                  await this.plugin.saveSettings();
+                });
+              });
+            }
+          },
+          {
+            name: "Icon alignment - vertical",
+            desc: "Vertical alignment of the icon",
+            visible: () => this.plugin.settings.banner[currentDevice].enabled && this.plugin.settings.banner[currentDevice].iconEnabled,
+            render: (setting) => {
+              setting.addDropdown((dropdown) => {
+                dropdown.addOption("flex-start", "Top").addOption("center", "Center").addOption("flex-end", "Bottom").setValue(this.plugin.settings.banner[currentDevice].iconAlignmentV).onChange(async (value) => {
+                  this.plugin.settings.banner[currentDevice].iconAlignmentV = value;
+                  await this.plugin.saveSettings();
+                });
+              });
+            }
+          }
+        ]
+      },
+      {
+        type: "group",
+        heading: "Advanced",
+        items: [
+          {
+            name: "Supported file extensions",
+            desc: "File extensions to process (comma-separated)",
+            // Stored as a string array but edited as a comma-separated string with
+            // normalization and an empty-input fallback, so this binds imperatively.
+            render: (setting) => {
+              setting.addText((text) => {
+                const currentValue = this.plugin.settings.supportedExtensions.length > 0 ? this.plugin.settings.supportedExtensions.join(", ") : "";
+                text.setPlaceholder("File extensions").setValue(currentValue).onChange(async (value) => {
+                  const extensions = value.split(",").map((ext) => ext.trim().toLowerCase()).filter((ext) => ext.length > 0);
+                  this.plugin.settings.supportedExtensions = extensions.length > 0 ? extensions : ["md"];
+                  await this.plugin.saveSettings();
+                });
+              });
+            }
+          },
+          {
+            name: "Debug mode",
+            desc: "Enable debug logging to console",
+            control: { type: "toggle", key: "debugMode" }
+          }
+        ]
+      }
+    ];
+  }
+  // Override the framework's default setControlValue (which only calls saveData)
+  // so that every change runs the plugin's saveSettings() — which also notifies
+  // all services of the settings change via the settings observable. Without this
+  // override, services would not be notified on setting change on Obsidian 1.13.0+.
+  // (On older versions this method is unused; display() already calls saveSettings()
+  // in its onChange handlers.)
+  async setControlValue(key, value) {
+    this.plugin.settings[key] = value;
+    await this.plugin.saveSettings();
+  }
+  // Re-run the visible predicates so dependent rows appear or disappear after a
+  // render callback mutates state. refreshDomState exists on Obsidian 1.13.0+,
+  // which is the only version that calls getSettingDefinitions in the first place.
+  refreshDomStateIfAvailable() {
+    const refresh = this.refreshDomState;
+    if (refresh) refresh.call(this);
+  }
   display() {
     const { containerEl } = this;
     containerEl.empty();
@@ -2961,6 +3597,14 @@ var BannerService = class {
       this.applySettings();
     });
   }
+  // The main app window's document. Obsidian 1.13.0+ opens Settings in a
+  // separate window, so the focused-window global points at the Settings
+  // window while a banner setting is being changed — writing banner CSS
+  // variables or building banner elements there would target the wrong
+  // window. Banners always live in the main window's note views.
+  get doc() {
+    return this.app.workspace.containerEl.ownerDocument;
+  }
   /**
    * Update settings reference
    */
@@ -3166,12 +3810,12 @@ var BannerService = class {
       var _a;
       let element = container.querySelector(`.${CSS_CLASSES.Main}`);
       if (!element) {
-        element = activeDocument.createElement("div");
+        element = this.doc.createElement("div");
         element.classList.add(CSS_CLASSES.Main);
       }
       let content = element.querySelector(`.${CSS_CLASSES.Content}`);
       if (!content) {
-        content = activeDocument.createElement("div");
+        content = this.doc.createElement("div");
         content.classList.add(CSS_CLASSES.Content);
         element.appendChild(content);
       }
@@ -3189,7 +3833,7 @@ var BannerService = class {
           "--im-banner-url": "none"
         };
         if (imgOptions.type === "video" /* Video */) {
-          const video = activeDocument.createElement("video");
+          const video = this.doc.createElement("video");
           video.controls = false;
           video.autoplay = true;
           video.muted = true;
@@ -3220,9 +3864,9 @@ var BannerService = class {
       }
       if (deviceSettings.iconEnabled && icon) {
         if (!hasContainer) {
-          iconContainer = activeDocument.createElement("div");
+          iconContainer = this.doc.createElement("div");
           iconContainer.classList.add(CSS_CLASSES.Icon);
-          const innerDiv = activeDocument.createElement("div");
+          const innerDiv = this.doc.createElement("div");
           iconContainer.appendChild(innerDiv);
           banner.prepend(iconContainer);
         }
@@ -3334,7 +3978,7 @@ var BannerService = class {
       cssVars["--im-banner-icon-border"] = iconFrame ? `${deviceSettings.iconBorder}px` : "0px";
       cssVars["--im-banner-icon-background"] = iconFrame && deviceSettings.iconBackground ? "revert-layer" : "transparent";
     }
-    setCssProperties(activeDocument.body, cssVars);
+    setCssProperties(this.doc.body, cssVars);
     this.processAll(true);
   }
   /**
@@ -3515,7 +4159,7 @@ var BannerService = class {
    * Uses actual DOM measurement for accurate sizing
    */
   calculateFontSize(textContent, iconSize) {
-    const temp = activeDocument.createElement("span");
+    const temp = this.doc.createElement("span");
     temp.addClass("im-measure-temp");
     setCssProperties(temp, {
       position: "absolute",
@@ -3526,7 +4170,7 @@ var BannerService = class {
       left: "-9999px"
     });
     temp.textContent = textContent.toUpperCase();
-    activeDocument.body.appendChild(temp);
+    this.doc.body.appendChild(temp);
     const checkWidth = iconSize - 16;
     let fontSize = iconSize;
     setCssProperties(temp, { "font-size": `${fontSize}px` });
@@ -3534,7 +4178,7 @@ var BannerService = class {
       fontSize -= 1;
       setCssProperties(temp, { "font-size": `${fontSize}px` });
     }
-    activeDocument.body.removeChild(temp);
+    this.doc.body.removeChild(temp);
     return `${fontSize}px`;
   }
   /**
@@ -3567,7 +4211,7 @@ var BannerService = class {
    * Cleanup when plugin unloads
    */
   destroy() {
-    activeDocument.querySelectorAll(`.${CSS_CLASSES.Main}`).forEach((el) => el.remove());
+    this.doc.querySelectorAll(`.${CSS_CLASSES.Main}`).forEach((el) => el.remove());
     bannerDataStore.clear();
   }
 };

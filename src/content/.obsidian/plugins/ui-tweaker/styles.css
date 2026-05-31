@@ -1563,8 +1563,8 @@ div.ui-tweaker-status-bar-rows-wrapper {
 div.ui-tweaker-status-bar-rows-container {
 	display: flex;
 	flex-direction: column;
-	gap: 1em;
-	padding: 1em;
+	gap: 0.4em;
+	padding: 0.5em 0;
 	width: 100%;
 }
 
@@ -1906,20 +1906,55 @@ div.ui-tweaker-status-bar-row-hidden:not(div.ui-tweaker-status-bar-row-disabled)
 	font-size: 0.9em;
 }
 
+/* The reset affordance lives in its own (headingless) group. Strip Obsidian
+   1.13's grouped-card background / border / padding / margin from THAT group's
+   card so the reset floats with no box and no divider line — without touching
+   the neighbouring control groups, which keep their cards. */
+.setting-group:has(.ui-tweaker-reset-container) > .setting-items,
+.setting-items:has(.ui-tweaker-reset-container) {
+	background: none !important;
+	border: none !important;
+	box-shadow: none !important;
+	padding: 0 !important;
+	margin: 0 !important;
+}
+
+/* On the Status bar / Tab bar / Explorer pages the reset host and the list host
+   are two .setting-item children of the SAME 1.13 card, so Obsidian draws an
+   inter-item divider line between them (via border and/or a pseudo-element).
+   Strip every divider mechanism from the direct children of the reset's card so
+   the reset floats with no line under it. */
+.setting-items:has(.ui-tweaker-reset-container) > .setting-item {
+	border-top: none !important;
+	border-bottom: none !important;
+	box-shadow: none !important;
+}
+
+.setting-items:has(.ui-tweaker-reset-container) > .setting-item::before,
+.setting-items:has(.ui-tweaker-reset-container) > .setting-item::after {
+	content: none !important;
+	display: none !important;
+	border: none !important;
+}
+
 .ui-tweaker-reset-container {
 	display: flex;
 	justify-content: flex-end;
+	align-items: center;
 	width: 100%;
 	box-sizing: border-box;
-	margin-bottom: var(--size-4-4);
+	margin: 0;
 }
 
+/* Keep the reset row short — it's just a small label + icon, no need for full
+   setting-item height. */
 .ui-tweaker-reset-setting {
 	background-color: transparent;
-	border: none;
-	padding: 0;
-	margin-top: 0;
-	margin-bottom: 0;
+	border: none !important;
+	padding: 2px 0 !important;
+	margin: 0;
+	min-height: 0;
+	align-items: center;
 	flex: 0 0 auto;
 }
 
@@ -1931,4 +1966,19 @@ div.ui-tweaker-status-bar-row-hidden:not(div.ui-tweaker-status-bar-row-disabled)
 .ui-tweaker-reset-setting .setting-item-name {
 	font-size: var(--font-ui-smaller);
 	color: var(--text-muted);
+}
+
+/* Compact the imperative list renderers (Status bar / Tab bar / Explorer) when
+   hosted inside native Obsidian 1.13 settings sub-pages, where each delegated
+   row is a native .setting-item carrying full default vertical padding. This
+   restores the tighter visual rhythm the custom-tab UI used to have. The first
+   row's top border is dropped so the list sits cleanly under the reset button. */
+.ui-tweaker-subpage-list .setting-item {
+	padding-top: var(--size-4-2);
+	padding-bottom: var(--size-4-2);
+}
+
+.ui-tweaker-subpage-list>.setting-item:first-child,
+.ui-tweaker-subpage-list>.setting-item-group:first-child .setting-item:first-child {
+	border-top: none;
 }
