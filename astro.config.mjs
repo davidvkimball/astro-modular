@@ -1,6 +1,7 @@
 import { defineConfig } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
 import sitemap from '@astrojs/sitemap';
+import { unified } from '@astrojs/markdown-remark';
 import mdx from '@astrojs/mdx';
 import { remarkInternalLinks, remarkFolderImages, remarkImageCaptions } from './src/utils/internallinks.ts';
 import remarkCallouts from './src/utils/remark-callouts.ts';
@@ -137,6 +138,7 @@ image: {
     })
   ],
   markdown: {
+    processor: unified({
       remarkPlugins: [
       remarkObsidianImageSize, // Parse Obsidian image size syntax first
       remarkInternalLinks,
@@ -178,6 +180,7 @@ image: {
       }],
       rehypeNormalizeAnchors, // Run LAST to ensure className and href fixes aren't overridden
     ],
+    }),
     shikiConfig: {
       theme: 'github-dark',
       wrap: true

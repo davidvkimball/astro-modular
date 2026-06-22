@@ -3,4 +3,9 @@ allowBuilds:
   sharp: true
   workerd: true
 minimumReleaseAgeExclude:
-  - astro@7.0.0-beta.3
+  # Name-only patterns: an exact name@version misses astro's peer-suffixed
+  # lockfile key, so the exemption silently fails. Bare names match reliably.
+  - astro
+  - '@astrojs/markdown-satteri'
+  - '@astrojs/mdx'
+  - vscode-languageserver-protocol
