@@ -95,6 +95,11 @@ This downloads the latest template, removes dev-only files, and installs depende
    cd your-repo-name
    ```
 
+> [!IMPORTANT]
+> After cloning, confirm that `src/content/.obsidian/` exists and contains a `plugins` folder. The Obsidian vault lives in a dotfolder, and the template button does not always copy dotfolders. If it is missing or empty, the setup wizard will have no plugins to configure, and new notes will be created without frontmatter.
+>
+> Dotfolders are hidden by default, so check with `ls -a src/content` (macOS and Linux) or `dir /a src\content` (Windows). Option 1 above avoids this entirely and is the recommended path.
+
 
 
 ### Prerequisites

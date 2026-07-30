@@ -2262,6 +2262,484 @@ var init_DeploymentStep = __esm({
   }
 });
 
+// src/utils/PluginManager.ts
+var PluginManager;
+var init_PluginManager = __esm({
+  "src/utils/PluginManager.ts"() {
+    "use strict";
+    PluginManager = class {
+      constructor(app, getContentOrganization) {
+        this.app = app;
+        this.getContentOrganization = getContentOrganization;
+      }
+      getPluginStatus(contentOrg) {
+        var _a;
+        const plugins = this.app.plugins;
+        const requiredPlugins = [
+          "astro-composer",
+          "image-manager"
+        ];
+        const status = [];
+        const obsidianSettingsStatus = this.checkObsidianSettings(contentOrg);
+        status.push(obsidianSettingsStatus);
+        for (const pluginId of requiredPlugins) {
+          const plugin = (_a = plugins == null ? void 0 : plugins.plugins) == null ? void 0 : _a[pluginId];
+          const isInEnabledSet = (plugins == null ? void 0 : plugins.enabledPlugins) && plugins.enabledPlugins.has(pluginId);
+          const isInstalled = this.isPluginInstalled(pluginId);
+          let outOfSyncContentTypes;
+          if (pluginId === "astro-composer" && plugin) {
+            const syncCheck = this.checkAstroComposerSettings(plugin, contentOrg);
+            if (syncCheck) {
+              outOfSyncContentTypes = syncCheck.outOfSyncContentTypes;
+            }
+          }
+          let imageManagerSettingsMatch = true;
+          if (pluginId === "image-manager" && plugin && isInstalled && isInEnabledSet) {
+            imageManagerSettingsMatch = this.checkImageManagerSettings(plugin, contentOrg);
+          }
+          status.push({
+            name: this.getPluginDisplayName(pluginId),
+            installed: isInstalled,
+            enabled: isInEnabledSet || false,
+            configurable: this.isPluginConfigurable(pluginId),
+            currentSettings: plugin ? this.getPluginSettings(plugin) : void 0,
+            outOfSyncContentTypes,
+            settingsMatch: pluginId === "image-manager" ? imageManagerSettingsMatch : void 0
+          });
+        }
+        return status;
+      }
+      isPluginInstalled(pluginId) {
+        var _a;
+        const appPlugins = this.app.plugins;
+        if ((appPlugins == null ? void 0 : appPlugins.manifests) && typeof appPlugins.manifests === "object" && pluginId in appPlugins.manifests) {
+          return true;
+        }
+        if ((appPlugins == null ? void 0 : appPlugins.communityPlugins) && Array.isArray(appPlugins.communityPlugins)) {
+          return appPlugins.communityPlugins.includes(pluginId);
+        }
+        return !!((_a = appPlugins == null ? void 0 : appPlugins.plugins) == null ? void 0 : _a[pluginId]);
+      }
+      getPluginDisplayName(pluginId) {
+        const names = {
+          "astro-composer": "Astro Composer",
+          "image-manager": "Image Manager"
+        };
+        return names[pluginId] || pluginId;
+      }
+      /** True when vault Files & Links attachment location matches Astro Modular content organization */
+      isVaultAttachmentConfiguredForContentOrg(contentOrg) {
+        var _a, _b;
+        const contentOrgValue = contentOrg || ((_a = this.getContentOrganization) == null ? void 0 : _a.call(this)) || "file-based";
+        const vaultConfig = this.app.vault.config;
+        const expectedLocation = contentOrgValue === "file-based" ? "subfolder" : "same-folder";
+        const expectedSubfolder = "attachments";
+        const attachmentPath = ((_b = vaultConfig == null ? void 0 : vaultConfig.attachmentFolderPath) != null ? _b : "").trim();
+        const normalizedPath = attachmentPath.replace(/\/+$/, "");
+        if (expectedLocation === "subfolder") {
+          return normalizedPath === `./${expectedSubfolder}` || normalizedPath === `${expectedSubfolder}` || normalizedPath.endsWith(`/${expectedSubfolder}`) || normalizedPath === `.${expectedSubfolder}` || normalizedPath === `${expectedSubfolder}/` || normalizedPath === `./${expectedSubfolder}/`;
+        }
+        return normalizedPath === "./" || normalizedPath === "" || normalizedPath === "." || normalizedPath === void 0 || normalizedPath === null;
+      }
+      checkObsidianSettings(contentOrg) {
+        const isConfigured = this.isVaultAttachmentConfiguredForContentOrg(contentOrg);
+        return {
+          name: "Attachment settings",
+          installed: isConfigured,
+          enabled: false,
+          configurable: true,
+          currentSettings: void 0
+        };
+      }
+      /** Last path segment of a content folder path, lowercased (e.g. `content/posts` → `posts`) */
+      contentTypeFolderKey(folder) {
+        var _a;
+        const normalized = folder.replace(/\\/g, "/").trim();
+        const parts = normalized.split("/").filter(Boolean);
+        const last = (_a = parts[parts.length - 1]) != null ? _a : normalized;
+        return last.toLowerCase();
+      }
+      findContentTypeByCanonical(contentTypes, canonical) {
+        for (const ct of contentTypes) {
+          if (!ct || typeof ct !== "object") continue;
+          const o = ct;
+          if (typeof o.folder === "string" && this.contentTypeFolderKey(o.folder) === canonical) {
+            return o;
+          }
+        }
+        for (const ct of contentTypes) {
+          if (!ct || typeof ct !== "object") continue;
+          const o = ct;
+          if (typeof o.id === "string") {
+            const low = o.id.toLowerCase();
+            if (low === canonical || low.startsWith(`${canonical}-`)) {
+              return o;
+            }
+          }
+        }
+        return void 0;
+      }
+      checkAstroComposerSettings(plugin, contentOrg) {
+        var _a;
+        const contentOrgValue = contentOrg || ((_a = this.getContentOrganization) == null ? void 0 : _a.call(this)) || "file-based";
+        const expectedMode = contentOrgValue === "file-based" ? "file" : "folder";
+        try {
+          const pluginSettings = plugin.settings;
+          if (!pluginSettings) {
+            return null;
+          }
+          const mismatchedTypes = [];
+          const expectedContentTypes = ["posts", "pages", "projects", "docs"];
+          const contentTypes = pluginSettings.contentTypes;
+          const hasNewContentTypes = Array.isArray(contentTypes) && contentTypes.length > 0;
+          if (hasNewContentTypes) {
+            for (const expectedType of expectedContentTypes) {
+              const contentType = this.findContentTypeByCanonical(contentTypes, expectedType);
+              if (!contentType) {
+                continue;
+              }
+              if (contentType.enabled === false) {
+                continue;
+              }
+              if (contentType.creationMode !== expectedMode) {
+                mismatchedTypes.push(expectedType);
+              }
+            }
+          } else {
+            if (pluginSettings.creationMode && typeof pluginSettings.creationMode === "string") {
+              if (pluginSettings.creationMode !== expectedMode) {
+                mismatchedTypes.push("posts");
+              }
+            } else {
+              mismatchedTypes.push("posts");
+            }
+            if (pluginSettings.pagesCreationMode) {
+              if (pluginSettings.pagesCreationMode !== expectedMode) {
+                mismatchedTypes.push("pages");
+              }
+            } else {
+              mismatchedTypes.push("pages");
+            }
+            if (Array.isArray(pluginSettings.customContentTypes)) {
+              for (const contentType of ["projects", "docs"]) {
+                const customType = pluginSettings.customContentTypes.find(
+                  (ct) => ct && typeof ct === "object" && ct !== null && "folder" in ct && typeof ct.folder === "string" && this.contentTypeFolderKey(ct.folder) === contentType
+                );
+                if (customType && customType.creationMode) {
+                  if (customType.creationMode !== expectedMode) {
+                    mismatchedTypes.push(contentType);
+                  }
+                } else {
+                  mismatchedTypes.push(contentType);
+                }
+              }
+            } else {
+              mismatchedTypes.push("projects", "docs");
+            }
+          }
+          if (mismatchedTypes.length === 0) {
+            return null;
+          }
+          return { outOfSyncContentTypes: mismatchedTypes };
+        } catch (error) {
+          console.error("Failed to check Astro Composer settings:", error);
+          return null;
+        }
+      }
+      normalizeImageManagerTemplate(value) {
+        if (typeof value !== "string") {
+          return "";
+        }
+        return value.trim().replace(/\{image-url\}/gi, "{image-url}");
+      }
+      checkImageManagerSettings(plugin, contentOrg) {
+        var _a;
+        const contentOrgValue = contentOrg || ((_a = this.getContentOrganization) == null ? void 0 : _a.call(this)) || "file-based";
+        const expectedFormat = contentOrgValue === "file-based" ? "[[attachments/{image-url}]]" : "[[{image-url}]]";
+        const vaultOk = this.isVaultAttachmentConfiguredForContentOrg(contentOrg);
+        try {
+          const pluginSettings = plugin.settings;
+          if (!pluginSettings) {
+            return false;
+          }
+          const propertyLinkFormat = pluginSettings.propertyLinkFormat;
+          if (propertyLinkFormat === "obsidian") {
+            return vaultOk;
+          }
+          if (propertyLinkFormat === "wikilink" && vaultOk) {
+            return true;
+          }
+          if (propertyLinkFormat === "custom") {
+            const actual = this.normalizeImageManagerTemplate(pluginSettings.customPropertyLinkFormat);
+            return actual === this.normalizeImageManagerTemplate(expectedFormat);
+          }
+          return false;
+        } catch (error) {
+          console.error("Failed to check Image Manager settings:", error);
+          return false;
+        }
+      }
+      isPluginConfigurable(pluginId) {
+        const configurablePlugins = [
+          "astro-composer",
+          "image-manager"
+        ];
+        return configurablePlugins.includes(pluginId);
+      }
+      getPluginSettings(plugin) {
+        const pluginWithSettings = plugin;
+        return pluginWithSettings.settings;
+      }
+      /**
+       * Configure the companion plugins.
+       *
+       * Returns which plugins were actually configured and which were skipped,
+       * so callers can tell the user the truth. Previously this returned a bare
+       * boolean that was `true` whenever nothing threw, including the case where
+       * a plugin was not installed or not yet loaded and its configuration was
+       * silently skipped. That produced a "configured successfully" notice while
+       * Astro Composer never received its content types, which then showed up
+       * downstream as new notes being created with no frontmatter.
+       */
+      async configurePlugins(config4) {
+        const configured = [];
+        const skipped = [];
+        try {
+          await this.configureObsidianSettings(config4.obsidianSettings);
+          configured.push("Obsidian");
+          const composer = await this.configureAstroComposerSettings(config4.astroComposerSettings);
+          if (composer.ok) {
+            configured.push("Astro Composer");
+          } else {
+            skipped.push({ plugin: "Astro Composer", reason: composer.reason });
+          }
+          const imageManager = await this.configureImageManagerSettings(config4.imageManagerSettings);
+          if (imageManager.ok) {
+            configured.push("Image Manager");
+          } else {
+            skipped.push({ plugin: "Image Manager", reason: imageManager.reason });
+          }
+          return { success: skipped.length === 0, configured, skipped };
+        } catch (error) {
+          console.error("Plugin configuration failed:", error);
+          const message = error instanceof Error ? error.message : String(error);
+          skipped.push({ plugin: "Configuration", reason: message });
+          return { success: false, configured, skipped };
+        }
+      }
+      async configureObsidianSettings(settings) {
+        try {
+          const app = this.app;
+          const targetPath = settings.attachmentLocation === "subfolder" ? `./${settings.subfolderName}` : "./";
+          if (app.setting && typeof app.setting.set === "function") {
+            await app.setting.set("attachmentFolderPath", targetPath);
+            await app.setting.set("newLinkFormat", "relative");
+            if (typeof app.setting.save === "function") {
+              await app.setting.save();
+            }
+          } else {
+            const vault = this.app.vault;
+            const obsidianSettings = vault.config;
+            if (obsidianSettings) {
+              obsidianSettings.newLinkFormat = "relative";
+              obsidianSettings.attachmentFolderPath = targetPath;
+              if (typeof vault.saveConfig === "function") {
+                await vault.saveConfig();
+              }
+            }
+          }
+        } catch (error) {
+          console.error("Failed to configure Obsidian settings:", error);
+          throw error;
+        }
+      }
+      /**
+       * Build the user-facing notice for a configuration result. Keeps the
+       * "what actually happened" wording in one place so no call site can drift
+       * back into reporting success for work that was skipped.
+       */
+      static describeConfigurationResult(result, successHeadline, details) {
+        if (result.success) {
+          return {
+            message: [successHeadline, "", ...details.map((d) => `\u2022 ${d}`)].join("\n"),
+            durationMs: 8e3
+          };
+        }
+        const lines = ["Some plugins were not configured.", ""];
+        for (const skip of result.skipped) {
+          lines.push(`\u2022 ${skip.plugin}: ${skip.reason}`);
+        }
+        if (result.configured.length > 0) {
+          lines.push("", `Configured: ${result.configured.join(", ")}.`);
+        }
+        return { message: lines.join("\n"), durationMs: 15e3 };
+      }
+      async configureAstroComposerSettings(settings) {
+        var _a;
+        try {
+          const plugins = this.app.plugins;
+          const astroComposerPlugin = (_a = plugins == null ? void 0 : plugins.plugins) == null ? void 0 : _a["astro-composer"];
+          if (!astroComposerPlugin) {
+            console.warn("Astro Composer plugin not found");
+            return {
+              ok: false,
+              reason: "the plugin is not installed or not enabled. Enable it in Settings, Community plugins, then run this again."
+            };
+          }
+          const astroComposerPluginWithSettings = astroComposerPlugin;
+          if (!astroComposerPluginWithSettings.settings) {
+            console.warn("Astro Composer plugin settings not available");
+            return {
+              ok: false,
+              reason: "the plugin has not finished loading. Restart Obsidian, then run this again."
+            };
+          }
+          const pluginSettings = astroComposerPluginWithSettings.settings;
+          const creationMode = settings.creationMode;
+          const contentTypes = pluginSettings.contentTypes;
+          const hasNewContentTypes = Array.isArray(contentTypes) && contentTypes.length > 0;
+          if (hasNewContentTypes) {
+            const canonicals = ["posts", "pages", "projects", "docs"];
+            for (const contentType of contentTypes) {
+              if (!contentType || typeof contentType !== "object") continue;
+              const contentTypeObj = contentType;
+              const folderRaw = typeof contentTypeObj.folder === "string" ? contentTypeObj.folder : "";
+              const key = this.contentTypeFolderKey(folderRaw);
+              const idStr = typeof contentTypeObj.id === "string" ? contentTypeObj.id : "";
+              const idLow = idStr.toLowerCase();
+              const matchesCanonical = canonicals.includes(key) || canonicals.some((c) => idLow === c || idLow.startsWith(`${c}-`));
+              if (matchesCanonical) {
+                contentTypeObj.creationMode = creationMode;
+                contentTypeObj.indexFileName = settings.indexFileName;
+              }
+            }
+          } else {
+            pluginSettings.creationMode = creationMode;
+            pluginSettings.pagesCreationMode = creationMode;
+            if (Array.isArray(pluginSettings.customContentTypes)) {
+              for (const customType of pluginSettings.customContentTypes) {
+                if (customType && typeof customType === "object" && customType !== null) {
+                  const customTypeObj = customType;
+                  const folderName = typeof customTypeObj.folder === "string" ? this.contentTypeFolderKey(customTypeObj.folder) : "";
+                  if (folderName === "projects" || folderName === "docs") {
+                    customTypeObj.creationMode = creationMode;
+                  }
+                }
+              }
+            }
+            pluginSettings.indexFileName = settings.indexFileName;
+          }
+          const pluginWithSave = astroComposerPlugin;
+          const saveSettings = pluginWithSave.saveSettings;
+          if (!saveSettings || typeof saveSettings !== "function") {
+            console.warn("Astro Composer saveSettings not available; changes would not persist");
+            return {
+              ok: false,
+              reason: "the installed version does not support saving settings from another plugin. Update Astro Composer to the latest version."
+            };
+          }
+          await saveSettings();
+          return { ok: true };
+        } catch (error) {
+          console.error("Failed to configure Astro Composer:", error);
+          return {
+            ok: false,
+            reason: error instanceof Error ? error.message : String(error)
+          };
+        }
+      }
+      async configureImageManagerSettings(settings) {
+        var _a;
+        try {
+          const plugins = this.app.plugins;
+          const imageManagerPlugin = (_a = plugins == null ? void 0 : plugins.plugins) == null ? void 0 : _a["image-manager"];
+          if (!imageManagerPlugin) {
+            console.warn("Image Manager plugin not found");
+            return {
+              ok: false,
+              reason: "the plugin is not installed or not enabled. Enable it in Settings, Community plugins, then run this again."
+            };
+          }
+          const imageManagerPluginWithSettings = imageManagerPlugin;
+          if (!imageManagerPluginWithSettings.settings) {
+            console.warn("Image Manager plugin settings not available");
+            return {
+              ok: false,
+              reason: "the plugin has not finished loading. Restart Obsidian, then run this again."
+            };
+          }
+          const pluginSettings = imageManagerPluginWithSettings.settings;
+          pluginSettings.propertyLinkFormat = "custom";
+          pluginSettings.customPropertyLinkFormat = settings.customPropertyLinkFormat;
+          pluginSettings.attachmentLocation = "obsidian";
+          const pluginWithSave = imageManagerPlugin;
+          const saveSettings = pluginWithSave.saveSettings;
+          if (!saveSettings || typeof saveSettings !== "function") {
+            console.warn("Image Manager saveSettings not available; changes would not persist");
+            return {
+              ok: false,
+              reason: "the installed version does not support saving settings from another plugin. Update Image Manager to the latest version."
+            };
+          }
+          await saveSettings();
+          return { ok: true };
+        } catch (error) {
+          console.error("Failed to configure Image Manager:", error);
+          return {
+            ok: false,
+            reason: error instanceof Error ? error.message : String(error)
+          };
+        }
+      }
+      getManualConfigurationInstructions(config4) {
+        let instructions = "## Obsidian Settings\n";
+        instructions += `1. Go to **Settings \u2192 Files & Links**
+`;
+        instructions += `2. Set **Default location for new attachments** to: `;
+        instructions += config4.obsidianSettings.attachmentLocation === "subfolder" ? `**"In subfolder under current folder"**
+` : `**"Same folder as current file"**
+`;
+        if (config4.obsidianSettings.attachmentLocation === "subfolder") {
+          instructions += `3. Set **Subfolder name** to: **"${config4.obsidianSettings.subfolderName}"**
+`;
+        }
+        instructions += "## Astro Composer Plugin\n";
+        instructions += `1. Go to **Settings \u2192 Community plugins \u2192 Astro Composer**
+`;
+        instructions += `2. Set **Creation mode** to: "${config4.astroComposerSettings.creationMode === "file" ? "File-based" : "Folder-based"}"
+`;
+        instructions += `3. Ensure **Creation mode** is set to "${config4.astroComposerSettings.creationMode === "file" ? "File-based" : "Folder-based"}" for all content types:
+`;
+        instructions += `   - Posts
+`;
+        instructions += `   - Pages
+`;
+        instructions += `   - Projects
+`;
+        instructions += `   - Docs
+`;
+        if (config4.astroComposerSettings.creationMode === "folder") {
+          instructions += `4. Set **Index file name** to: "${config4.astroComposerSettings.indexFileName}"
+`;
+        }
+        instructions += "## Image Manager Plugin\n";
+        instructions += `1. Go to **Settings \u2192 Community plugins \u2192 Image Manager**
+`;
+        instructions += `2. Under **General**, set **Attachment location** to **"Use Obsidian's settings"** (matches Files & Links above).
+`;
+        instructions += `3. Under **Property insertion**, either:
+`;
+        instructions += `   - Set **Property link format** to **"Use Obsidian's settings"** (recommended when vault attachment settings match Astro Modular), or
+`;
+        instructions += `   - Set **Property link format** to **"Custom format"** and **Custom format template** to: \`${config4.imageManagerSettings.customPropertyLinkFormat}\`
+`;
+        instructions += "**Note**: After making these changes, you should see them reflected in Obsidian's settings interface. If the automatic configuration worked, these settings should already be applied.\n";
+        return instructions;
+      }
+    };
+  }
+});
+
 // src/ui/wizard/PluginConfigStep.ts
 var import_obsidian5, PluginConfigStep;
 var init_PluginConfigStep = __esm({
@@ -2269,6 +2747,7 @@ var init_PluginConfigStep = __esm({
     "use strict";
     init_BaseWizardStep();
     import_obsidian5 = require("obsidian");
+    init_PluginManager();
     PluginConfigStep = class extends BaseWizardStep {
       render(container) {
         const state = this.getState();
@@ -2371,27 +2850,27 @@ var init_PluginConfigStep = __esm({
                   customPropertyLinkFormat: contentOrg === "file-based" ? "[[attachments/{image-url}]]" : "[[{image-url}]]"
                 }
               };
-              const success = await this.plugin.pluginManager.configurePlugins(config4);
-              if (success) {
-                const updatedStatus = this.plugin.pluginManager.getPluginStatus(state.selectedContentOrg);
-                const statusContainerEl = container.querySelector(".plugin-status");
-                if (statusContainerEl) {
-                  statusContainerEl.empty();
-                  updatedStatus.forEach((plugin) => {
-                    this.renderPluginStatusItem(statusContainerEl, plugin);
-                  });
-                }
-                const contentOrg2 = state.selectedContentOrg;
-                const attachmentLocation = contentOrg2 === "file-based" ? "subfolder (attachments/)" : "same folder";
-                const creationMode = contentOrg2 === "file-based" ? "file" : "folder";
-                new import_obsidian5.Notice(`Plugins configured successfully!
-
-\u2022 Obsidian: Attachments \u2192 ${attachmentLocation}
-\u2022 Astro Composer: Creation mode \u2192 ${creationMode}
-\u2022 Image Manager: Format updated for ${contentOrg2}`, 8e3);
-              } else {
-                new import_obsidian5.Notice("\u26A0\uFE0F Some plugins could not be configured automatically. Check console for details.", 5e3);
+              const result = await this.plugin.pluginManager.configurePlugins(config4);
+              const updatedStatus = this.plugin.pluginManager.getPluginStatus(state.selectedContentOrg);
+              const statusContainerEl = container.querySelector(".plugin-status");
+              if (statusContainerEl) {
+                statusContainerEl.empty();
+                updatedStatus.forEach((plugin) => {
+                  this.renderPluginStatusItem(statusContainerEl, plugin);
+                });
               }
+              const attachmentLocation = contentOrg === "file-based" ? "subfolder (attachments/)" : "same folder";
+              const creationMode = contentOrg === "file-based" ? "file" : "folder";
+              const notice = PluginManager.describeConfigurationResult(
+                result,
+                "Plugins configured successfully!",
+                [
+                  `Obsidian: Attachments \u2192 ${attachmentLocation}`,
+                  `Astro Composer: Creation mode \u2192 ${creationMode}`,
+                  `Image Manager: Format updated for ${contentOrg}`
+                ]
+              );
+              new import_obsidian5.Notice(notice.message, notice.durationMs);
             } catch (error) {
               new import_obsidian5.Notice(`Error configuring plugins: ${error instanceof Error ? error.message : String(error)}`);
             }
@@ -2888,6 +3367,7 @@ function registerCommands(plugin) {
 
 // src/ui/SettingsTab.ts
 var import_obsidian17 = require("obsidian");
+init_PluginManager();
 init_types();
 
 // src/utils/ThemeColorExtractor.ts
@@ -4360,6 +4840,7 @@ var NavigationTab = class extends TabRenderer {
 
 // src/ui/tabs/ConfigTab.ts
 var import_obsidian13 = require("obsidian");
+init_PluginManager();
 init_types();
 
 // src/ui/PresetWarningModal.ts
@@ -4508,14 +4989,19 @@ var ConfigTab = class extends TabRenderer {
             }
           };
           try {
-            await this.plugin.pluginManager.configurePlugins(config4);
+            const result = await this.plugin.pluginManager.configurePlugins(config4);
             const attachmentLocation = contentOrg === "file-based" ? "subfolder (attachments/)" : "same folder";
             const creationMode = contentOrg === "file-based" ? "file" : "folder";
-            new import_obsidian13.Notice(`Content organization changed to ${value}
-
-\u2022 Obsidian: Attachments \u2192 ${attachmentLocation}
-\u2022 Astro Composer: Creation mode \u2192 ${creationMode}
-\u2022 Image Manager: Format updated`, 8e3);
+            const notice = PluginManager.describeConfigurationResult(
+              result,
+              `Content organization changed to ${value}`,
+              [
+                `Obsidian: Attachments \u2192 ${attachmentLocation}`,
+                `Astro Composer: Creation mode \u2192 ${creationMode}`,
+                "Image Manager: Format updated"
+              ]
+            );
+            new import_obsidian13.Notice(notice.message, notice.durationMs);
           } catch (error) {
             new import_obsidian13.Notice(`Failed to configure plugins for content organization: ${error instanceof Error ? error.message : String(error)}`);
           }
@@ -4627,24 +5113,27 @@ var ConfigTab = class extends TabRenderer {
             customPropertyLinkFormat: contentOrg === "file-based" ? "[[attachments/{image-url}]]" : "[[{image-url}]]"
           }
         };
-        const success = await this.plugin.pluginManager.configurePlugins(config4);
-        if (success) {
+        const result = await this.plugin.pluginManager.configurePlugins(config4);
+        {
           const contentOrg2 = settings.contentOrganization;
           const attachmentLocation = contentOrg2 === "file-based" ? "subfolder (attachments/)" : "same folder";
           const creationMode = contentOrg2 === "file-based" ? "file" : "folder";
-          new import_obsidian13.Notice(`Configuration re-applied successfully!
-
-\u2022 Obsidian: Attachments \u2192 ${attachmentLocation}
-\u2022 Astro Composer: Creation mode \u2192 ${creationMode}
-\u2022 Image Manager: Format updated for ${contentOrg2}`, 8e3);
+          const notice = PluginManager.describeConfigurationResult(
+            result,
+            "Configuration re-applied successfully!",
+            [
+              `Obsidian: Attachments \u2192 ${attachmentLocation}`,
+              `Astro Composer: Creation mode \u2192 ${creationMode}`,
+              `Image Manager: Format updated for ${contentOrg2}`
+            ]
+          );
+          new import_obsidian13.Notice(notice.message, notice.durationMs);
           const statusContainerEl = container.ownerDocument.querySelector(".plugin-status-container");
           if (statusContainerEl == null ? void 0 : statusContainerEl.parentElement) {
             const statusParent = statusContainerEl.parentElement;
             statusContainerEl.remove();
             this.renderPluginStatus(statusParent, settings);
           }
-        } else {
-          new import_obsidian13.Notice("\u26A0\uFE0F Some plugins could not be configured automatically. Check console for details.", 5e3);
         }
       }));
     });
@@ -9415,14 +9904,19 @@ var AstroModularSettingsTab = class extends import_obsidian17.PluginSettingTab {
         }
       };
       try {
-        await plugin.pluginManager.configurePlugins(config4);
+        const result = await plugin.pluginManager.configurePlugins(config4);
         const attachmentLocation = contentOrg === "file-based" ? "subfolder (attachments/)" : "same folder";
         const creationMode = contentOrg === "file-based" ? "file" : "folder";
-        new import_obsidian17.Notice(`Content organization changed to ${value}
-
-\u2022 Obsidian: Attachments \u2192 ${attachmentLocation}
-\u2022 Astro Composer: Creation mode \u2192 ${creationMode}
-\u2022 Image Manager: Format updated`, 8e3);
+        const notice = PluginManager.describeConfigurationResult(
+          result,
+          `Content organization changed to ${value}`,
+          [
+            `Obsidian: Attachments \u2192 ${attachmentLocation}`,
+            `Astro Composer: Creation mode \u2192 ${creationMode}`,
+            "Image Manager: Format updated"
+          ]
+        );
+        new import_obsidian17.Notice(notice.message, notice.durationMs);
       } catch (error) {
         new import_obsidian17.Notice(`Failed to configure plugins for content organization: ${error instanceof Error ? error.message : String(error)}`);
       }
@@ -11995,397 +12489,8 @@ var ConfigManager = class {
   }
 };
 
-// src/utils/PluginManager.ts
-var PluginManager = class {
-  constructor(app, getContentOrganization) {
-    this.app = app;
-    this.getContentOrganization = getContentOrganization;
-  }
-  getPluginStatus(contentOrg) {
-    var _a;
-    const plugins = this.app.plugins;
-    const requiredPlugins = [
-      "astro-composer",
-      "image-manager"
-    ];
-    const status = [];
-    const obsidianSettingsStatus = this.checkObsidianSettings(contentOrg);
-    status.push(obsidianSettingsStatus);
-    for (const pluginId of requiredPlugins) {
-      const plugin = (_a = plugins == null ? void 0 : plugins.plugins) == null ? void 0 : _a[pluginId];
-      const isInEnabledSet = (plugins == null ? void 0 : plugins.enabledPlugins) && plugins.enabledPlugins.has(pluginId);
-      const isInstalled = this.isPluginInstalled(pluginId);
-      let outOfSyncContentTypes;
-      if (pluginId === "astro-composer" && plugin) {
-        const syncCheck = this.checkAstroComposerSettings(plugin, contentOrg);
-        if (syncCheck) {
-          outOfSyncContentTypes = syncCheck.outOfSyncContentTypes;
-        }
-      }
-      let imageManagerSettingsMatch = true;
-      if (pluginId === "image-manager" && plugin && isInstalled && isInEnabledSet) {
-        imageManagerSettingsMatch = this.checkImageManagerSettings(plugin, contentOrg);
-      }
-      status.push({
-        name: this.getPluginDisplayName(pluginId),
-        installed: isInstalled,
-        enabled: isInEnabledSet || false,
-        configurable: this.isPluginConfigurable(pluginId),
-        currentSettings: plugin ? this.getPluginSettings(plugin) : void 0,
-        outOfSyncContentTypes,
-        settingsMatch: pluginId === "image-manager" ? imageManagerSettingsMatch : void 0
-      });
-    }
-    return status;
-  }
-  isPluginInstalled(pluginId) {
-    var _a;
-    const appPlugins = this.app.plugins;
-    if ((appPlugins == null ? void 0 : appPlugins.manifests) && typeof appPlugins.manifests === "object" && pluginId in appPlugins.manifests) {
-      return true;
-    }
-    if ((appPlugins == null ? void 0 : appPlugins.communityPlugins) && Array.isArray(appPlugins.communityPlugins)) {
-      return appPlugins.communityPlugins.includes(pluginId);
-    }
-    return !!((_a = appPlugins == null ? void 0 : appPlugins.plugins) == null ? void 0 : _a[pluginId]);
-  }
-  getPluginDisplayName(pluginId) {
-    const names = {
-      "astro-composer": "Astro Composer",
-      "image-manager": "Image Manager"
-    };
-    return names[pluginId] || pluginId;
-  }
-  /** True when vault Files & Links attachment location matches Astro Modular content organization */
-  isVaultAttachmentConfiguredForContentOrg(contentOrg) {
-    var _a, _b;
-    const contentOrgValue = contentOrg || ((_a = this.getContentOrganization) == null ? void 0 : _a.call(this)) || "file-based";
-    const vaultConfig = this.app.vault.config;
-    const expectedLocation = contentOrgValue === "file-based" ? "subfolder" : "same-folder";
-    const expectedSubfolder = "attachments";
-    const attachmentPath = ((_b = vaultConfig == null ? void 0 : vaultConfig.attachmentFolderPath) != null ? _b : "").trim();
-    const normalizedPath = attachmentPath.replace(/\/+$/, "");
-    if (expectedLocation === "subfolder") {
-      return normalizedPath === `./${expectedSubfolder}` || normalizedPath === `${expectedSubfolder}` || normalizedPath.endsWith(`/${expectedSubfolder}`) || normalizedPath === `.${expectedSubfolder}` || normalizedPath === `${expectedSubfolder}/` || normalizedPath === `./${expectedSubfolder}/`;
-    }
-    return normalizedPath === "./" || normalizedPath === "" || normalizedPath === "." || normalizedPath === void 0 || normalizedPath === null;
-  }
-  checkObsidianSettings(contentOrg) {
-    const isConfigured = this.isVaultAttachmentConfiguredForContentOrg(contentOrg);
-    return {
-      name: "Attachment settings",
-      installed: isConfigured,
-      enabled: false,
-      configurable: true,
-      currentSettings: void 0
-    };
-  }
-  /** Last path segment of a content folder path, lowercased (e.g. `content/posts` → `posts`) */
-  contentTypeFolderKey(folder) {
-    var _a;
-    const normalized = folder.replace(/\\/g, "/").trim();
-    const parts = normalized.split("/").filter(Boolean);
-    const last = (_a = parts[parts.length - 1]) != null ? _a : normalized;
-    return last.toLowerCase();
-  }
-  findContentTypeByCanonical(contentTypes, canonical) {
-    for (const ct of contentTypes) {
-      if (!ct || typeof ct !== "object") continue;
-      const o = ct;
-      if (typeof o.folder === "string" && this.contentTypeFolderKey(o.folder) === canonical) {
-        return o;
-      }
-    }
-    for (const ct of contentTypes) {
-      if (!ct || typeof ct !== "object") continue;
-      const o = ct;
-      if (typeof o.id === "string") {
-        const low = o.id.toLowerCase();
-        if (low === canonical || low.startsWith(`${canonical}-`)) {
-          return o;
-        }
-      }
-    }
-    return void 0;
-  }
-  checkAstroComposerSettings(plugin, contentOrg) {
-    var _a;
-    const contentOrgValue = contentOrg || ((_a = this.getContentOrganization) == null ? void 0 : _a.call(this)) || "file-based";
-    const expectedMode = contentOrgValue === "file-based" ? "file" : "folder";
-    try {
-      const pluginSettings = plugin.settings;
-      if (!pluginSettings) {
-        return null;
-      }
-      const mismatchedTypes = [];
-      const expectedContentTypes = ["posts", "pages", "projects", "docs"];
-      const contentTypes = pluginSettings.contentTypes;
-      const hasNewContentTypes = Array.isArray(contentTypes) && contentTypes.length > 0;
-      if (hasNewContentTypes) {
-        for (const expectedType of expectedContentTypes) {
-          const contentType = this.findContentTypeByCanonical(contentTypes, expectedType);
-          if (!contentType) {
-            continue;
-          }
-          if (contentType.enabled === false) {
-            continue;
-          }
-          if (contentType.creationMode !== expectedMode) {
-            mismatchedTypes.push(expectedType);
-          }
-        }
-      } else {
-        if (pluginSettings.creationMode && typeof pluginSettings.creationMode === "string") {
-          if (pluginSettings.creationMode !== expectedMode) {
-            mismatchedTypes.push("posts");
-          }
-        } else {
-          mismatchedTypes.push("posts");
-        }
-        if (pluginSettings.pagesCreationMode) {
-          if (pluginSettings.pagesCreationMode !== expectedMode) {
-            mismatchedTypes.push("pages");
-          }
-        } else {
-          mismatchedTypes.push("pages");
-        }
-        if (Array.isArray(pluginSettings.customContentTypes)) {
-          for (const contentType of ["projects", "docs"]) {
-            const customType = pluginSettings.customContentTypes.find(
-              (ct) => ct && typeof ct === "object" && ct !== null && "folder" in ct && typeof ct.folder === "string" && this.contentTypeFolderKey(ct.folder) === contentType
-            );
-            if (customType && customType.creationMode) {
-              if (customType.creationMode !== expectedMode) {
-                mismatchedTypes.push(contentType);
-              }
-            } else {
-              mismatchedTypes.push(contentType);
-            }
-          }
-        } else {
-          mismatchedTypes.push("projects", "docs");
-        }
-      }
-      if (mismatchedTypes.length === 0) {
-        return null;
-      }
-      return { outOfSyncContentTypes: mismatchedTypes };
-    } catch (error) {
-      console.error("Failed to check Astro Composer settings:", error);
-      return null;
-    }
-  }
-  normalizeImageManagerTemplate(value) {
-    if (typeof value !== "string") {
-      return "";
-    }
-    return value.trim().replace(/\{image-url\}/gi, "{image-url}");
-  }
-  checkImageManagerSettings(plugin, contentOrg) {
-    var _a;
-    const contentOrgValue = contentOrg || ((_a = this.getContentOrganization) == null ? void 0 : _a.call(this)) || "file-based";
-    const expectedFormat = contentOrgValue === "file-based" ? "[[attachments/{image-url}]]" : "[[{image-url}]]";
-    const vaultOk = this.isVaultAttachmentConfiguredForContentOrg(contentOrg);
-    try {
-      const pluginSettings = plugin.settings;
-      if (!pluginSettings) {
-        return false;
-      }
-      const propertyLinkFormat = pluginSettings.propertyLinkFormat;
-      if (propertyLinkFormat === "obsidian") {
-        return vaultOk;
-      }
-      if (propertyLinkFormat === "wikilink" && vaultOk) {
-        return true;
-      }
-      if (propertyLinkFormat === "custom") {
-        const actual = this.normalizeImageManagerTemplate(pluginSettings.customPropertyLinkFormat);
-        return actual === this.normalizeImageManagerTemplate(expectedFormat);
-      }
-      return false;
-    } catch (error) {
-      console.error("Failed to check Image Manager settings:", error);
-      return false;
-    }
-  }
-  isPluginConfigurable(pluginId) {
-    const configurablePlugins = [
-      "astro-composer",
-      "image-manager"
-    ];
-    return configurablePlugins.includes(pluginId);
-  }
-  getPluginSettings(plugin) {
-    const pluginWithSettings = plugin;
-    return pluginWithSettings.settings;
-  }
-  async configurePlugins(config4) {
-    let successCount = 0;
-    try {
-      await this.configureObsidianSettings(config4.obsidianSettings);
-      successCount++;
-      await this.configureAstroComposerSettings(config4.astroComposerSettings);
-      successCount++;
-      await this.configureImageManagerSettings(config4.imageManagerSettings);
-      successCount++;
-      return successCount > 0;
-    } catch (error) {
-      console.error("Plugin configuration failed:", error);
-      return false;
-    }
-  }
-  async configureObsidianSettings(settings) {
-    try {
-      const app = this.app;
-      const targetPath = settings.attachmentLocation === "subfolder" ? `./${settings.subfolderName}` : "./";
-      if (app.setting && typeof app.setting.set === "function") {
-        await app.setting.set("attachmentFolderPath", targetPath);
-        await app.setting.set("newLinkFormat", "relative");
-        if (typeof app.setting.save === "function") {
-          await app.setting.save();
-        }
-      } else {
-        const vault = this.app.vault;
-        const obsidianSettings = vault.config;
-        if (obsidianSettings) {
-          obsidianSettings.newLinkFormat = "relative";
-          obsidianSettings.attachmentFolderPath = targetPath;
-          if (typeof vault.saveConfig === "function") {
-            await vault.saveConfig();
-          }
-        }
-      }
-    } catch (error) {
-      console.error("Failed to configure Obsidian settings:", error);
-      throw error;
-    }
-  }
-  async configureAstroComposerSettings(settings) {
-    var _a;
-    try {
-      const plugins = this.app.plugins;
-      const astroComposerPlugin = (_a = plugins == null ? void 0 : plugins.plugins) == null ? void 0 : _a["astro-composer"];
-      if (!astroComposerPlugin) {
-        console.warn("Astro Composer plugin not found");
-        return;
-      }
-      const astroComposerPluginWithSettings = astroComposerPlugin;
-      if (!astroComposerPluginWithSettings.settings) {
-        console.warn("Astro Composer plugin settings not available");
-        return;
-      }
-      const pluginSettings = astroComposerPluginWithSettings.settings;
-      const creationMode = settings.creationMode;
-      const contentTypes = pluginSettings.contentTypes;
-      const hasNewContentTypes = Array.isArray(contentTypes) && contentTypes.length > 0;
-      if (hasNewContentTypes) {
-        const canonicals = ["posts", "pages", "projects", "docs"];
-        for (const contentType of contentTypes) {
-          if (!contentType || typeof contentType !== "object") continue;
-          const contentTypeObj = contentType;
-          const folderRaw = typeof contentTypeObj.folder === "string" ? contentTypeObj.folder : "";
-          const key = this.contentTypeFolderKey(folderRaw);
-          const idStr = typeof contentTypeObj.id === "string" ? contentTypeObj.id : "";
-          const idLow = idStr.toLowerCase();
-          const matchesCanonical = canonicals.includes(key) || canonicals.some((c) => idLow === c || idLow.startsWith(`${c}-`));
-          if (matchesCanonical) {
-            contentTypeObj.creationMode = creationMode;
-            contentTypeObj.indexFileName = settings.indexFileName;
-          }
-        }
-      } else {
-        pluginSettings.creationMode = creationMode;
-        pluginSettings.pagesCreationMode = creationMode;
-        if (Array.isArray(pluginSettings.customContentTypes)) {
-          for (const customType of pluginSettings.customContentTypes) {
-            if (customType && typeof customType === "object" && customType !== null) {
-              const customTypeObj = customType;
-              const folderName = typeof customTypeObj.folder === "string" ? this.contentTypeFolderKey(customTypeObj.folder) : "";
-              if (folderName === "projects" || folderName === "docs") {
-                customTypeObj.creationMode = creationMode;
-              }
-            }
-          }
-        }
-        pluginSettings.indexFileName = settings.indexFileName;
-      }
-      const pluginWithSave = astroComposerPlugin;
-      const saveSettings = pluginWithSave.saveSettings;
-      if (saveSettings && typeof saveSettings === "function") {
-        await saveSettings();
-      }
-    } catch (error) {
-      console.error("Failed to configure Astro Composer:", error);
-      throw error;
-    }
-  }
-  async configureImageManagerSettings(settings) {
-    var _a;
-    try {
-      const plugins = this.app.plugins;
-      const imageManagerPlugin = (_a = plugins == null ? void 0 : plugins.plugins) == null ? void 0 : _a["image-manager"];
-      const imageManagerPluginWithSettings = imageManagerPlugin;
-      if (imageManagerPluginWithSettings && imageManagerPluginWithSettings.settings) {
-        const pluginSettings = imageManagerPluginWithSettings.settings;
-        pluginSettings.propertyLinkFormat = "custom";
-        pluginSettings.customPropertyLinkFormat = settings.customPropertyLinkFormat;
-        pluginSettings.attachmentLocation = "obsidian";
-        const pluginWithSave = imageManagerPlugin;
-        const saveSettings = pluginWithSave.saveSettings;
-        if (saveSettings && typeof saveSettings === "function") {
-          await saveSettings();
-        }
-      }
-    } catch (error) {
-      console.error("Failed to configure Image Manager:", error);
-    }
-  }
-  getManualConfigurationInstructions(config4) {
-    let instructions = "## Obsidian Settings\n";
-    instructions += `1. Go to **Settings \u2192 Files & Links**
-`;
-    instructions += `2. Set **Default location for new attachments** to: `;
-    instructions += config4.obsidianSettings.attachmentLocation === "subfolder" ? `**"In subfolder under current folder"**
-` : `**"Same folder as current file"**
-`;
-    if (config4.obsidianSettings.attachmentLocation === "subfolder") {
-      instructions += `3. Set **Subfolder name** to: **"${config4.obsidianSettings.subfolderName}"**
-`;
-    }
-    instructions += "## Astro Composer Plugin\n";
-    instructions += `1. Go to **Settings \u2192 Community plugins \u2192 Astro Composer**
-`;
-    instructions += `2. Set **Creation mode** to: "${config4.astroComposerSettings.creationMode === "file" ? "File-based" : "Folder-based"}"
-`;
-    instructions += `3. Ensure **Creation mode** is set to "${config4.astroComposerSettings.creationMode === "file" ? "File-based" : "Folder-based"}" for all content types:
-`;
-    instructions += `   - Posts
-`;
-    instructions += `   - Pages
-`;
-    instructions += `   - Projects
-`;
-    instructions += `   - Docs
-`;
-    if (config4.astroComposerSettings.creationMode === "folder") {
-      instructions += `4. Set **Index file name** to: "${config4.astroComposerSettings.indexFileName}"
-`;
-    }
-    instructions += "## Image Manager Plugin\n";
-    instructions += `1. Go to **Settings \u2192 Community plugins \u2192 Image Manager**
-`;
-    instructions += `2. Under **General**, set **Attachment location** to **"Use Obsidian's settings"** (matches Files & Links above).
-`;
-    instructions += `3. Under **Property insertion**, either:
-`;
-    instructions += `   - Set **Property link format** to **"Use Obsidian's settings"** (recommended when vault attachment settings match Astro Modular), or
-`;
-    instructions += `   - Set **Property link format** to **"Custom format"** and **Custom format template** to: \`${config4.imageManagerSettings.customPropertyLinkFormat}\`
-`;
-    instructions += "**Note**: After making these changes, you should see them reflected in Obsidian's settings interface. If the automatic configuration worked, these settings should already be applied.\n";
-    return instructions;
-  }
-};
+// src/main.ts
+init_PluginManager();
 
 // src/utils/RibbonIconManager.ts
 var RibbonIconManager = class {
