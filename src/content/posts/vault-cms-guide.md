@@ -100,7 +100,6 @@ Community plugins enabled:
 - Oxygen Theme Settings
 - Property Over Filename
 - SEO
-- Settings Search
 - Tag Wrangler
 - UI Tweaker
 - Zen Mode
@@ -182,10 +181,6 @@ When you link to another note, its `title` is automatically set as the hyperlink
 Tabs display the note's `title` property instead of the file name as well. 
 
 You can adjust this behavior in Property Over File Name settings.
-
-### Settings Search
-
-Simply provides a global search option for all settings in Obsidian.
 
 ### Omnisearch
 
