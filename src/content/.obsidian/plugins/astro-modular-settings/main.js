@@ -2574,6 +2574,33 @@ var init_PluginManager = __esm({
         }
         return { message: lines.join("\n"), durationMs: 15e3 };
       }
+      /**
+       * Deep copy of another plugin's settings, taken before we mutate them.
+       * Plugin settings are persisted as JSON, so a JSON round trip is a faithful
+       * clone. Returns null if the settings cannot be cloned, in which case
+       * rollback is skipped rather than risking a partial restore.
+       */
+      snapshotSettings(settings) {
+        try {
+          return JSON.parse(JSON.stringify(settings));
+        } catch (error) {
+          console.warn("Could not snapshot plugin settings; rollback will be skipped:", error);
+          return null;
+        }
+      }
+      /**
+       * Restore a snapshot taken by `snapshotSettings`, so in-memory settings match
+       * what is actually on disk after a failed save. We only ever modify existing
+       * keys, so reassigning each snapshot key is sufficient, and because the
+       * snapshot holds fresh nested objects this also undoes nested mutations such
+       * as changes to individual content types.
+       */
+      restoreSettings(settings, snapshot) {
+        if (!snapshot) return;
+        for (const key of Object.keys(snapshot)) {
+          settings[key] = snapshot[key];
+        }
+      }
       async configureAstroComposerSettings(settings) {
         var _a;
         try {
@@ -2595,6 +2622,7 @@ var init_PluginManager = __esm({
             };
           }
           const pluginSettings = astroComposerPluginWithSettings.settings;
+          const snapshot = this.snapshotSettings(pluginSettings);
           const creationMode = settings.creationMode;
           const contentTypes = pluginSettings.contentTypes;
           const hasNewContentTypes = Array.isArray(contentTypes) && contentTypes.length > 0;
@@ -2630,15 +2658,19 @@ var init_PluginManager = __esm({
             pluginSettings.indexFileName = settings.indexFileName;
           }
           const pluginWithSave = astroComposerPlugin;
-          const saveSettings = pluginWithSave.saveSettings;
-          if (!saveSettings || typeof saveSettings !== "function") {
+          if (typeof pluginWithSave.saveSettings !== "function") {
             console.warn("Astro Composer saveSettings not available; changes would not persist");
             return {
               ok: false,
               reason: "the installed version does not support saving settings from another plugin. Update Astro Composer to the latest version."
             };
           }
-          await saveSettings();
+          try {
+            await pluginWithSave.saveSettings();
+          } catch (saveError) {
+            this.restoreSettings(pluginSettings, snapshot);
+            throw saveError;
+          }
           return { ok: true };
         } catch (error) {
           console.error("Failed to configure Astro Composer:", error);
@@ -2669,19 +2701,24 @@ var init_PluginManager = __esm({
             };
           }
           const pluginSettings = imageManagerPluginWithSettings.settings;
+          const snapshot = this.snapshotSettings(pluginSettings);
           pluginSettings.propertyLinkFormat = "custom";
           pluginSettings.customPropertyLinkFormat = settings.customPropertyLinkFormat;
           pluginSettings.attachmentLocation = "obsidian";
           const pluginWithSave = imageManagerPlugin;
-          const saveSettings = pluginWithSave.saveSettings;
-          if (!saveSettings || typeof saveSettings !== "function") {
+          if (typeof pluginWithSave.saveSettings !== "function") {
             console.warn("Image Manager saveSettings not available; changes would not persist");
             return {
               ok: false,
               reason: "the installed version does not support saving settings from another plugin. Update Image Manager to the latest version."
             };
           }
-          await saveSettings();
+          try {
+            await pluginWithSave.saveSettings();
+          } catch (saveError) {
+            this.restoreSettings(pluginSettings, snapshot);
+            throw saveError;
+          }
           return { ok: true };
         } catch (error) {
           console.error("Failed to configure Image Manager:", error);
