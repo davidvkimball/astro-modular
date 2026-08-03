@@ -575,6 +575,23 @@ for projects and docs.
 
 ---
 
+## Versioning
+
+The theme version lives in **two** files that must always match:
+
+- `VERSION` — authoritative. `scripts/get-version.js` reads it first and only
+  falls back to `package.json`.
+- `package.json` `"version"`
+
+Bump both in the same commit as the change they describe (patch for bug fixes,
+minor for new features), then confirm with `pnpm run version`. `get-version.js`
+exports an `updateVersion()` helper that writes both at once.
+
+These have drifted apart before, which left `pnpm run version` reporting a
+different number than the package metadata. Never update one without the other.
+
+---
+
 ## Bundled Obsidian plugins
 
 Located in `src/content/.obsidian/plugins/`. The important ones for AI agents:

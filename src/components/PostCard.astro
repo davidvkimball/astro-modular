@@ -1,6 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import { formatDate, formatDateMobile, processMarkdown, calculateReadingTime, getReadingTimeMobile } from '../utils/markdown';
+import { formatDate, formatDateMobile, processMarkdown, calculateReadingTime, getReadingTimeMobile, DATE_LOCALE } from '../utils/markdown';
 import { siteConfig, getPostCardAspectRatio } from '../config';
 import { getOptimizedFormat } from '@/utils/images';
 import ImageWrapper from './ImageWrapper.astro';
@@ -175,7 +175,7 @@ const shouldShowCoverImage = (() => {
             <span class="text-primary-300 dark:text-primary-600 sm:hidden">•</span>
             <span class="min-w-0">
               <span class="hidden sm:inline">{wordCount === 1 ? '1 word' : `${wordCount} words`}</span>
-              <span class="sm:hidden">{wordCount === 1 ? '1 word' : `${wordCount.toLocaleString()} words`}</span>
+              <span class="sm:hidden">{wordCount === 1 ? '1 word' : `${wordCount.toLocaleString(DATE_LOCALE)} words`}</span>
             </span>
           </>
         )}

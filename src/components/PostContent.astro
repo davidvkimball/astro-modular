@@ -2,7 +2,7 @@
 import type { Post } from '@/types';
 import { processImagesForLightbox, getOptimizedFormat } from '@/utils/images';
 import { siteConfig } from '@/config';
-import { formatDate, formatDateMobile, getReadingTimeMobile } from '@/utils/markdown';
+import { formatDate, formatDateMobile, getReadingTimeMobile, DATE_LOCALE } from '@/utils/markdown';
 import ImageGallery from './ImageGallery.astro';
 import TableOfContents from './TableOfContents.astro';
 import Button from './Button.astro';
@@ -83,8 +83,8 @@ const processedImage = (() => {
               <span class="hidden sm:inline">•</span>
               <span class="sm:hidden">•</span>
               <span class="min-w-0">
-                <span class="hidden sm:inline">{wordCount.toLocaleString()} words</span>
-                <span class="sm:hidden">{wordCount.toLocaleString()} words</span>
+                <span class="hidden sm:inline">{wordCount.toLocaleString(DATE_LOCALE)} words</span>
+                <span class="sm:hidden">{wordCount.toLocaleString(DATE_LOCALE)} words</span>
               </span>
             </>
           )}
@@ -216,7 +216,7 @@ const processedImage = (() => {
             {wordCount && (
               <div class="flex justify-between">
                 <span class="text-primary-600 dark:text-primary-300">Word count</span>
-                <span class="text-primary-900 dark:text-primary-50">{wordCount.toLocaleString()}</span>
+                <span class="text-primary-900 dark:text-primary-50">{wordCount.toLocaleString(DATE_LOCALE)}</span>
               </div>
             )}
 

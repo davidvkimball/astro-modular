@@ -5,7 +5,7 @@ import { generatePostSEO } from '@/utils/seo';
 import { optimizePostImagePath, getOptimizedFormat } from '@/utils/images';
 import { processWikilinksInHTML } from '@/utils/internallinks';
 import { getCollection } from 'astro:content';
-import { shouldShowPost, processPost, calculateReadingTime, generateTOC, getAdjacentPosts, formatDate, formatDateMobile, getReadingTimeMobile } from '@/utils/markdown';
+import { shouldShowPost, processPost, calculateReadingTime, generateTOC, getAdjacentPosts, formatDate, formatDateMobile, getReadingTimeMobile, DATE_LOCALE } from '@/utils/markdown';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import TableOfContents from '@/components/TableOfContents.astro';
 import LinkedMentions from '@/components/LinkedMentions.astro';
@@ -236,7 +236,7 @@ if (siteConfig.postOptions.graphView.enabled && siteConfig.postOptions.graphView
                 <span class="text-primary-300 dark:text-primary-600 sm:hidden">•</span>
                 <span class="min-w-0">
                   <span class="hidden sm:inline">{wordCount === 1 ? '1 word' : `${wordCount} words`}</span>
-                  <span class="sm:hidden">{wordCount === 1 ? '1 word' : `${wordCount.toLocaleString()} words`}</span>
+                  <span class="sm:hidden">{wordCount === 1 ? '1 word' : `${wordCount.toLocaleString(DATE_LOCALE)} words`}</span>
                 </span>
               </>
             )}

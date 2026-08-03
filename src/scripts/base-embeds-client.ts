@@ -9,6 +9,10 @@ type BaseConfig = {
   headerLabels?: string[]; // from .base properties displayName
 };
 
+// Match the locale the page declares in <html lang>, so client-rendered dates
+// agree with the ones rendered at build time.
+const DATE_LOCALE = document.documentElement.lang || undefined;
+
 function getApiUrlForSource(source: string): string | null {
   switch (source) {
     case 'posts':
@@ -160,9 +164,9 @@ async function renderBaseEmbeds() {
                     d.getUTCMonth(),
                     d.getUTCDate()
                   );
-                  row[c] = localDate.toLocaleDateString();
+                  row[c] = localDate.toLocaleDateString(DATE_LOCALE);
                 } else {
-                  row[c] = d.toLocaleDateString();
+                  row[c] = d.toLocaleDateString(DATE_LOCALE);
                 }
               }
             } else {

@@ -1,5 +1,19 @@
 import type { Post, PostData, ReadingTime, Heading } from "@/types";
 import { render } from "astro:content";
+import { siteConfig } from "@/config";
+
+// Locale used for all date and number formatting. A malformed tag would make
+// Intl throw, so fall back to "en" rather than fail the build on a config typo.
+export const DATE_LOCALE: string = (() => {
+  const configured = siteConfig.language?.trim();
+  if (!configured) return "en";
+  try {
+    new Intl.DateTimeFormat(configured);
+    return configured;
+  } catch {
+    return "en";
+  }
+})();
 
 // Check if a date is valid (not January 1, 1970 or invalid)
 export function isValidDate(date: Date): boolean {
@@ -180,14 +194,14 @@ export function formatDate(date: Date): string {
       date.getUTCMonth(),
       date.getUTCDate()
     );
-    return localDate.toLocaleDateString("en-US", {
+    return localDate.toLocaleDateString(DATE_LOCALE, {
       year: "numeric",
       month: "long",
       day: "numeric",
     });
   }
 
-  return date.toLocaleDateString("en-US", {
+  return date.toLocaleDateString(DATE_LOCALE, {
     year: "numeric",
     month: "long",
     day: "numeric",
@@ -209,14 +223,14 @@ export function formatDateMobile(date: Date): string {
       date.getUTCMonth(),
       date.getUTCDate()
     );
-    return localDate.toLocaleDateString("en-US", {
+    return localDate.toLocaleDateString(DATE_LOCALE, {
       year: "numeric",
       month: "short",
       day: "numeric",
     });
   }
 
-  return date.toLocaleDateString("en-US", {
+  return date.toLocaleDateString(DATE_LOCALE, {
     year: "numeric",
     month: "short",
     day: "numeric",
