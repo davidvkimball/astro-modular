@@ -10,6 +10,14 @@ aliases:
 ---
 Send me a message. 
 
+<!--
+  This form works natively with Netlify Forms. Deploy to Netlify and it is
+  picked up automatically at build time, with no backend and no configuration.
+  Submissions appear under Forms in your Netlify dashboard.
+
+  The action points at /thank-you, which ships with this theme.
+-->
+
 <form   
   name="contact"   
   method="POST"   
