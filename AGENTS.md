@@ -16,7 +16,12 @@ Astro Modular is an Astro blog theme designed for Obsidian users, by
 Obsidian vault — users write in Obsidian, commit, and publish.
 
 **Stack:**
-- Astro 5.x (fully prepared for v6). Netlify / Vercel / GitHub Pages / Cloudflare Workers friendly.
+- Astro 7.x. Netlify / Vercel / GitHub Pages / Cloudflare Workers friendly.
+- **HTML comments cannot live inside a JSX expression.** Astro 7's compiler rejects
+  `{cond ? (` followed by `<!-- ... -->`, and a `{/* ... */}` sibling next to an
+  element in the same branch is equally invalid, because the branch must be a single
+  expression. Put the comment INSIDE the element (`{/* ... */}` as a child) or ABOVE
+  the whole expression (`<!-- ... -->` at template level). Astro 5 tolerated both.
 - **Obsidian vault as CMS.** `src/content/.obsidian/` is committed, with a curated plugin set.
 - **Swup** for client-side page transitions (NOT Astro's ClientRouter).
 - Tailwind + custom theme variables (17+ built-in color themes, switchable at runtime).
