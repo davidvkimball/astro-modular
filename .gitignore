@@ -56,3 +56,6 @@ obsidian_askpass.sh
 # Generated deployment platform files (GitHub Pages + Cloudflare Workers only)
 public/_redirects
 public/_headers
+
+# Playwright MCP scratch snapshots
+.playwright-mcp/
