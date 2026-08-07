@@ -111,11 +111,6 @@ image: {
       protocol: 'https'
     }]
   },
-  server: {
-    // Unique dev port for this project so it never collides with another
-    // Astro project's dev server. Keep in sync with scripts/dev-with-port.js.
-    port: 4322
-  },
   integrations: [
     refreshContentOnChange(),
     tailwind(),
@@ -205,8 +200,8 @@ image: {
     },
     server: {
       host: 'localhost',
-      port: 4322,
-      strictPort: false, // Allow fallback to 4323 if 4322 is occupied
+      port: 5000,
+      strictPort: false, // Allow fallback to 5001 if 5000 is occupied (e.g., AirPlay on macOS)
       allowedHosts: [],
       middlewareMode: false,
       hmr: true,

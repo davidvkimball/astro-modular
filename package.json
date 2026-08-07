@@ -5,7 +5,7 @@
   "description": "A flexible blog theme designed for Obsidian users.",
   "main": "index.js",
   "scripts": {
-    "dev": "cross-env ASTRO_CONTENT_COLLECTION_CACHE=false node scripts/setup-dev.mjs && node scripts/sync-images.js && node scripts/process-aliases.js && node scripts/generate-deployment-config.js && node scripts/generate-graph-data.js && node scripts/dev-with-port.js dev --force",
+    "dev": "cross-env ASTRO_CONTENT_COLLECTION_CACHE=false node scripts/setup-dev.mjs && node scripts/sync-images.js && node scripts/process-aliases.js && node scripts/generate-deployment-config.js && node scripts/generate-graph-data.js && node scripts/dev-with-port.js",
     "build": "node scripts/sync-images.js && node scripts/process-aliases.js && node scripts/generate-deployment-config.js && node scripts/generate-graph-data.js --production && astro build",
     "preview": "pnpm run build && node scripts/dev-with-port.js preview",
     "sync-images": "node scripts/sync-images.js",
@@ -41,7 +41,7 @@
     "@swup/astro": "^1.8.0",
     "@tailwindcss/typography": "^0.5.19",
     "@types/d3": "^7.4.3",
-    "astro": "7.2.0",
+    "astro": "7.0.0",
     "astro-redirect-from": "^1.3.5",
     "d3": "^7.9.0",
     "fuse.js": "^7.1.0",
@@ -69,9 +69,5 @@
     "cross-env": "^10.1.0",
     "vite": "^7.3.1",
     "wrangler": "^4.71.0"
-  },
-  "engines": {
-    "node": ">=22.12.0"
-  },
-  "packageManager": "pnpm@11.20.0"
+  }
 }
