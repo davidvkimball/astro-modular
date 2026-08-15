@@ -108,6 +108,14 @@ const TWITTER_PATTERNS = [
 ];
 
 // Helper function to get file extension
+// A vault relative path may already name its own post, such as
+// posts/my-post/clip.mp4, which is how images are authored. Strip that prefix
+// so the collection and slug are not prepended twice, which would 404.
+function stripSelfPrefix(url: string, collection: string, contentSlug: string): string {
+  const selfPrefix = `${collection}/${contentSlug}/`;
+  return url.startsWith(selfPrefix) ? url.slice(selfPrefix.length) : url;
+}
+
 function getFileExtension(url: string): string {
   const pathname = new URL(url, 'http://example.com').pathname;
   const lastDot = pathname.lastIndexOf('.');
@@ -355,7 +363,7 @@ export const remarkObsidianEmbeds: Plugin<[], Root> = () => {
               }
 
               const contentSlug = pathParts[contentIndex + 1];
-              resolvedUrl = `/${collection}/${contentSlug}/${url}`;
+              resolvedUrl = `/${collection}/${contentSlug}/${stripSelfPrefix(url, collection, contentSlug)}`;
             } else {
               // File-based content: /collection/attachments/file (shared attachments folder)
               let collection = 'posts';
@@ -391,7 +399,7 @@ export const remarkObsidianEmbeds: Plugin<[], Root> = () => {
             }
 
             const contentSlug = pathParts[contentIndex + 1];
-            resolvedUrl = `/${collection}/${contentSlug}/${url}`;
+            resolvedUrl = `/${collection}/${contentSlug}/${stripSelfPrefix(url, collection, contentSlug)}`;
           }
         }
 
