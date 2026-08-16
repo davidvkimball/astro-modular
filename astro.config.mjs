@@ -220,7 +220,24 @@ image: {
       'process.env.ASTRO_CONTENT_COLLECTION_CACHE': 'false'
     },
     optimizeDeps: {
-      exclude: ['astro:content']
+      exclude: ['astro:content'],
+      // Pre-bundle these at dev startup instead of letting Vite discover them
+      // lazily. Without this, the first page that pulls one in triggers a
+      // re-optimization, which changes the ?v= hash on every optimized module,
+      // 504s any request already in flight, and forces a full page reload.
+      // Swup navigates via a dynamic import, so a 504 there drops it back to a
+      // full document load: the nav "flash", with images dying in the same
+      // window. Keep this list in sync with node_modules/.vite/deps/_metadata.json.
+      include: [
+        '@swup/astro/client/Swup',
+        '@swup/astro/client/SwupHeadPlugin',
+        '@swup/astro/client/SwupScriptsPlugin',
+        '@swup/astro/idle',
+        '@swup/astro/serialise',
+        'd3',
+        'fuse.js',
+        'mermaid'
+      ]
     },
     exclude: ['**/_redirects']
   },
