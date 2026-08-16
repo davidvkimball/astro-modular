@@ -997,24 +997,26 @@ textarea {
   html { scroll-behavior: auto; }
 }
 
-/* Swup Transitions - Simplified */
+/* Swup Transitions
+ *
+ * This must stay the canonical two-rule Swup fade: a resting state that
+ * declares opacity, and a single is-animating rule that hides it.
+ *
+ * Swup awaits the enter transition BEFORE it removes is-animating. If a rule
+ * pins the container to opacity 0 at that moment and nothing can change it,
+ * no transitionend ever fires, so the await never resolves. The visit then
+ * stalls at VisitState.Entering with is-changing/is-animating/is-rendering
+ * stuck on <html>, leaving the content invisible and Swup wedged, which makes
+ * every later click fall back to a full page load. Do not reintroduce
+ * separate is-leaving / is-ready opacity rules here.
+ */
 .transition-swup-fade {
+  opacity: 1;
   transition: opacity 0.2s ease-out;
 }
 
-/* Page leaving - simple fade out */
-html.is-leaving .transition-swup-fade {
-  opacity: 0;
-}
-
-/* Page entering - simple fade in */
 html.is-animating .transition-swup-fade {
   opacity: 0;
-}
-
-/* Page ready - final state */
-html.is-ready .transition-swup-fade {
-  opacity: 1;
 }
 
 /* Ensure smooth transitions with hardware acceleration */
