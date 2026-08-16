@@ -12,26 +12,29 @@ import ImageGalleryManager from '@/components/ImageGalleryManager.astro';
 import CategoryFilter from '@/components/CategoryFilter.astro';
 import '@/styles/global.css';
 
-// Import local fonts if configured
-if (shouldLoadLocalFonts()) {
-  // Import Inter font
-  if (siteConfig.fonts.families.body === 'Inter' || siteConfig.fonts.families.heading === 'Inter') {
-    import('@fontsource/inter/300.css');
-    import('@fontsource/inter/400.css');
-    import('@fontsource/inter/500.css');
-    import('@fontsource/inter/600.css');
-    import('@fontsource/inter/700.css');
-  }
-
-  // Import JetBrains Mono font
-  if (siteConfig.fonts.families.mono === 'JetBrains Mono') {
-    import('@fontsource/jetbrains-mono/300.css');
-    import('@fontsource/jetbrains-mono/400.css');
-    import('@fontsource/jetbrains-mono/500.css');
-    import('@fontsource/jetbrains-mono/600.css');
-    import('@fontsource/jetbrains-mono/700.css');
-  }
-}
+// Local font faces. These MUST be static imports.
+//
+// They were previously conditional dynamic import() calls. Vite cannot
+// statically analyse those, so it processed the same @fontsource CSS down two
+// paths: the linked stylesheet inlined each face as a base64 data URI, while a
+// second copy was emitted as 35 @font-face rules inside an inline <style> in
+// the HTML, pointing at /_assets/*.woff2 files that were never written. Every
+// one of those 404'd, so any weight not covered by the inlined copy fell back
+// to a system font.
+//
+// Static imports let Vite resolve the font assets once, consistently. Which
+// family actually renders is still config-driven, via the --font-body /
+// --font-heading / --font-mono custom properties set further down.
+import '@fontsource/inter/300.css';
+import '@fontsource/inter/400.css';
+import '@fontsource/inter/500.css';
+import '@fontsource/inter/600.css';
+import '@fontsource/inter/700.css';
+import '@fontsource/jetbrains-mono/300.css';
+import '@fontsource/jetbrains-mono/400.css';
+import '@fontsource/jetbrains-mono/500.css';
+import '@fontsource/jetbrains-mono/600.css';
+import '@fontsource/jetbrains-mono/700.css';
 
 export interface Props {
   seoData: SEOData;
