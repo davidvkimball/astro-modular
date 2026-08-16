@@ -1,0 +1,147 @@
+---
+// Collapsible category sections and TOC scroll behaviour for the docs listing.
+//
+// This lives in a globally rendered component rather than in src/pages/docs/index.astro
+// on purpose. Swup swaps page HTML but does not execute the incoming page's module
+// scripts, so a definition that only ships with the docs page never lands when you
+// arrive there via client-side navigation. BaseLayout's page:view hook then finds
+// window.initializeCollapsibleCategories undefined and silently does nothing, which
+// left the toggles dead unless you did a full page load on /docs/.
+//
+// Rendered unconditionally by BaseLayout, alongside CategoryFilter, so the
+// initializers are always defined. Both functions no-op when their elements are
+// absent, so they are safe to run on every page.
+---
+
+<script>
+  function initializeCollapsibleCategories() {
+    const categorySections = document.querySelectorAll('.category-section');
+
+    categorySections.forEach(section => {
+      const toggle = section.querySelector('button[id$="-toggle"]') as HTMLButtonElement;
+      const content = section.querySelector('.category-content') as HTMLElement;
+      const chevron = section.querySelector('span[id$="-chevron"]') as HTMLElement;
+
+      if (!toggle || !content || !chevron) return;
+
+      // Remove existing event listeners by cloning
+      const newToggle = toggle.cloneNode(true) as HTMLButtonElement;
+      toggle.parentNode?.replaceChild(newToggle, toggle);
+
+      // Get fresh references
+      const freshToggle = section.querySelector('button[id$="-toggle"]') as HTMLButtonElement;
+      const freshContent = section.querySelector('.category-content') as HTMLElement;
+      const freshChevron = section.querySelector('span[id$="-chevron"]') as HTMLElement;
+
+      if (!freshToggle || !freshContent || !freshChevron) return;
+
+      // Initialize with expanded state
+      freshContent.style.maxHeight = freshContent.scrollHeight + 'px';
+      freshContent.style.opacity = '1';
+      freshChevron.classList.remove('rotate-90');
+      freshChevron.classList.add('rotate-0');
+
+      // Add click handler - toggle collapse/expand
+      freshToggle.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const isExpanded = freshToggle.getAttribute('aria-expanded') === 'true';
+
+        if (isExpanded) {
+          // Collapse - rotate chevron to point right
+          freshContent.style.maxHeight = '0';
+          freshContent.style.opacity = '0';
+          freshContent.style.marginBottom = '0';
+          freshChevron.classList.remove('rotate-0');
+          freshChevron.classList.add('rotate-90');
+          freshToggle.setAttribute('aria-expanded', 'false');
+        } else {
+          // Expand - rotate chevron to point down
+          freshContent.style.maxHeight = freshContent.scrollHeight + 'px';
+          freshContent.style.opacity = '1';
+          freshContent.style.marginBottom = '';
+          freshChevron.classList.remove('rotate-90');
+          freshChevron.classList.add('rotate-0');
+          freshToggle.setAttribute('aria-expanded', 'true');
+        }
+      });
+    });
+  }
+
+  // Custom scroll behavior for documentation categories
+  function initializeCategoryScroll() {
+    const tocLinks = document.querySelectorAll('.toc-link');
+    const categorySections = document.querySelectorAll('section[id^="category-"]');
+
+    if (!tocLinks.length || !categorySections.length) return;
+
+    // Enhanced highlight function for categories
+    function highlightTOC() {
+      let current = '';
+
+      categorySections.forEach(section => {
+        const rect = section.getBoundingClientRect();
+        // More precise threshold for categories
+        if (rect.top <= 120) {
+          current = section.id;
+        }
+      });
+
+      tocLinks.forEach(link => {
+        const href = link.getAttribute('href')?.slice(1);
+        if (href === current) {
+          link.classList.add('active');
+        } else {
+          link.classList.remove('active');
+        }
+      });
+    }
+
+    // Smooth scroll with better positioning for categories
+    tocLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = link.getAttribute('href')?.slice(1);
+        if (!targetId) return;
+        const targetElement = document.getElementById(targetId);
+
+        if (targetElement) {
+          // Better scroll positioning for categories
+          const headerOffset = 80;
+          const elementPosition = targetElement.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+
+    // Initial highlight
+    highlightTOC();
+
+    // Update on scroll
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          highlightTOC();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    });
+  }
+
+  // Initialize on DOM ready
+  document.addEventListener('DOMContentLoaded', () => {
+    initializeCollapsibleCategories();
+    initializeCategoryScroll();
+  });
+
+  // Make functions globally accessible for Swup re-initialization
+  (window as any).initializeCollapsibleCategories = initializeCollapsibleCategories;
+  (window as any).initializeCategoryScroll = initializeCategoryScroll;
+</script>

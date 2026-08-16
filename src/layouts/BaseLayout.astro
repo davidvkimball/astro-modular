@@ -10,6 +10,7 @@ import ScrollToTop from '@/components/ScrollToTop.astro';
 import Lightbox from '@/components/Lightbox.astro';
 import ImageGalleryManager from '@/components/ImageGalleryManager.astro';
 import CategoryFilter from '@/components/CategoryFilter.astro';
+import DocsCategoryCollapse from '@/components/DocsCategoryCollapse.astro';
 import '@/styles/global.css';
 
 // Local font faces. These MUST be static imports.
@@ -1113,6 +1114,7 @@ for (const [path, mod] of Object.entries(customThemeModules)) {
 
   <!-- Category Filter -->
   <CategoryFilter />
+  <DocsCategoryCollapse />
 
 
     <!-- Mermaid diagrams handled by client script -->
