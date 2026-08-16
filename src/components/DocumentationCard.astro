@@ -2,6 +2,7 @@
 import type { CollectionEntry } from 'astro:content';
 import { formatDate, processMarkdown, isValidDate } from '../utils/markdown';
 import { siteConfig } from '../config';
+import { getOptimizedFormat } from '@/utils/images';
 import ImageWrapper from './ImageWrapper.astro';
 import Icon from './Icon.astro';
 
@@ -84,15 +85,20 @@ const showCoverImage = shouldShowCoverImage && image && context !== 'home';
               if (typeof cleanImagePath === 'string') {
                 // Remove images/ prefix if present (Obsidian subfolder setting)
                 if (cleanImagePath.startsWith('images/')) {
-                  return cleanImagePath.replace('images/', '');
+                  return getOptimizedFormat(cleanImagePath.replace('images/', ''));
                 }
                 // Remove attachments/ prefix - basePath will add it back
                 if (cleanImagePath.startsWith('attachments/')) {
-                  return cleanImagePath.replace('attachments/', '');
+                  return getOptimizedFormat(cleanImagePath.replace('attachments/', ''));
                 }
               }
 
-              return cleanImagePath || '';
+              // Match PostCard/ProjectCard: sync-images.js only emits .webp, so a
+              // raw .png/.jpg path from frontmatter resolves to a file that does
+              // not exist on a clean checkout. This is why docs cards rendered
+              // without images on every Netlify build but worked locally, where
+              // stale originals lingered in public/docs/.
+              return cleanImagePath ? getOptimizedFormat(cleanImagePath) : '';
             })()}
             basePath={(() => {
               // 1. External URLs - no basePath needed
