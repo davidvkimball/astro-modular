@@ -4,7 +4,11 @@
 
 [build.environment]
   NODE_VERSION = "22"
-  PNPM_VERSION = "8"
+  # Must be 9 or newer. pnpm 8 cannot read this repo: pnpm-lock.yaml is
+  # lockfileVersion 9.0, and pnpm-workspace.yaml uses the settings-only format
+  # (allowBuilds, minimumReleaseAgeExclude) with no packages: key, which pnpm 8
+  # rejects with ERR_PNPM_INVALID_WORKSPACE_CONFIGURATION.
+  PNPM_VERSION = "11"
 
 # Enable compression for all text-based files
 # Note: Netlify automatically handles gzip/brotli compression based on client support
