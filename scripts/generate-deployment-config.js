@@ -523,8 +523,10 @@ async function writeGitHubPagesConfig(redirects) {
 # Cloudflare Pages supports custom headers on all plans
 
 # HTML files
+# Must always revalidate: content-hashed assets are pruned each deploy, so
+# cached HTML would reference filenames that no longer exist and 404.
 /*.html
-  Cache-Control: public, max-age=3600, s-maxage=86400
+  Cache-Control: public, max-age=0, must-revalidate
 
 # CSS files
 /*.css

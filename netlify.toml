@@ -12,10 +12,16 @@
 
 # Enable compression for all text-based files
 # Note: Netlify automatically handles gzip/brotli compression based on client support
+# HTML must always revalidate. Astro emits content-hashed asset filenames and
+# prunes the old ones on every deploy, so any cached HTML outlives the assets it
+# points at. Caching it for an hour in the browser (and a day on the CDN) meant
+# that after each deploy, visitors held HTML referencing filenames that no longer
+# existed: fonts, images, JS bundles and Swup's own script all 404'd, which broke
+# the docs toggles and forced full page loads on every nav.
 [[headers]]
   for = "/*.html"
   [headers.values]
-    Cache-Control = "public, max-age=3600, s-maxage=86400"
+    Cache-Control = "public, max-age=0, must-revalidate"
 
 [[headers]]
   for = "/*.css"
