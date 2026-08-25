@@ -106,6 +106,24 @@ function copyIfExists(src, dest) {
 
 // ── Main ────────────────────────────────────────────────────────────────────
 
+/**
+ * Compare two dot-separated version strings.
+ * Returns >0 if a is newer, <0 if b is newer, 0 if equal.
+ * Non-numeric segments (pre-release suffixes) are compared as 0 so that
+ * a malformed tag never reads as newer than a real one.
+ */
+function compareVersions(a, b) {
+  const parse = (v) => String(v).split('.').map((n) => parseInt(n, 10) || 0);
+  const pa = parse(a);
+  const pb = parse(b);
+  const len = Math.max(pa.length, pb.length);
+  for (let i = 0; i < len; i++) {
+    const diff = (pa[i] || 0) - (pb[i] || 0);
+    if (diff !== 0) return diff;
+  }
+  return 0;
+}
+
 async function main() {
   console.log('\nAstro Modular Updater');
   console.log('====================');
@@ -130,6 +148,20 @@ async function main() {
   if (currentVersion === latestVersion) {
     log('Already up to date!');
     process.exit(0);
+  }
+
+  // Never move backwards. Anyone who forked from master is on a version newer
+  // than the most recent published release, and the only previous guard was a
+  // string equality check, so this script would happily overwrite their newer
+  // files with an older release.
+  const comparison = compareVersions(currentVersion, latestVersion);
+  if (comparison > 0) {
+    log(`You are on ${currentVersion}, which is newer than the latest release (${latestVersion}).`);
+    log('Nothing to do. Use --force to overwrite with the older release anyway.');
+    if (!process.argv.includes('--force')) {
+      process.exit(0);
+    }
+    log('--force given, continuing with the downgrade.');
   }
 
   // 3. Download release archive

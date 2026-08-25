@@ -595,6 +595,25 @@ exports an `updateVersion()` helper that writes both at once.
 These have drifted apart before, which left `pnpm run version` reporting a
 different number than the package metadata. Never update one without the other.
 
+### Cut a GitHub release when you ship
+
+`pnpm run update` installs the **latest GitHub release**, not `master`. Bumping
+`VERSION` and pushing is not enough: until a release is published, users running
+`pnpm run update` keep getting the last released version, and anyone who forked
+from `master` gets silently downgraded to it.
+
+This happened. Releases stopped at 0.9.6 while `master` reached 0.9.14, so a user
+who forked at 0.9.14 was downgraded eight versions by a single update.
+
+After bumping and pushing, publish a matching release:
+
+```
+gh release create <version> --title "<version>" --notes "<summary>"
+```
+
+`scripts/update.mjs` now refuses to move backwards, so a missing release is no
+longer destructive, but users still will not receive the fix until it is cut.
+
 ---
 
 ## Bundled Obsidian plugins
