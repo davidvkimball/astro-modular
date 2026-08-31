@@ -79,6 +79,10 @@ Astro.response.status = 404;
 </script>
 
 <style>
+  /* Tailwind 4 compiles component styles in isolation, so @apply needs
+     this to see the theme context. */
+  @reference "../styles/global.css";
+
   .btn-primary {
     @apply inline-flex items-center px-6 py-3 font-medium rounded-lg transition-all duration-200 hover:shadow-lg transform hover:scale-105;
   }

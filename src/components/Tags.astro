@@ -45,6 +45,10 @@ const sortedTags = [...tags].sort();
 )}
 
 <style>
+  /* Tailwind 4 compiles component styles in isolation, so @apply needs
+     this to see the theme context. */
+  @reference "../styles/global.css";
+
 
   .tag-item {
     @apply inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded-full transition-all duration-200;

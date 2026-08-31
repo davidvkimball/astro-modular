@@ -75,7 +75,7 @@ function processExcerptLinks(text: string, targetSlug: string): string {
     const wikilinkFormat = `[[${displayText}]]`;
 
     if (isRelevantLink) {
-      return `<mark class="bg-highlight-200 dark:bg-highlight-800 text-highlight-900 dark:text-highlight-100 px-1 rounded-sm">${wikilinkFormat}</mark>`;
+      return `<mark class="bg-highlight-200 dark:bg-highlight-800 text-highlight-900 dark:text-highlight-100 px-1 rounded-xs">${wikilinkFormat}</mark>`;
     } else {
       return wikilinkFormat;
     }
@@ -151,7 +151,7 @@ function processExcerptLinks(text: string, targetSlug: string): string {
     const displayText = display || (anchorIndex !== -1 ? link.substring(0, anchorIndex) : link);
     const wikilinkFormat = `[[${displayText}]]`;
     const replacement = isRelevantLink 
-      ? `<mark class="bg-highlight-200 dark:bg-highlight-800 text-highlight-900 dark:text-highlight-100 px-1 rounded-sm">${wikilinkFormat}</mark>`
+      ? `<mark class="bg-highlight-200 dark:bg-highlight-800 text-highlight-900 dark:text-highlight-100 px-1 rounded-xs">${wikilinkFormat}</mark>`
       : wikilinkFormat;
     
     wikilinkMatches.push({ index: matchIndex, match, link, display, replacement });
@@ -254,7 +254,7 @@ function processExcerptLinks(text: string, targetSlug: string): string {
     }
     
     const replacement = isRelevantLink 
-      ? `<mark class="bg-highlight-200 dark:bg-highlight-800 text-highlight-900 dark:text-highlight-100 px-1 rounded-sm">[[${trimmedDisplay}]]</mark>`
+      ? `<mark class="bg-highlight-200 dark:bg-highlight-800 text-highlight-900 dark:text-highlight-100 px-1 rounded-xs">[[${trimmedDisplay}]]</mark>`
       : `[[${trimmedDisplay}]]`;
     
     incompleteMatches.push({ index: matchIndex, match, displayText: replacement });

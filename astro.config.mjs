@@ -1,4 +1,5 @@
 import { defineConfig } from 'astro/config';
+import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 import { unified } from '@astrojs/markdown-remark';
 import mdx from '@astrojs/mdx';
@@ -185,6 +186,7 @@ image: {
     }
   },
   vite: {
+    plugins: [tailwindcss()],
     assetsInclude: ['**/*.base', '**/*.home', '**/*.base'],
     resolve: {
       alias: {

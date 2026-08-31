@@ -2,7 +2,11 @@
 /* KaTeX Math Rendering - Must be first */
 @import 'katex/dist/katex.css';
 
-@tailwind base;
+@import "tailwindcss";
+
+/* Keep the existing JS config: it derives fonts from siteConfig and maps the
+   runtime theme variables, neither of which ports to a CSS-first @theme block. */
+@config "../../tailwind.config.mjs";
 
 /* Immediately override Tailwind preflight border styles for KaTeX */
 @layer base {
@@ -15,8 +19,6 @@
   }
 }
 
-@tailwind components;
-@tailwind utilities;
 
 /* KaTeX Theme Integration */
 .katex {
@@ -212,7 +214,13 @@ p:has(.katex-display) {
   --inline-code-text: 240 240 240;
 }
 
-/* Base Styles */
+/* Base Styles
+ *
+ * These must stay inside @layer base. Tailwind 4 emits utilities into
+ * @layer utilities, and unlayered CSS outranks every layer, so a bare
+ * `body { @apply bg-... }` here would beat the utility classes written on the
+ * element itself and silently override them. */
+@layer base {
 * {
   @apply border-primary-200 dark:border-primary-700;
 }
@@ -342,6 +350,7 @@ a {
 a:hover {
   @apply text-highlight-700 dark:text-highlight-300 opacity-80;
 }
+} /* end @layer base */
 
 /* Wikilinks */
 .wikilink {
@@ -354,11 +363,11 @@ a:hover {
 
 /* Ensure wikilink styling applies even inside .prose */
 .prose a.wikilink {
-  @apply text-highlight-600 dark:text-highlight-400 font-medium no-underline border-b border-dashed border-highlight-500/50 transition-all duration-200 !important;
+  @apply text-highlight-600! dark:text-highlight-400! font-medium! no-underline! border-b! border-dashed! border-highlight-500/50! transition-all! duration-200!;
 }
 
 .prose a.wikilink:hover {
-  @apply text-highlight-700 dark:text-highlight-300 opacity-80 no-underline !important;
+  @apply text-highlight-700! dark:text-highlight-300! opacity-80! no-underline!;
 }
 
 /* EXCLUDE heading links from wikilink styling */
@@ -374,7 +383,7 @@ a:hover {
 .prose h4 a.anchor-link,
 .prose h5 a.anchor-link,
 .prose h6 a.anchor-link {
-  @apply border-none no-underline !important;
+  @apply border-none! no-underline!;
 }
 
 .wikilink-broken {
@@ -456,7 +465,7 @@ pre::-webkit-scrollbar-thumb:hover, .prose pre::-webkit-scrollbar-thumb:hover,
 
 /* Keyboard Shortcuts */
 kbd {
-  @apply inline-flex items-center px-2 py-1 text-xs font-medium bg-primary-100 dark:bg-primary-800 text-primary-800 dark:text-primary-200 border border-primary-300 dark:border-primary-600 rounded shadow-sm;
+  @apply inline-flex items-center px-2 py-1 text-xs font-medium bg-primary-100 dark:bg-primary-800 text-primary-800 dark:text-primary-200 border border-primary-300 dark:border-primary-600 rounded shadow-xs;
 }
 
 /* Button Styles - Consolidated */
@@ -517,7 +526,7 @@ kbd {
 
 /* Card Styles */
 .card {
-  @apply bg-white dark:bg-primary-900 border border-primary-200 dark:border-primary-700 rounded-lg shadow-sm;
+  @apply bg-white dark:bg-primary-900 border border-primary-200 dark:border-primary-700 rounded-lg shadow-xs;
 }
 
 /* Form Styles */
@@ -815,7 +824,7 @@ textarea {
 
 /* Default image styling */
 .prose img {
-  @apply rounded-lg shadow-sm;
+  @apply rounded-lg shadow-xs;
 }
 
 /* Obsidian-sized images - respect manual width/height, centered, no cropping */
@@ -925,20 +934,20 @@ textarea {
 
 /* Alternating rows using dynamic theme colors */
 .prose .table-wrapper table tr:nth-child(even) {
-  @apply bg-primary-50 !important;
+  @apply bg-primary-50!;
 }
 
 .dark .prose .table-wrapper table tr:nth-child(even) {
-  @apply bg-primary-800 !important;
+  @apply bg-primary-800!;
 }
 
 /* Hover using dynamic theme colors */
 .prose .table-wrapper table tr:hover {
-  @apply bg-primary-100 !important;
+  @apply bg-primary-100!;
 }
 
 .dark .prose .table-wrapper table tr:hover {
-  @apply bg-primary-700 !important;
+  @apply bg-primary-700!;
 }
 
 @media (min-width: 768px) {
@@ -1125,11 +1134,11 @@ main {
 
 /* PostCard component styles - moved from component to global for Swup compatibility */
 .post-card {
-  @apply bg-primary-50 dark:bg-primary-900 rounded-lg border border-primary-200 dark:border-primary-700 shadow-sm hover:shadow-md transition-shadow duration-200;
+  @apply bg-primary-50 dark:bg-primary-900 rounded-lg border border-primary-200 dark:border-primary-700 shadow-xs hover:shadow-md transition-shadow duration-200;
 }
 
 .featured-post {
-  @apply bg-primary-50 dark:bg-primary-900 rounded-lg border border-primary-200 dark:border-primary-700 shadow-sm hover:shadow-md transition-shadow duration-200;
+  @apply bg-primary-50 dark:bg-primary-900 rounded-lg border border-primary-200 dark:border-primary-700 shadow-xs hover:shadow-md transition-shadow duration-200;
 }
 
 

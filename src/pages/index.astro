@@ -178,7 +178,7 @@ const structuredData = {
   <div class="py-8 relative">
     <div class="mx-auto px-4 sm:px-6 lg:px-8" style={`max-width: ${siteConfig.layout.contentWidth}`}>
       {onlyBlurbContent ? (
-        <article class="bg-primary-50 dark:bg-primary-900 rounded-lg border border-primary-200 dark:border-primary-700 shadow-sm">
+        <article class="bg-primary-50 dark:bg-primary-900 rounded-lg border border-primary-200 dark:border-primary-700 shadow-xs">
           {/* Blurb-only homepage with page-like layout */}
           <div class="p-6 rounded-lg">
             <!-- Page header -->
@@ -375,6 +375,10 @@ const structuredData = {
 </script>
 
 <style>
+  /* Tailwind 4 compiles component styles in isolation, so @apply needs
+     this to see the theme context. */
+  @reference "../styles/global.css";
+
   /* Enhanced homepage styles */
   .btn-primary {
     @apply inline-flex items-center px-6 py-3 font-medium rounded-lg transition-all duration-200 hover:shadow-lg transform hover:scale-105;

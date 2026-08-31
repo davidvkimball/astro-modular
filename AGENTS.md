@@ -24,7 +24,20 @@ Obsidian vault — users write in Obsidian, commit, and publish.
   the whole expression (`<!-- ... -->` at template level). Astro 5 tolerated both.
 - **Obsidian vault as CMS.** `src/content/.obsidian/` is committed, with a curated plugin set.
 - **Swup** for client-side page transitions (NOT Astro's ClientRouter).
-- Tailwind + custom theme variables (17+ built-in color themes, switchable at runtime).
+- **Tailwind 4** via `@tailwindcss/vite`, plus custom theme variables (17+ built-in
+  color themes, switchable at runtime). Three v4 rules that are easy to trip over:
+  - `@apply` inside an `.astro` `<style>` block needs `@reference "<path>/global.css";`
+    at the top of that block. Component styles compile in isolation and cannot see
+    the theme context otherwise, and the build fails with "Cannot apply unknown
+    utility class".
+  - Base element styles in `global.css` must stay inside `@layer base`. v4 emits
+    utilities into `@layer utilities`, and unlayered CSS outranks every layer, so a
+    bare `body { @apply bg-... }` silently overrides the utility classes written on
+    the element itself.
+  - `@apply x y !important` is v3 syntax. In v4 the bang attaches per utility: `@apply x! y!`.
+  - The JS config is still in use via `@config "../../tailwind.config.mjs"` in
+    `global.css`. It derives fonts from `siteConfig` and maps the runtime theme
+    variables, neither of which ports to a CSS-first `@theme` block.
 - Vanilla JS only — no React, no jQuery.
 - Modular by design — almost every feature toggles via `siteConfig` in `src/config.ts`.
 
