@@ -1,5 +1,4 @@
 import { defineConfig } from 'astro/config';
-import tailwind from '@astrojs/tailwind';
 import sitemap from '@astrojs/sitemap';
 import { unified } from '@astrojs/markdown-remark';
 import mdx from '@astrojs/mdx';
@@ -113,7 +112,6 @@ image: {
   },
   integrations: [
     refreshContentOnChange(),
-    tailwind(),
     sitemap(),
     mdx(),
     swup({
