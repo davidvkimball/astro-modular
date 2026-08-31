@@ -9,3 +9,6 @@ minimumReleaseAgeExclude:
   - '@astrojs/markdown-satteri'
   - '@astrojs/mdx'
   - vscode-languageserver-protocol
+  - '@astrojs/internal-helpers@0.11.0'
+  - '@astrojs/markdown-remark@7.3.0'
+  - '@astrojs/sitemap@3.7.4'
