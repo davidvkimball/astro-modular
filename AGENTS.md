@@ -427,15 +427,35 @@ test audio/video/PDF/YouTube/Twitter embeds after every change.
 
 ### Math — the KaTeX duplication bug
 
-KaTeX renders both MathML (for accessibility) and HTML (visible fallback). If both
-are visible, math appears twice (`E=mc²E=mc²`). The correct CSS is:
+KaTeX renders every equation twice: MathML for assistive technology, and styled
+HTML for sighted readers. If both are visible the equation prints twice
+(`E=mc²E=mc²`), so exactly one must be shown.
+
+The HTML is the visual output and must stay visible. The MathML must be hidden
+**visually only** — `display: none` would drop it from the accessibility tree and
+leave screen reader users with no math at all. Use KaTeX's own accessibility hack:
 
 ```css
-.katex-mathml { display: inline-block !important; }
-.katex-html   { display: none !important; }
+.katex-mathml {
+  position: absolute !important;
+  clip: rect(1px, 1px, 1px, 1px) !important;
+  height: 1px !important;
+  width: 1px !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  border: 0 !important;
+}
+
+.katex-html { display: inline-block !important; }
 ```
 
-**Never invert this.** MathML is the correct, accessible output.
+The `!important` flags are needed because the surrounding KaTeX overrides in
+`global.css` are themselves `!important`.
+
+This section previously prescribed the opposite (show MathML, hide HTML), which
+would break visual rendering in most browsers, while the code shipped
+`.katex-mathml { display: none }`, which silently broke screen reader access.
+Both were wrong; the rules above are what is now in `global.css`.
 
 ---
 

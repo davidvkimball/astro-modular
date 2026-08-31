@@ -96,9 +96,22 @@
   height: auto !important;
 }
 
-/* Hide MathML and show HTML output for visual rendering */
+/* KaTeX renders math twice: MathML for assistive tech, and styled HTML for
+ * sighted readers. Exactly one must be visible or the equation prints twice
+ * (E=mc^2E=mc^2).
+ *
+ * MathML is hidden visually but NOT with `display: none`, which would drop it
+ * from the accessibility tree and leave screen reader users with no math at
+ * all. This is KaTeX's own accessibility hack, restated here with !important
+ * so it survives the overrides below. */
 .katex-mathml {
-  display: none !important;
+  position: absolute !important;
+  clip: rect(1px, 1px, 1px, 1px) !important;
+  padding: 0 !important;
+  border: 0 !important;
+  height: 1px !important;
+  width: 1px !important;
+  overflow: hidden !important;
 }
 
 .katex-html {
