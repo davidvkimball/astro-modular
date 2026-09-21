@@ -107,6 +107,41 @@ You can make callouts collapsible by adding `+` (expanded by default) or `-` (co
 > [!quote]
 > Quote callouts can be used to highlight important quotes or references.
 
+### Every Obsidian Alias
+
+Obsidian accepts several names for the same callout, and all of them work here.
+Aliases on the same line render identically, so pick whichever reads best.
+
+> [!abstract]
+> `abstract`, `summary`, and `tldr` all render as a summary callout.
+
+> [!todo]
+> `todo` renders as a note with a checkmark.
+
+> [!hint]
+> `hint` is an alias of `tip`.
+
+> [!check]
+> `check`, `done`, and `success` all render the same.
+
+> [!help]
+> `help`, `faq`, and `question` all render the same.
+
+> [!attention]
+> `attention` is an alias of `warning`.
+
+> [!danger]
+> `danger` and `error` render as a caution callout.
+
+> [!failure]
+> `failure`, `fail`, and `missing` all render the same.
+
+> [!bug]
+> `bug` renders as a caution callout with a bug icon.
+
+> [!cite]
+> `cite` is an alias of `quote`.
+
 ### Callouts with Formatting 
 
 > [!example]

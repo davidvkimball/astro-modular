@@ -63,7 +63,22 @@ const calloutMappings: Record<string, CalloutMapping> = {
   quote: { type: 'note', icon: 'quote', title: 'Quote' },
   abstract: { type: 'important', icon: 'file-text', title: 'Abstract' },
   summary: { type: 'important', icon: 'file-text', title: 'Summary' },
-  tldr: { type: 'important', icon: 'file-text', title: 'TL;DR' }
+  tldr: { type: 'important', icon: 'file-text', title: 'TL;DR' },
+  // Remaining Obsidian aliases. These are standard Obsidian callout types, so a
+  // note written in Obsidian renders the same here. Each maps onto one of the
+  // five visual types above rather than introducing a new one, since there is
+  // no styling for types beyond those.
+  todo: { type: 'note', icon: 'circle-check', title: 'Todo' },
+  hint: { type: 'tip', icon: 'lightbulb', title: 'Hint' },
+  check: { type: 'tip', icon: 'circle-check', title: 'Check' },
+  done: { type: 'tip', icon: 'circle-check', title: 'Done' },
+  help: { type: 'important', icon: 'circle-help', title: 'Help' },
+  faq: { type: 'important', icon: 'circle-help', title: 'FAQ' },
+  attention: { type: 'warning', icon: 'triangle-alert', title: 'Attention' },
+  error: { type: 'caution', icon: 'circle-x', title: 'Error' },
+  fail: { type: 'caution', icon: 'circle-x', title: 'Fail' },
+  missing: { type: 'caution', icon: 'circle-x', title: 'Missing' },
+  cite: { type: 'note', icon: 'quote', title: 'Cite' }
 };
 
 const remarkCallouts: Plugin<[], Root> = () => {
