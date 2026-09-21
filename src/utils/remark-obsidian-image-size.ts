@@ -1,5 +1,9 @@
 import type { Root, Image } from "mdast";
 import { visit } from "unist-util-visit";
+// Side-effect import: mdast-util-to-hast augments mdast's Data interface with
+// hProperties, which these plugins set. Without it TypeScript reports the
+// property as missing even though remark honours it at build time.
+import type {} from "mdast-util-to-hast";
 
 /**
  * Remark plugin to parse Obsidian-style image size syntax

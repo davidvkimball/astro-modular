@@ -1,5 +1,9 @@
 import type { Root, Paragraph, Image } from "mdast";
 import { visit } from "unist-util-visit";
+// Side-effect import: mdast-util-to-hast augments mdast's Data interface with
+// hProperties, which these plugins set. Without it TypeScript reports the
+// property as missing even though remark honours it at build time.
+import type {} from "mdast-util-to-hast";
 
 /**
  * Remark plugin to detect consecutive images in paragraphs and apply grid classes
@@ -41,7 +45,10 @@ export function remarkImageGrids() {
 
         // Skip grid processing if any image has manual sizing (Obsidian syntax)
         const hasObsidianSizedImage = images.some((img) => {
-          return img.data?.hProperties?.class?.includes('obsidian-sized');
+          // hProperties.class is typed as string | number | boolean | array,
+          // so normalise before matching. An array stringifies to a comma
+          // separated list, which still contains the class name.
+          return String(img.data?.hProperties?.class ?? '').includes('obsidian-sized');
         });
 
         // Only process paragraphs with 2+ images and no other meaningful content
