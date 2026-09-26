@@ -530,7 +530,7 @@ export function isCustomTheme(themeName: string): boolean {
 // analyze and bundle every file in ./custom/ at build time. A runtime
 // `await import(`./custom/${name}`)` works in dev but is fragile in prod
 // builds, and (separately) the old implementation only looked for the
-// `customTheme` export — files that export under a different name (e.g.
+// `customTheme` export, so files that export under a different name (e.g.
 // `export const custom = {...}` from the Obsidian extractor) would silently
 // return undefined. This matches the resolution logic in BaseLayout.astro.
 const customThemeModules = import.meta.glob('./custom/*.ts', { eager: true }) as Record<string, Record<string, any>>;

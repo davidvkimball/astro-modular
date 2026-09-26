@@ -350,7 +350,7 @@ echo "Development server started on http://localhost:3000"
 ### Simple Quotes
 
 > The best way to predict the future is to invent it.
-> — Alan Kay
+> (Alan Kay)
 
 ### Nested Quotes
 

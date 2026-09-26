@@ -49,7 +49,7 @@ const scrollbarClass = siteConfig.hideScrollBar ? '' : 'show-scrollbars';
 
 // Eagerly load every custom theme at build time so the inline runtime script
 // doesn't have to do a `/src/...` dynamic import (which works in dev but 404s
-// in production builds). The glob pattern is a static literal — Vite resolves
+// in production builds). The glob pattern is a static literal, so Vite resolves
 // it and bundles the matching modules during build.
 const customThemeModules = import.meta.glob('/src/themes/custom/*.ts', { eager: true }) as Record<string, Record<string, any>>;
 

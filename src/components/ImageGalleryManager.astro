@@ -109,7 +109,7 @@ import { siteConfig } from '../config';
           });
 
           const imgClone = img.cloneNode(true) as HTMLImageElement;
-          imgClone.className = 'w-full h-full object-cover rounded-lg transition-all duration-300 group-hover:shadow-lg group-hover:scale-[1.02]';
+          imgClone.className = 'w-full h-full object-cover rounded-lg transition-all duration-300 group-hover:shadow-lg group-hover:opacity-90';
           imgClone.loading = 'lazy';
           imgClone.setAttribute('data-lightbox', 'gallery');
 

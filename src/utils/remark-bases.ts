@@ -68,7 +68,7 @@ export const remarkBases: Plugin<[], Root> = () => {
   <div class="prose w-full overflow-x-auto">
     <div class="rounded-lg border border-primary-200 dark:border-primary-600 p-4 bg-primary-50 dark:bg-primary-800 text-primary-600 dark:text-primary-300">
       <strong>Base directive</strong>: table view
-      <div class="mt-2 text-sm opacity-80">Source: ${cfg.source || 'posts'} • Columns: ${(cfg.select || ['title','date']).join(', ')} • Limit: ${cfg.limit || '—'}</div>
+      <div class="mt-2 text-sm opacity-80">Source: ${cfg.source || 'posts'} • Columns: ${(cfg.select || ['title','date']).join(', ')} • Limit: ${cfg.limit || 'none'}</div>
     </div>
   </div>
 </div>`;
