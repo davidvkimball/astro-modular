@@ -6,7 +6,7 @@ export const GET: APIRoute = async () => {
 
   const robotsTxt = `# Content Signals (https://contentsignals.org/, IETF draft-romm-aipref-contentsignals)
 # declare AI usage preferences. Recognized by AI/agent crawlers and Cloudflare;
-# Semrush's strict RFC 9309 audit flags it as "invalid format" — known false
+# Semrush's strict RFC 9309 audit flags it as "invalid format", a known false
 # positive, the directive is intentionally non-standard.
 User-agent: *
 Content-Signal: search=yes, ai-input=yes, ai-train=no

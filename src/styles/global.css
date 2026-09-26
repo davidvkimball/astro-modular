@@ -785,7 +785,7 @@ textarea {
 }
 
 .prose .image-grid .image-button:hover {
-  transform: scale(1.02);
+  opacity: 0.9;
 }
 
 .prose .image-grid .image-button img {
