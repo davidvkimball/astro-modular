@@ -76,7 +76,7 @@ const shouldShowCoverImage = (() => {
 ---
 
 <article class={`group ${featured ? 'featured-post' : 'post-card'}`} role="article" aria-labelledby={`post-title-${post.id}`}>
-  <a href={`/posts/${post.id}`} class="block" aria-label={`View post: ${title}`}>
+  <a href={`/posts/${post.id}`} class="block hover:opacity-100" aria-label={`View post: ${title}`}>
     {image && shouldShowCoverImage && (
       <div class="overflow-hidden rounded-t-lg bg-primary-100 dark:bg-primary-800" style={`aspect-ratio: ${getPostCardAspectRatio()};`}>
         <ImageWrapper
@@ -140,7 +140,7 @@ const shouldShowCoverImage = (() => {
             }
           })()}
           alt={imageAlt || `Featured image for post: ${title}`}
-          class="w-full h-full group-hover:opacity-90 dark:group-hover:brightness-100 transition-all duration-300"
+          class="w-full h-full group-hover:brightness-95 transition-[filter] duration-300"
           width={800}
           height={450}
           format="webp"

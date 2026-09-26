@@ -65,7 +65,7 @@ const shouldShowCoverImage = true;
 ---
 
 <div class="group relative bg-white dark:bg-primary-800 rounded-xl border border-primary-200 dark:border-primary-700 overflow-hidden hover:shadow-xl transition-all duration-300 aspect-[4/3]" data-project-categories={categories.join(',')}>
-  <a href={`/projects/${project.id}`} class="block h-full" aria-label={`View project: ${title}`}>
+  <a href={`/projects/${project.id}`} class="block h-full hover:opacity-100" aria-label={`View project: ${title}`}>
     <!-- Background Image or Fallback -->
     {image && shouldShowCoverImage && (
       <div class="absolute inset-0">
@@ -128,7 +128,7 @@ const shouldShowCoverImage = true;
           height={600}
           loading={eager ? 'eager' : 'lazy'}
           fetchpriority={eager ? 'high' : 'auto'}
-          class="w-full h-full object-cover group-hover:opacity-90 transition-opacity duration-300"
+          class="w-full h-full object-cover group-hover:brightness-95 transition-[filter] duration-300"
         />
         <!-- Dark overlay for better text readability -->
         <div class="absolute inset-0 bg-black/70 group-hover:bg-black/80 transition-colors duration-300"></div>

@@ -57,7 +57,7 @@ const showCoverImage = shouldShowCoverImage && image && context !== 'home';
 ---
 
 <div class="group relative bg-white dark:bg-primary-800 rounded-lg border border-primary-200 dark:border-primary-700 hover:shadow-lg transition-all duration-300 h-full flex flex-col">
-  <a href={`/docs/${documentation.id}`} class="block flex flex-col h-full" aria-label={`View documentation: ${title}`}>
+  <a href={`/docs/${documentation.id}`} class="block flex flex-col h-full hover:opacity-100" aria-label={`View documentation: ${title}`}>
     <!-- Header with icon and version -->
     <div class="flex items-center justify-between p-4 pb-2">
       <Icon name="book-text" class="w-4 h-4 text-primary-500 dark:text-primary-400" />
@@ -134,7 +134,7 @@ const showCoverImage = shouldShowCoverImage && image && context !== 'home';
             height={200}
             loading={eager ? 'eager' : 'lazy'}
             fetchpriority={eager ? 'high' : 'auto'}
-            class="w-full h-32 object-cover group-hover:opacity-90 transition-opacity duration-300"
+            class="w-full h-32 object-cover group-hover:brightness-95 transition-[filter] duration-300"
           />
         </div>
       </div>
