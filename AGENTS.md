@@ -121,6 +121,7 @@ scripts/
 - `theme` + `availableThemes` + `customThemeFile`
 - `fonts` — `{ source: "local" | "cdn", families: { body, heading, mono }, display }`
 - `layout.contentWidth`
+- `layout.preserveCoverAspectRatio` — when `true` (default), detail-page covers use 16:9; when `false`, restores the fixed-height banner (`h-40` … `lg:h-64`)
 - `tableOfContents.{enabled, depth}`
 - `footer`, `scrollToTop`, `hideScrollBar`, `featureButton`
 - `deployment.platform` — `"netlify" | "vercel" | "github-pages" | "cloudflare-workers"`
@@ -363,6 +364,10 @@ Project and doc cards always show their cover when available (independent of
 
 `postOptions.postCardAspectRatio`: `"og" | "16:9" | "4:3" | "3:2" | "square" | "golden" | "custom"`.
 Only affects cards, never individual post cover images.
+
+### Detail-page cover aspect ratio
+
+`layout.preserveCoverAspectRatio` (default `true`) controls the cover banner on post/page/project/doc detail pages (and `PostContent`). When `true`, the container is `aspect-video` (16:9). When `false`, it uses the legacy fixed-height banner (`h-40 sm:h-48 md:h-56 lg:h-64`). Use `getCoverAspectClasses()` from `config.ts`.
 
 ### Image references in markdown
 

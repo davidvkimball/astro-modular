@@ -1,6 +1,6 @@
 ---
 import type { Docs } from '@/types';
-import { siteConfig } from '@/config';
+import { siteConfig, getCoverAspectClasses } from '@/config';
 import { generateDocumentationSEO } from '@/utils/seo';
 import { isValidDate } from '@/utils/markdown';
 import { optimizeContentImagePath, getOptimizedFormat } from '@/utils/images';
@@ -159,7 +159,7 @@ const structuredData = {
           imageSrc = getOptimizedFormat(imageSrc);
           
           return (
-            <div class="h-40 sm:h-48 md:h-56 lg:h-64 overflow-hidden rounded-t-lg bg-primary-100 dark:bg-primary-800">
+            <div class={getCoverAspectClasses("rounded-t-lg bg-primary-100 dark:bg-primary-800")}>
               <ImageWrapper
                 src={imageSrc}
                 basePath={imageBasePath}

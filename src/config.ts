@@ -38,6 +38,7 @@ export interface SiteConfig {
   };
   layout: {
     contentWidth: string;
+    preserveCoverAspectRatio: boolean;
   };
   tableOfContents: {
     enabled: boolean;
@@ -223,6 +224,8 @@ export const siteConfig: SiteConfig = {
   layout: {
     // [CONFIG:LAYOUT_CONTENT_WIDTH]
     contentWidth: "45rem",
+    // [CONFIG:LAYOUT_PRESERVE_COVER_ASPECT_RATIO]
+    preserveCoverAspectRatio: true, // When true, detail-page covers use 16:9. When false, use the previous fixed-height banner.
   },
   tableOfContents: {
     // [CONFIG:TABLE_OF_CONTENTS_ENABLED]
@@ -461,6 +464,13 @@ export function getContentWidth(): string {
   return siteConfig.layout.contentWidth;
 }
 
+export function getCoverAspectClasses(extra = ""): string {
+  const base = siteConfig.layout.preserveCoverAspectRatio
+    ? "aspect-video overflow-hidden"
+    : "h-40 sm:h-48 md:h-56 lg:h-64 overflow-hidden";
+  return extra ? `${base} ${extra}` : base;
+}
+
 export function getTheme(): "minimal" | "oxygen" | "atom" | "ayu" | "catppuccin" | "charcoal" | "dracula" | "everforest" | "flexoki" | "gruvbox" | "macos" | "nord" | "obsidian" | "rose-pine" | "sky" | "solarized" | "things" | "custom" {
   return siteConfig.theme;
 }
@@ -684,6 +694,10 @@ function validateSiteConfig(config: SiteConfig): { isValid: boolean; errors: str
   // Content width validation
   if (!config.layout.contentWidth || !config.layout.contentWidth.match(/^\d+(\.\d+)?(rem|px|em)$/)) {
     errors.push(`Content width must be a valid CSS length value like "45rem", "800px", or "90em". Current value "${config.layout.contentWidth}" is invalid.`);
+  }
+
+  if (typeof config.layout.preserveCoverAspectRatio !== 'boolean') {
+    errors.push('Preserve cover aspect ratio must be a boolean value (true or false).');
   }
 
   // Navigation style validation

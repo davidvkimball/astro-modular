@@ -77,7 +77,8 @@ var init_types = __esm({
         defaultOgImageAlt: "Astro Modular logo."
       },
       layout: {
-        contentWidth: "45rem"
+        contentWidth: "45rem",
+        preserveCoverAspectRatio: true
       },
       tableOfContents: {
         enabled: true,
@@ -6043,7 +6044,7 @@ var StyleTab = class extends TabRenderer {
             clearTimeout(timeoutId);
           }
           if (!settings.layout) {
-            settings.layout = { contentWidth: "45rem" };
+            settings.layout = { contentWidth: "45rem", preserveCoverAspectRatio: true };
           }
           settings.layout.contentWidth = value;
           void this.plugin.saveData(settings);
@@ -6056,6 +6057,21 @@ var StyleTab = class extends TabRenderer {
             clearTimeout(timeoutId);
             void this.applyCurrentConfiguration();
           }
+        });
+      });
+    });
+    typographyGroup.addSetting((setting) => {
+      setting.setName("Preserve cover aspect ratio").setDesc("Keep detail-page cover images at 16:9 so they aren't cropped. Turn off to restore the previous fixed-height banner.").addToggle((toggle) => {
+        var _a2, _b;
+        return toggle.setValue((_b = (_a2 = settings.layout) == null ? void 0 : _a2.preserveCoverAspectRatio) != null ? _b : true).onChange(async (value) => {
+          if (!settings.layout) {
+            settings.layout = { contentWidth: "45rem", preserveCoverAspectRatio: true };
+          }
+          settings.layout.preserveCoverAspectRatio = value;
+          await this.plugin.saveData(settings);
+          await this.plugin.loadSettings();
+          await this.applyCurrentConfiguration();
+          new import_obsidian14.Notice(`Preserve cover aspect ratio ${value ? "enabled" : "disabled"} and applied to config.ts`);
         });
       });
     });
@@ -7990,7 +8006,7 @@ var AdvancedTab = class extends TabRenderer {
   // Sync from config.ts button
   buildSyncFromConfigSetting(setting) {
     setting.setName("Sync from config.ts").setDesc("Read current config.ts file and update plugin settings to match").addButton((button) => button.setButtonText("Sync from config.ts").setCta().onClick(async () => {
-      var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y;
+      var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _A;
       try {
         const plugin = this.plugin;
         const configContent = plugin.configManager.fileManager.readConfig();
@@ -8043,44 +8059,52 @@ var AdvancedTab = class extends TabRenderer {
           settings.typography.headingFont = (_i = typography.headingFont) != null ? _i : settings.typography.headingFont;
           settings.typography.monoFont = (_j = typography.monoFont) != null ? _j : settings.typography.monoFont;
         }
+        if (currentConfig.layout && typeof currentConfig.layout === "object") {
+          const layout = currentConfig.layout;
+          if (!settings.layout) {
+            settings.layout = { contentWidth: "45rem", preserveCoverAspectRatio: true };
+          }
+          settings.layout.contentWidth = (_k = layout.contentWidth) != null ? _k : settings.layout.contentWidth;
+          settings.layout.preserveCoverAspectRatio = (_l = layout.preserveCoverAspectRatio) != null ? _l : settings.layout.preserveCoverAspectRatio;
+        }
         if (currentConfig.tableOfContents && typeof currentConfig.tableOfContents === "object") {
           const toc = currentConfig.tableOfContents;
           if (!settings.tableOfContents) {
             settings.tableOfContents = { enabled: true, depth: 4 };
           }
-          settings.tableOfContents.enabled = (_k = toc.enabled) != null ? _k : settings.tableOfContents.enabled;
-          settings.tableOfContents.depth = (_l = toc.depth) != null ? _l : settings.tableOfContents.depth;
+          settings.tableOfContents.enabled = (_m = toc.enabled) != null ? _m : settings.tableOfContents.enabled;
+          settings.tableOfContents.depth = (_n = toc.depth) != null ? _n : settings.tableOfContents.depth;
         }
         if (currentConfig.postOptions && typeof currentConfig.postOptions === "object") {
           const postOptions = currentConfig.postOptions;
-          settings.features.readingTime = (_m = postOptions.readingTime) != null ? _m : settings.features.readingTime;
+          settings.features.readingTime = (_o = postOptions.readingTime) != null ? _o : settings.features.readingTime;
           if (postOptions.linkedMentions && typeof postOptions.linkedMentions === "object") {
             const linkedMentions = postOptions.linkedMentions;
-            settings.features.linkedMentions = (_n = linkedMentions.enabled) != null ? _n : settings.features.linkedMentions;
-            settings.features.linkedMentionsCompact = (_o = linkedMentions.linkedMentionsCompact) != null ? _o : settings.features.linkedMentionsCompact;
+            settings.features.linkedMentions = (_p = linkedMentions.enabled) != null ? _p : settings.features.linkedMentions;
+            settings.features.linkedMentionsCompact = (_q = linkedMentions.linkedMentionsCompact) != null ? _q : settings.features.linkedMentionsCompact;
           }
           if (postOptions.graphView && typeof postOptions.graphView === "object") {
             const graphView = postOptions.graphView;
-            settings.features.graphView = (_p = graphView.enabled) != null ? _p : settings.features.graphView;
+            settings.features.graphView = (_r = graphView.enabled) != null ? _r : settings.features.graphView;
           }
-          settings.features.postNavigation = (_q = postOptions.postNavigation) != null ? _q : settings.features.postNavigation;
+          settings.features.postNavigation = (_s = postOptions.postNavigation) != null ? _s : settings.features.postNavigation;
           if (postOptions.comments && typeof postOptions.comments === "object") {
             const comments = postOptions.comments;
-            settings.features.comments = (_r = comments.enabled) != null ? _r : settings.features.comments;
+            settings.features.comments = (_t = comments.enabled) != null ? _t : settings.features.comments;
           }
         }
         if (currentConfig.optionalContentTypes && typeof currentConfig.optionalContentTypes === "object") {
           const optionalContentTypes = currentConfig.optionalContentTypes;
-          settings.optionalContentTypes.projects = (_s = optionalContentTypes.projects) != null ? _s : settings.optionalContentTypes.projects;
-          settings.optionalContentTypes.docs = (_t = optionalContentTypes.docs) != null ? _t : settings.optionalContentTypes.docs;
+          settings.optionalContentTypes.projects = (_u = optionalContentTypes.projects) != null ? _u : settings.optionalContentTypes.projects;
+          settings.optionalContentTypes.docs = (_v = optionalContentTypes.docs) != null ? _v : settings.optionalContentTypes.docs;
         }
         if (currentConfig.footer && typeof currentConfig.footer === "object") {
           const footer = currentConfig.footer;
-          settings.features.showSocialIconsInFooter = (_u = footer.showSocialIconsInFooter) != null ? _u : false;
+          settings.features.showSocialIconsInFooter = (_w = footer.showSocialIconsInFooter) != null ? _w : false;
         }
         if (currentConfig.commandPalette && typeof currentConfig.commandPalette === "object") {
           const commandPalette = currentConfig.commandPalette;
-          settings.features.commandPalette = (_v = commandPalette.enabled) != null ? _v : false;
+          settings.features.commandPalette = (_x = commandPalette.enabled) != null ? _x : false;
           if (!settings.commandPalette) {
             settings.commandPalette = {
               enabled: true,
@@ -8091,9 +8115,9 @@ var AdvancedTab = class extends TabRenderer {
               quickActions: { enabled: true, toggleMode: true, graphView: true, changeTheme: true }
             };
           }
-          settings.commandPalette.enabled = (_w = commandPalette.enabled) != null ? _w : settings.commandPalette.enabled;
-          settings.commandPalette.placeholder = (_x = commandPalette.placeholder) != null ? _x : settings.commandPalette.placeholder;
-          settings.commandPalette.shortcut = (_y = commandPalette.shortcut) != null ? _y : settings.commandPalette.shortcut;
+          settings.commandPalette.enabled = (_y = commandPalette.enabled) != null ? _y : settings.commandPalette.enabled;
+          settings.commandPalette.placeholder = (_z = commandPalette.placeholder) != null ? _z : settings.commandPalette.placeholder;
+          settings.commandPalette.shortcut = (_A = commandPalette.shortcut) != null ? _A : settings.commandPalette.shortcut;
           if (commandPalette.search && typeof commandPalette.search === "object") {
             settings.commandPalette.search = {
               ...settings.commandPalette.search,
@@ -8993,6 +9017,11 @@ var AstroModularSettingsTab = class extends import_obsidian17.PluginSettingTab {
                 name: "Content width",
                 desc: "Maximum width for content (like 45rem)",
                 control: { type: "text", key: "layout.contentWidth" }
+              },
+              {
+                name: "Preserve cover aspect ratio",
+                desc: "Keep detail-page cover images at 16:9 so they aren't cropped. Turn off to restore the previous fixed-height banner.",
+                control: { type: "toggle", key: "layout.preserveCoverAspectRatio", defaultValue: true }
               },
               {
                 // False positive: "URLs" is an acronym and should be capitalized
@@ -10322,6 +10351,18 @@ var ConfigFileManager = class {
       typography.monoFont = fontMonoMatch[1];
     }
     config4.typography = typography;
+    const layout = {};
+    const contentWidthMatch = configContent.match(/\/\/ \[CONFIG:LAYOUT_CONTENT_WIDTH\]\s*\n\s*contentWidth:\s*"([^"]*)"/);
+    if (contentWidthMatch) {
+      layout.contentWidth = contentWidthMatch[1];
+    }
+    const preserveCoverAspectRatioMatch = configContent.match(/\/\/ \[CONFIG:LAYOUT_PRESERVE_COVER_ASPECT_RATIO\]\s*\n\s*preserveCoverAspectRatio:\s*(true|false)/);
+    if (preserveCoverAspectRatioMatch) {
+      layout.preserveCoverAspectRatio = preserveCoverAspectRatioMatch[1] === "true";
+    }
+    if (Object.keys(layout).length > 0) {
+      config4.layout = layout;
+    }
     const navigation = { pages: [], social: [] };
     const pagesMatch = configContent.match(/\/\/ \[CONFIG:NAVIGATION_PAGES\]\s*\n\s*pages:\s*\[([\s\S]*?)\],?\s*(?=\/\/ \[CONFIG:NAVIGATION_SOCIAL\])/);
     if (pagesMatch) {
@@ -10565,7 +10606,8 @@ var ConfigTemplateManager = class {
       case "standard":
         return {
           layout: {
-            contentWidth: "45rem"
+            contentWidth: "45rem",
+            preserveCoverAspectRatio: true
           },
           footer: {
             enabled: true,
@@ -10642,7 +10684,8 @@ var ConfigTemplateManager = class {
       case "compact":
         return {
           layout: {
-            contentWidth: "42rem"
+            contentWidth: "42rem",
+            preserveCoverAspectRatio: true
           },
           optionalContentTypes: {
             projects: false,
@@ -10708,7 +10751,8 @@ var ConfigTemplateManager = class {
       case "minimal":
         return {
           layout: {
-            contentWidth: "40rem"
+            contentWidth: "40rem",
+            preserveCoverAspectRatio: true
           },
           optionalContentTypes: {
             projects: false,
@@ -10792,6 +10836,7 @@ var ConfigMarkerValidator = class {
       "CONFIG:FONT_HEADING",
       "CONFIG:FONT_MONO",
       "CONFIG:LAYOUT_CONTENT_WIDTH",
+      "CONFIG:LAYOUT_PRESERVE_COVER_ASPECT_RATIO",
       "CONFIG:TABLE_OF_CONTENTS_ENABLED",
       "CONFIG:TABLE_OF_CONTENTS_DEPTH",
       "CONFIG:FOOTER_ENABLED",
@@ -11056,6 +11101,13 @@ var ConfigPresetModifier = class {
         /\/\/ \[CONFIG:LAYOUT_CONTENT_WIDTH\]\s*\n\s*contentWidth:\s*"[^"]*"/,
         `// [CONFIG:LAYOUT_CONTENT_WIDTH]
     contentWidth: "${layout.contentWidth}"`
+      );
+    }
+    if ((layout == null ? void 0 : layout.preserveCoverAspectRatio) !== void 0) {
+      modifiedConfig = modifiedConfig.replace(
+        /\/\/ \[CONFIG:LAYOUT_PRESERVE_COVER_ASPECT_RATIO\]\s*\n\s*preserveCoverAspectRatio:\s*(true|false)/,
+        `// [CONFIG:LAYOUT_PRESERVE_COVER_ASPECT_RATIO]
+    preserveCoverAspectRatio: ${layout.preserveCoverAspectRatio}`
       );
     }
     const optionalContentTypes = templateConfig.optionalContentTypes;
@@ -11622,7 +11674,7 @@ ${socialArray},
     return modifiedConfig;
   }
   modifyConfigFromFeatures(settings, currentConfig) {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v;
     let modifiedConfig = currentConfig;
     const themeRegex = /\/\/ \[CONFIG:THEME\]\s*\n\s*theme:\s*"[^"]*"/;
     modifiedConfig = modifiedConfig.replace(
@@ -11723,6 +11775,13 @@ ${socialArray},
     contentWidth: "${settings.layout.contentWidth}"`
       );
     }
+    if (((_b = settings.layout) == null ? void 0 : _b.preserveCoverAspectRatio) !== void 0) {
+      modifiedConfig = modifiedConfig.replace(
+        /\/\/ \[CONFIG:LAYOUT_PRESERVE_COVER_ASPECT_RATIO\]\s*\n\s*preserveCoverAspectRatio:\s*(true|false)/,
+        `// [CONFIG:LAYOUT_PRESERVE_COVER_ASPECT_RATIO]
+    preserveCoverAspectRatio: ${settings.layout.preserveCoverAspectRatio}`
+      );
+    }
     if (settings.tableOfContents) {
       modifiedConfig = modifiedConfig.replace(
         /\/\/ \[CONFIG:TABLE_OF_CONTENTS_ENABLED\]\s*\n\s*enabled:\s*(true|false)/,
@@ -11758,14 +11817,14 @@ ${socialArray},
         );
       }
     }
-    if (((_b = settings.siteInfo) == null ? void 0 : _b.faviconThemeAdaptive) !== void 0) {
+    if (((_c = settings.siteInfo) == null ? void 0 : _c.faviconThemeAdaptive) !== void 0) {
       modifiedConfig = modifiedConfig.replace(
         /\/\/ \[CONFIG:FAVICON_THEME_ADAPTIVE\]\s*\n\s*faviconThemeAdaptive:\s*(true|false)/,
         `// [CONFIG:FAVICON_THEME_ADAPTIVE]
   faviconThemeAdaptive: ${settings.siteInfo.faviconThemeAdaptive}`
       );
     }
-    const defaultOgImageAlt = ((_c = settings.siteInfo) == null ? void 0 : _c.defaultOgImageAlt) || ((_d = settings.seo) == null ? void 0 : _d.defaultOgImageAlt);
+    const defaultOgImageAlt = ((_d = settings.siteInfo) == null ? void 0 : _d.defaultOgImageAlt) || ((_e = settings.seo) == null ? void 0 : _e.defaultOgImageAlt);
     if (defaultOgImageAlt) {
       const ogAltEsc = this.escapeTsDoubleQuotedString(defaultOgImageAlt);
       modifiedConfig = modifiedConfig.replace(
@@ -12006,7 +12065,7 @@ ${socialArray},
           );
         }
       }
-      if ((_e = settings.homeOptions.blurb) == null ? void 0 : _e.placement) {
+      if ((_f = settings.homeOptions.blurb) == null ? void 0 : _f.placement) {
         modifiedConfig = modifiedConfig.replace(
           /\/\/ \[CONFIG:HOME_OPTIONS_BLURB_PLACEMENT\]\s*\n\s*placement:\s*"[^"]*"/,
           `// [CONFIG:HOME_OPTIONS_BLURB_PLACEMENT]
@@ -12079,21 +12138,21 @@ ${socialArray},
     modifiedConfig = modifiedConfig.replace(
       /\/\/ \[CONFIG:COMMAND_PALETTE_ENABLED\]\s*\n\s*enabled:\s*(true|false)/,
       `// [CONFIG:COMMAND_PALETTE_ENABLED]
-    enabled: ${(_g = (_f = settings.commandPalette) == null ? void 0 : _f.enabled) != null ? _g : settings.features.commandPalette}`
+    enabled: ${(_h = (_g = settings.commandPalette) == null ? void 0 : _g.enabled) != null ? _h : settings.features.commandPalette}`
     );
     modifiedConfig = modifiedConfig.replace(
       /\/\/ \[CONFIG:POST_OPTIONS_READING_TIME\]\s*readingTime:\s*(true|false)/,
       `// [CONFIG:POST_OPTIONS_READING_TIME]
     readingTime: ${settings.features.readingTime}`
     );
-    if (((_h = settings.postOptions) == null ? void 0 : _h.wordCount) !== void 0) {
+    if (((_i = settings.postOptions) == null ? void 0 : _i.wordCount) !== void 0) {
       modifiedConfig = modifiedConfig.replace(
         /\/\/ \[CONFIG:POST_OPTIONS_WORD_COUNT\]\s*wordCount:\s*(true|false)/,
         `// [CONFIG:POST_OPTIONS_WORD_COUNT]
     wordCount: ${settings.postOptions.wordCount}`
       );
     }
-    if (((_i = settings.postOptions) == null ? void 0 : _i.tags) !== void 0) {
+    if (((_j = settings.postOptions) == null ? void 0 : _j.tags) !== void 0) {
       modifiedConfig = modifiedConfig.replace(
         /\/\/ \[CONFIG:POST_OPTIONS_TAGS\]\s*tags:\s*(true|false)/,
         `// [CONFIG:POST_OPTIONS_TAGS]
@@ -12108,16 +12167,16 @@ ${socialArray},
     modifiedConfig = modifiedConfig.replace(
       /\/\/ \[CONFIG:POST_OPTIONS_LINKED_MENTIONS_COMPACT\]\s*linkedMentionsCompact:\s*(true|false)/,
       `// [CONFIG:POST_OPTIONS_LINKED_MENTIONS_COMPACT]
-      linkedMentionsCompact: ${(_j = settings.features.linkedMentionsCompact) != null ? _j : false}`
+      linkedMentionsCompact: ${(_k = settings.features.linkedMentionsCompact) != null ? _k : false}`
     );
-    if (((_l = (_k = settings.optionalFeatures) == null ? void 0 : _k.comments) == null ? void 0 : _l.enabled) !== void 0) {
+    if (((_m = (_l = settings.optionalFeatures) == null ? void 0 : _l.comments) == null ? void 0 : _m.enabled) !== void 0) {
       modifiedConfig = modifiedConfig.replace(
         /\/\/ \[CONFIG:POST_OPTIONS_COMMENTS_ENABLED\]\s*enabled:\s*(true|false)/,
         `// [CONFIG:POST_OPTIONS_COMMENTS_ENABLED]
       enabled: ${settings.optionalFeatures.comments.enabled}`
       );
     }
-    if (((_m = settings.optionalFeatures) == null ? void 0 : _m.comments) && settings.optionalFeatures.comments.enabled) {
+    if (((_n = settings.optionalFeatures) == null ? void 0 : _n.comments) && settings.optionalFeatures.comments.enabled) {
       if (settings.optionalFeatures.comments.provider !== void 0) {
         modifiedConfig = modifiedConfig.replace(
           /\/\/ \[CONFIG:POST_OPTIONS_COMMENTS_PROVIDER\]\s*provider:\s*"[^"]*"/,
@@ -12213,7 +12272,7 @@ ${socialArray},
     modifiedConfig = modifiedConfig.replace(
       /\/\/ \[CONFIG:POST_OPTIONS_GRAPH_VIEW_ENABLED\]\s*enabled:\s*(true|false)/,
       `// [CONFIG:POST_OPTIONS_GRAPH_VIEW_ENABLED]
-      enabled: ${(_p = (_o = (_n = settings.postOptions) == null ? void 0 : _n.graphView) == null ? void 0 : _o.enabled) != null ? _p : settings.features.graphView}`
+      enabled: ${(_q = (_p = (_o = settings.postOptions) == null ? void 0 : _o.graphView) == null ? void 0 : _p.enabled) != null ? _q : settings.features.graphView}`
     );
     modifiedConfig = modifiedConfig.replace(
       /\/\/ \[CONFIG:POST_OPTIONS_POST_NAVIGATION\]\s*postNavigation:\s*(true|false)/,
@@ -12240,7 +12299,7 @@ ${socialArray},
       `// [CONFIG:FEATURE_BUTTON]
   featureButton: "${settings.features.featureButton}"`
     );
-    if ((_q = settings.features) == null ? void 0 : _q.quickActions) {
+    if ((_r = settings.features) == null ? void 0 : _r.quickActions) {
       modifiedConfig = modifiedConfig.replace(
         /\/\/ \[CONFIG:COMMAND_PALETTE_QUICK_ACTIONS_ENABLED\]\s*enabled:\s*(true|false)/,
         `// [CONFIG:COMMAND_PALETTE_QUICK_ACTIONS_ENABLED]
@@ -12279,14 +12338,14 @@ ${socialArray},
     customPostCardAspectRatio: "${settings.postOptions.customPostCardAspectRatio}"`
       );
     }
-    if (((_s = (_r = settings.optionalFeatures) == null ? void 0 : _r.profilePicture) == null ? void 0 : _s.enabled) !== void 0) {
+    if (((_t = (_s = settings.optionalFeatures) == null ? void 0 : _s.profilePicture) == null ? void 0 : _t.enabled) !== void 0) {
       modifiedConfig = modifiedConfig.replace(
         /\/\/ \[CONFIG:PROFILE_PICTURE_ENABLED\]\s*enabled:\s*(true|false)/,
         `// [CONFIG:PROFILE_PICTURE_ENABLED]
     enabled: ${settings.optionalFeatures.profilePicture.enabled}`
       );
     }
-    if ((_u = (_t = settings.optionalFeatures) == null ? void 0 : _t.profilePicture) == null ? void 0 : _u.enabled) {
+    if ((_v = (_u = settings.optionalFeatures) == null ? void 0 : _u.profilePicture) == null ? void 0 : _v.enabled) {
       modifiedConfig = modifiedConfig.replace(
         /\/\/ \[CONFIG:PROFILE_PICTURE_IMAGE\]\s*image:\s*"[^"]*"/,
         `// [CONFIG:PROFILE_PICTURE_IMAGE]

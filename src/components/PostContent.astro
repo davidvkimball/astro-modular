@@ -1,7 +1,7 @@
 ---
 import type { Post } from '@/types';
 import { processImagesForLightbox, getOptimizedFormat } from '@/utils/images';
-import { siteConfig } from '@/config';
+import { siteConfig, getCoverAspectClasses } from '@/config';
 import { formatDate, formatDateMobile, getReadingTimeMobile, DATE_LOCALE } from '@/utils/markdown';
 import ImageGallery from './ImageGallery.astro';
 import TableOfContents from './TableOfContents.astro';
@@ -104,7 +104,7 @@ const processedImage = (() => {
         )}
 
         {processedImage && (
-          <div class="aspect-video overflow-hidden rounded-xl mb-8">
+          <div class={getCoverAspectClasses("rounded-xl mb-8")}>
             <ImageWrapper
               src={(() => {
                 // Clean the image path by removing Obsidian brackets

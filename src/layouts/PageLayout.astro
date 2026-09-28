@@ -1,7 +1,7 @@
 
 ---
 import type { Page } from '@/types';
-import { siteConfig } from '@/config';
+import { siteConfig, getCoverAspectClasses } from '@/config';
 import { render } from 'astro:content';
 import { generatePageSEO } from '@/utils/seo';
 import { optimizeContentImagePath, getOptimizedFormat } from '@/utils/images';
@@ -128,7 +128,7 @@ const structuredData = {
           imageSrc = getOptimizedFormat(imageSrc);
           
           return (
-            <div class="h-40 sm:h-48 md:h-56 lg:h-64 overflow-hidden rounded-t-lg bg-primary-100 dark:bg-primary-800">
+            <div class={getCoverAspectClasses("rounded-t-lg bg-primary-100 dark:bg-primary-800")}>
               <ImageWrapper
                 src={imageSrc}
                 basePath={imageBasePath}
