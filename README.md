@@ -10,6 +10,8 @@ Use Obsidian as a CMS with [Vault CMS](https://github.com/davidvkimball/vault-cm
 
 ![Alt](https://github.com/user-attachments/assets/3db459e6-6b9a-4c37-b86d-0f661e88e204 "Astro Modular Obsidian vault")
 
+Rather not use Obsidian? [Zeku](https://zeku.dev) is a standalone writing app for Astro sites from the same developer, and it opens this theme with its settings as a form.
+
 ## Stats
 
 ![Alt](https://repobeats.axiom.co/api/embed/66fe41c94d95b32b92c1a2fd8d6dc83d386bc10a.svg "Repobeats analytics image")
@@ -144,7 +146,7 @@ This downloads the latest release from GitHub, replaces framework files, restore
 
 ### Configuration
 
-Edit `src/config.ts` to customize your site - change the theme, enable/disable features, and configure all settings.
+Edit `src/config.ts` to customize your site - change the theme, enable/disable features, and configure all settings. In Obsidian, the Astro Modular Settings plugin edits the same file, and so does the theme settings screen in [Zeku](https://zeku.dev).
 
 ## Deployment
 
