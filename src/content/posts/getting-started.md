@@ -9,7 +9,7 @@ tags:
   - astro
   - blog
 image: "[[attachments/sunset.png]]"
-imageAlt: Sunset skyline.
+imageAlt: A pink and purple sunset over the sea.
 imageOG: true
 hideCoverImage: false
 hideTOC: false

@@ -161,21 +161,21 @@ This theme automatically arranges consecutive images in responsive grid layouts 
 
 **Two Images Side by Side**
 
-![Mountain landscape](attachments/mountain-landscape.jpg)
-![Ocean view](attachments/ocean-view.jpg)
+![Snowy peaks above a sea of clouds](attachments/peaks-above-clouds.jpg)
+![Wooden dock on a calm lake](attachments/lake-dock.jpg)
 
 **Three Images in a Row**
 
 ![Forest path](attachments/forest-path.jpg)
-![Desert sunset](attachments/desert-sunset.jpg)
-![City skyline](attachments/city-skyline.jpg)
+![Milky Way in a starry sky](attachments/galaxy.png)
+![Taxis on a street between skyscrapers](attachments/city-street.jpg)
 
 **Four Images in a Row**
 
-![Winter landscape](attachments/winter-landscape.jpg)
+![Rocky coastline from above](attachments/coastline-from-above.jpg)
 ![Spring flowers](attachments/spring-flowers.jpg)
 ![Summer beach](attachments/summer-beach.jpg)
-![Autumn leaves](attachments/autumn-leaves.jpg)
+![Jellyfish in deep blue water](attachments/jellyfish.jpg)
 
 **How to Use Multiple Images / Gallery**
 
