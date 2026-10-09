@@ -373,8 +373,10 @@ Only affects cards, never individual post cover images.
 
 ```markdown
 ![Alt](image.jpg)              # relative — preferred
-![Alt]([[image.jpg]])          # Obsidian bracket syntax — also supported
+![[image.jpg]]                 # wikilink embed, also supported
 ```
+
+The bracket form `[[image.jpg]]` only works in the `image` frontmatter field. In a body image, `![Alt]([[image.jpg]])` keeps the brackets in the URL and renders a broken image.
 
 Image resolution:
 - Relative (`image.jpg`) → `/posts/{slug}/image.jpg`
@@ -384,8 +386,9 @@ Image resolution:
 
 ### Missing images
 
-Dev mode shows placeholders and logs a warning — production builds fail. Run
-`pnpm run check-images` before deploying.
+Missing images don't fail the build in dev or production. `ImageWrapper` renders nothing for a missing cover, and a missing body image ships as a broken `<img>`, so run `pnpm run check-images` before deploying.
+
+`scripts/check-missing-images.js` resolves each reference the way the site does (remarkFolderImages for body images and embeds, the cover image components for the `image` field), then maps that URL back to the vault file `scripts/sync-images.js` publishes there. If you change either resolver or how sync lays out `public/`, update the checker to match.
 
 ---
 
