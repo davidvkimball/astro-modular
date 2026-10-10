@@ -110,7 +110,7 @@ var GitManager_exports = {};
 __export(GitManager_exports, {
   GitManager: () => GitManager
 });
-var import_obsidian15, import_child_process, import_util, path9, fs6, execAsync, GitManager;
+var import_obsidian15, import_child_process, import_util, path9, fs6, execAsync, execFileAsync, GitManager;
 var init_GitManager = __esm({
   "src/utils/GitManager.ts"() {
     import_obsidian15 = require("obsidian");
@@ -119,6 +119,7 @@ var init_GitManager = __esm({
     path9 = __toESM(require("path"), 1);
     fs6 = __toESM(require("fs"), 1);
     execAsync = (0, import_util.promisify)(import_child_process.exec);
+    execFileAsync = (0, import_util.promisify)(import_child_process.execFile);
     GitManager = class {
       /**
        * Checks if a directory is a Git repository.
@@ -178,6 +179,56 @@ var init_GitManager = __esm({
         }
       }
       /**
+       * Hands the PAT to the system's Git credential helper (Git Credential
+       * Manager on Windows, Keychain on macOS, libsecret on Linux) so Obsidian
+       * Git's later pushes and pulls authenticate without prompting. Obsidian
+       * Git stores nothing itself on desktop: with no saved login it shows
+       * "Username for 'https://github.com'" prompts on every sync.
+       *
+       * Never writes the token to disk in plain text. Returns false when no
+       * helper accepted it (common on Linux), so the caller can tell the user
+       * to paste the token when Obsidian Git asks.
+       */
+      static async saveCredentialsToSystem(projectRoot, username, token) {
+        await execFileAsync("git", ["config", "--local", "credential.https://github.com.username", username], { cwd: projectRoot });
+        const credential = `protocol=https
+host=github.com
+username=${username}
+`;
+        try {
+          await this.runCredentialCommand(projectRoot, "approve", `${credential}password=${token}
+
+`);
+          const stored = await this.runCredentialCommand(projectRoot, "fill", `${credential}
+`);
+          return stored.split("\n").includes(`password=${token}`);
+        } catch (e) {
+          return false;
+        }
+      }
+      /**
+       * Runs `git credential <action>` with the given stdin, with every prompt
+       * disabled: a helper with nothing saved must fail, not pop up a dialog.
+       */
+      static runCredentialCommand(projectRoot, action, input) {
+        var _a;
+        const env = {
+          ...(_a = globalThis.process) == null ? void 0 : _a.env,
+          GIT_TERMINAL_PROMPT: "0",
+          GIT_ASKPASS: "",
+          SSH_ASKPASS: "",
+          GCM_INTERACTIVE: "never"
+        };
+        return new Promise((resolve11, reject) => {
+          var _a2;
+          const child = (0, import_child_process.execFile)("git", ["-c", "core.askPass=", "credential", action], { cwd: projectRoot, env, timeout: 15e3 }, (error, stdout) => {
+            if (error) reject(error);
+            else resolve11(String(stdout));
+          });
+          (_a2 = child.stdin) == null ? void 0 : _a2.end(input);
+        });
+      }
+      /**
        * Gets the current local branch name.
        */
       static async getCurrentBranch(projectRoot) {
@@ -231,10 +282,10 @@ var init_GitManager = __esm({
        * confirm content actually reached the server. Upstream config alone can
        * lie when the push silently failed earlier.
        */
-      static async getRemoteBranchSha(projectRoot, remoteName, branch) {
+      static async getRemoteBranchSha(projectRoot, remoteOrUrl, branch) {
         try {
           const { stdout } = await execAsync(
-            `git ls-remote --heads ${remoteName} ${branch}`,
+            `git ls-remote --heads ${remoteOrUrl} ${branch}`,
             { cwd: projectRoot }
           );
           const line = stdout.trim().split("\n")[0];
@@ -290,8 +341,8 @@ var init_GitManager = __esm({
           throw new Error(`No "${remoteName}" remote configured for "${projectRoot}".`);
         }
         const usingTokenAuth = !!token && cleanUrl.startsWith("https://");
+        const authedUrl = usingTokenAuth ? cleanUrl.replace("https://", `https://${token}@`) : cleanUrl;
         if (usingTokenAuth) {
-          const authedUrl = cleanUrl.replace("https://", `https://${token}@`);
           await execAsync(`git remote set-url ${remoteName} ${authedUrl}`, { cwd: projectRoot });
         }
         try {
@@ -318,7 +369,7 @@ var init_GitManager = __esm({
             }
           }
         }
-        const remoteSha = await this.getRemoteBranchSha(projectRoot, remoteName, branch);
+        const remoteSha = await this.getRemoteBranchSha(projectRoot, authedUrl, branch);
         if (!remoteSha) {
           throw new Error(
             `git push reported success, but the remote branch "${branch}" still has no commits. Try manually: cd "${projectRoot}" && git push -u ${remoteName} ${branch}`
@@ -3183,7 +3234,7 @@ var ContentTypeStep = class extends BaseWizardStep {
     }));
     attachmentExtraSlot = stepContentWrapper.createDiv({ cls: "vault-cms-attachment-extra-slot" });
     this.renderAttachmentExtraSlot(attachmentExtraSlot);
-    new import_obsidian8.Setting(stepContentWrapper).setName("Resolve cover images from public folder").setDesc("Enable this if your theme uses absolute image paths (like /images/photo.jpg) that reference the Astro project's public/ folder. This lets banners and card thumbnails display correctly in Obsidian.").addToggle((toggle) => {
+    new import_obsidian8.Setting(stepContentWrapper).setName("Resolve cover images from project folders").setDesc("Enable this if your content uses absolute image paths (like /images/photo.jpg) that map to an image folder in your project. Searches public/, src/assets/, static/, and assets/. This lets banners and card thumbnails display correctly in Obsidian, even when the build pipeline (e.g. Astro's src/assets) optimizes the images at build time.").addToggle((toggle) => {
       var _a2;
       return toggle.setValue((_a2 = this.state.resolvePublicImages) != null ? _a2 : false).onChange((value) => {
         this.state.resolvePublicImages = value;
@@ -12705,7 +12756,7 @@ var GitSetupStep = class extends BaseWizardStep {
     });
   }
   async handleGitSetup(button, alreadyRepo, alreadyHasRemote) {
-    var _a;
+    var _a, _b, _c, _d;
     if (this.hasAdvanced) return;
     let pat = this.pendingPat;
     const { repoName, repoDescription, isPrivate, branchName } = this.state.gitConfig;
@@ -12727,6 +12778,7 @@ var GitSetupStep = class extends BaseWizardStep {
     }
     button.setDisabled(true);
     button.setButtonText(alreadyHasRemote ? "Updating..." : "Initializing...");
+    (_c = (_b = button.buttonEl.parentElement) == null ? void 0 : _b.querySelector(".git-setup-error")) == null ? void 0 : _c.remove();
     try {
       if (!alreadyRepo) {
         await this.gitManager.initRepo(projectRoot);
@@ -12736,6 +12788,19 @@ var GitSetupStep = class extends BaseWizardStep {
       const repoInfo = await this.gitManager.createGitHubRepo(token, repoName, repoDescription || "", isPrivate);
       await this.gitManager.setRemote(projectRoot, repoInfo.clone_url);
       new import_obsidian21.Notice(`Successfully ${alreadyHasRemote ? "updated" : "connected"} to ${repoInfo.html_url}`);
+      const githubUser = repoInfo.full_name.split("/")[0];
+      let credentialsSaved = false;
+      try {
+        credentialsSaved = await this.gitManager.saveCredentialsToSystem(projectRoot, githubUser, token);
+      } catch (credentialError) {
+        console.warn("GitSetupStep: Could not save Git credentials:", credentialError);
+      }
+      if (!credentialsSaved) {
+        new import_obsidian21.Notice(
+          `Your computer has no Git credential manager, so your GitHub token was not saved. When Obsidian Git asks, enter "${githubUser}" as the username and paste your token as the password.`,
+          0
+        );
+      }
       try {
         await this.configFlushService.flush(this.state);
         console.debug("GitSetupStep: Early configuration flush successful");
@@ -12754,7 +12819,7 @@ var GitSetupStep = class extends BaseWizardStep {
         );
       }
       if (this.state.gitConfig.autoConfigureObsidianGit) {
-        await this.configureObsidianGit(token, projectRoot, branch);
+        await this.configureObsidianGit(projectRoot, branch);
       }
       if (pat && this.app.secretStorage) {
         await this.app.secretStorage.setSecret("vault-cms-github-pat", pat);
@@ -12784,19 +12849,23 @@ var GitSetupStep = class extends BaseWizardStep {
     } catch (error) {
       console.error("Git integration failed:", error);
       const errorMessage = error instanceof Error ? error.message : String(error);
-      new import_obsidian21.Notice(`Setup failed: ${errorMessage}`);
+      new import_obsidian21.Notice(`Setup failed: ${errorMessage}`, 0);
+      const actionContainer = button.buttonEl.parentElement;
+      if (actionContainer) {
+        (_d = actionContainer.querySelector(".git-setup-error")) == null ? void 0 : _d.remove();
+        actionContainer.createEl("p", {
+          cls: "git-setup-error",
+          text: `Setup failed: ${errorMessage}`,
+          attr: { style: "color: var(--text-error); margin-top: 1rem; user-select: text; white-space: pre-wrap;" }
+        });
+      }
       button.setDisabled(false);
       button.setButtonText(alreadyHasRemote ? "Update Settings & Sync" : "Initialize & Push to GitHub");
     }
   }
-  async configureObsidianGit(pat, projectRoot, branch) {
+  async configureObsidianGit(projectRoot, branch) {
     var _a;
     console.debug("GitSetupStep: Configuring Obsidian Git plugin...");
-    try {
-      this.app.saveLocalStorage("obsidian-git:password", pat);
-    } catch (e) {
-      localStorage.setItem("obsidian-git:password", pat);
-    }
     const adapter = this.app.vault.adapter;
     const vaultRoot = adapter.getBasePath ? adapter.getBasePath() : "";
     if (vaultRoot && projectRoot) {
@@ -14947,8 +15016,11 @@ var VaultCMSPlugin = class extends import_obsidian28.Plugin {
   }
   /**
    * Resolve an absolute image path (e.g. /images/blog/1.jpg) against the
-   * Astro project's public/ folder. Returns a file:// resource URL if the
-   * file exists, null otherwise.
+   * project's image folders. Tries, in order: public/, src/assets/,
+   * static/, assets/ (relative to the configured project root). This means
+   * a path like /images/foo.jpg works whether the framework serves it raw
+   * from public/ OR optimizes it from a build-pipeline dir like Astro's
+   * src/assets/. Returns a file:// resource URL if found, null otherwise.
    *
    * Preserved at the top level for back-compat with consumers written
    * before the namespaced API existed (Image Manager, Bases CMS). New
