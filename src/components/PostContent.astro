@@ -1,6 +1,6 @@
 ---
 import type { Post } from '@/types';
-import { processImagesForLightbox, getOptimizedFormat } from '@/utils/images';
+import { processImagesForLightbox, resolveCoverImage } from '@/utils/images';
 import { siteConfig, getCoverAspectClasses } from '@/config';
 import { formatDate, formatDateMobile, getReadingTimeMobile, DATE_LOCALE } from '@/utils/markdown';
 import ImageGallery from './ImageGallery.astro';
@@ -20,31 +20,7 @@ export interface Props {
 const { post } = Astro.props;
 const { Content, toc, readingTime, wordCount } = post;
 
-// Process Obsidian bracket syntax in image field
-const processedImage = (() => {
-  if (!post.data.image) return post.data.image;
-
-  // Handle case where image is an array (unquoted YAML syntax)
-  let imageValue = post.data.image;
-  if (Array.isArray(post.data.image)) {
-    // If it's an array, take the first element
-    imageValue = post.data.image[0];
-  }
-
-  // Ensure imageValue is a string before calling string methods
-  if (typeof imageValue !== 'string') {
-    console.warn('PostContent: imageValue is not a string:', imageValue);
-    return imageValue;
-  }
-
-  // Check if it's Obsidian double bracket syntax
-  if (imageValue.startsWith('[[') && imageValue.endsWith(']]')) {
-    // Extract the content inside the double brackets
-    return imageValue.slice(2, -2);
-  }
-
-  return imageValue;
-})();
+const cover = resolveCoverImage(post.data.image, 'posts', post.id);
 ---
 
 <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -103,73 +79,16 @@ const processedImage = (() => {
           </div>
         )}
 
-        {processedImage && (
+        {cover && (
           <div class={getCoverAspectClasses("rounded-xl mb-8")}>
             <ImageWrapper
-              src={(() => {
-                // Clean the image path by removing Obsidian brackets
-                let cleanImagePath = processedImage;
-                if (!cleanImagePath || typeof cleanImagePath !== 'string') return '';
-                if (cleanImagePath.startsWith('[[') && cleanImagePath.endsWith(']]')) {
-                  cleanImagePath = cleanImagePath.slice(2, -2);
-                }
-                
-                // Handle external URLs
-                if (cleanImagePath.startsWith('http')) {
-                  return cleanImagePath;
-                }
-                
-                // Detect folder-based vs file-based: if image path starts with 'attachments/',
-                // it's a single-file post (shared attachments folder)
-                const isFileBased = cleanImagePath.startsWith('attachments/');
-                
-                if (isFileBased) {
-                  // Single-file post - remove attachments/ prefix
-                  cleanImagePath = cleanImagePath.replace('attachments/', '');
-                } else {
-                  // Folder-based post - sync script copies images to post folder root
-                  // Remove 'images/' or 'attachments/' prefixes if present (sync script removes them)
-                  if (cleanImagePath.startsWith('images/') || cleanImagePath.startsWith('attachments/')) {
-                    cleanImagePath = cleanImagePath.replace(/^(images|attachments)\//, '');
-                  }
-                }
-                
-                // Convert to WebP if applicable (sync-images.js creates WebP versions)
-                return getOptimizedFormat(cleanImagePath);
-              })()}
-              basePath={(() => {
-                // 1. External URLs - no basePath needed
-                if (typeof processedImage === 'string' && processedImage.startsWith('http')) {
-                  return '';
-                }
-
-                // 2. Clean the image path to check for attachments/ prefix
-                let cleanImagePath = processedImage;
-                if (typeof cleanImagePath === 'string' && cleanImagePath.startsWith('[[') && cleanImagePath.endsWith(']]')) {
-                  cleanImagePath = cleanImagePath.slice(2, -2);
-                }
-
-                // 3. Detect folder-based vs file-based: if image path starts with 'attachments/',
-                // it's a single-file post (shared attachments folder)
-                if (typeof cleanImagePath === 'string' && cleanImagePath.startsWith('attachments/')) {
-                  // Single-file post with image in attachments folder
-                  return '/posts/attachments/';
-                }
-
-                // 4. Folder-based post - sync script copies images to post folder root
-                // Safety check: ensure post.id exists before using it
-                if (post.id) {
-                  return `/posts/${post.id}/`;
-                }
-
-                // Fallback to attachments directory if post.id is undefined
-                return '/posts/attachments/';
-              })()}
+              src={cover.src}
+              basePath={cover.basePath}
               alt={post.data.imageAlt || `Image in post: ${post.data.title}`}
               class="w-full h-full"
               width={1200}
               height={675}
-              format={typeof processedImage === 'string' && processedImage.endsWith('.svg') ? undefined : "webp"}
+              format={cover.url.endsWith('.svg') ? undefined : "webp"}
               quality={90}
               densities={[1, 2]}
               loading="eager"

@@ -3,7 +3,7 @@ import type { CollectionEntry } from 'astro:content';
 import { formatDate, processMarkdown, isValidDate } from '../utils/markdown';
 import { siteConfig, getPostCardAspectRatio } from '../config';
 import { normalizeStatus, getStatusDisplayText, hasStatusStyling, getStatusClasses } from '../utils/status';
-import { optimizeContentImagePath, getOptimizedFormat } from '../utils/images';
+import { resolveCoverImage } from '../utils/images';
 import ImageWrapper from './ImageWrapper.astro';
 import Icon from './Icon.astro';
 
@@ -20,33 +20,9 @@ const { project, featured = false, eager = false, context = 'projects', showCate
 // Get excerpt from markdown processing
 const { excerpt } = processMarkdown(project.body || '');
 
-const { title, description: rawDescription, date, image: rawImage, imageAlt } = project.data;
+const { title, description: rawDescription, date, image, imageAlt } = project.data;
 
-// Process Obsidian bracket syntax in image field (copy from PostCard)
-const image = (() => {
-  if (!rawImage) return rawImage;
-
-  // Handle case where rawImage is an array (unquoted YAML syntax)
-  let imageValue = rawImage;
-  if (Array.isArray(rawImage)) {
-    // If it's an array, take the first element
-    imageValue = rawImage[0];
-  }
-
-  // Ensure imageValue is a string before calling string methods
-  if (typeof imageValue !== 'string') {
-    console.warn('ProjectCard: imageValue is not a string:', imageValue);
-    return imageValue;
-  }
-
-  // Check if it's Obsidian double bracket syntax
-  if (imageValue.startsWith('[[') && imageValue.endsWith(']]')) {
-    // Extract the content inside the double brackets
-    return imageValue.slice(2, -2);
-  }
-
-  return imageValue;
-})();
+const cover = resolveCoverImage(image, 'projects', project.id);
 
 const description = rawDescription || excerpt;
 const categories = project.data.categories || [];
@@ -67,62 +43,11 @@ const shouldShowCoverImage = true;
 <div class="group relative bg-white dark:bg-primary-800 rounded-xl border border-primary-200 dark:border-primary-700 overflow-hidden hover:shadow-xl transition-all duration-300 aspect-[4/3]" data-project-categories={categories.join(',')}>
   <a href={`/projects/${project.id}`} class="block h-full hover:opacity-100" aria-label={`View project: ${title}`}>
     <!-- Background Image or Fallback -->
-    {image && shouldShowCoverImage && (
+    {cover && shouldShowCoverImage && (
       <div class="absolute inset-0">
         <ImageWrapper
-          src={(() => {
-            // Clean the image path by removing Obsidian brackets
-            let cleanImagePath = image;
-            if (!cleanImagePath || typeof cleanImagePath !== 'string') return '';
-            if (cleanImagePath.startsWith('[[') && cleanImagePath.endsWith(']]')) {
-              cleanImagePath = cleanImagePath.slice(2, -2);
-            }
-
-            // Remove Obsidian subfolder prefixes (images/, attachments/)
-            if (typeof cleanImagePath === 'string') {
-              // Remove images/ prefix if present (Obsidian subfolder setting)
-              if (cleanImagePath.startsWith('images/')) {
-                cleanImagePath = cleanImagePath.replace('images/', '');
-              }
-              // Remove attachments/ prefix - basePath will add it back
-              if (cleanImagePath.startsWith('attachments/')) {
-                cleanImagePath = cleanImagePath.replace('attachments/', '');
-              }
-            }
-
-            const finalSrc = cleanImagePath || '';
-            // Convert to WebP if applicable (sync-images.js creates WebP versions)
-            return getOptimizedFormat(finalSrc);
-          })()}
-          basePath={(() => {
-            // 1. External URLs - no basePath needed
-            if (typeof image === 'string' && image.startsWith('http')) {
-              return '';
-            }
-
-            // 2. Clean the image path to check for attachments/ prefix
-            let cleanImagePath = image;
-            if (typeof cleanImagePath === 'string' && cleanImagePath.startsWith('[[') && cleanImagePath.endsWith(']]')) {
-              cleanImagePath = cleanImagePath.slice(2, -2);
-            }
-
-            // 3. Detect folder-based vs file-based: if image path starts with 'attachments/',
-            // it's a single-file project (shared attachments folder)
-            if (typeof cleanImagePath === 'string' && cleanImagePath.startsWith('attachments/')) {
-              // Single-file project with image in attachments folder
-              // The sync script copies these to /projects/attachments/
-              return "/projects/attachments/";
-            }
-
-            // 4. Folder-based project - sync script copies images to project folder root
-            // Safety check: ensure project.id exists before using it
-            if (project.id) {
-              return `/projects/${project.id}/`;
-            } else {
-              // Fallback to attachments directory if project.id is undefined
-              return '/projects/attachments/';
-            }
-          })()}
+          src={cover.src}
+          basePath={cover.basePath}
           alt={imageAlt || `Cover image for project: ${title}`}
           width={800}
           height={600}
@@ -136,7 +61,7 @@ const shouldShowCoverImage = true;
     )}
 
     <!-- Fallback background when no image -->
-    {!image && (
+    {!cover && (
       <div class="absolute inset-0 bg-gradient-to-br from-primary-200 to-primary-300 dark:from-primary-700 dark:to-primary-800"></div>
     )}
 
@@ -153,7 +78,7 @@ const shouldShowCoverImage = true;
     {isValidDate(date) && (
       <div class="absolute top-3 left-3 z-10">
         <time datetime={date.toISOString()} class={`text-xs font-mono px-2 py-1 rounded backdrop-blur-sm ${
-          image && shouldShowCoverImage
+          cover && shouldShowCoverImage
             ? 'text-white/90 bg-black/20'
             : 'text-primary-700 dark:text-primary-200 bg-white/80 dark:bg-black/20'
         }`}>
@@ -175,7 +100,7 @@ const shouldShowCoverImage = true;
     }`}>
       <!-- Title - always centered -->
       <h3 class={`text-xl font-bold transition-colors line-clamp-2 text-center ${
-        image && shouldShowCoverImage
+        cover && shouldShowCoverImage
           ? 'text-white group-hover:text-highlight-300 drop-shadow-lg'
           : 'text-primary-900 dark:text-primary-50 group-hover:text-highlight-600 dark:group-hover:text-highlight-400'
       } ${
@@ -193,7 +118,7 @@ const shouldShowCoverImage = true;
           <!-- Description -->
           {hasDescription && (
             <p class={`text-sm mb-3 line-clamp-2 text-left ${
-              image && shouldShowCoverImage
+              cover && shouldShowCoverImage
                 ? 'text-white/90 drop-shadow-lg'
                 : 'text-primary-700 dark:text-primary-300'
             }`}>
@@ -206,7 +131,7 @@ const shouldShowCoverImage = true;
             <div class="flex flex-wrap gap-1 mb-3 justify-center">
               {categories.slice(0, 3).map(category => (
                 <span class={`inline-flex items-center px-2 py-1 text-xs font-medium rounded backdrop-blur-sm ${
-                  image && shouldShowCoverImage
+                  cover && shouldShowCoverImage
                     ? 'bg-white/20 text-white/90'
                     : 'bg-primary-100 dark:bg-primary-700 text-primary-700 dark:text-primary-200'
                 }`}>
@@ -215,7 +140,7 @@ const shouldShowCoverImage = true;
               ))}
               {categories.length > 3 && (
                 <span class={`inline-flex items-center px-2 py-1 text-xs font-medium rounded backdrop-blur-sm ${
-                  image && shouldShowCoverImage
+                  cover && shouldShowCoverImage
                     ? 'bg-white/20 text-white/90'
                     : 'bg-primary-100 dark:bg-primary-700 text-primary-700 dark:text-primary-200'
                 }`}>
@@ -230,7 +155,7 @@ const shouldShowCoverImage = true;
           {/* Always visible content for minimal layouts */}
           {hasDescription && (
             <p class={`text-sm line-clamp-2 text-center ${
-              image && shouldShowCoverImage
+              cover && shouldShowCoverImage
                 ? 'text-white/90 drop-shadow-lg'
                 : 'text-primary-700 dark:text-primary-300'
             }`}>
@@ -242,7 +167,7 @@ const shouldShowCoverImage = true;
             <div class="flex flex-wrap gap-1 mt-3 justify-center">
               {categories.slice(0, 3).map(category => (
                 <span class={`inline-flex items-center px-2 py-1 text-xs font-medium rounded backdrop-blur-sm ${
-                  image && shouldShowCoverImage
+                  cover && shouldShowCoverImage
                     ? 'bg-white/20 text-white/90'
                     : 'bg-primary-100 dark:bg-primary-700 text-primary-700 dark:text-primary-200'
                 }`}>
@@ -251,7 +176,7 @@ const shouldShowCoverImage = true;
               ))}
               {categories.length > 3 && (
                 <span class={`inline-flex items-center px-2 py-1 text-xs font-medium rounded backdrop-blur-sm ${
-                  image && shouldShowCoverImage
+                  cover && shouldShowCoverImage
                     ? 'bg-white/20 text-white/90'
                     : 'bg-primary-100 dark:bg-primary-700 text-primary-700 dark:text-primary-200'
                 }`}>

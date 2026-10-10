@@ -4,11 +4,12 @@
  * Script to check for missing images and other media in content
  * Run with: node scripts/check-missing-images.js
  *
- * References resolve the way the site resolves images: body images and embeds
- * follow remarkFolderImages (src/utils/internallinks.ts), and the `image`
- * frontmatter field follows the cover image components. The resulting URL is
- * traced back to the vault file that scripts/sync-images.js publishes there, so
- * the result doesn't depend on a previous sync, the OS, or line endings.
+ * References resolve the way the site resolves them: body images and embeds
+ * follow resolveContentFileUrl (src/utils/internallinks.ts), and the `image`
+ * frontmatter field follows resolveCoverImage (src/utils/images.ts). The
+ * resulting URL is traced back to the vault file that scripts/sync-images.js
+ * publishes there, so the result doesn't depend on a previous sync, the OS, or
+ * line endings.
  */
 
 import fs from 'fs';
@@ -165,7 +166,7 @@ function isLocalFile(ref) {
   return Boolean(ref) && !/^([a-z][a-z\d+.-]*:|\/\/)/i.test(ref) && !/\.base$/i.test(ref);
 }
 
-// URL a body image or embed resolves to (mirrors remarkFolderImages)
+// URL a body image or embed resolves to (mirrors resolveContentFileUrl)
 function bodyReferenceUrl(ref, file) {
   if (ref.startsWith('/')) return ref;
   // Special pages use the pages collection's paths
@@ -181,14 +182,24 @@ function bodyReferenceUrl(ref, file) {
   return `/${collection}/attachments/${rel.replace(/^attachments\//, '')}`;
 }
 
-// URL the `image` frontmatter field resolves to (mirrors optimizeContentImagePath).
-// A path that starts with attachments/ always means the shared folder, even in
-// folder-based content.
+// URL the `image` frontmatter field resolves to (mirrors resolveCoverImage).
+// A path that starts with attachments/ means the entry's own attachments/
+// folder when the file is there, and the collection's otherwise. ownFile is the
+// file the site looked for first when it fell back to the collection's folder.
 function frontmatterImageUrl(ref, file) {
-  if (ref.startsWith('/')) return ref;
-  if (ref.startsWith('attachments/')) return `/${file.collection}/${ref}`;
-  const rel = (ref.startsWith('./') ? ref.slice(2) : ref).replace(/^(images|attachments)\//, '');
-  return `/${file.collection}/${file.id}/${rel}`;
+  const rel = path.posix.normalize(ref);
+  if (rel.startsWith('/')) return { url: rel };
+
+  if (rel.startsWith('attachments/')) {
+    const name = rel.slice('attachments/'.length);
+    const ownFile = path.join(contentRoot, file.collection, ...file.id.split('/'), 'attachments', ...name.split('/'));
+    if (!findFile(ownFile)) return { url: `/${file.collection}/attachments/${name}`, ownFile };
+    // Sync flattens the attachments/ folder of a top-level entry folder only
+    const ownDir = file.id.includes('/') ? `${file.id}/attachments` : file.id;
+    return { url: `/${file.collection}/${ownDir}/${name}` };
+  }
+
+  return { url: path.posix.normalize(`/${file.collection}/${file.id}/${rel.replace(/^images\//, '')}`) };
 }
 
 // Vault files that scripts/sync-images.js publishes at a URL, most likely first.
@@ -228,8 +239,10 @@ function extractReferences(filePath) {
     if (image) {
       const firstLine = lineAt(content, frontmatter[0].length - frontmatter[1].length - 3);
       const value = image.value.trim();
-      const ref = value.startsWith('[[') && value.endsWith(']]') ? value.slice(2, -2) : value;
-      add('frontmatter', image.value, ref, firstLine + image.line, frontmatterImageUrl);
+      const ref = (value.startsWith('[[') && value.endsWith(']]') ? value.slice(2, -2) : value).trim();
+      if (isLocalFile(ref)) {
+        references.push({ type: 'frontmatter', src: image.value, line: firstLine + image.line, ...frontmatterImageUrl(ref, file) });
+      }
     }
   }
 
@@ -296,11 +309,14 @@ function main() {
         const sources = sourcesForUrl(reference.url);
         if (sources.some((source) => findFile(source))) continue;
 
-        const caseMismatch = sources.map((source) => findFile(source, true)).find(Boolean);
+        // A cover that fell back to the collection's folder can live in either folder
+        const candidates = [reference.ownFile, ...sources].filter(Boolean);
+        const expectedPaths = [reference.ownFile, sources[0]].filter(Boolean).map(displayPath);
+        const caseMismatch = candidates.map((source) => findFile(source, true)).find(Boolean);
         missingImageDetails.push({
           ...reference,
           file: displayPath(filePath),
-          expectedPath: sources.length ? displayPath(sources[0]) : `nothing is published at ${reference.url}`,
+          expectedPaths: expectedPaths.length ? expectedPaths : [`nothing is published at ${reference.url}`],
           caseMismatch: caseMismatch && displayPath(caseMismatch),
         });
       }
@@ -320,7 +336,7 @@ function main() {
     for (const detail of missingImageDetails) {
       console.log(`   ${detail.file}:${detail.line} (${detail.type})`);
       console.log(`     ${detail.src}`);
-      console.log(`     Expected: ${detail.expectedPath}`);
+      console.log(`     Expected: ${detail.expectedPaths.join('\n           or: ')}`);
       if (detail.caseMismatch) {
         console.log(`     Found with different capitalization: ${detail.caseMismatch}`);
       }
@@ -330,7 +346,7 @@ function main() {
     console.log('💡 Tips:');
     console.log('   - Single-file content uses its collection\'s attachments/ folder, such as src/content/posts/attachments/');
     console.log('   - Folder-based content uses the folder of its index.md and that folder\'s attachments/ subfolder');
-    console.log('   - A frontmatter image that starts with attachments/ uses the collection\'s attachments/ folder, even in folder-based content');
+    console.log('   - A frontmatter image that starts with attachments/ uses the entry\'s own attachments/ folder when the file is there, and the collection\'s otherwise');
     console.log('   - Paths are case-sensitive on the deployed site, even when they are not on your computer');
   } else {
     console.log('✅ All images found!');

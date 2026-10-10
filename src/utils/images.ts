@@ -1,3 +1,5 @@
+import fs from "node:fs";
+import path from "node:path";
 import type { ImageInfo, OpenGraphImage } from "@/types";
 import { siteConfig } from "@/config";
 
@@ -179,78 +181,93 @@ export function stripObsidianBrackets(imagePath: string): string {
   return imagePath;
 }
 
+// Collections with an `image` (cover) field, named by their src/content/ folder
+export type CoverCollection = "posts" | "pages" | "projects" | "docs";
+
+export interface CoverImage {
+  // Where the cover is served, or the web URL it points to
+  url: string;
+  // ImageWrapper props: the URL's folder and file name. A web URL goes in src
+  // whole, with an empty basePath.
+  basePath: string;
+  src: string;
+}
+
+const contentDir = path.join(process.cwd(), "src", "content");
+
+// Whether a file exists in the vault, given its path under src/content/
+function isVaultFile(...segments: string[]): boolean {
+  const stat = fs.statSync(path.join(contentDir, ...segments), { throwIfNoEntry: false });
+  return stat?.isFile() ?? false;
+}
+
+/**
+ * Resolve an `image` frontmatter value to the URL scripts/sync-images.js
+ * publishes the cover at. Cards, layouts, preload links, Open Graph tags and
+ * the RSS feed all use this, and scripts/check-missing-images.js mirrors it.
+ *
+ * - Web URLs are used as they are, and absolute paths only get the WebP
+ *   extension inside the collection folders, where sync converts images.
+ * - attachments/cover.png looks in the entry's own attachments/ folder first,
+ *   which is what Obsidian's relative links mean in folder-based content, then
+ *   in the collection's shared attachments/ folder.
+ * - Any other relative path, such as cover.png, is in the entry's folder.
+ *   images/ is the old name for attachments/ and is dropped.
+ */
+export function resolveCoverImage(
+  image: unknown,
+  collection: CoverCollection,
+  entryId?: string
+): CoverImage | null {
+  // The content schema already takes the first item of a list
+  const value = Array.isArray(image) ? image[0] : image;
+  if (typeof value !== "string") return null;
+  const ref = stripObsidianBrackets(value.trim()).trim();
+  if (!ref) return null;
+
+  // Web URLs, including protocol-relative ones
+  if (/^([a-z][a-z\d+.-]*:|\/\/)/i.test(ref)) {
+    return { url: ref, basePath: "", src: ref };
+  }
+
+  let url: string;
+  const rel = path.posix.normalize(ref);
+  if (rel.startsWith("/")) {
+    url = rel;
+  } else if (rel.startsWith("attachments/")) {
+    const file = rel.slice("attachments/".length);
+    if (entryId && isVaultFile(collection, ...entryId.split("/"), "attachments", ...file.split("/"))) {
+      // Sync flattens the attachments/ folder of a top-level entry folder only
+      url = entryId.includes("/")
+        ? `/${collection}/${entryId}/attachments/${file}`
+        : `/${collection}/${entryId}/${file}`;
+    } else {
+      url = `/${collection}/attachments/${file}`;
+    }
+  } else {
+    const file = rel.replace(/^images\//, "");
+    url = entryId ? `/${collection}/${entryId}/${file}` : `/${collection}/attachments/${file}`;
+  }
+  // Resolve ../ segments, such as ../attachments/cover.png in folder-based content
+  url = path.posix.normalize(url);
+
+  // Sync converts images in the collection folders to WebP
+  if (/^\/(posts|pages|projects|docs|special)\//.test(url)) {
+    url = getOptimizedFormat(url);
+  }
+
+  const slash = url.lastIndexOf("/");
+  return { url, basePath: url.slice(0, slash + 1), src: url.slice(slash + 1) };
+}
+
 // Optimize image path specifically for posts
 export function optimizePostImagePath(
   imagePath: string,
   postSlug?: string,
   postId?: string
 ): string {
-  // Handle null, undefined, or empty strings
-  if (!imagePath || typeof imagePath !== "string") {
-    return "/posts/attachments/placeholder.jpg"; // Fallback to placeholder
-  }
-
-  // Strip Obsidian brackets first
-  const cleanPath = stripObsidianBrackets(imagePath.trim());
-
-  // Handle empty path after cleaning
-  if (!cleanPath) {
-    return "/posts/attachments/placeholder.jpg";
-  }
-
-  // Handle different image path formats
-  if (cleanPath.startsWith("http://") || cleanPath.startsWith("https://")) {
-    return cleanPath; // External URL
-  }
-
-  if (cleanPath.startsWith("/")) {
-    return cleanPath; // Absolute path
-  }
-
-  // Prevent double processing - if already optimized, convert to WebP and return
-  if (cleanPath.startsWith("/posts/attachments/") || cleanPath.startsWith("/posts/")) {
-    return getOptimizedFormat(cleanPath);
-  }
-
-  // Detect folder-based vs file-based: if image path starts with 'attachments/',
-  // it's a single-file post (shared attachments folder)
-  const isFileBased = cleanPath.startsWith("attachments/");
-
-  if (isFileBased) {
-    // Single-file post - remove attachments/ prefix
-    const imageName = cleanPath.replace("attachments/", "");
-    const attachPath = `/posts/attachments/${imageName}`;
-    return getOptimizedFormat(attachPath);
-  }
-
-  // Folder-based post - sync script copies images to post folder root
-  if (postId && postSlug) {
-    // Remove leading "./" if present
-    let imageName = cleanPath.startsWith("./") ? cleanPath.slice(2) : cleanPath;
-    
-    // Strip 'images/' or 'attachments/' prefixes if present (sync script removes them)
-    if (imageName.startsWith("images/") || imageName.startsWith("attachments/")) {
-      imageName = imageName.replace(/^(images|attachments)\//, "");
-    }
-    
-    // For folder-based posts, images are in /posts/{postId}/
-    const folderPath = `/posts/${postSlug}/${imageName}`;
-    // Convert to WebP if applicable (sync-images.js creates WebP versions)
-    return getOptimizedFormat(folderPath);
-  }
-
-  // Fallback for edge cases (shouldn't happen if postId is provided)
-  // Handle case where filename is provided without path
-  if (!cleanPath.includes("/")) {
-    const attachPath = `/posts/attachments/${cleanPath}`;
-    return getOptimizedFormat(attachPath);
-  }
-
-  // Default - assume it's a relative path in the posts directory
-  const finalPath = `/posts/attachments/${cleanPath}`;
-  
-  // Convert to WebP if applicable (sync-images.js creates WebP versions)
-  return getOptimizedFormat(finalPath);
+  return resolveCoverImage(imagePath, "posts", postSlug ?? postId)?.url
+    ?? "/posts/attachments/placeholder.jpg";
 }
 
 // Generic image optimization function for all content types
@@ -262,63 +279,8 @@ export function optimizeContentImagePath(
 ): string {
   // Map content types to their URL paths
   const urlPath = contentType === "documentation" ? "docs" : contentType;
-
-  // Handle null, undefined, or empty strings
-  if (!imagePath || typeof imagePath !== "string") {
-    return `/${urlPath}/attachments/placeholder.jpg`; // Fallback to placeholder
-  }
-
-  // Strip Obsidian brackets first
-  const cleanPath = stripObsidianBrackets(imagePath.trim());
-
-  // Handle empty path after cleaning
-  if (!cleanPath) {
-    return `/${urlPath}/attachments/placeholder.jpg`;
-  }
-
-  // Handle different image path formats
-  if (cleanPath.startsWith("http://") || cleanPath.startsWith("https://")) {
-    return cleanPath; // External URL
-  }
-
-  if (cleanPath.startsWith("/")) {
-    return cleanPath; // Absolute path
-  }
-
-  // Prevent double processing - if already optimized, convert to WebP and return
-  if (cleanPath.startsWith(`/${urlPath}/attachments/`) || cleanPath.startsWith(`/${urlPath}/`)) {
-    return getOptimizedFormat(cleanPath);
-  }
-
-  // Detect folder-based vs file-based: if image path starts with 'attachments/',
-  // it's a single-file content (shared attachments folder)
-  const isFileBased = cleanPath.startsWith("attachments/");
-
-  if (isFileBased) {
-    // Single-file content - remove attachments/ prefix
-    const imageName = cleanPath.replace("attachments/", "");
-    const attachPath = `/${urlPath}/attachments/${imageName}`;
-    return getOptimizedFormat(attachPath);
-  }
-
-  // Folder-based content - sync script copies images to content folder root
-  // Remove leading "./" if present
-  let imageName = cleanPath.startsWith("./") ? cleanPath.slice(2) : cleanPath;
-  
-  // Strip 'images/' or 'attachments/' prefixes if present (sync script removes them)
-  if (imageName.startsWith("images/") || imageName.startsWith("attachments/")) {
-    imageName = imageName.replace(/^(images|attachments)\//, "");
-  }
-  
-  // For folder-based content, images are in /{urlPath}/{contentSlug}/
-  if (contentId && contentSlug) {
-    const folderPath = `/${urlPath}/${contentSlug}/${imageName}`;
-    return getOptimizedFormat(folderPath);
-  }
-
-  // Fallback: if no contentId/contentSlug, assume attachments folder
-  const attachPath = `/${urlPath}/attachments/${imageName}`;
-  return getOptimizedFormat(attachPath);
+  return resolveCoverImage(imagePath, urlPath, contentSlug ?? contentId)?.url
+    ?? `/${urlPath}/attachments/placeholder.jpg`;
 }
 
 // Generate responsive image srcset

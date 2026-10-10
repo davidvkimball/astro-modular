@@ -383,12 +383,18 @@ Image resolution:
 - Absolute (`/attachments/foo.jpg`) → as-is
 - External URL → as-is
 - Cover images auto-convert to `.webp` via the URL resolver (except SVG / existing WebP)
+- A cover (`image` field) that starts with `attachments/` uses the entry's own `attachments/` folder when the file is there, and the collection's shared `attachments/` folder otherwise. In folder-based content, Obsidian's relative links write `attachments/cover.png` for a file in the entry's own folder, while older content may mean the shared one.
+
+Each kind of reference has exactly one resolver, and everything else calls it:
+
+- Body images and embeds: `resolveContentFileUrl()` in `src/utils/internallinks.ts`, shared by `remarkFolderImages` and `remarkObsidianEmbeds`. They disagreed before, which broke `![[attachments/clip.mp4]]` in folder-based content.
+- Covers: `resolveCoverImage()` in `src/utils/images.ts`, called directly by every card and layout, and through the `optimizePostImagePath()` and `optimizeContentImagePath()` wrappers by Open Graph tags, the RSS feed and the listing preload links. It returns the cover's `url` plus the `src` and `basePath` to pass to `ImageWrapper`. Don't resolve a cover path inside a component; about a dozen copies of that logic had drifted apart.
 
 ### Missing images
 
 Missing images don't fail the build in dev or production. `ImageWrapper` renders nothing for a missing cover, and a missing body image ships as a broken `<img>`, so run `pnpm run check-images` before deploying.
 
-`scripts/check-missing-images.js` resolves each reference the way the site does (remarkFolderImages for body images and embeds, the cover image components for the `image` field), then maps that URL back to the vault file `scripts/sync-images.js` publishes there. If you change either resolver or how sync lays out `public/`, update the checker to match.
+`scripts/check-missing-images.js` resolves each reference the way the site does (`resolveContentFileUrl` for body images and embeds, `resolveCoverImage` for the `image` field), then maps that URL back to the vault file `scripts/sync-images.js` publishes there. If you change either resolver or how sync lays out `public/`, update the checker to match.
 
 ---
 

@@ -1704,6 +1704,108 @@ function convertToWebP(imagePath: string): string {
   return imagePath.replace(/\.(jpg|jpeg|png|gif|bmp|tiff|tif)$/i, ".webp");
 }
 
+/**
+ * Resolve a relative file path in a markdown body (an image, or an audio,
+ * video or PDF embed) to the URL scripts/sync-images.js publishes the file at.
+ * Shared by remarkFolderImages and remarkObsidianEmbeds so both agree, and
+ * mirrored by scripts/check-missing-images.js. Returns null when the markdown
+ * file isn't in a known collection.
+ */
+export function resolveContentFileUrl(url: string, filePath?: string): string | null {
+  // Determine content type and whether it's folder-based
+  let collection: string | null = null;
+  let contentSlug: string | null = null;
+  let isFolderBased = false;
+
+  if (filePath) {
+    // Normalize path separators (Windows uses backslashes, Unix uses forward slashes)
+    const normalizedPath = filePath.replace(/\\/g, "/");
+    const pathParts = normalizedPath.split("/");
+
+    // Check for posts
+    if (normalizedPath.includes("/posts/")) {
+      collection = "posts";
+      const postsIndex = pathParts.indexOf("posts");
+      isFolderBased = normalizedPath.endsWith("/index.md");
+      contentSlug = isFolderBased ? pathParts[postsIndex + 1] : null;
+    }
+    // Check for projects
+    else if (normalizedPath.includes("/projects/")) {
+      collection = "projects";
+      const projectsIndex = pathParts.indexOf("projects");
+      isFolderBased = normalizedPath.endsWith("/index.md");
+      contentSlug = isFolderBased ? pathParts[projectsIndex + 1] : null;
+    }
+    // Check for docs
+    else if (normalizedPath.includes("/docs/")) {
+      collection = "docs";
+      const docsIndex = pathParts.indexOf("docs");
+      isFolderBased = normalizedPath.endsWith("/index.md");
+      contentSlug = isFolderBased ? pathParts[docsIndex + 1] : null;
+    }
+    // Check for pages
+    else if (normalizedPath.includes("/pages/")) {
+      collection = "pages";
+      const pagesIndex = pathParts.indexOf("pages");
+      isFolderBased = normalizedPath.endsWith("/index.md");
+      contentSlug = isFolderBased ? pathParts[pagesIndex + 1] : null;
+    }
+    // Check for special pages (they also use pages collection paths)
+    else if (normalizedPath.includes("/special/")) {
+      collection = "pages"; // Special pages use pages collection paths
+      const specialIndex = pathParts.indexOf("special");
+      isFolderBased = normalizedPath.endsWith("/index.md");
+      contentSlug = isFolderBased ? pathParts[specialIndex + 1] : null;
+    }
+  }
+
+  // Clean up image path
+  let imagePath = url;
+  if (imagePath.startsWith("./")) {
+    imagePath = imagePath.slice(2);
+  }
+
+  // Fallback: If we couldn't detect collection but image starts with attachments/,
+  // assume it's pages (most common case for attachments)
+  if (!collection && imagePath.startsWith("attachments/")) {
+    collection = "pages";
+  }
+
+  if (!collection) {
+    return null; // Not a recognized content type
+  }
+
+  // Handle folder-based content (e.g., /posts/my-post/index.md with image.png)
+  if (isFolderBased && contentSlug) {
+    // Sync script copies images to post folder root, removing subfolder prefixes
+    // Strip 'images/' or 'attachments/' prefixes if present
+    let cleanImagePath = imagePath;
+    // Accept Obsidian's "Path from vault folder" format for body image
+    // pastes: strip the post's own folder prefix if the markdown
+    // referenced the image by full vault path (e.g. `posts/my-slug/foo.png`
+    // from this same post). Without this, paste-inserted images 404 with
+    // a doubled URL prefix.
+    const postPrefix = `${collection}/${contentSlug}/`;
+    if (cleanImagePath.startsWith(postPrefix)) {
+      cleanImagePath = cleanImagePath.slice(postPrefix.length);
+    } else if (cleanImagePath.startsWith('images/') || cleanImagePath.startsWith('attachments/')) {
+      cleanImagePath = cleanImagePath.replace(/^(images|attachments)\//, '');
+    }
+    // Image is relative to the folder: /posts/my-post/image.png
+    return `/${collection}/${contentSlug}/${cleanImagePath}`;
+  }
+
+  // Handle single-file content with attachments/ prefix
+  if (imagePath.startsWith("attachments/")) {
+    // Image uses shared attachments folder: /posts/attachments/image.png
+    return `/${collection}/${imagePath}`;
+  }
+
+  // Handle single-file content with other relative paths
+  // Assume it's in the attachments folder
+  return `/${collection}/attachments/${imagePath}`;
+}
+
 // Custom remark plugin to handle ALL content images (folder-based AND single-file)
 export function remarkFolderImages() {
   return function transformer(tree: any, file: any) {
@@ -1722,107 +1824,13 @@ export function remarkFolderImages() {
         return; // Let remarkObsidianEmbeds handle these
       }
 
-      // Determine content type and whether it's folder-based
-      let collection: string | null = null;
-      let contentSlug: string | null = null;
-      let isFolderBased = false;
-
-      if (file.path) {
-        // Normalize path separators (Windows uses backslashes, Unix uses forward slashes)
-        const normalizedPath = file.path.replace(/\\/g, "/");
-        const pathParts = normalizedPath.split("/");
-        
-        // Check for posts
-        if (normalizedPath.includes("/posts/")) {
-          collection = "posts";
-          const postsIndex = pathParts.indexOf("posts");
-          isFolderBased = normalizedPath.endsWith("/index.md");
-          contentSlug = isFolderBased ? pathParts[postsIndex + 1] : null;
-        }
-        // Check for projects
-        else if (normalizedPath.includes("/projects/")) {
-          collection = "projects";
-          const projectsIndex = pathParts.indexOf("projects");
-          isFolderBased = normalizedPath.endsWith("/index.md");
-          contentSlug = isFolderBased ? pathParts[projectsIndex + 1] : null;
-        }
-        // Check for docs
-        else if (normalizedPath.includes("/docs/")) {
-          collection = "docs";
-          const docsIndex = pathParts.indexOf("docs");
-          isFolderBased = normalizedPath.endsWith("/index.md");
-          contentSlug = isFolderBased ? pathParts[docsIndex + 1] : null;
-        }
-        // Check for pages
-        else if (normalizedPath.includes("/pages/")) {
-          collection = "pages";
-          const pagesIndex = pathParts.indexOf("pages");
-          isFolderBased = normalizedPath.endsWith("/index.md");
-          contentSlug = isFolderBased ? pathParts[pagesIndex + 1] : null;
-        }
-        // Check for special pages (they also use pages collection paths)
-        else if (normalizedPath.includes("/special/")) {
-          collection = "pages"; // Special pages use pages collection paths
-          const specialIndex = pathParts.indexOf("special");
-          isFolderBased = normalizedPath.endsWith("/index.md");
-          contentSlug = isFolderBased ? pathParts[specialIndex + 1] : null;
-        }
-      }
-
-      // Clean up image path
-      let imagePath = node.url;
-      if (imagePath.startsWith("./")) {
-        imagePath = imagePath.slice(2);
-      }
-      
-      // Fallback: If we couldn't detect collection but image starts with attachments/,
-      // assume it's pages (most common case for attachments)
-      if (!collection && imagePath.startsWith("attachments/")) {
-        collection = "pages";
-      }
-
-      if (!collection) {
+      const resolvedUrl = resolveContentFileUrl(node.url, file.path);
+      if (!resolvedUrl) {
         return; // Not a recognized content type
       }
 
-      // Handle folder-based content (e.g., /posts/my-post/index.md with image.png)
-      if (isFolderBased && contentSlug) {
-        // Sync script copies images to post folder root, removing subfolder prefixes
-        // Strip 'images/' or 'attachments/' prefixes if present
-        let cleanImagePath = imagePath;
-        // Accept Obsidian's "Path from vault folder" format for body image
-        // pastes: strip the post's own folder prefix if the markdown
-        // referenced the image by full vault path (e.g. `posts/my-slug/foo.png`
-        // from this same post). Without this, paste-inserted images 404 with
-        // a doubled URL prefix.
-        const postPrefix = `${collection}/${contentSlug}/`;
-        if (cleanImagePath.startsWith(postPrefix)) {
-          cleanImagePath = cleanImagePath.slice(postPrefix.length);
-        } else if (cleanImagePath.startsWith('images/') || cleanImagePath.startsWith('attachments/')) {
-          cleanImagePath = cleanImagePath.replace(/^(images|attachments)\//, '');
-        }
-        // Image is relative to the folder: /posts/my-post/image.png
-        let finalUrl = `/${collection}/${contentSlug}/${cleanImagePath}`;
-        // Convert to WebP if applicable (sync-images.js creates WebP versions)
-        finalUrl = convertToWebP(finalUrl);
-        node.url = finalUrl;
-      }
-      // Handle single-file content with attachments/ prefix
-      else if (imagePath.startsWith("attachments/")) {
-        // Image uses shared attachments folder: /posts/attachments/image.png
-        let finalUrl = `/${collection}/${imagePath}`;
-        // Convert to WebP if applicable (sync-images.js creates WebP versions)
-        finalUrl = convertToWebP(finalUrl);
-        node.url = finalUrl;
-      }
-      // Handle single-file content with other relative paths
-      else {
-        // Assume it's in the attachments folder
-        let finalUrl = `/${collection}/attachments/${imagePath}`;
-        // Convert to WebP if applicable (sync-images.js creates WebP versions)
-        finalUrl = convertToWebP(finalUrl);
-        node.url = finalUrl;
-      }
+      // Convert to WebP if applicable (sync-images.js creates WebP versions)
+      node.url = convertToWebP(resolvedUrl);
 
       // Also update the hProperties if they exist (for wikilink images)
       if (node.data && node.data.hProperties) {

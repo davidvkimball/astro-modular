@@ -4,7 +4,7 @@ import type { Page } from '@/types';
 import { siteConfig, getCoverAspectClasses } from '@/config';
 import { render } from 'astro:content';
 import { generatePageSEO } from '@/utils/seo';
-import { optimizeContentImagePath, getOptimizedFormat } from '@/utils/images';
+import { resolveCoverImage } from '@/utils/images';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import TableOfContents from '@/components/TableOfContents.astro';
 import Lightbox from '@/components/Lightbox.astro';
@@ -23,6 +23,8 @@ const { Content, headings } = await render(page);
 
 // Generate SEO data
 const seoData = generatePageSEO(page, Astro.url.href);
+
+const cover = resolveCoverImage(page.data.image, 'pages', page.id);
 
 // Generate table of contents from headings using configurable depth
 const maxDepth = siteConfig.tableOfContents.depth;
@@ -58,95 +60,39 @@ const structuredData = {
     <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
 
     <!-- Preload page image if exists -->
-    {page.data.image && typeof page.data.image === 'string' && !page.data.image.startsWith('http') && (() => {
-      // Use optimizeContentImagePath to handle folder-based and file-based pages
-      const optimizedPath = optimizeContentImagePath(page.data.image, 'pages', page.id, page.id);
-      return (
-        <link
-          rel="preload"
-          as="image"
-          href={optimizedPath}
-          fetchpriority="high"
-        />
-      );
-    })()}
+    {cover && !cover.url.startsWith('http') && (
+      <link
+        rel="preload"
+        as="image"
+        href={cover.url}
+        fetchpriority="high"
+      />
+    )}
   </Fragment>
 
   <div class="py-8 relative">
     <div class="mx-auto px-4 sm:px-6 lg:px-8 relative" style={`max-width: ${siteConfig.layout.contentWidth}`}>
       <!-- Page content -->
-      <article class={`bg-white dark:bg-primary-900 rounded-lg border border-primary-200 dark:border-primary-700 shadow-xs ${page.data.image ? 'overflow-hidden' : ''}`}>
-        {page.data.image && (() => {
-          // Process image path similar to PostLayout
-          let rawImage = page.data.image;
-          if (Array.isArray(rawImage)) {
-            rawImage = rawImage[0];
-          }
-          
-          // Clean Obsidian brackets
-          let cleanImagePath = typeof rawImage === 'string' ? rawImage : '';
-          if (cleanImagePath.startsWith('[[') && cleanImagePath.endsWith(']]')) {
-            cleanImagePath = cleanImagePath.slice(2, -2);
-          }
-          
-          // Determine src and basePath for ImageWrapper
-          let imageSrc = cleanImagePath;
-          let imageBasePath = '';
-          
-          if (typeof cleanImagePath === 'string' && cleanImagePath.startsWith('http')) {
-            // External URL - pass as-is
-            imageSrc = cleanImagePath;
-            imageBasePath = '';
-          } else {
-            // Detect folder-based vs file-based: if image path starts with 'attachments/',
-            // it's a single-file page (shared attachments folder)
-            const isFileBased = typeof cleanImagePath === 'string' && cleanImagePath.startsWith('attachments/');
-            
-            if (isFileBased) {
-              // Single-file page - remove attachments/ prefix
-              imageSrc = cleanImagePath.replace('attachments/', '');
-              imageBasePath = '/pages/attachments/';
-            } else {
-              // Folder-based page - sync script copies images to page folder root
-              // Remove 'images/' or 'attachments/' prefixes if present (sync script removes them)
-              if (cleanImagePath.startsWith('images/') || cleanImagePath.startsWith('attachments/')) {
-                imageSrc = cleanImagePath.replace(/^(images|attachments)\//, '');
-              } else {
-                imageSrc = cleanImagePath;
-              }
-              // Safety check: ensure page.id exists before using it
-              if (page.id) {
-                imageBasePath = `/pages/${page.id}/`;
-              } else {
-                // Fallback to attachments directory if page.id is undefined
-                imageBasePath = '/pages/attachments/';
-              }
-            }
-          }
-          
-          // Convert to WebP if applicable (sync-images.js creates WebP versions)
-          imageSrc = getOptimizedFormat(imageSrc);
-          
-          return (
-            <div class={getCoverAspectClasses("rounded-t-lg bg-primary-100 dark:bg-primary-800")}>
-              <ImageWrapper
-                src={imageSrc}
-                basePath={imageBasePath}
-                alt={page.data.imageAlt || `Featured image for page: ${page.data.title}`}
-                class="w-full h-full object-cover"
-                width={800}
-                height={450}
-                format="webp"
-                quality={85}
-                loading="eager"
-                fetchpriority="high"
-              />
-            </div>
-          );
-        })()}
+      <article class={`bg-white dark:bg-primary-900 rounded-lg border border-primary-200 dark:border-primary-700 shadow-xs ${cover ? 'overflow-hidden' : ''}`}>
+        {cover && (
+          <div class={getCoverAspectClasses("rounded-t-lg bg-primary-100 dark:bg-primary-800")}>
+            <ImageWrapper
+              src={cover.src}
+              basePath={cover.basePath}
+              alt={page.data.imageAlt || `Featured image for page: ${page.data.title}`}
+              class="w-full h-full object-cover"
+              width={800}
+              height={450}
+              format="webp"
+              quality={85}
+              loading="eager"
+              fetchpriority="high"
+            />
+          </div>
+        )}
 
         <!-- Page content wrapper -->
-        <div class={`p-6 ${page.data.image ? 'rounded-b-lg' : 'rounded-lg'}`}>
+        <div class={`p-6 ${cover ? 'rounded-b-lg' : 'rounded-lg'}`}>
           <!-- Page header -->
           <header class="mb-4">
             <h1 class="text-xl font-bold text-primary-900 dark:text-primary-50 mb-6 leading-tight">

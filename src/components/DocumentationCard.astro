@@ -2,7 +2,7 @@
 import type { CollectionEntry } from 'astro:content';
 import { formatDate, processMarkdown, isValidDate } from '../utils/markdown';
 import { siteConfig } from '../config';
-import { getOptimizedFormat } from '@/utils/images';
+import { resolveCoverImage } from '@/utils/images';
 import ImageWrapper from './ImageWrapper.astro';
 import Icon from './Icon.astro';
 
@@ -18,33 +18,9 @@ const { documentation, featured = false, eager = false, context = 'docs' } = Ast
 // Get excerpt from markdown processing
 const { excerpt } = processMarkdown(documentation.body);
 
-const { title, description: rawDescription, lastModified, image: rawImage, imageAlt, category, version } = documentation.data;
+const { title, description: rawDescription, lastModified, image, imageAlt, category, version } = documentation.data;
 
-// Process Obsidian bracket syntax in image field (copy from PostCard)
-const image = (() => {
-  if (!rawImage) return rawImage;
-
-  // Handle case where rawImage is an array (unquoted YAML syntax)
-  let imageValue = rawImage;
-  if (Array.isArray(rawImage)) {
-    // If it's an array, take the first element
-    imageValue = rawImage[0];
-  }
-
-  // Ensure imageValue is a string before calling string methods
-  if (typeof imageValue !== 'string') {
-    console.warn('DocumentationCard: imageValue is not a string:', imageValue);
-    return imageValue;
-  }
-
-  // Check if it's Obsidian double bracket syntax
-  if (imageValue.startsWith('[[') && imageValue.endsWith(']]')) {
-    // Extract the content inside the double brackets
-    return imageValue.slice(2, -2);
-  }
-
-  return imageValue;
-})();
+const cover = resolveCoverImage(image, 'docs', documentation.id);
 
 const description = rawDescription || excerpt;
 
@@ -53,7 +29,7 @@ const description = rawDescription || excerpt;
 const shouldShowCoverImage = true;
 
 // Hide images for docs on homepage for cleaner look
-const showCoverImage = shouldShowCoverImage && image && context !== 'home';
+const showCoverImage = shouldShowCoverImage && cover && context !== 'home';
 ---
 
 <div class="group relative bg-white dark:bg-primary-800 rounded-lg border border-primary-200 dark:border-primary-700 hover:shadow-lg transition-all duration-300 h-full flex flex-col">
@@ -69,66 +45,12 @@ const showCoverImage = shouldShowCoverImage && image && context !== 'home';
     </div>
 
     <!-- Cover Image (if exists) -->
-    {image && showCoverImage && (
+    {cover && showCoverImage && (
       <div class="px-4 pb-2">
         <div class="relative overflow-hidden rounded-md">
           <ImageWrapper
-            src={(() => {
-              // Clean the image path by removing Obsidian brackets
-              // Remove Obsidian brackets to get the actual image path
-              let cleanImagePath = image;
-              if (typeof cleanImagePath === 'string' && cleanImagePath.startsWith('[[') && cleanImagePath.endsWith(']]')) {
-                cleanImagePath = cleanImagePath.slice(2, -2);
-              }
-
-              // Remove Obsidian subfolder prefixes (images/, attachments/)
-              if (typeof cleanImagePath === 'string') {
-                // Remove images/ prefix if present (Obsidian subfolder setting)
-                if (cleanImagePath.startsWith('images/')) {
-                  return getOptimizedFormat(cleanImagePath.replace('images/', ''));
-                }
-                // Remove attachments/ prefix - basePath will add it back
-                if (cleanImagePath.startsWith('attachments/')) {
-                  return getOptimizedFormat(cleanImagePath.replace('attachments/', ''));
-                }
-              }
-
-              // Match PostCard/ProjectCard: sync-images.js only emits .webp, so a
-              // raw .png/.jpg path from frontmatter resolves to a file that does
-              // not exist on a clean checkout. This is why docs cards rendered
-              // without images on every Netlify build but worked locally, where
-              // stale originals lingered in public/docs/.
-              return cleanImagePath ? getOptimizedFormat(cleanImagePath) : '';
-            })()}
-            basePath={(() => {
-              // 1. External URLs - no basePath needed
-              if (typeof image === 'string' && image.startsWith('http')) {
-                return '';
-              }
-
-              // 2. Clean the image path to check for attachments/ prefix
-              let cleanImagePath = image;
-              if (typeof cleanImagePath === 'string' && cleanImagePath.startsWith('[[') && cleanImagePath.endsWith(']]')) {
-                cleanImagePath = cleanImagePath.slice(2, -2);
-              }
-
-              // 3. Detect folder-based vs file-based: if image path starts with 'attachments/',
-              // it's a single-file doc (shared attachments folder)
-              if (typeof cleanImagePath === 'string' && cleanImagePath.startsWith('attachments/')) {
-                // Single-file doc with image in attachments folder
-                // The sync script copies these to /docs/attachments/
-                return "/docs/attachments/";
-              }
-
-              // 4. Folder-based doc - sync script copies images to doc folder root
-              // Safety check: ensure documentation.id exists before using it
-              if (documentation.id) {
-                return `/docs/${documentation.id}/`;
-              } else {
-                // Fallback to attachments directory if documentation.id is undefined
-                return '/docs/attachments/';
-              }
-            })()}
+            src={cover.src}
+            basePath={cover.basePath}
             alt={imageAlt || `Cover image for documentation: ${title}`}
             width={400}
             height={200}

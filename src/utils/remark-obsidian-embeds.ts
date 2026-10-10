@@ -3,6 +3,7 @@ import type { Plugin } from 'unified';
 import type { Root, Image, Link } from 'mdast';
 import fs from 'node:fs';
 import path from 'node:path';
+import { resolveContentFileUrl } from './internallinks';
 function parseViewsFromBase(content: string) {
   const lines = content.split(/\r?\n/);
   const views: any[] = [];
@@ -318,82 +319,11 @@ export const remarkObsidianEmbeds: Plugin<[], Root> = () => {
         return;
       }
 
-        // Detect collection and slug from file path (same logic as remarkFolderImages)
-        let resolvedUrl = url;
-
-        // Normalize path separators (Windows uses backslashes, Unix uses forward slashes)
-        const normalizedFilePath = file.path ? file.path.replace(/\\/g, '/') : '';
-
-        // Handle URLs that have already been converted by remarkFolderImages (absolute paths)
-        // or relative URLs that need conversion
-        if ((url.startsWith('attachments/') || url.includes('/attachments/')) && normalizedFilePath) {
-          // If URL is already absolute (converted by remarkFolderImages), use it as-is
-          if (url.startsWith('/')) {
-            resolvedUrl = url;
-          } else {
-            // URL is relative, need to convert it
-            const isFolderPost = normalizedFilePath.includes('/posts/') && normalizedFilePath.endsWith('/index.md');
-            const isFolderPage = normalizedFilePath.includes('/pages/') && normalizedFilePath.endsWith('/index.md');
-            const isFolderProject = normalizedFilePath.includes('/projects/') && normalizedFilePath.endsWith('/index.md');
-            const isFolderDoc = normalizedFilePath.includes('/docs/') && normalizedFilePath.endsWith('/index.md');
-
-            if (isFolderPost || isFolderPage || isFolderProject || isFolderDoc) {
-              // Folder-based content: /collection/slug/attachments/file
-              const pathParts = normalizedFilePath.split('/');
-              let collection = 'posts';
-              let contentIndex = pathParts.indexOf('posts');
-
-              if (isFolderPage) {
-                collection = 'pages';
-                contentIndex = pathParts.indexOf('pages');
-              } else if (isFolderProject) {
-                collection = 'projects';
-                contentIndex = pathParts.indexOf('projects');
-              } else if (isFolderDoc) {
-                collection = 'docs';
-                contentIndex = pathParts.indexOf('docs');
-              }
-
-              const contentSlug = pathParts[contentIndex + 1];
-              resolvedUrl = `/${collection}/${contentSlug}/${url}`;
-            } else {
-              // File-based content: /collection/attachments/file (shared attachments folder)
-              let collection = 'posts';
-              if (normalizedFilePath.includes('/pages/')) collection = 'pages';
-              else if (normalizedFilePath.includes('/projects/')) collection = 'projects';
-              else if (normalizedFilePath.includes('/docs/')) collection = 'docs';
-
-              resolvedUrl = `/${collection}/${url}`;
-            }
-          }
-        }
-        // Handle files directly in folder-based content (no attachments/ prefix)
-        else if (normalizedFilePath && !url.startsWith('/') && !url.startsWith('http')) {
-          const isFolderPost = normalizedFilePath.includes('/posts/') && normalizedFilePath.endsWith('/index.md');
-          const isFolderPage = normalizedFilePath.includes('/pages/') && normalizedFilePath.endsWith('/index.md');
-          const isFolderProject = normalizedFilePath.includes('/projects/') && normalizedFilePath.endsWith('/index.md');
-          const isFolderDoc = normalizedFilePath.includes('/docs/') && normalizedFilePath.endsWith('/index.md');
-
-          if (isFolderPost || isFolderPage || isFolderProject || isFolderDoc) {
-            const pathParts = normalizedFilePath.split('/');
-            let collection = 'posts';
-            let contentIndex = pathParts.indexOf('posts');
-
-            if (isFolderPage) {
-              collection = 'pages';
-              contentIndex = pathParts.indexOf('pages');
-            } else if (isFolderProject) {
-              collection = 'projects';
-              contentIndex = pathParts.indexOf('projects');
-            } else if (isFolderDoc) {
-              collection = 'docs';
-              contentIndex = pathParts.indexOf('docs');
-            }
-
-            const contentSlug = pathParts[contentIndex + 1];
-            resolvedUrl = `/${collection}/${contentSlug}/${url}`;
-          }
-        }
+      // remarkFolderImages skips audio, video and PDF files, so resolve their
+      // relative paths here with the same rules it uses for images
+      const resolvedUrl = url.startsWith('/') || /^[a-z][a-z\d+.-]*:/i.test(url)
+        ? url
+        : resolveContentFileUrl(url, file.path) ?? url;
 
       // Handle audio files
       if (AUDIO_EXTENSIONS.includes(extension)) {

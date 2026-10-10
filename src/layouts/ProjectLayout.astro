@@ -3,7 +3,7 @@ import type { CollectionEntry } from 'astro:content';
 import type { Heading } from '@/types';
 import { siteConfig, getCoverAspectClasses } from '@/config';
 import { generateProjectSEO } from '@/utils/seo';
-import { optimizePostImagePath, optimizeContentImagePath } from '@/utils/images';
+import { resolveCoverImage } from '@/utils/images';
 import { processWikilinksInHTML } from '@/utils/internallinks';
 import { getCollection } from 'astro:content';
 import { shouldShowPost, processPost, generateTOC, getAdjacentPosts, formatDate, formatDateMobile, isValidDate } from '@/utils/markdown';
@@ -17,7 +17,6 @@ import Lightbox from '@/components/Lightbox.astro';
 import Icon from '@/components/Icon.astro';
 import { Image } from 'astro:assets';
 import { devConfig } from '@/config/dev';
-import { getOptimizedFormat } from '@/utils/images';
 import ImageWrapper from '@/components/ImageWrapper.astro';
 
 export interface Props {
@@ -50,7 +49,7 @@ const isDev = import.meta.env.DEV;
 // Generate SEO data
 const seoData = generateProjectSEO(project, import.meta.env.SITE || '');
 
-// Image handling is now done by ImageWrapper component
+const cover = resolveCoverImage(project.data.image, 'projects', project.id);
 
 // Generate structured data for the project
 const structuredData = {
@@ -108,7 +107,7 @@ const { prev: prevProject, next: nextProject } = getAdjacentPosts(visibleProject
 
     <!-- Preload project cover image - only for projects that will definitely show the image immediately -->
     {(() => {
-      if (!project.data.image || project.data.hideCoverImage === true) return false;
+      if (!cover || project.data.hideCoverImage === true) return false;
 
       // Projects always show images when available, so always preload
       const shouldPreload = true;
@@ -118,7 +117,7 @@ const { prev: prevProject, next: nextProject } = getAdjacentPosts(visibleProject
       <link
         rel="preload"
         as="image"
-        href={optimizeContentImagePath(project.data.image, 'projects', project.id, project.id)}
+        href={cover?.url}
         fetchpriority="high"
       />
     )}
@@ -132,79 +131,27 @@ const { prev: prevProject, next: nextProject } = getAdjacentPosts(visibleProject
   <div class="py-8 relative">
     <div class="mx-auto px-4 sm:px-6 lg:px-8 relative" style={`max-width: ${siteConfig.layout.contentWidth}`}>
       <!-- Main content -->
-      <article class={`bg-white dark:bg-primary-900 rounded-lg border border-primary-200 dark:border-primary-700 shadow-xs ${project.data.image && project.data.hideCoverImage !== true ? 'overflow-hidden' : ''}`}>
+      <article class={`bg-white dark:bg-primary-900 rounded-lg border border-primary-200 dark:border-primary-700 shadow-xs ${cover && project.data.hideCoverImage !== true ? 'overflow-hidden' : ''}`}>
         {/* Cover image */}
-        {project.data.image && project.data.hideCoverImage !== true && (() => {
-          // Process image path similar to ProjectCard
-          let rawImage = project.data.image;
-          if (Array.isArray(rawImage)) {
-            rawImage = rawImage[0];
-          }
-          
-          // Clean Obsidian brackets
-          let cleanImagePath = typeof rawImage === 'string' ? rawImage : '';
-          if (cleanImagePath.startsWith('[[') && cleanImagePath.endsWith(']]')) {
-            cleanImagePath = cleanImagePath.slice(2, -2);
-          }
-          
-          // Determine src and basePath for ImageWrapper
-          let imageSrc = cleanImagePath;
-          let imageBasePath = '';
-          
-          if (typeof cleanImagePath === 'string' && cleanImagePath.startsWith('http')) {
-            // External URL - pass as-is
-            imageSrc = cleanImagePath;
-            imageBasePath = '';
-          } else {
-            // Detect folder-based vs file-based: if image path starts with 'attachments/',
-            // it's a single-file project (shared attachments folder)
-            const isFileBased = typeof cleanImagePath === 'string' && cleanImagePath.startsWith('attachments/');
-            
-            if (isFileBased) {
-              // Single-file project - remove attachments/ prefix
-              imageSrc = cleanImagePath.replace('attachments/', '');
-              imageBasePath = '/projects/attachments/';
-            } else {
-              // Folder-based project - sync script copies images to project folder root
-              // Remove 'images/' or 'attachments/' prefixes if present (sync script removes them)
-              if (cleanImagePath.startsWith('images/') || cleanImagePath.startsWith('attachments/')) {
-                imageSrc = cleanImagePath.replace(/^(images|attachments)\//, '');
-              } else {
-                imageSrc = cleanImagePath;
-              }
-              // Safety check: ensure project.id exists before using it
-              if (project.id) {
-                imageBasePath = `/projects/${project.id}/`;
-              } else {
-                // Fallback to attachments directory if project.id is undefined
-                imageBasePath = '/projects/attachments/';
-              }
-            }
-          }
-          
-          // Convert to WebP if applicable (sync-images.js creates WebP versions)
-          imageSrc = getOptimizedFormat(imageSrc);
-          
-          return (
-            <div class={getCoverAspectClasses("rounded-t-lg bg-primary-100 dark:bg-primary-800")}>
-              <ImageWrapper
-                src={imageSrc}
-                basePath={imageBasePath}
-                alt={project.data.imageAlt || `Featured image for project: ${project.data.title}`}
-                class="w-full h-full object-cover"
-                width={800}
-                height={450}
-                format="webp"
-                quality={85}
-                loading="eager"
-                fetchpriority="high"
-              />
-            </div>
-          );
-        })()}
+        {cover && project.data.hideCoverImage !== true && (
+          <div class={getCoverAspectClasses("rounded-t-lg bg-primary-100 dark:bg-primary-800")}>
+            <ImageWrapper
+              src={cover.src}
+              basePath={cover.basePath}
+              alt={project.data.imageAlt || `Featured image for project: ${project.data.title}`}
+              class="w-full h-full object-cover"
+              width={800}
+              height={450}
+              format="webp"
+              quality={85}
+              loading="eager"
+              fetchpriority="high"
+            />
+          </div>
+        )}
 
         <!-- Project content wrapper -->
-        <div class={`p-6 ${project.data.image && project.data.hideCoverImage !== true ? 'rounded-b-lg' : 'rounded-lg'}`}>
+        <div class={`p-6 ${cover && project.data.hideCoverImage !== true ? 'rounded-b-lg' : 'rounded-lg'}`}>
           <!-- Project header -->
           <header class="mb-4 relative">
             <h1 class="text-xl font-bold text-primary-900 dark:text-primary-50 mb-6 leading-tight pr-20">

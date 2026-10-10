@@ -3,7 +3,7 @@ import type { Docs } from '@/types';
 import { siteConfig, getCoverAspectClasses } from '@/config';
 import { generateDocumentationSEO } from '@/utils/seo';
 import { isValidDate } from '@/utils/markdown';
-import { optimizeContentImagePath, getOptimizedFormat } from '@/utils/images';
+import { resolveCoverImage } from '@/utils/images';
 import { hasDocCategories } from '@/utils/categories';
 import { getCollection } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
@@ -19,6 +19,8 @@ export interface Props {
 }
 
 const { documentation } = Astro.props;
+
+const cover = resolveCoverImage(documentation.data.image, 'docs', documentation.id);
 
 // Check if there are any real categories in the system
 const allDocs = await getCollection('docs');
@@ -87,11 +89,11 @@ const structuredData = {
     <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
 
     <!-- Preload documentation image if exists -->
-    {documentation.data.image && documentation.data.hideCoverImage !== true && typeof documentation.data.image === 'string' && !documentation.data.image.startsWith('http') && (
+    {cover && documentation.data.hideCoverImage !== true && !cover.url.startsWith('http') && (
       <link
         rel="preload"
         as="image"
-        href={optimizeContentImagePath(documentation.data.image, 'documentation', documentation.id, documentation.id)}
+        href={cover.url}
         fetchpriority="high"
       />
     )}
@@ -106,78 +108,26 @@ const structuredData = {
         allDocs={visibleDocs}
       />
       <!-- Documentation content -->
-      <article class={`bg-white dark:bg-primary-900 rounded-lg border border-primary-200 dark:border-primary-700 shadow-xs ${documentation.data.image && documentation.data.hideCoverImage !== true ? 'overflow-hidden' : ''}`}>
-        {documentation.data.image && documentation.data.hideCoverImage !== true && (() => {
-          // Process image path similar to other layouts
-          let rawImage = documentation.data.image;
-          if (Array.isArray(rawImage)) {
-            rawImage = rawImage[0];
-          }
-          
-          // Clean Obsidian brackets
-          let cleanImagePath = typeof rawImage === 'string' ? rawImage : '';
-          if (cleanImagePath.startsWith('[[') && cleanImagePath.endsWith(']]')) {
-            cleanImagePath = cleanImagePath.slice(2, -2);
-          }
-          
-          // Determine src and basePath for ImageWrapper
-          let imageSrc = cleanImagePath;
-          let imageBasePath = '';
-          
-          if (typeof cleanImagePath === 'string' && cleanImagePath.startsWith('http')) {
-            // External URL - pass as-is
-            imageSrc = cleanImagePath;
-            imageBasePath = '';
-          } else {
-            // Detect folder-based vs file-based: if image path starts with 'attachments/',
-            // it's a single-file doc (shared attachments folder)
-            const isFileBased = typeof cleanImagePath === 'string' && cleanImagePath.startsWith('attachments/');
-            
-            if (isFileBased) {
-              // Single-file doc - remove attachments/ prefix
-              imageSrc = cleanImagePath.replace('attachments/', '');
-              imageBasePath = '/docs/attachments/';
-            } else {
-              // Folder-based doc - sync script copies images to doc folder root
-              // Remove 'images/' or 'attachments/' prefixes if present (sync script removes them)
-              if (cleanImagePath.startsWith('images/') || cleanImagePath.startsWith('attachments/')) {
-                imageSrc = cleanImagePath.replace(/^(images|attachments)\//, '');
-              } else {
-                imageSrc = cleanImagePath;
-              }
-              // Safety check: ensure documentation.id exists before using it
-              if (documentation.id) {
-                imageBasePath = `/docs/${documentation.id}/`;
-              } else {
-                // Fallback to attachments directory if documentation.id is undefined
-                imageBasePath = '/docs/attachments/';
-              }
-            }
-          }
-          
-          // Convert to WebP if applicable (sync-images.js creates WebP versions)
-          imageSrc = getOptimizedFormat(imageSrc);
-          
-          return (
-            <div class={getCoverAspectClasses("rounded-t-lg bg-primary-100 dark:bg-primary-800")}>
-              <ImageWrapper
-                src={imageSrc}
-                basePath={imageBasePath}
-                alt={documentation.data.imageAlt || `Featured image for documentation: ${documentation.data.title}`}
-                class="w-full h-full object-cover"
-                width={800}
-                height={450}
-                format="webp"
-                quality={85}
-                loading="eager"
-                fetchpriority="high"
-              />
-            </div>
-          );
-        })()}
+      <article class={`bg-white dark:bg-primary-900 rounded-lg border border-primary-200 dark:border-primary-700 shadow-xs ${cover && documentation.data.hideCoverImage !== true ? 'overflow-hidden' : ''}`}>
+        {cover && documentation.data.hideCoverImage !== true && (
+          <div class={getCoverAspectClasses("rounded-t-lg bg-primary-100 dark:bg-primary-800")}>
+            <ImageWrapper
+              src={cover.src}
+              basePath={cover.basePath}
+              alt={documentation.data.imageAlt || `Featured image for documentation: ${documentation.data.title}`}
+              class="w-full h-full object-cover"
+              width={800}
+              height={450}
+              format="webp"
+              quality={85}
+              loading="eager"
+              fetchpriority="high"
+            />
+          </div>
+        )}
 
         <!-- Documentation content wrapper -->
-        <div class={`p-6 ${documentation.data.image && documentation.data.hideCoverImage !== true ? 'rounded-b-lg' : 'rounded-lg'}`}>
+        <div class={`p-6 ${cover && documentation.data.hideCoverImage !== true ? 'rounded-b-lg' : 'rounded-lg'}`}>
           <!-- Documentation header -->
           <header class="mb-4">
             <h1 class="text-xl font-bold text-primary-900 dark:text-primary-50 mb-6 leading-tight">
