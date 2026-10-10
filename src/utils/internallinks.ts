@@ -23,6 +23,23 @@ export function populateGlobalPostsCache(posts: any[]) {
 // UTILITY FUNCTIONS
 // ============================================================================
 
+/**
+ * Where a markdown file sits in src/content/: its collection folder, and the
+ * top-level folder when it's folder-based content (<collection>/<folder>/index.md).
+ * Only the path below the last src/content/ counts, so a checkout inside a
+ * folder named projects, docs or pages can't be mistaken for that collection.
+ */
+function getContentLocation(filePath?: string): { collection: string; folder: string | null } | null {
+  if (!filePath) return null;
+  const normalizedPath = `/${String(filePath).replace(/\\/g, "/")}`;
+  const contentIndex = normalizedPath.lastIndexOf("/src/content/");
+  if (contentIndex === -1) return null;
+
+  const parts = normalizedPath.slice(contentIndex + "/src/content/".length).split("/");
+  const isFolderBased = parts.length > 2 && parts[parts.length - 1] === "index.md";
+  return { collection: parts[0], folder: isFolderBased ? parts[1] : null };
+}
+
 // Utility functions for content-aware URL processing
 function isFolderBasedContent(
   collection: "posts" | "pages",
@@ -853,11 +870,9 @@ export function remarkStandardLinks() {
               }
               // Determine collection from current file's path; default to posts.
               let collection: "posts" | "pages" | "projects" | "docs" = "posts";
-              if (file && (file as any).path) {
-                const normalizedPath = String((file as any).path).replace(/\\/g, "/");
-                if (normalizedPath.includes("/pages/")) collection = "pages";
-                else if (normalizedPath.includes("/projects/")) collection = "projects";
-                else if (normalizedPath.includes("/docs/")) collection = "docs";
+              const location = getContentLocation((file as any)?.path);
+              if (location && ["pages", "projects", "docs"].includes(location.collection)) {
+                collection = location.collection as "pages" | "projects" | "docs";
               }
               baseUrl = collection === "pages" ? `/${cleanPath}` : `/${collection}/${cleanPath}`;
             } else {
@@ -1717,46 +1732,12 @@ export function resolveContentFileUrl(url: string, filePath?: string): string | 
   let contentSlug: string | null = null;
   let isFolderBased = false;
 
-  if (filePath) {
-    // Normalize path separators (Windows uses backslashes, Unix uses forward slashes)
-    const normalizedPath = filePath.replace(/\\/g, "/");
-    const pathParts = normalizedPath.split("/");
-
-    // Check for posts
-    if (normalizedPath.includes("/posts/")) {
-      collection = "posts";
-      const postsIndex = pathParts.indexOf("posts");
-      isFolderBased = normalizedPath.endsWith("/index.md");
-      contentSlug = isFolderBased ? pathParts[postsIndex + 1] : null;
-    }
-    // Check for projects
-    else if (normalizedPath.includes("/projects/")) {
-      collection = "projects";
-      const projectsIndex = pathParts.indexOf("projects");
-      isFolderBased = normalizedPath.endsWith("/index.md");
-      contentSlug = isFolderBased ? pathParts[projectsIndex + 1] : null;
-    }
-    // Check for docs
-    else if (normalizedPath.includes("/docs/")) {
-      collection = "docs";
-      const docsIndex = pathParts.indexOf("docs");
-      isFolderBased = normalizedPath.endsWith("/index.md");
-      contentSlug = isFolderBased ? pathParts[docsIndex + 1] : null;
-    }
-    // Check for pages
-    else if (normalizedPath.includes("/pages/")) {
-      collection = "pages";
-      const pagesIndex = pathParts.indexOf("pages");
-      isFolderBased = normalizedPath.endsWith("/index.md");
-      contentSlug = isFolderBased ? pathParts[pagesIndex + 1] : null;
-    }
-    // Check for special pages (they also use pages collection paths)
-    else if (normalizedPath.includes("/special/")) {
-      collection = "pages"; // Special pages use pages collection paths
-      const specialIndex = pathParts.indexOf("special");
-      isFolderBased = normalizedPath.endsWith("/index.md");
-      contentSlug = isFolderBased ? pathParts[specialIndex + 1] : null;
-    }
+  const location = getContentLocation(filePath);
+  if (location && ["posts", "projects", "docs", "pages", "special"].includes(location.collection)) {
+    // Special pages use pages collection paths
+    collection = location.collection === "special" ? "pages" : location.collection;
+    isFolderBased = location.folder !== null;
+    contentSlug = location.folder;
   }
 
   // Clean up image path

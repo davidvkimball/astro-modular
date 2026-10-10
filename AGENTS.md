@@ -388,6 +388,7 @@ Image resolution:
 Each kind of reference has exactly one resolver, and everything else calls it:
 
 - Body images and embeds: `resolveContentFileUrl()` in `src/utils/internallinks.ts`, shared by `remarkFolderImages` and `remarkObsidianEmbeds`. They disagreed before, which broke `![[attachments/clip.mp4]]` in folder-based content.
+- Which collection a markdown file belongs to: `getContentLocation()` in the same file, which reads only the path below `src/content/`. Matching folder names anywhere in the absolute path broke every checkout inside a folder named `projects`, `docs` or `pages`.
 - Covers: `resolveCoverImage()` in `src/utils/images.ts`, called directly by every card and layout, and through the `optimizePostImagePath()` and `optimizeContentImagePath()` wrappers by Open Graph tags, the RSS feed and the listing preload links. It returns the cover's `url` plus the `src` and `basePath` to pass to `ImageWrapper`. Don't resolve a cover path inside a component; about a dozen copies of that logic had drifted apart.
 
 ### Missing images
