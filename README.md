@@ -70,22 +70,40 @@ Rather not use Obsidian? [Zeku](https://zeku.dev) is a standalone writing app fo
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/davidvkimball/astro-modular)
 [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/davidvkimball/astro-modular)
 
-### Get the Code
+> [!IMPORTANT]
+> **Vault CMS is already included.** Astro Modular ships with Vault CMS and every Obsidian plugin it uses, preconfigured in `src/content/.obsidian/`. Don't install Vault CMS separately: its installer copies its own `.obsidian` and `_bases` folders over the ones bundled here.
 
-Choose one of the following methods to get started:
+### What you need
 
-#### Option 1: CLI (Recommended)
+- [Obsidian](https://obsidian.md) to write.
+- [Git](https://git-scm.com/) and a [GitHub](https://github.com) account to publish. The setup wizard in Obsidian creates the GitHub repository for you.
+- A host such as Netlify, Vercel, or Cloudflare. The host builds your site from GitHub, so publishing needs nothing else installed on your computer.
+- **Optional:** Node.js 24.13.0+ and pnpm 10.29.3+. You only need these to preview the site on your own computer or to use the command-line install below.
+
+### Get the code
+
+Pick whichever option suits you. They all give you the same theme.
+
+#### Option 1: Download the ZIP (no command line)
+
+1. Open the [latest release](https://github.com/davidvkimball/astro-modular/releases/latest).
+2. Under **Assets**, download **Source code (zip)**, then extract it wherever you want your site's project folder to live.
+3. In Obsidian, select **Open folder as vault** and choose the `src/content` folder inside the extracted project.
+4. When Obsidian asks, trust the author and enable plugins. The setup wizard then walks you through your site settings, GitHub, and deployment.
+
+#### Option 2: Command line
+
+Requires Node.js and pnpm.
 
 ```bash
 pnpm create astro-modular my-blog
-cd my-blog
 ```
 
 [![npm version](https://img.shields.io/npm/v/create-astro-modular)](https://www.npmjs.com/package/create-astro-modular)
 
-This downloads the latest template, removes dev-only files, and installs dependencies automatically. Also works with `npm create astro-modular my-blog`.
+This downloads the latest release, removes dev-only files, and installs dependencies. Then open `my-blog/src/content` as a vault in Obsidian, as in step 3 above.
 
-#### Option 2: Use GitHub Template
+#### Option 3: GitHub template
 
 1. Click the **"Use this template"** button on the [repository page](https://github.com/davidvkimball/astro-modular)
 2. Select **"Create a new repository"**
@@ -100,18 +118,14 @@ This downloads the latest template, removes dev-only files, and installs depende
 > [!IMPORTANT]
 > After cloning, confirm that `src/content/.obsidian/` exists and contains a `plugins` folder. The Obsidian vault lives in a dotfolder, and the template button does not always copy dotfolders. If it is missing or empty, the setup wizard will have no plugins to configure, and new notes will be created without frontmatter.
 >
-> Dotfolders are hidden by default, so check with `ls -a src/content` (macOS and Linux) or `dir /a src\content` (Windows). Option 1 above avoids this entirely and is the recommended path.
-
-
-
-### Prerequisites
-- Node.js 24.13.0+
-- pnpm 10.29.3+ or npm 9.6.5+
+> Dotfolders are hidden by default, so check with `ls -a src/content` (macOS and Linux) or `dir /a src\content` (Windows). Options 1 and 2 avoid this entirely.
 
 > [!NOTE]
-> While this theme works great with any markdown editor, it's specifically optimized for Obsidian use. See the [Astro Suite Vault Guide](src/content/posts/vault-cms-guide.md) for Obsidian-specific features.
+> While this theme works great with any markdown editor, it's specifically optimized for Obsidian use. See the [Vault CMS Guide](src/content/posts/vault-cms-guide.md) for Obsidian-specific features.
 
-### Setup
+### Preview on your computer (optional)
+
+Your host builds and publishes the site, so this step is only for seeing changes before you publish. It requires Node.js and pnpm. Run these commands from the project folder (the one that contains `package.json`):
 
 1. **Install pnpm (if you don't have it):**
    ```bash

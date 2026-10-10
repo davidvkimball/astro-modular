@@ -17,13 +17,31 @@ draft: false
 ---
 Welcome to Astro Modular! This quick start guide will get your blog running in minutes. Choose your preferred workflow [below](posts/getting-started.md#Choose%20Your%20Workflow).
 
-## Prerequisites & Installation
+## Get Astro Modular
 
-You'll need:
-- **Node.js 18+**
-- **pnpm** (recommended) or npm
+> [!important] Vault CMS is already included
+> Astro Modular ships with Vault CMS and every Obsidian plugin it uses, preconfigured in `src/content/.obsidian/`. Don't install Vault CMS separately: its installer copies its own `.obsidian` and `_bases` folders over the ones bundled here.
 
-### Quick Setup
+**Without the command line:** open the [latest release](https://github.com/davidvkimball/astro-modular/releases/latest), download **Source code (zip)** under **Assets**, and extract it wherever you want your site's project folder to live.
+
+**With the command line** (requires Node.js and pnpm):
+
+```bash
+pnpm create astro-modular my-blog
+```
+
+Either way, open the `src/content` folder as a vault in Obsidian next. See [Choose Your Workflow](posts/getting-started.md#Choose%20Your%20Workflow) below.
+
+## What You Need
+
+- **[Obsidian](https://obsidian.md)** to write.
+- **[Git](https://git-scm.com/) and a [GitHub](https://github.com) account** to publish. The setup wizard creates the GitHub repository for you.
+- **A host** such as Netlify, Vercel, or Cloudflare. The host builds your site from GitHub, so publishing needs nothing else installed on your computer.
+- **Optional: Node.js 24.13.0+ and pnpm.** You only need these to preview the site on your own computer or to use the command-line install.
+
+### Preview on Your Computer (Optional)
+
+Run these from the project folder (the one that contains `package.json`):
 
 ```bash
 # Install pnpm
@@ -49,7 +67,7 @@ Perfect! Astro Modular is designed specifically for Obsidian users.
 **Quick Start:**
 1. Open folder as vault: Navigate to `src/content/` in Obsidian
 2. Trust the author and enable the preconfigured plugins
-3. Use the Astro Modular Settings wizard to configure your theme and preferences
+3. Follow the setup wizards: Astro Modular Settings configures your theme and preferences, then Vault CMS connects your site to GitHub and your host
 4. Start writing with the included templates and hotkeys
 
 **What you get:**
