@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "cross-env ASTRO_CONTENT_COLLECTION_CACHE=false node scripts/clean-content-cache.js && node scripts/setup-dev.mjs && node scripts/sync-images.js && node scripts/process-aliases.js && node scripts/generate-deployment-config.js && node scripts/generate-graph-data.js && node scripts/dev-with-port.js",
-    "build": "cross-env ASTRO_CONTENT_COLLECTION_CACHE=false node scripts/check-truncated-files.js && node scripts/clean-content-cache.js && node scripts/sync-images.js && node scripts/process-aliases.js && node scripts/generate-deployment-config.js && node scripts/generate-graph-data.js --production && astro build",
+    "build": "cross-env ASTRO_CONTENT_COLLECTION_CACHE=false node scripts/check-truncated-files.js && node scripts/clean-content-cache.js && node scripts/sync-images.js && node scripts/process-aliases.js && node scripts/generate-deployment-config.js && node scripts/generate-graph-data.js --production && astro build --timings",
     "preview": "pnpm run build && node scripts/dev-with-port.js preview",
     "sync-images": "node scripts/sync-images.js",
     "process-aliases": "node scripts/process-aliases.js",
@@ -30,8 +30,8 @@
   "license": "MIT",
   "dependencies": {
     "@astrojs/check": "0.9.10",
-    "@astrojs/markdown-remark": "7.3.0",
-    "@astrojs/mdx": "8.0.0",
+    "@astrojs/markdown-remark": "7.3.3",
+    "@astrojs/mdx": "8.1.0",
     "@astrojs/rss": "4.0.19",
     "@astrojs/sitemap": "3.7.4",
     "@fontsource/inter": "^5.2.8",
@@ -42,7 +42,7 @@
     "@tailwindcss/typography": "^0.5.19",
     "@tailwindcss/vite": "^4.3.3",
     "@types/d3": "^7.4.3",
-    "astro": "7.2.10",
+    "astro": "7.4.0",
     "astro-redirect-from": "^1.3.5",
     "d3": "^7.9.0",
     "fuse.js": "^7.1.0",
