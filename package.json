@@ -1,6 +1,6 @@
 {
   "name": "astro-modular",
-  "version": "1.1.8",
+  "version": "1.1.9",
   "type": "module",
   "description": "A flexible blog theme designed for Obsidian users.",
   "main": "index.js",
@@ -48,7 +48,7 @@
     "fuse.js": "^7.1.0",
     "katex": "^0.16.38",
     "lucide": "^0.542.0",
-    "mermaid": "^11.13.0",
+    "pele": "^1.8.0",
     "rehype-autolink-headings": "^7.1.0",
     "rehype-katex": "^7.0.1",
     "rehype-slug": "^6.0.0",

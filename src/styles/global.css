@@ -1207,171 +1207,62 @@ img + p em {
   color: rgb(156 163 175);
 }
 
-/* Mermaid Diagram Styles */
+/* Mermaid diagrams, rendered by Pele. Pele reads its colors from these
+   variables, which point at the theme's primary and highlight scales, so
+   diagrams follow every color theme and light/dark mode without re-rendering. */
 .mermaid-diagram {
-  @apply my-6 mx-auto max-w-full overflow-hidden;
+  @apply my-6 mx-auto max-w-full;
+  --pele-bg: rgb(var(--color-primary-50));
+  --pele-fg: rgb(var(--color-primary-900));
+  --pele-muted: rgb(var(--color-primary-500));
+  --pele-line: rgb(var(--color-primary-700));
+  --pele-surface: rgb(var(--color-primary-100));
+  --pele-surface-alt: rgb(var(--color-primary-200));
+  --pele-border: rgb(var(--color-primary-300));
+  --pele-accent: rgb(var(--color-highlight-500));
+  /* Set both fonts explicitly: Pele's SVG falls back to plain sans-serif
+     without them, and mount() measures labels in this same font. */
+  --pele-font: var(--font-prose, 'Inter'), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --pele-font-mono: var(--font-mono, 'JetBrains Mono'), 'Monaco', 'Consolas', 'Courier New', monospace;
+}
+
+.dark .mermaid-diagram {
+  --pele-bg: rgb(var(--color-primary-950));
+  --pele-fg: rgb(var(--color-primary-50));
+  --pele-muted: rgb(var(--color-primary-400));
+  --pele-line: rgb(var(--color-primary-300));
+  --pele-surface: rgb(var(--color-primary-900));
+  --pele-surface-alt: rgb(var(--color-primary-800));
+  --pele-border: rgb(var(--color-primary-600));
+  --pele-accent: rgb(var(--color-highlight-400));
 }
 
 .mermaid-diagram-content {
-  @apply relative;
+  @apply flex justify-center;
 }
 
-.mermaid-diagram-source {
-  @apply hidden;
+/* Shown when a diagram has a syntax error. */
+.mermaid-diagram-error {
+  @apply w-full p-4 rounded-lg text-sm;
+  border: 1px solid var(--pele-border);
+  background: var(--pele-surface);
+  color: var(--pele-fg);
 }
 
-/* Mermaid diagram styling */
-.mermaid-diagram :global(.mermaid) {
-  @apply text-center;
+.mermaid-diagram-error-title {
+  color: var(--pele-error, #e45756);
 }
 
-/* Smooth transitions for theme changes */
-.mermaid-diagram-content {
-  transition: opacity 0.3s ease;
+.mermaid-diagram-error summary {
+  @apply mt-2 text-xs cursor-pointer;
+  color: var(--pele-muted);
 }
 
-.mermaid-diagram svg {
-  transition: opacity 0.3s ease;
+.mermaid-diagram-error pre {
+  @apply mt-2 p-2 rounded text-xs overflow-auto;
+  background: var(--pele-surface-alt);
+  font-family: var(--pele-font-mono);
 }
-
-/* Ensure Mermaid SVG is visible */
-.mermaid-diagram svg {
-  @apply block w-full h-auto;
-  max-width: 100%;
-  height: auto;
-}
-
-/* Error state styling */
-.mermaid-diagram.error {
-  @apply border border-red-200 dark:border-red-800 rounded-lg bg-red-50 dark:bg-red-900/20;
-}
-
-.mermaid-diagram.error .mermaid-diagram-content {
-  @apply text-red-600 dark:text-red-400;
-}
-
-/* Loading state styling */
-.mermaid-diagram.loading {
-  @apply border border-primary-200 dark:border-primary-600 rounded-lg p-4 bg-primary-50 dark:bg-primary-800/20;
-}
-
-.mermaid-diagram.loading .mermaid-diagram-content {
-  @apply text-primary-600 dark:text-primary-400;
-}
-
-/* Mermaid theme integration */
-.mermaid-diagram :global(.mermaid) {
-  @apply text-primary-900 dark:text-primary-100;
-}
-
-/* Mermaid diagram responsive design */
-@media (max-width: 768px) {
-  .mermaid-diagram {
-    @apply mx-0;
-  }
-}
-
-/* Mermaid diagram in callouts */
-.callout .mermaid-diagram {
-  @apply my-4;
-}
-
-/* Mermaid diagram in prose */
-.prose .mermaid-diagram {
-  @apply my-6;
-}
-
-/* Enhanced theme-aware Mermaid styling */
-/* Use CSS variables for better theme integration without re-rendering */
-
-/* Light mode: Enhanced contrast for flat elements */
-:root:not(.dark) .mermaid-diagram svg {
-  /* Override text and line variables for better contrast */
-  --mermaid-primary-text-color: #111827 !important;
-  --mermaid-text-color: #111827 !important;
-  --mermaid-line-color: #374151 !important;
-  --mermaid-primary-color: #374151 !important;
-  --mermaid-secondary-color: #6b7280 !important;
-}
-
-/* Dark mode: Enhanced contrast for flat elements */
-.dark .mermaid-diagram svg {
-  --mermaid-primary-text-color: #f9fafb !important;
-  --mermaid-text-color: #f9fafb !important;
-  --mermaid-line-color: #d1d5db !important;
-  --mermaid-primary-color: #d1d5db !important;
-  --mermaid-secondary-color: #9ca3af !important;
-}
-
-/* Target text elements in non-colorful diagrams */
-.mermaid-diagram svg:not(.pie):not(.gitgraph) text {
-  fill: var(--mermaid-text-color) !important;
-  color: var(--mermaid-text-color) !important;
-}
-
-/* Also target sequence diagrams specifically */
-.mermaid-diagram svg.sequenceDiagram text {
-  fill: var(--mermaid-text-color) !important;
-  color: var(--mermaid-text-color) !important;
-}
-
-/* Mermaid theme overrides - only apply dark mode corrective measures */
-
-/* Dark mode corrective measures - ONLY for non-colorful diagrams */
-/* Only target specific text elements that need contrast fixes */
-.dark .mermaid-diagram svg:not(.pie):not(.gitgraph) .nodeLabel text,
-.dark .mermaid-diagram svg:not(.pie):not(.gitgraph) .edgeLabel text,
-.dark .mermaid-diagram svg:not(.pie):not(.gitgraph) .actor text,
-.dark .mermaid-diagram svg:not(.pie):not(.gitgraph) .messageText {
-  fill: #f9fafb !important;
-}
-
-/* Fix labelText and loopText colors for dark mode */
-.dark .mermaid-diagram svg .labelText,
-.dark .mermaid-diagram svg .loopText,
-.dark .mermaid-diagram svg text.labelText,
-.dark .mermaid-diagram svg text.loopText,
-.dark .mermaid-diagram svg .loopText text,
-.dark .mermaid-diagram svg .labelText text {
-  fill: #f9fafb !important;
-  color: #f9fafb !important;
-}
-
-/* Loop text that needs lighter color in dark mode (no background) */
-.dark .mermaid-diagram svg .loopText tspan {
-  fill: #f9fafb !important;
-}
-
-/* Gantt chart specific styling for better readability */
-.dark .mermaid-diagram svg[aria-roledescription="gantt"] text,
-.dark .mermaid-diagram svg[aria-roledescription="gantt"] .taskText,
-.dark .mermaid-diagram svg[aria-roledescription="gantt"] .sectionText,
-.dark .mermaid-diagram svg[aria-roledescription="gantt"] .dateText {
-  fill: #f9fafb !important;
-  color: #f9fafb !important;
-}
-
-.dark .mermaid-diagram svg:not(.pie):not(.gitgraph) path:not([fill]),
-.dark .mermaid-diagram svg:not(.pie):not(.gitgraph) line,
-.dark .mermaid-diagram svg:not(.pie):not(.gitgraph) polyline {
-  stroke: #d1d5db !important;
-}
-
-/* Gantt chart sizing - let Mermaid handle sizing naturally */
-.mermaid-diagram svg[aria-roledescription="gantt"] {
-  max-width: 100%;
-  width: auto;
-  height: auto;
-}
-
-/* Preserve colorful diagrams completely - no overrides in any mode */
-.mermaid-diagram svg.pie,
-.mermaid-diagram svg.gitgraph {
-  /* No overrides - let Mermaid handle colors naturally */
-}
-
-/* Handle specific edge cases as they come up */
-/* TODO: Add specific overrides for problematic elements */
 
 /* Print Styles */
 @media print {
@@ -1382,33 +1273,6 @@ img + p em {
     content: " (" attr(href) ")";
     @apply text-sm text-gray-600;
   }
-}
-
-/* End of Mermaid styles */
-
-/* NUCLEAR BOMB HIDING - Hide ALL Mermaid error bombs permanently */
-svg[aria-roledescription="error"],
-svg:has(.error-icon),
-svg:has(.error-text),
-svg[viewBox="0 0 2412 512"],
-svg[viewBox="0 0 417 625"] {
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  height: 0 !important;
-  width: 0 !important;
-  overflow: hidden !important;
-}
-
-/* Hide any SVG containing bomb text */
-svg:has(text:contains("Syntax error in text")),
-svg:has(text:contains("mermaid version")) {
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  height: 0 !important;
-  width: 0 !important;
-  overflow: hidden !important;
 }
 
 /* ============================================================================

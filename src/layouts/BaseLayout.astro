@@ -1117,7 +1117,7 @@ for (const [path, mod] of Object.entries(customThemeModules)) {
   <DocsCategoryCollapse />
 
 
-    <!-- Mermaid diagrams handled by client script -->
+    <!-- Mermaid diagrams render with Pele via the client script -->
     <script>
       try { await import('../scripts/base-embeds-client.ts'); } catch (_) {}
     </script>
@@ -1881,13 +1881,6 @@ for (const [path, mod] of Object.entries(customThemeModules)) {
       setTimeout(initializeGiscusTheme, 1500);
     }
 
-    // Mermaid theme change handling
-    function handleMermaidThemeChange() {
-      // Use the utility's theme change handler
-      if (typeof window.handleMermaidThemeChange === 'function') {
-        window.handleMermaidThemeChange();
-      }
-    }
 
 
     // Giscus theme change handling - use postMessage API for dynamic theme switching
@@ -1950,7 +1943,6 @@ for (const [path, mod] of Object.entries(customThemeModules)) {
 
             // Only re-render if theme actually changed
             if (isDark !== wasDark) {
-              handleMermaidThemeChange();
               handleTwitterThemeChange(isDark);
               handleGiscusThemeChange(isDark);
             }
@@ -2127,7 +2119,6 @@ for (const [path, mod] of Object.entries(customThemeModules)) {
             
             // Only re-render if theme actually changed
             if (isDark !== wasDark) {
-              handleMermaidThemeChange();
               handleTwitterThemeChange(isDark);
               handleGiscusThemeChange(isDark);
             }

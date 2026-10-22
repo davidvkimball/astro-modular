@@ -6,6 +6,7 @@ minimumReleaseAgeExclude:
   # Name-only patterns: an exact name@version misses astro's peer-suffixed
   # lockfile key, so the exemption silently fails. Bare names match reliably.
   - astro
+  - pele
   - '@astrojs/markdown-satteri'
   - '@astrojs/mdx'
   - vscode-languageserver-protocol
