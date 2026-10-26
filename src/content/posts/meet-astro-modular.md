@@ -6,8 +6,8 @@ tags:
   - astro
   - obsidian
   - meta
-image: "[[attachments/astro-modular-color-themes.jpg]]"
-imageAlt: The Astro Modular homepage in each of its 17 color themes, laid out as a wall of browser windows.
+image: "[[attachments/blue-mountains.jpg]]"
+imageAlt: Blue mountain ridges fading into the haze.
 imageOG: true
 hideCoverImage: true
 hideTOC: true
