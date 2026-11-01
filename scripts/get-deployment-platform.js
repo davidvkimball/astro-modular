@@ -20,7 +20,7 @@ const PLATFORMS = ['netlify', 'vercel', 'github-pages', 'cloudflare-workers'];
 // first `platform:` used to return "netlify" for every site whatever it set.
 export function parseDeploymentPlatform(configContent) {
   const lines = configContent.split(/\r?\n/);
-  const valueOf = (line) => line.match(/platform:\s*["']([^"']+)["']\s*(?!\|)/)?.[1];
+  const valueOf = (line) => line.match(/platform:\s*["']([^"']+)["'](?!\s*\|)/)?.[1];
 
   const markerIndex = lines.findIndex((line) => line.includes('[CONFIG:DEPLOYMENT_PLATFORM]'));
   if (markerIndex !== -1) {
