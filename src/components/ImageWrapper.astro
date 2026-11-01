@@ -76,9 +76,14 @@ let isImageMissing = false;
 
 if (isLocal) {
   try {
-    const files = import.meta.glob<ImageMetadata>("/public/**", {
-      import: "default",
-    });
+    // Only image types. Every file this glob matches becomes a Vite module, so
+    // a bare "/public/**" made Vite parse public/_redirects as JavaScript and
+    // the build failed with a PARSE_ERROR on any site that has one (Cloudflare
+    // and Netlify sites can). Uppercase variants keep IMG_0001.JPG matching.
+    const files = import.meta.glob<ImageMetadata>(
+      "/public/**/*.{jpg,jpeg,png,gif,webp,avif,svg,tiff,JPG,JPEG,PNG,GIF,WEBP,AVIF,SVG,TIFF}",
+      { import: "default" }
+    );
     
     // Remove leading "./" if present for folder-based posts
     if (cleanSrc.startsWith('./')) {

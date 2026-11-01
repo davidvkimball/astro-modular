@@ -238,8 +238,7 @@ image: {
         'fuse.js',
         'mermaid'
       ]
-    },
-    exclude: ['**/_redirects']
+    }
   },
   build: {
     assets: '_assets'
