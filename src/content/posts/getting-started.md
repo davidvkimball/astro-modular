@@ -85,6 +85,8 @@ Perfect! Astro Modular is designed specifically for Obsidian users.
 
 No problem! You can still use Astro Modular with any editor.
 
+If you'd like a dedicated writing app instead, [Zeku](https://zeku.dev) is a desktop app for Astro sites from the same developer. It opens this project with live preview, frontmatter forms, and the theme's settings as a form. It's paid, with a 14-day free trial.
+
 **Quick Start:**
 1. **Edit `src/config.ts`** to customize your site settings
 2. **Create content** in `src/content/posts/` using standard markdown
