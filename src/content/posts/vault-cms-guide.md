@@ -158,6 +158,8 @@ If you like, you can install the [Style Settings](https://github.com/mgmeyers/ob
 
 With the [Git](https://obsidian.md/plugins?id=obsidian-git) plugin, you can easily publish to your Astro blog without leaving Obsidian. Simply configure with git to enable it. By default, you'll see your current git status and count of files changed (if any) in the status bar on the bottom right.
 
+Leave the plugin's "Repository folder within the vault" setting empty. Your repository sits two folders above the vault, and the plugin finds it on its own. Setting it to `../..` breaks Git on Obsidian 1.15 and later, which rejects any path containing `..`.
+
 To publish, you can use `CTRL + SHIFT + S` or click the "commit-and-sync" button on the status bar. Your changes will be committed and pushed to your remote repository automatically. By default it's pinned to the far right of the status bar. You can also re-arrange status bar items to your liking using UI Tweaker.
 
 ### Image Manager
