@@ -735,11 +735,36 @@ export function validateWikilinks(
  */
 
 // Remark plugin for processing standard markdown links (all content types)
+// The public URL of a file in a note's own folder that is linked rather than embedded (a PDF to download), the same URL its embed gets, or null if the link isn't one
+function noteAssetUrl(url: string, filePath?: string): string | null {
+  if (!url || !filePath) return null;
+  if (url.startsWith("/") || url.startsWith("#") || /^[a-z][a-z0-9+.-]*:/i.test(url)) return null;
+  if (!/^[^:#?]+\.[a-z0-9]{2,5}(#.*)?$/i.test(url) || /\.md(#.*)?$/i.test(url)) return null;
+  const location = getContentLocation(filePath);
+  if (!location) return null;
+  let link = url.startsWith("./") ? url.slice(2) : url;
+  // A vault path naming the note's own folder (or, for a single-file note, its collection's attachments folder) is fine; any other path with a slash isn't this note's file
+  const ownPrefix = location.folder ? `${location.collection}/${location.folder}/` : `${location.collection}/attachments/`;
+  if (link.startsWith(ownPrefix) && !location.folder) link = link.slice(location.collection.length + 1);
+  else if (link.includes("/") && !/^(attachments|images)\//.test(link) && !link.startsWith(ownPrefix)) return null;
+  return resolveContentFileUrl(link, filePath);
+}
+
 export function remarkStandardLinks() {
   return function transformer(tree: any, file: any) {
     // Process existing link nodes to add wikilink data attributes for internal links
     visit(tree, "link", (node: any) => {
       if (!node.url) return;
+
+      // A file beside the note, like a PDF to download. Obsidian reads it relative to the note, so point it at the same URL its embed gets
+      const asset = noteAssetUrl(node.url, file?.path);
+      if (asset) {
+        node.url = asset;
+        if (!node.data) node.data = {};
+        if (!node.data.hProperties) node.data.hProperties = {};
+        node.data.hProperties.href = asset;
+        return;
+      }
 
       // Handle same-page anchor links (e.g., #Choose%20Your%20Workflow)
       // These need to be decoded and slugified to match heading IDs
