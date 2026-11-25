@@ -1328,16 +1328,19 @@ img + p em {
 }
 
 /* PDF embeds */
+/* One page tall at full width, the way Obsidian fits an embedded PDF. The remark plugin sets --pdf-ratio from the first page, or --pdf-height from an Obsidian #height=N. 56px is the viewer's toolbar; very tall pages stop at 85vh. */
 .pdf-embed {
   @apply my-8 rounded-lg overflow-hidden;
   @apply bg-primary-100 dark:bg-primary-800;
   @apply border border-primary-200 dark:border-primary-600;
+  container-type: inline-size;
+  --pdf-frame-height: var(--pdf-height, clamp(320px, calc(100cqw / var(--pdf-ratio, 0.7727) + 56px), 85vh));
 }
 
 .pdf-embed .pdf-viewer {
   @apply w-full;
   @apply border-0;
-  height: 80vh;
+  height: var(--pdf-frame-height);
   display: block;
 }
 
@@ -1377,12 +1380,6 @@ img + p em {
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-  .pdf-embed .pdf-viewer {
-    height: 50vh;
-    min-height: 300px;
-    max-height: 500px;
-  }
-
   .pdf-embed .pdf-info {
     @apply flex-col items-start gap-2;
   }

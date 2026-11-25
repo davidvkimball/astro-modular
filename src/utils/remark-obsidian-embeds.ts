@@ -4,6 +4,53 @@ import type { Root, Image, Link } from 'mdast';
 import fs from 'node:fs';
 import path from 'node:path';
 import { resolveContentFileUrl } from './internallinks';
+
+/**
+ * Width over height of a PDF's first page, read from its /MediaBox, so the embed can be as tall as one page at full width, the way Obsidian fits it. Null when the file can't be read or the box isn't stored as plain text.
+ */
+const pdfRatioCache = new Map<string, { mtime: number; ratio: number | null }>();
+
+function pdfPageRatio(sourcePath: string): number | null {
+  try {
+    const mtime = fs.statSync(sourcePath).mtimeMs;
+    const cached = pdfRatioCache.get(sourcePath);
+    if (cached && cached.mtime === mtime) return cached.ratio;
+    const text = fs.readFileSync(sourcePath).toString('latin1');
+    const box = text.match(/\/MediaBox\s*\[\s*([-\d.]+)\s+([-\d.]+)\s+([-\d.]+)\s+([-\d.]+)\s*\]/);
+    let ratio: number | null = null;
+    if (box) {
+      const width = Math.abs(parseFloat(box[3]) - parseFloat(box[1]));
+      const height = Math.abs(parseFloat(box[4]) - parseFloat(box[2]));
+      const rotate = text.match(/\/Rotate\s+(-?\d+)/);
+      const turned = rotate && Math.abs(parseInt(rotate[1], 10)) % 180 === 90;
+      if (width > 0 && height > 0) ratio = turned ? height / width : width / height;
+    }
+    pdfRatioCache.set(sourcePath, { mtime, ratio });
+    return ratio;
+  } catch {
+    return null;
+  }
+}
+
+// The PDF's source file in the vault, where resolveContentFileUrl and sync-images.js expect it: beside the note, in an attachments/ folder beside it (folder posts and single-file posts alike), or named by a vault path that already includes this post's folder.
+function pdfSourceRatio(url: string, filePath?: string): number | null {
+  // isExternalUrl() is true for any relative path too, so test for a scheme directly
+  if (!filePath || url.startsWith('/') || /^[a-z][a-z\d+.-]*:/i.test(url)) return null;
+  let decoded = url;
+  try {
+    decoded = decodeURIComponent(url);
+  } catch (e) {}
+  if (decoded.startsWith('./')) decoded = decoded.slice(2);
+  const dir = path.dirname(filePath);
+  const folder = filePath.replace(/\\/g, '/').split('/').slice(-3, -1).join('/');
+  let clean = decoded.replace(/^(attachments|images)\//, '');
+  if (clean.startsWith(`${folder}/`)) clean = clean.slice(folder.length + 1);
+  for (const candidate of [path.join(dir, decoded), path.join(dir, clean), path.join(dir, 'attachments', clean)]) {
+    const ratio = pdfPageRatio(candidate);
+    if (ratio) return ratio;
+  }
+  return null;
+}
 function parseViewsFromBase(content: string) {
   const lines = content.split(/\r?\n/);
   const views: any[] = [];
@@ -354,9 +401,25 @@ export const remarkObsidianEmbeds: Plugin<[], Root> = () => {
 
         const filename = url.split('/').pop() || 'document.pdf';
         const title = alt || filename; // Use alt text if available, fallback to filename
-        const pdfUrl = resolvedUrl + fragment; // Add fragment back to resolved URL
-        const html = `<div class="pdf-embed">
-  <iframe class="pdf-viewer" src="${pdfUrl}" title="${title}"></iframe>
+
+        // Obsidian's #height=N sets a fixed height and isn't passed to the viewer
+        const params = fragment.replace(/^#/, '').split('&').filter(Boolean);
+        const heightParam = params.find((p) => /^height=\d+$/.test(p));
+        const viewerParams = params.filter((p) => p !== heightParam);
+        // Open each page at full width: Chrome reads view=FitH, Firefox reads zoom=page-width
+        if (!viewerParams.some((p) => p.startsWith('zoom=') || p.startsWith('view='))) viewerParams.push('zoom=page-width', 'view=FitH');
+        const pdfUrl = resolvedUrl; // The download link gets the plain file
+        const viewerUrl = `${resolvedUrl}#${viewerParams.join('&')}`;
+
+        // One page tall at full width, from the first page's shape (see global.css)
+        const ratio = heightParam ? null : pdfSourceRatio(url, file.path);
+        const style = heightParam
+          ? ` style="--pdf-height: ${heightParam.split('=')[1]}px"`
+          : ratio
+            ? ` style="--pdf-ratio: ${ratio.toFixed(4)}"`
+            : '';
+        const html = `<div class="pdf-embed"${style}>
+  <iframe class="pdf-viewer" src="${viewerUrl}" title="${title}"></iframe>
   <div class="pdf-info">
     <span class="pdf-filename">${filename}</span>
     <a href="${pdfUrl}" download class="pdf-download-link" target="_blank">Download PDF</a>
