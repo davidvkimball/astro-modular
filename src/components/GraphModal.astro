@@ -6,7 +6,7 @@ import Icon from './Icon.astro';
 <!-- Graph Modal Overlay -->
 <div 
   id="graph-modal-overlay" 
-  class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-sm animate-fade-in"
+  class="fixed inset-0 z-50 hidden bg-black/60 animate-fade-in"
   role="dialog"
   aria-modal="true"
 >
@@ -72,7 +72,7 @@ import Icon from './Icon.astro';
     
     const modal = document.createElement('div');
     modal.id = 'graph-modal-overlay';
-    modal.className = 'fixed inset-0 z-50 bg-black/50 backdrop-blur-sm animate-fade-in hidden';
+    modal.className = 'fixed inset-0 z-50 bg-black/60 animate-fade-in hidden';
     modal.innerHTML = `
       <div class="flex min-h-full items-center justify-center p-4">
         <div class="relative w-full max-w-7xl h-[90vh] bg-primary-50 dark:bg-primary-800 rounded-xl shadow-2xl border border-primary-200 dark:border-primary-700 animate-scale-in">
