@@ -41,6 +41,9 @@ const IMAGE_SYNC_CONFIGS = [
   }
 ];
 
+// Every file a note can embed or link to that gets published beside it. Images become WebP; everything else, including downloads, is copied as is.
+const SYNCED_FILE = /\.(jpg|jpeg|png|gif|webp|avif|svg|bmp|tiff|tif|ico|mp3|wav|ogg|m4a|3gp|flac|aac|opus|mp4|m4v|webm|ogv|mov|mkv|avi|vtt|srt|pdf|zip|7z|rar|tar|gz|tgz|txt|csv|tsv|json|xml|ics|rtf|doc|docx|xls|xlsx|ppt|pptx|odt|ods|odp|epub|mobi|key|numbers|pages)$/i;
+
 // Recursively find all media files in a directory (images, audio, video, PDF)
 async function findImageFiles(dir, relativePath = '') {
   const imageFiles = [];
@@ -57,7 +60,7 @@ async function findImageFiles(dir, relativePath = '') {
         // Recursively search subdirectories
         const subImages = await findImageFiles(itemPath, itemRelativePath);
         imageFiles.push(...subImages);
-      } else if (/\.(jpg|jpeg|png|gif|webp|svg|bmp|tiff|tif|ico|mp3|wav|ogg|m4a|3gp|flac|aac|mp4|webm|ogv|mov|mkv|avi|pdf)$/i.test(item)) {
+      } else if (SYNCED_FILE.test(item)) {
         // Skip WebP files if we already have the original (to avoid duplicate processing)
         // We'll generate WebP from originals
         if (item.toLowerCase().endsWith('.webp')) {
