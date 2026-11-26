@@ -320,7 +320,7 @@ Open `src/content/` in Obsidian to use the preconfigured vault features:
 - **Minimal Theme**: Optimized for writing
 - **Git Plugin**: Commit and sync directly from Obsidian
 
-Read [the guide](../posts/vault-cms-guide.md) for more detailed information.
+Read [the guide](posts/vault-cms-guide.md) for more detailed information.
 
 ## Key Features
 

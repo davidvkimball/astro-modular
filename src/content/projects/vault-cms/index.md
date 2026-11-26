@@ -78,7 +78,7 @@ Optimized for Starlight and other documentation-focused Astro themes.
 - **Plug-and-Play Setup**: Pre-configured vaults ready for immediate use with optimized plugins and settings
 - **CMS-Like Homepage**: "Home Base" view showing all posts in reverse-chronological order with bulk editing
 - **Astro Integration**: Seamless workflow from Obsidian to Astro publishing without link conversion
-- **Optimized Hotkeys**: Custom keyboard shortcuts designed for Astro workflows (see [Vault Guide](/posts/vault-cms-guide))
+- **Optimized Hotkeys**: Custom keyboard shortcuts designed for Astro workflows (see [Vault Guide](posts/vault-cms-guide.md))
 - **Git Integration**: Optional instant-publish functionality via Git plugin
 - **Visual Parity**: Oxygen theme matches frontend styling for consistent experience
 
